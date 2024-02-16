@@ -1301,8 +1301,7 @@ body.open .navbar .navbar-brand.hidden {
   padding: 15px 20px 13px;
   width: 100%; }
 
-.open .right-panel {
-  margin-left: -210px; }
+
 
 header.fixed-top {
   background: #fff;
@@ -1569,7 +1568,7 @@ header .form-inline {
     width: 50px;
     padding:12px 0;
     padding: 0.75rem 0;
-    margin: 0 !important !important;
+    margin: 0 !important;
     color: #fff;
     outline: 0;
     text-align: center;

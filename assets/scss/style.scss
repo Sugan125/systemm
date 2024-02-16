@@ -502,7 +502,7 @@ body.open {
 }
 /* Right panel */
 .right-panel {
-    display: table-cell;
+    display: block;
     padding-left: 0 !important;
     -webkit-transition: all 0.35s ease;
     -moz-transition: all 0.35s ease;
