@@ -91,7 +91,7 @@ class Logincontroller extends CI_Controller {
                     $this->session->set_userdata('normal_user', $user);
                 }
 
-                redirect(base_url('index.php/Userscontroller'));
+                redirect(base_url('index.php/Dashboardcontroller'));
             } else {
                 $this->session->set_flashdata('error', 'User Name or Password is Wrong');
                 redirect(base_url('index.php/Logincontroller/index'));

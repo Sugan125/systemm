@@ -7,22 +7,6 @@
 <div class="content-wrapper" style="min-height: 1302.4px;">
 
 
-<div class="content-header">
-      <div class="container-fluid">
-        <div class="row mb-2 justify-content-center">
-          <div class="col-sm-6">
-            <h1 class="m-0 text-center">Update User</h1>
-          </div><!-- /.col -->
-          <!-- <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active">Change Password</li>
-            </ol>
-          </div> -->
-        </div><!-- /.row -->
-      </div><!-- /.container-fluid -->
-    </div>
-
     <section class="content">
       <div class="container-fluid">
         <div class="row justify-content-center">
@@ -31,7 +15,7 @@
             <!-- general form elements -->
             <div class="card card-primary">
               <div class="card-header">
-                <h3 class="card-title">Enter User Details</h3>
+                <h3 class="card-title">Update User Details</h3>
               </div>
               <!-- /.card-header -->
               <!-- form start -->
@@ -96,7 +80,7 @@
 
                   <div class="form-group">
                   <label>Password</label>
-                      <input type="password" id="input_size" name="password" class="form-control" placeholder="Enter Password" value="<?= $row->password; ?>">
+                      <input type="password" id="password" name="password" class="form-control input_size" placeholder="Enter Password" value="<?= $row->password; ?>">
                       <input type="checkbox" onclick="viewpass()">Show Password
                   </div>
                 </div>

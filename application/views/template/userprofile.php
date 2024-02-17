@@ -86,8 +86,8 @@
                 <img src="  <?= $user->image ?>" class="img-circle img-fluid" alt="Gmail Image" >
                 <?php else: ?>
                 <!-- Provide a default image or display a placeholder if 'profile_img' is not set -->
-                <img src="<?= base_url('uploads/profile/birdd.jpg'); ?>" alt="default-avatar" class="img-circle img-fluid">
-            <?php endif; ?>
+                <img src="<?= base_url('uploads/profile/bird.jpg'); ?>" alt="default-avatar" class="img-circle img-fluid" style="border-radius: 50%;">
+             <?php endif; ?>
 
             <!-- Edit icon (pencil) overlay -->
             <?php if (!isset($user->image)): ?>

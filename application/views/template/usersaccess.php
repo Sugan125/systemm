@@ -55,8 +55,8 @@
                         <td><?= $row->role; ?></td>
                         <td><?= $row->access; ?></td>
                          <td>
-                            <a href="<?= base_url('index.php/Userrolecontroller/updateaccess/' . $row->id) ?>" class="btn btn-primary"><i class="fas fa-edit"></i> </a>
-                            <a href="<?= base_url('index.php/Userrolecontroller/deleteaccess/' . $row->id) ?>" class="btn btn-danger btn-sm" onclick='return confirm("Are you sure to delete this user?");'><i class="fas fa-trash"></i></a>
+                            <a href="<?= base_url('index.php/Userrolecontroller/updateaccess/' . $row->id) ?>" class="btn btn-sm"><i class="fas fa-edit"></i> </a>
+                            <a href="<?= base_url('index.php/Userrolecontroller/deleteaccess/' . $row->id) ?>" class="btn btn-sm" onclick='return confirm("Are you sure to delete this user?");'><i class="fas fa-trash"></i></a>
                         </td>
                         </tr>
                 <?php } } ?>

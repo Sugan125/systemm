@@ -78,16 +78,16 @@
         <td><?= $row->contact; ?></td>
         <td><?= $row->role; ?></td>
         <td>
-        <a href="<?= base_url('index.php/Userscontroller/fileupload/' . $row->id) ?>" class="btn btn-warning"><i class="fas fa-upload"></i> </a>
+        <a href="<?= base_url('index.php/Userscontroller/fileupload/' . $row->id) ?>" class="btn btn-sm"><i class="fas fa-upload"></i> </a>
         </td>
         <td>
-        <a href="<?= base_url('index.php/Userscontroller/viewfiles/' . $row->id) ?>" class="btn btn-primary"><i class="fa fa-folder-open">View Files</i> </a>
+        <a href="<?= base_url('index.php/Userscontroller/viewfiles/' . $row->id) ?>" class="btn btn-sm"><i class="fa fa-folder-open">View Files</i> </a>
         
         </td>
         <td>
-          <a href="<?= base_url('index.php/Userscontroller/update/' . $row->id) ?>" class="btn btn-primary"><i class="fas fa-edit"></i> </a>
+          <a href="<?= base_url('index.php/Userscontroller/update/' . $row->id) ?>" class="btn  btn-sm"><i class="fas fa-edit"></i> </a>
           
-          <a href="<?= base_url('index.php/Userscontroller/deleteuser/' . $row->id) ?>" class="btn btn-danger btn-sm" onclick='return confirm("Are you sure to delete this user?");'><i class="fas fa-trash"></i></a>
+          <a href="<?= base_url('index.php/Userscontroller/deleteuser/' . $row->id) ?>" class="btn btn-sm" onclick='return confirm("Are you sure to delete this user?");'><i class="fas fa-trash"></i></a>
         </td>
       </tr>
       <?php } ?>

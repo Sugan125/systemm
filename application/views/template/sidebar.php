@@ -39,6 +39,22 @@
         <a href="<?= base_url('index.php/Userrolecontroller');?>" class="nav-link <?php if($this->uri->segment(1) == 'Userrolecontroller') echo 'active' ?>"> <i class="menu-icon fa fa-user-circle"></i>Access </a>
                       </li>
     <?php endif; ?>
+
+    <?php if ((isset($user->image)) || 
+        isset($loginuser['roles']) &&
+        !empty($loginuser['roles']) &&
+        (
+            ($loginuser['roles'] == 'Admin' || $loginuser['roles'] == 'Owner') ||
+            (strpos($loginuser['roles'], 'Admin') !== false && strpos($loginuser['roles'], 'User') !== false)
+        )
+    ): ?>
+      
+
+        <li class="nav-item">
+                
+        <a href="<?= base_url('index.php/Productcontroller');?>" class="nav-link <?php if($this->uri->segment(1) == 'Productcontroller') echo 'active' ?>"> <i class="menu-icon fa fa-shopping-cart"></i>Products </a>
+                      </li>
+    <?php endif; ?>
     
                 </ul>
             </div>

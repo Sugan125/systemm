@@ -11534,7 +11534,7 @@ form.user .btn-user {
     animation: noise-anim-2 3s infinite linear alternate-reverse
 }
 
-#input_size{
+.input_size{
     width : 80%!important;
 }
 footer.sticky-footer {
