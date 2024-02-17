@@ -4,8 +4,8 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Sufee Admin - HTML5 Admin Template</title>
-    <meta name="description" content="Sufee Admin - HTML5 Admin Template">
+    <title>Sourdough Factory</title>
+    <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link rel="apple-touch-icon" href="apple-icon.png">
@@ -26,6 +26,7 @@
     <link rel="stylesheet" href="<?= base_url();?>assets/css/style.css">
     <!-- <link rel="stylesheet" href="<?= base_url();?>assets/custom/style.css"> -->
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Niconne&display=swap');
         .open .right-panel {
