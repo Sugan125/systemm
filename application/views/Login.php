@@ -42,6 +42,10 @@
   <?php if($this->session->userdata('error')) { ?>
               	<p class="text-danger text-center"><?=$this->session->userdata('error')?></p>
               	<?php } ?>
+
+                <?php if($this->session->userdata('sucess')) { ?>
+              	<p class="text-danger text-center"><?=$this->session->userdata('sucess')?></p>
+              	<?php } ?>
     <p class="login-box-msg">Sign in to start your session</p>
 
     <form action="<?= base_url('index.php/Logincontroller/index'); ?>" method="post">

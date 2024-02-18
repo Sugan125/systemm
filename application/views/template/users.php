@@ -104,7 +104,7 @@
             <!-- Pagination Links -->
             <div class="row">
             <div class="col-sm-10">
-                <?php $total_rowss = $total_rows - 1; echo "Showing 1 to 10 of ".$total_rowss." entries"; ?>
+                <?php $total_rowss = $total_rows; echo "Showing 1 to 10 of ".$total_rowss." entries"; ?>
             </div>
                 <div class="col-sm-2">
                     <?php echo $this->pagination->create_links(); ?>

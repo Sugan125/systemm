@@ -62,8 +62,9 @@ class user_model extends CI_Model{
       return $this->db->count_all_results('user_register');
   }
 
-  public function get_users($limit, $offset) {
-      $this->db->limit($limit, $offset);
+  //public function get_users($limit, $offset) {
+    public function get_users() {
+ //     $this->db->limit($limit, $offset);
       return $this->db->get('user_register')->result();
   }
 

@@ -41,8 +41,9 @@ class Userscontroller extends CI_Controller {
 		$config['num_tag_close'] = '</span></li>'; 
 
         $page = ($this->uri->segment(3)) ? $this->uri->segment(3) : 1;
-        $data['userss'] = $this->user_model->get_users($config['per_page'], $page);
-        
+       // $data['userss'] = $this->user_model->get_users($config['per_page'], $page);
+       $data['userss'] = $this->user_model->get_users();
+  
         // foreach ($data['userss'] as $user) {
             
         //     $name = $user->name;
