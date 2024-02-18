@@ -36,7 +36,7 @@
                   <div class="input-group-prepend">
                     <span class="input-group-text"><i class="fas fa-envelope"></i></span>
                   </div>
-                  <input type="email" name="email" class="form-control" placeholder="Enter Email">
+                  <input type="email" name="email" class="form-control" placeholder="Enter Email" required>
                 </div>
 
                   <div class="form-group">
@@ -67,6 +67,12 @@
                       <div class="form-check form-check-inline">
                           <input class="form-check-input" type="checkbox" name="role[]" value="User" id="userCheckbox">
                           <label class="form-check-label" for="userCheckbox">User</label>
+                      </div>
+
+
+                      <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="checkbox" name="role[]" value="Owner" id="managercheckbox">
+                          <label class="form-check-label" for="managercheckbox">Manager</label>
                       </div>
                       <!-- Add more checkboxes as needed -->
                   </div> 

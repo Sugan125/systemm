@@ -29,7 +29,7 @@
                 <div class="row mb-2 justify-content-center">
                     <div class="col-sm-6">
                         <?php $userName = isset($datanames['name']) ? $datanames['name'] : 'Unknown User'; ?>
-                        <h1 class="m-0 text-center">Uploaded files of <?php echo $userName; ?></h1>
+                        <h3 class="m-0 text-center">Uploaded files of <?php echo $userName; ?></h3>
                     </div>
                 </div>
             </div>

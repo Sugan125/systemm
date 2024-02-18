@@ -7,17 +7,7 @@
 <div class="wrapper">
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper" style="min-height: 1302.4px;">
-    <!-- Content Header (Page header) -->
-    <section class="content-header">
-      <div class="container-fluid">
-        <div class="row mb-2 justify-content-center">
-          <div class="col-sm-6">
-            <h1 class="text-center">User Profile</h1>
-          </div>
-          
-        </div>
-      </div><!-- /.container-fluid -->
-    </section>
+   
     <section class="content">
             <div class="container-fluid">
                 <div class="row justify-content-center">

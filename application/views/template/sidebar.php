@@ -55,6 +55,22 @@
         <a href="<?= base_url('index.php/Productcontroller');?>" class="nav-link <?php if($this->uri->segment(1) == 'Productcontroller') echo 'active' ?>"> <i class="menu-icon fa fa-shopping-cart"></i>Products </a>
                       </li>
     <?php endif; ?>
+
+    <?php if ((isset($user->image)) || 
+        isset($loginuser['roles']) &&
+        !empty($loginuser['roles']) &&
+        (
+            ($loginuser['roles'] == 'User' || $loginuser['roles'] == 'Owner') ||
+            (strpos($loginuser['roles'], 'User') !== false && strpos($loginuser['roles'], 'User') !== false)
+        )
+    ): ?>
+      
+
+        <li class="nav-item">
+                
+        <a href="<?= base_url('index.php/Productcontroller/userproduct');?>" class="nav-link <?php if($this->uri->segment(1) == 'Productcontroller/userproduct') echo 'active' ?>"> <i class="menu-icon fa fa-shopping-cart"></i>Products Detail </a>
+                      </li>
+    <?php endif; ?>
     
                 </ul>
             </div>

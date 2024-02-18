@@ -37,7 +37,7 @@
                   <div class="input-group-prepend">
                     <span class="input-group-text"><i class="fas fa-envelope"></i></span>
                   </div>
-                  <input type="email" id="input_size" name="email" class="form-control" placeholder="Enter Email" value="<?= $row->email; ?>">
+                  <input type="email" id="input_size" name="email" class="form-control" placeholder="Enter Email" value="<?= $row->email; ?>" required>
                 </div>
 
                   <div class="form-group">
@@ -49,15 +49,24 @@
     <label>Role</label>
     <div class="input-group mb-3" id="input_size">
         <?php
-        $roles = array("Admin", "User");
+        $roles = array("Admin", "User","Owner");
         $selectedRoles = explode(',', $row->role);
 
         foreach ($roles as $role) {
+          
             $checked = in_array($role, $selectedRoles) ? 'checked' : '';
+
+            if($role == 'Owner'){
+              $rolee = 'Manager';
+            }
+            else{
+              $rolee = $role;
+            }
+
             echo '
                 <div class="form-check form-check-inline">
                     <input class="form-check-input" type="checkbox" name="role[]" value="' . $role . '" id="' . $role . 'Checkbox" ' . $checked . '>
-                    <label class="form-check-label" for="' . $role . 'Checkbox">' . $role . '</label>
+                    <label class="form-check-label" for="' . $role . 'Checkbox">' . $rolee . '</label>
                 </div>';
         }
         ?>

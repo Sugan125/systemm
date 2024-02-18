@@ -5,35 +5,16 @@
 
 <div class="content-wrapper" style="min-height: 1302.4px;">
 
-<div class="content-header">
-      <div class="container-fluid">
-        <div class="row mb-2 justify-content-center">
-          <div class="col-sm-6">
-            <h1 class="m-0 text-center">Edit User Access</h1>
-          </div><!-- /.col -->
-          <!-- <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active">Change Password</li>
-            </ol>
-          </div> -->
-        </div><!-- /.row -->
-      </div><!-- /.container-fluid -->
-    </div>
-
 
     <section class="content">
     <div class="container-fluid">
         <div class="row justify-content-center">
-            <!-- left column -->
             <div class="col-md-6">
-                <!-- general form elements -->
                 <div class="card card-primary">
                     <div class="card-header">
-                        <h3 class="card-title">Enter User Details</h3>
+                        <h3 class="card-title">Enter User Access</h3>
                     </div>
-                    <!-- /.card-header -->
-                    <!-- form start -->
+    
                     <?php foreach($query as $row): ?>
                     <form action="<?= base_url('index.php/Userrolecontroller/adduseraccess') ?>" method="POST">
                         <div class="card-body" style="height:450px;">
@@ -56,15 +37,23 @@
     <label>Role</label>
     <div class="input-group mb-3" id="input_size">
         <?php
-        $roles = array("Admin", "User");
+        $roles = array("Admin", "User", "Owner");
         $selectedRoles = explode(',', $row->role);
 
         foreach ($roles as $role) {
             $checked = in_array($role, $selectedRoles) ? 'checked' : '';
+
+            if($role == 'Owner'){
+                $rolee = 'Manager';
+            }
+            else{
+                $rolee = $role;
+            }
+
             echo '
                 <div class="form-check form-check-inline">
                     <input class="form-check-input" type="checkbox" name="role[]" value="' . $role . '" id="' . $role . 'Checkbox" ' . $checked . '>
-                    <label class="form-check-label" for="' . $role . 'Checkbox">' . $role . '</label>
+                    <label class="form-check-label" for="' . $role . 'Checkbox">' . $rolee . '</label>
                 </div>';
         }
         ?>

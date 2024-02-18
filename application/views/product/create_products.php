@@ -15,7 +15,7 @@
               <div class="card-header">
                 <h3 class="card-title">Enter Product Details</h3>
               </div>
-              <form action="<?= base_url('index.php/Productcontroller/addproduct') ?>" method="POST">
+              <form action="<?= base_url('index.php/Productcontroller/addproduct') ?>" method="POST" enctype="multipart/form-data">
                 <div class="card-body">
                 
                   <label>Product ID</label>
@@ -51,6 +51,15 @@
                     <input type="text" name="prod_category" class="form-control" placeholder="Product Category">
                   </div>
                 </div>
+
+                <div class="form-group">
+                <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="checkbox"  value="no_add_on" id="no_add_on">
+                          <label class="form-check-label" for="no_add_on">No add-on</label>
+                      </div>
+                  </div>
+
+                  <div class="form-group" id="hide_add_on">
                 <label>Add-on</label>
                   <div class="input-group mb-3" id="input_size">
                       <div class="form-check form-check-inline">
@@ -66,16 +75,19 @@
                     <div id="presliceOptionsyes" style="display: none; margin-top: 10px;margin-left: 50px;">
                         <label for="presliceThickness">Preslice Thickness</label>
                         <select class="form-select" id="presliceThickness" name="add_on_slice">
-                            <option value="12mm">12mm</option>
+                        <option value="">Select</option>    
+                        <option value="12mm">12mm</option>
                         </select>
                     </div>
 
                     <div id="presliceOptionsno" style="display: none; margin-top: 10px;margin-left: 50px;">
                         <label for="presliceThickness">Preslice Thickness</label>
                         <select class="form-select" id="presliceThickness" name="add_on_slice">
+                            <option value="">Select</option> 
                             <option value="20mm">20mm</option>
                         </select>
                     </div>
+                  
 
                     <br><br>
                 <div class="input-group mb-3" id="input_size">
@@ -97,6 +109,7 @@
                       <div id="seedsoption" style="display:none;margin-left: 131px; margin-top: 25px;">
                       <label for="seedColor">Seed Color</label>
                           <select class="form-select" id="seedColor" name="add_on_seed">
+                              <option value="">Select</option> 
                               <option value="Black">Black</option>
                               <option value="White">White</option>
                           </select> 
@@ -104,10 +117,10 @@
                 </div>
                 </div>
 
-
+                </div>
                   <div class="form-group">
-                  <label>Product Image</label>
-                  <input type="file" class="form-control"  name="prod_img" id="docpicker" accept=".jpg,.jpeg,.png" />
+                      <label>Product Image</label>
+                      <input type="file" class="form-control" name="prod_img" id="prod_img" accept=".jpg, .jpeg, .png" />
                   </div>
 
                   <div class="form-group">
@@ -168,6 +181,21 @@
                 } else {
                     $("#seedsoption").hide();
                 }
+            }
+        });
+    });
+    $(document).ready(function() {
+        // Initially check if "No add-on" checkbox is checked and hide the add-on section accordingly
+        if ($("#no_add_on").is(":checked")) {
+            $("#hide_add_on").hide();
+        }
+
+        // Toggle visibility of add-on section based on "No add-on" checkbox state
+        $('#no_add_on').click(function() {
+            if ($(this).is(":checked")) {
+                $("#hide_add_on").hide();
+            } else {
+                $("#hide_add_on").show();
             }
         });
     });

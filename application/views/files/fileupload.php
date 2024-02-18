@@ -14,7 +14,7 @@
             <div class="container-fluid">
                 <div class="row mb-2 justify-content-center">
                     <div class="col-sm-6">
-                        <h1 class="m-0 text-center">Upload files for <?= isset($datanames['name']) ? $datanames['name'] : 'Unknown User'; ?></h1>
+                        <h3 class="m-0 text-center">Upload files for <?= isset($datanames['name']) ? $datanames['name'] : 'Unknown User'; ?></h3>
                     </div>
                 </div><!-- /.row -->
             </div><!-- /.container-fluid -->

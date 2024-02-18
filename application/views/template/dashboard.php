@@ -7,28 +7,10 @@
                     </div>
                 </div>
             </div>
-            <div class="col-sm-8">
-                <div class="page-header float-right">
-                    <div class="page-title">
-                        <ol class="breadcrumb text-right">
-                            <li class="active">Dashboard</li>
-                        </ol>
-                    </div>
-                </div>
-            </div>
+            
         </div>
 
         <div class="content mt-3">
-
-            <div class="col-sm-12">
-                <div class="alert  alert-success alert-dismissible fade show" role="alert">
-                    <span class="badge badge-pill badge-success">Success</span> You successfully read this important alert message.
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-            </div>
-
 
             <div class="col-sm-6 col-lg-3">
                 <div class="card text-white bg-flat-color-1">
@@ -149,7 +131,7 @@
 
             <div class="col-lg-3 col-md-6">
                 <div class="social-box facebook">
-                    <i class="fa fa-facebook"></i>
+                    <i class="fab fa-facebook"></i>
                     <ul>
                         <li>
                             <span class="count">40</span> k
@@ -168,7 +150,7 @@
 
             <div class="col-lg-3 col-md-6">
                 <div class="social-box twitter">
-                    <i class="fa fa-twitter"></i>
+                    <i class="fab fa-twitter"></i>
                     <ul>
                         <li>
                             <span class="count">30</span> k
@@ -187,7 +169,7 @@
 
             <div class="col-lg-3 col-md-6">
                 <div class="social-box linkedin">
-                    <i class="fa fa-linkedin"></i>
+                    <i class="fab fa-linkedin"></i>
                     <ul>
                         <li>
                             <span class="count">40</span> +
@@ -206,7 +188,7 @@
 
             <div class="col-lg-3 col-md-6">
                 <div class="social-box google-plus">
-                    <i class="fa fa-google-plus"></i>
+                    <i class="fab fa-google-plus"></i>
                     <ul>
                         <li>
                             <span class="count">94</span> k
@@ -309,7 +291,7 @@
 
                         <div class="media">
                             <a href="#">
-                                <img class="align-self-center rounded-circle mr-3" style="width:85px; height:85px;" alt="" src="images/admin.jpg">
+                                <img class="align-self-center rounded-circle mr-3" style="width:85px; height:85px;" alt="" src="<?= base_url();?>images/admin.jpg">
                             </a>
                             <div class="media-body">
                                 <h2 class="text-white display-6">Jim Doe</h2>

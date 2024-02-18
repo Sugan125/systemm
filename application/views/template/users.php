@@ -28,7 +28,7 @@
            
                 <div class="col-sm-9 col-md-9">
                 <?php if ((isset($user->image)) || (in_array('Admin', $loginuser['role']) || $loginuser['roles'] == 'Admin')  || (in_array('Add', $loginuser['access']) == 'Add' && in_array('User', $loginuser['role'])) ||  ($loginuser['accesss'] == 'Add' && $loginuser['roles' == 'User']) ||  $loginuser['roles'] == 'Owner') { ?>
-                <a href="<?= base_url('index.php/Userscontroller/create') ?>" class="btn btn-primary"><i class="fas fa-plus"></i> Create User</a>
+                <a href="<?= base_url('index.php/Userscontroller/create') ?>" class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> Create User</a>
                 <?php } ?>
 
               </div>
@@ -38,7 +38,7 @@
                             <div class="input-group">
                                     <input type="text" class="form-control" placeholder="Search" name="keyword" value="<?= isset($keyword) ? $keyword : '' ?>">
                                 <div class="input-group-append">
-                                <button class="btn btn-primary btn-sm" type="submit"><i class="fas fa-search"></i> Search</button>
+                                <button class="btn btn-sm" type="submit"><i class="fas fa-search"></i> Search</button>
                                 </div>
                             </div>
                         </form>
@@ -70,13 +70,18 @@
 
   
     <?php foreach ($userss as $row):
-      if($row->role != 'Owner'){ ?>
+      if($row->role == 'Owner'){ 
+        $rolee = 'Manager';
+      }
+      else{
+        $rolee = $row->role;
+      }?>
       <tr class="odd text-center">
         <td><?= $row->name; ?></td>
         <td><?= $row->email; ?></td>
         <td><?= $row->address; ?></td>
         <td><?= $row->contact; ?></td>
-        <td><?= $row->role; ?></td>
+        <td><?=  $rolee; ?></td>
         <td>
         <a href="<?= base_url('index.php/Userscontroller/fileupload/' . $row->id) ?>" class="btn btn-sm"><i class="fas fa-upload"></i> </a>
         </td>
@@ -90,7 +95,7 @@
           <a href="<?= base_url('index.php/Userscontroller/deleteuser/' . $row->id) ?>" class="btn btn-sm" onclick='return confirm("Are you sure to delete this user?");'><i class="fas fa-trash"></i></a>
         </td>
       </tr>
-      <?php } ?>
+     
     <?php endforeach; ?>
   </tbody>
 </table>

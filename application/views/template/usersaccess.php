@@ -16,14 +16,14 @@
         <div class="card-header">
             <div class="row">
                 <div class="col-sm-9 col-md-9">
-                <a href="<?= base_url('index.php/Userrolecontroller/createaccess') ?>" class="btn btn-primary"><i class="fas fa-plus"></i> Add Access</a>
+                <a href="<?= base_url('index.php/Userrolecontroller/createaccess') ?>" class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> Add Access</a>
                 </div>
                 <div class="col-sm-3 col-md-3 ">
                         <form action="<?= base_url('index.php/Userrolecontroller/search'); ?>" method="get">
                             <div class="input-group">
                                     <input type="text" class="form-control" placeholder="Search" name="keyword" value="<?= isset($keyword) ? $keyword : '' ?>">
                                 <div class="input-group-append">
-                                <button class="btn btn-primary btn-sm" type="submit"><i class="fas fa-search"></i> Search</button>
+                                <button class="btn btn-sm" type="submit"><i class="fas fa-search"></i> Search</button>
                                 </div>
                             </div>
                         </form>
