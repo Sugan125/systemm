@@ -111,7 +111,7 @@
                         <?php elseif (isset($user->image)): ?>
                         <img src="  <?= $user->image ?>" class="img-circle elevation-2" class="img-profile rounded-circle" alt="Gmail Image" style="height:2em;">
                         <?php else: ?>
-                        <img src="<?= base_url();?>uploads/profile/bird.jpg" class="img-profile rounded-circle" alt="Default Image" style="height:2em;">
+                        <img src="<?= base_url();?>uploads/profile/user.png" class="img-profile rounded-circle" alt="Default Image" style="height:2em;">
                     <?php endif; ?>
                 </a>
                 <!-- Dropdown - User Information -->
