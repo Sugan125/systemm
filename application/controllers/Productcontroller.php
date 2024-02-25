@@ -6,27 +6,108 @@ class Productcontroller extends CI_Controller {
 
     function __construct() {
         parent::__construct();
-        $this->load->helper('url');
+        $this->load->helper(array('url','html','form'));
         $this->load->model('user_model');
         $this->load->model('product_model');
         $this->load->library('pagination');
         $this->load->library('session');
         $this->load->library('upload');
+
     }
 
     public function index() {
         $data['title'] = 'Products';
 
+        $config['base_url'] = site_url('Productcontroller/search');
+        $config['total_rows'] = $this->product_model->count_all_products(); // Ensure at least 10 total rows
+        $config['per_page'] = 10;
+        $config['uri_segment'] = 3;
+        $config['use_page_numbers'] = TRUE;
+    
+        $config['full_tag_open'] = '<ul class="pagination">';
+        $config['full_tag_close'] = '</ul>';
+        $config['first_link'] = 'First';
+        $config['last_link'] = 'Last';
+        $config['first_tag_open'] = '<li class="page-item"><span class="page-link">';
+        $config['first_tag_close'] = '</span></li>';
+        $config['prev_link'] = 'Previous';
+        $config['prev_tag_open'] = '<li class="page-item"><span class="page-link">';
+        $config['prev_tag_close'] = '</span></li>';
+        $config['next_link'] = 'Next';
+        $config['next_tag_open'] = '<li class="page-item"><span class="page-link">';
+        $config['next_tag_close'] = '</span></li>';
+        $config['last_tag_open'] = '<li class="page-item"><span class="page-link">';
+        $config['last_tag_close'] = '</span></li>';
+        $config['cur_tag_open'] = '<li class="page-item active"><span class="page-link">';
+        $config['cur_tag_close'] = '</span></li>';
+        $config['num_tag_open'] = '<li class="page-item"><span class="page-link">';
+        $config['num_tag_close'] = '</span></li>'; 
+    
+        $page = ($this->uri->segment(3)) ? $this->uri->segment(3) : 1; // Set the default page to 1
+        $offset = ($page - 1) * $config['per_page'];
+        
+        $config['total_rows'] = $this->product_model->count_all_products(); 
+    
+        $this->pagination->initialize($config);
+
         $this->load->view('template/header.php', $data);
         $user = $this->session->userdata('user_register');
         $users = $this->session->userdata('normal_user');
         $loginuser = $this->session->userdata('LoginSession');
-        $data['total_rows'] = $this->user_model->count_all_users();
+        $data['total_rows'] = $this->product_model->count_all_products();
         $data['products'] = $this->product_model->product_details();
 
 
 
         $this->load->view('template/header.php');
+        $this->load->view('template/sidebar.php', array('user' => $user, 'users' => $users, 'data' => $data,'loginuser' => $loginuser));
+        $this->load->view('product/products.php', $data);
+        $this->load->view('template/footer.php');
+    }
+
+    public function search() {
+        $keyword = $this->input->get('keyword');
+        $data['title'] = 'Dashboard';
+    
+        // Pagination Config for Search Results
+        $config['base_url'] = site_url('Productcontroller/search');
+        $config['total_rows'] = max($this->product_model->count_search_results($keyword), 10); // Ensure at least 10 total rows
+        $config['per_page'] = 10;
+        $config['use_page_numbers'] = TRUE;
+        $config['reuse_query_string'] = TRUE;
+    
+        $config['full_tag_open'] = '<ul class="pagination">';
+        $config['full_tag_close'] = '</ul>';
+        $config['first_link'] = 'First';
+        $config['last_link'] = 'Last';
+        $config['first_tag_open'] = '<li class="page-item"><span class="page-link">';
+        $config['first_tag_close'] = '</span></li>';
+        $config['prev_link'] = 'Previous';
+        $config['prev_tag_open'] = '<li class="page-item"><span class="page-link">';
+        $config['prev_tag_close'] = '</span></li>';
+        $config['next_link'] = 'Next';
+        $config['next_tag_open'] = '<li class="page-item"><span class="page-link">';
+        $config['next_tag_close'] = '</span></li>';
+        $config['last_tag_open'] = '<li class="page-item"><span class="page-link">';
+        $config['last_tag_close'] = '</span></li>';
+        $config['cur_tag_open'] = '<li class="page-item active"><span class="page-link">';
+        $config['cur_tag_close'] = '</span></li>';
+        $config['num_tag_open'] = '<li class="page-item"><span class="page-link">';
+        $config['num_tag_close'] = '</span></li>'; 
+    
+        $page = ($this->uri->segment(3)) ? $this->uri->segment(3) : 1; // Set the default page to 1
+        $offset = ($page - 1) * $config['per_page'];
+        $data['products'] = $this->product_model->search_products($keyword, $config['per_page'], $offset);
+        $data['total_rows'] = $this->product_model->count_search_results($keyword);
+    
+        $this->pagination->initialize($config);
+        $data['keyword'] = $keyword;
+    
+        $this->load->view('template/header.php', $data);
+        $user = $this->session->userdata('user_register');
+        $users = $this->session->userdata('normal_user');
+        $loginuser = $this->session->userdata('LoginSession');
+        //var_dump($loginuser);
         $this->load->view('template/sidebar.php', array('user' => $user, 'users' => $users, 'data' => $data,'loginuser' => $loginuser));
         $this->load->view('product/products.php', $data);
         $this->load->view('template/footer.php');
@@ -177,8 +258,6 @@ class Productcontroller extends CI_Controller {
          redirect('productcontroller');
          }
          
-
-         
          
          public function userproduct() {
             $data['title'] = 'Products';
@@ -194,7 +273,65 @@ class Productcontroller extends CI_Controller {
             $this->load->view('template/footer.php');
         }
      
-    
+        public function importfile(){
+            if ($this->input->post('submit')) {
+                $path = './uploads/';
+                require_once APPPATH . "/third_party/PHPExcel.php";
+                $config['upload_path'] = $path;
+                $config['allowed_types'] = 'xlsx|xls|csv';
+                $config['remove_spaces'] = TRUE;
+                $this->load->library('upload', $config);
+                $this->upload->initialize($config);
+                if (!$this->upload->do_upload('uploadFile')) {
+                    $error = array('error' => $this->upload->display_errors());
+                } else {
+                    $data = array('upload_data' => $this->upload->data());
+                }
+                if(empty($error)){
+                    if (!empty($data['upload_data']['file_name'])) {
+                        $import_xls_file = $data['upload_data']['file_name'];
+                    } else {
+                        $import_xls_file = 0;
+                    }
+                    $inputFileName = $path . $import_xls_file;
+                    try {
+                        $inputFileType = PHPExcel_IOFactory::identify($inputFileName);
+                        $objReader = PHPExcel_IOFactory::createReader($inputFileType);
+                        $objPHPExcel = $objReader->load($inputFileName);
+                        $allDataInSheet = $objPHPExcel->getActiveSheet()->toArray(null, true, true, true);
+                        $flag = true;
+                        $i=0;
+                        foreach ($allDataInSheet as $value) {
+                            if($flag){
+                                $flag =false;
+                                continue;
+                            }
+                            $inserdata[$i]['product_id'] = $value['A'];
+                            $inserdata[$i]['product_name'] = $value['B'];
+                            $inserdata[$i]['prod_category'] = $value['C'];
+                            $inserdata[$i]['prod_rate'] = $value['D'];
+                            $inserdata[$i]['active'] = $value['E'];
+                            $i++;
+                        }
+                        $result = $this->product_model->insert_import($inserdata);
+                        if($result){
+                            $this->session->set_flashdata('imported','<div class="alert alert-success alert-dismissible fade show" role="alert">Products Imported Successfully!
+                            <button type="button" class="close" data-dismiss="alert" arial-label="close"> <span aria-hidden="true">&times;</span></button></div>');
+                            redirect('productcontroller');
+                        }else{
+                            echo "ERROR !";
+                        }
+                    } catch (Exception $e) {
+                        die('Error loading file "' . pathinfo($inputFileName, PATHINFO_BASENAME)
+                                . '": ' .$e->getMessage());
+                    }
+                }else{
+                    echo $error['error'];
+                }
+            }
+            $this->load->view('import');
+        }
+        
 }
 
 ?>
