@@ -27,6 +27,9 @@
         -o-background-size: cover;
         background-size: cover;
     }
+    .login-logo img {
+            width: 100% !important;
+    }
   </style>
 
   <!-- Google Font -->
