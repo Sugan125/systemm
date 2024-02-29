@@ -34,7 +34,7 @@
                         </div>
                         <div class="col-sm-6 col-md-6 text-right">
                             <form action="<?= base_url('index.php/Productcontroller/importfile') ?>" method="post" enctype="multipart/form-data">
-                                <label for="uploadFile" class="btn btn-primary btn-sm" style="margin-bottom: 0px; width: 50%;">
+                                <label for="uploadFile" class="btn btn-primary btn-sm" style="margin-bottom: 0px;width: 45%;background: none;border: none;color: black;">
                                     Import <input type="file" id="uploadFile" name="uploadFile">
                                 </label>
                                 <input type="submit" name="submit" class="btn btn-primary btn-sm" value="Upload" />
@@ -93,7 +93,7 @@
         <td><?= $row->product_name; ?></td>
         <td><?= $row->product_desc; ?></td>
         <td><?= $row->prod_category; ?></td>
-        <td> <img id="HideImg" src="<?= base_url();?>uploads/<?= $row->prod_img; ?>" alt="Image Not Found" onerror="this.src='<?= base_url();?>uploads/no_product.png';" style="width:110px; height:100px;"></td>
+        <td> <img id="HideImg" src="<?= base_url();?>uploads/<?= $row->prod_img; ?>" alt="Image Not Found" onerror="this.src='<?= base_url();?>uploads/no_product.png';" style="width:100%; height:100%;"></td>
         <!-- <td> //$row->add_on_slice; ?>// echo //$comma ?> //$row->add_on_seed; ?></td> -->
         <td><?= $row->active; ?></td>
         <td>$<?= $row->prod_rate; ?></td>   
