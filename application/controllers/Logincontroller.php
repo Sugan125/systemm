@@ -243,7 +243,7 @@ class Logincontroller extends CI_Controller {
 						////echo$subject;
 						////echo$message;
 						//Load email library
-						$this->email->from($from_email, 'TeamWork APAC Pvt Ltd');//    from(from_mail,identification)
+						$this->email->from($from_email, 'Sourdough Factory');//    from(from_mail,identification)
 						$this->email->to($toemail);
 						$this->email->subject($subject);
 						$this->email->message($msg);
