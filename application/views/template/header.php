@@ -39,5 +39,8 @@
  left: -84px!important;
  transform: translate3d(-111px, 48px, 0px);
 }
+.treeview-menu{
+    margin-left:55px;
+}
     </style>
 </head>

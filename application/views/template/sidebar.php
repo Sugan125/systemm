@@ -1,5 +1,5 @@
 
-    <aside id="left-panel" class="left-panel">
+<aside id="left-panel" class="left-panel">
         <nav class="navbar navbar-expand-sm navbar-default">
             <div class="navbar-header">
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main-menu" aria-controls="main-menu" aria-expanded="false" aria-label="Toggle navigation">
@@ -56,26 +56,35 @@
                       </li>
     <?php endif; ?>
 
-    <?php if ((isset($user->image)) || 
-        isset($loginuser['roles']) &&
-        !empty($loginuser['roles']) &&
-        (
-            ($loginuser['roles'] == 'User' || $loginuser['roles'] == 'Owner') ||
-            (strpos($loginuser['roles'], 'User') !== false && strpos($loginuser['roles'], 'User') !== false)
-        )
-    ): ?>
-      
-
+                <?php if(isset($loginuser['roles']) && !empty($loginuser['roles'])): ?>
+    <?php if(in_array($loginuser['roles'], ['User', 'Owner']) || (strpos($loginuser['roles'], 'User') !== false)): ?>
         <li class="nav-item">
-                
-        <a href="<?= base_url('index.php/Productcontroller/userproduct');?>" class="nav-link <?php if($this->uri->segment(1) == 'Productcontroller/userproduct') echo 'active' ?>"> <i class="menu-icon fa fa-shopping-cart"></i>Products Detail </a>
-                      </li>
+            <a href="<?= base_url('index.php/Productcontroller/userproduct');?>" class="nav-link <?php if($this->uri->segment(1) == 'Productcontroller/userproduct') echo 'active' ?>">
+                <i class="menu-icon fa fa-shopping-cart"></i>Products Detail
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="#" class="nav-link toggle-orders">
+                <i class="menu-icon fa fa-clipboard"></i>
+                <span>Orders</span>
+                <span class="pull-right-container">
+                    <i class="fa fa-angle-left pull-right"></i>
+                </span>
+            </a>
+            <ul class="treeview-menu" style="display: none;">
+                <li class="nav-item "><a href="<?php echo base_url('index.php/orders/create') ?>" class="nav-link"><i class="fa fa-edit"></i>  Create Order</a></li>
+                <li class="nav-item"><a href="<?php echo base_url('index.php/orders') ?>" class="nav-link"><i class="fa fa-th-large"></i>  Manage Orders</a></li>
+            </ul>
+        </li>
     <?php endif; ?>
-    
-                </ul>
-            </div>
-        </nav>
-    </aside>
+<?php endif; ?>
+
+
+            </ul>
+        </div>
+    </nav>
+</aside>
+
 
 
     <div id="right-panel" class="right-panel" style="display:block;">
@@ -151,5 +160,15 @@
 <!-- Header-->
 </div>
 </div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function(){
+        $(".toggle-orders").click(function(){
+            $(this).next(".treeview-menu").toggle();
+        });
+    });
+</script>
+
+
     
 
