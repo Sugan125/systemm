@@ -26,12 +26,12 @@
         <?php endif; ?>
 
         <div class="box-header">
-            <h3 class="box-title">Add Order</h3>
+            <h3 class="box-title">Update/Preview Order</h3>
           </div>
         <div class="box" style="margin-top:20px;">
           
           <!-- /.box-header -->
-          <form role="form" action="<?php base_url('orders/create') ?>" method="post" class="form-horizontal">
+          <form role="form" action="<?php base_url('orders/create') ?>" method="post" class="form-horizontal" onsubmit="confirmSubmission(event)">
            
                 
               <div class="box-body pull-right">
@@ -128,21 +128,22 @@
                 <div class="col-sm-12 col-md-12 col-xs-12 pull pull-right">
                 <div class="col-sm-6 col-md-6"></div>
                 <div class="col-sm-6 col-md-6">
+                <?php foreach ($order_total as $key => $order_data): ?>
                   <div class="form-group" style="margin-bottom:30px;">
                     <div class="col-sm-4">
                     <label for="gross_amount" class="control-label">Gross Amount</label></div>
                     <div class="col-sm-8">
-                      <input type="text" class="form-control" id="gross_amount" value="<?php echo $order_data['order']['gross_amount'] ?>" name="gross_amount" disabled autocomplete="off">
-                      <input type="hidden" class="form-control" id="gross_amount_value" value="<?php echo $order_data['order']['gross_amount'] ?>" name="gross_amount_value" autocomplete="off">
+                      <input type="text" class="form-control" id="gross_amount" value="<?php echo $order_data['gross_amount'] ?>" name="gross_amount" disabled autocomplete="off">
+                      <input type="hidden" class="form-control" id="gross_amount_value" value="<?php echo $order_data['gross_amount'] ?>" name="gross_amount_value" autocomplete="off">
                     </div>
                   </div><br>
                   <div class="form-group" style="margin-bottom:30px;">
                     <div class="col-sm-4">
                     <label for="gross_amount" class="control-label">GST (9%)</label></div>
                     <div class="col-sm-8">
-                    <input type="text" class="form-control" id="gst" name="gst_amt" value="<?php echo $order_data['order']['gst_amt'] ?>" disabled autocomplete="off">
-                      <input type="hidden" class="form-control" id="gst_value"  value="<?php echo $order_data['order']['gst_percent'] ?>"  name="gst_value" value="9" autocomplete="off">
-                      <input type="hidden" class="form-control" id="gst_rate" value="<?php echo $order_data['order']['gst_amt'] ?>" name="gst_rate" value="9" autocomplete="off">
+                    <input type="text" class="form-control" id="gst" name="gst_amt" value="<?php echo $order_data['gst_amt'] ?>" disabled autocomplete="off">
+                      <input type="hidden" class="form-control" id="gst_value"  value="<?php echo $order_data['gst_percent'] ?>"  name="gst_value" value="9" autocomplete="off">
+                      <input type="hidden" class="form-control" id="gst_rate" value="<?php echo $order_data['gst_amt'] ?>" name="gst_rate" value="9" autocomplete="off">
                     </div>
                   </div><br>
                   <!-- <?php// if($is_service_enabled == true): ?> -->
@@ -151,8 +152,8 @@
                     <label for="service_charge" class="control-label">Slicing Service:  <?php //echo $company_data['service_charge_value'] ?> </label>
                     </div>
                     <div class="col-sm-8">
-                      <input type="text" class="form-control" id="service_charge" value="<?php echo $order_data['order']['service_charge_rate'] ?>"  name="service_charge" disabled autocomplete="off">
-                      <input type="hidden" class="form-control" id="service_charge_value"  value="<?php echo $order_data['order']['service_charge_rate'] ?>" name="service_charge_value" autocomplete="off">
+                      <input type="text" class="form-control" id="service_charge" value="<?php echo $order_data['service_charge_rate'] ?>"  name="service_charge" disabled autocomplete="off">
+                      <input type="hidden" class="form-control" id="service_charge_value"  value="<?php echo $order_data['service_charge_rate'] ?>" name="service_charge_value" autocomplete="off">
                     </div>
                   </div><br>
                   <?php //endif; ?>
@@ -169,15 +170,23 @@
                     <div class="col-sm-4">
                     <label for="discount" class="control-label">Discount</label></div>
                     <div class="col-sm-8">
-                      <input type="text" class="form-control" id="discount" name="discount" value="<?php echo $order_data['order']['discount'] ?>" placeholder="Discount" onkeyup="subAmount()" autocomplete="off">
+                      <input type="text" class="form-control" id="discount" name="discount" value="<?php echo $order_data['discount'] ?>" placeholder="Discount" onkeyup="subAmount()" autocomplete="off">
+                    </div>
+                  </div><br>
+                  <div class="form-group" style="margin-bottom:30px;">
+                    <div class="col-sm-4">
+                    <label for="discount" class="control-label">Delivery Charge</label></div>
+                    <div class="col-sm-8">
+                      <input type="text" class="form-control" id="delivery_charge" value="<?php echo $order_data['delivery_charge'] ?>" name="delivery_charge" disabled  autocomplete="off">
+                      <input type="hidden" class="form-control" id="delivery_charge_value" value="<?php echo $order_data['delivery_charge'] ?>" name="delivery_charge_value" autocomplete="off">
                     </div>
                   </div><br>
                   <div class="form-group">
                   <div class="col-sm-4">
                     <label for="net_amount" class="control-label">Net Amount</label></div>
                     <div class="col-sm-8">
-                      <input type="text" class="form-control" id="net_amount"  value="<?php echo $order_data['order']['net_amount'] ?>" name="net_amount" disabled autocomplete="off">
-                      <input type="hidden" class="form-control" id="net_amount_value"  value="<?php echo $order_data['order']['net_amount'] ?>" name="net_amount_value" autocomplete="off">
+                      <input type="text" class="form-control" id="net_amount"  value="<?php echo $order_data['net_amount'] ?>" name="net_amount" disabled autocomplete="off">
+                      <input type="hidden" class="form-control" id="net_amount_value"  value="<?php echo $order_data['net_amount'] ?>" name="net_amount_value" autocomplete="off">
                     </div>
                   </div>
                   </div>
@@ -188,10 +197,11 @@
               <div class="box-footer col-sm-12 col-md-12 col-xs-12 pull pull-left" style="margin-bottom:30px;">
                 <input type="hidden" id="delivery_charge" name="delivery_charge" autocomplete="off">  
                 <input type="hidden" name="service_charge_rate"  autocomplete="off">
-                 <a target="__blank" href="<?php echo base_url() . 'orders/printDiv/'.$order_data['order']['id'] ?>" class="btn btn-default" >Print</a>
+                 <a target="__blank" href="<?php echo base_url() . 'index.php/orders/printDiv/'.$order_data['id'] ?>" class="btn btn-default" >Print</a>
                 <button type="submit" class="btn btn-success">Save Changes</button>
                 <a href="<?php echo base_url('index.php/orders/') ?>" class="btn btn-danger">Back</a>
               </div>
+              <?php endforeach; ?>
             </form>
           <!-- /.box-body -->
         </div>
@@ -208,6 +218,14 @@
 <!-- /.content-wrapper -->
 
 <script type="text/javascript">
+function confirmSubmission(event) {
+if (confirm("Are you sure you want to Update this order?")) {
+  // Proceed with form submission
+} else {
+  // Prevent the form from submitting
+  event.preventDefault();
+}
+}
 
 $(document).ready(function() {
 
@@ -383,66 +401,62 @@ function removeRow(tr_id)
   function subAmount() {
     var service_charge = 0; // Initialize additional charge to 0
 
-    // Check if either slice or seed is selected
-    var sliceSelected = $("#sliced_1").val();
-    var seedSelected = $("#seed_1").val();
-    var deliverycharge = 0;
+    // Check if either slice or seed is selected for any row
+    var tableProductLength = $("#product_info_table tbody tr").length;
 
-    if (sliceSelected || seedSelected) {
-        // If either slice or seed is selected, set additional charge to 0.50
-        service_charge = 0.50;
+    for (var x = 1; x <= tableProductLength; x++) {
+        var sliceSelected = $("#sliced_" + x).val();
+        var seedSelected = $("#seed_" + x).val();
+
+        if (sliceSelected || seedSelected) {
+            // If either slice or seed is selected for this row, add additional charge
+            service_charge += 0.5;
+        }
     }
 
-    var tableProductLength = $("#product_info_table tbody tr").length;
+    // Calculate total amount
     var totalSubAmount = 0;
 
-    for (var x = 0; x < tableProductLength; x++) {
-        var tr = $("#product_info_table tbody tr")[x];
-        var count = $(tr).attr('id');
-        count = count.substring(4);
-        totalSubAmount += Number($("#amount_" + count).val());
+    for (var x = 1; x <= tableProductLength; x++) {
+        totalSubAmount += Number($("#amount_" + x).val());
     }
 
-    totalSubAmount = totalSubAmount.toFixed(2);
-    $("#gross_amount").val(totalSubAmount);
-    $("#gross_amount_value").val(totalSubAmount);
+    // Calculate gross amount
+    var grossAmount = totalSubAmount + service_charge;
 
-    
+    // Update the input fields
+    $("#gross_amount").val(grossAmount.toFixed(2));
+    $("#gross_amount_value").val(grossAmount.toFixed(2));
+
     // Calculate GST
     var gstRate = 9; // Assuming a GST rate of 9%
+    var gstAmount = grossAmount * gstRate / 100;
 
-    var gstAmount = totalSubAmount * gstRate / 100;
-    var netAmountWithGST = Number(totalSubAmount) + gstAmount + Number(service_charge);
-
-    
-    if(netAmountWithGST < 20){
-        deliverycharge = 20.00;
-    }
-
-
-    $('#delivery_charge').val(deliverycharge);
-   // alert(gstAmount);
     // Update GST fields
     $("#gst").val(gstAmount.toFixed(2));
-    $("#gst_rate").val(gstAmount);
+    $("#gst_rate").val(gstAmount.toFixed(2));
 
+    // Calculate net amount
+    var discount = $("#discount").val() || 0;
+    var netAmount = grossAmount + gstAmount - discount;
 
+    // Apply delivery charge if net amount is less than 20
+    var deliveryCharge = netAmount < 20 ? 20.00 : 0;
 
-    // Update net amount including GST
-    var discount = $("#discount").val();
-    var netAmount;
-    if (discount) {
-        netAmount = (netAmountWithGST - discount).toFixed(2);
-    } else {
-        netAmount = netAmountWithGST.toFixed(2);
-    }
-//alert(service_charge);
-    $("#service_charge").val(service_charge.toFixed(2)); // Update additional charge field
-    $("#service_charge_value").val(service_charge);
+    // Update delivery charge field
+    $("#delivery_charge").val(deliveryCharge);
+    $("#delivery_charge_value").val(deliveryCharge);
 
-    $("#net_amount").val(netAmount);
-    $("#net_amount_value").val(netAmount);
+    // Update service charge field
+    $("#service_charge").val(service_charge.toFixed(2));
+    $("#service_charge_value").val(service_charge.toFixed(2));
+
+    // Calculate net amount including all charges
+    var finalAmount = netAmount + service_charge + deliveryCharge;
+
+    // Update net amount fields
+    $("#net_amount").val(finalAmount.toFixed(2));
+    $("#net_amount_value").val(finalAmount.toFixed(2));
 }
-
 
 </script>

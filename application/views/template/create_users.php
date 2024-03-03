@@ -10,7 +10,9 @@
 <section class="content">
       <div class="container-fluid">
         <div class="row justify-content-center">
-          <!-- left column -->
+        <div >
+        <a href="<?php echo base_url('index.php/Userscontroller'); ?>" class="btn-sm btn btn-danger"><i class="fas fa-backward"></i> Back</a></td>
+        </div>   <!-- left column -->
           <div class="col-md-6">
             <!-- general form elements -->
             <div class="card card-primary">

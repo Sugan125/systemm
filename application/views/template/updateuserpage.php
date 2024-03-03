@@ -9,8 +9,12 @@
 
     <section class="content">
       <div class="container-fluid">
+        <div >
+        <a href="<?php echo base_url('index.php/Userscontroller'); ?>" class="btn-sm btn btn-danger"><i class="fas fa-backward"></i> Back</a></td>
+        </div>  
         <div class="row justify-content-center">
-          <!-- left column -->
+       
+        <!-- left column -->
           <div class="col-md-6">
             <!-- general form elements -->
             <div class="card card-primary">
@@ -98,6 +102,7 @@
                 <div class="card-footer">
                 <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i>Submit</button>
                 <button type="reset" class="btn btn-danger"><i class="fas fa-trash"></i>Reset</button>
+               
                 </div>
               </form>
               <?php endforeach; ?>

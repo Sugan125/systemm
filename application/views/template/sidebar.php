@@ -63,6 +63,9 @@
                 <i class="menu-icon fa fa-shopping-cart"></i>Products Detail
             </a>
         </li>
+        
+    <?php endif; ?>
+<?php endif; ?>
         <li class="nav-item">
             <a href="#" class="nav-link toggle-orders">
                 <i class="menu-icon fa fa-clipboard"></i>
@@ -76,8 +79,6 @@
                 <li class="nav-item"><a href="<?php echo base_url('index.php/orders') ?>" class="nav-link"><i class="fa fa-th-large"></i>  Manage Orders</a></li>
             </ul>
         </li>
-    <?php endif; ?>
-<?php endif; ?>
 
 
             </ul>

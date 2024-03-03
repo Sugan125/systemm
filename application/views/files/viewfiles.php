@@ -26,6 +26,9 @@
 
         <div class="content-header">
             <div class="container-fluid">
+            <div >
+        <a href="<?php echo base_url('index.php/Userscontroller'); ?>" class="btn-sm btn btn-danger"><i class="fas fa-backward"></i> Back</a></td>
+        </div> 
                 <div class="row mb-2 justify-content-center">
                     <div class="col-sm-6">
                         <?php $userName = isset($datanames['name']) ? $datanames['name'] : 'Unknown User'; ?>

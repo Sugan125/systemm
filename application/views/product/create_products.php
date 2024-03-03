@@ -9,6 +9,9 @@
 
 <section class="content">
       <div class="container-fluid">
+      <div >
+        <a href="<?php echo base_url('index.php/Productcontroller'); ?>" class="btn-sm btn btn-danger"><i class="fas fa-backward"></i> Back</a></td>
+        </div> 
         <div class="row justify-content-center">
           <div class="col-md-6">
             <div class="card card-primary">
@@ -40,6 +43,16 @@
                       <textarea type="textarea"  id="input_size" name="product_desc" class="form-control" placeholder="Product Description"></textarea>
                   </div>
                   
+                  <label>Active</label>
+                <div class="input-group mb-3" id="input_size">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">@</span>
+                    </div>
+                    <select name="active" class="form-control">
+                    <option value="1">Active</option>
+                    <option value="0" >Inactive</option>
+                    </select>
+                </div>
 
                   <div class="form-group">
                   <label>Category</label>

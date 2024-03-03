@@ -63,6 +63,7 @@ public function getProductData($id = null)
     		'date_time' => strtotime(date('Y-m-d h:i:s a')),
     		'gross_amount' => $this->input->post('gross_amount_value'),
     		'service_charge_rate' => $this->input->post('service_charge_value'),
+			'delivery_charge' => $this->input->post('delivery_charge_value'),
     		'net_amount' => $this->input->post('net_amount_value'),
     		'discount' => $this->input->post('discount'),
             'gst_amt'=> $this->input->post('gst_rate'),
@@ -105,6 +106,7 @@ public function getProductData($id = null)
 			$data = array(
                 'gross_amount' => $this->input->post('gross_amount_value'),
                 'service_charge_rate' => $this->input->post('service_charge_value'),
+				'delivery_charge' => $this->input->post('delivery_charge_value'),
                 'net_amount' => $this->input->post('net_amount_value'),
                 'discount' => $this->input->post('discount'),
                 'gst_amt'=> $this->input->post('gst_rate'),
@@ -141,13 +143,31 @@ public function getProductData($id = null)
 			return true;
 		}
 	}
+	public function getOrdertotal($order_id = null)
+	{
+		if(!$order_id) {
+			return false;
+		}
 
+		$sql = "SELECT * FROM orders WHERE id = ?";
+		$query = $this->db->query($sql, array($order_id));
+		return $query->result_array();
+	}
     
 
     public function getOrdersData() {
         //     $this->db->limit($limit, $offset);
              return $this->db->get('orders')->result();
          }
+
+		 public function getorderuser($id) {
+			if ($id) {
+				$sql = "SELECT * FROM orders WHERE user_id = ?";
+				$query = $this->db->query($sql, array($id));
+				return $query->result(); // Use result() to fetch objects
+			}
+		}
+		
 
     public function getOrdersDatas($id = null,$user_id)
 	{

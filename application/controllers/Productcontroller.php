@@ -171,6 +171,7 @@ class Productcontroller extends CI_Controller {
             'prod_category' => $this->input->post('prod_category'),
             'add_on_slice' => $this->input->post('add_on_slice'),
             'add_on_seed' => $this->input->post('add_on_seed'),
+            'active' => $this->input->post('active'),
             'prod_img' => $image_path, // Image path
             'prod_rate' => $this->input->post('prod_rate'),
             'deleted'=> '0',
@@ -247,6 +248,7 @@ class Productcontroller extends CI_Controller {
             'prod_category' => $this->input->post('prod_category'),
             'add_on_slice' => $this->input->post('add_on_slice'),
             'add_on_seed' => $this->input->post('add_on_seed'),
+            'active' => $this->input->post('active'),
             'prod_img' => $image_path, // Image path
             'prod_rate' => $this->input->post('prod_rate'),
             'deleted'=> '0',

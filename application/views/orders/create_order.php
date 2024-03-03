@@ -31,7 +31,7 @@
         <div class="box" style="margin-top:20px;">
           
           <!-- /.box-header -->
-          <form role="form" action="<?php base_url('orders/create') ?>" method="post" class="form-horizontal">
+          <form role="form" action="<?php base_url('orders/create') ?>" method="post" class="form-horizontal" onsubmit="confirmSubmission(event)">
            
                 
               <div class="box-body pull-right">
@@ -163,6 +163,14 @@
                       <input type="text" class="form-control" id="discount" name="discount" placeholder="Discount" onkeyup="subAmount()" autocomplete="off">
                     </div>
                   </div><br>
+                  <div class="form-group" style="margin-bottom:30px;">
+                    <div class="col-sm-4">
+                    <label for="discount" class="control-label">Delivery Charge</label></div>
+                    <div class="col-sm-8">
+                      <input type="text" class="form-control" id="delivery_charge" name="delivery_charge" disabled  autocomplete="off">
+                      <input type="hidden" class="form-control" id="delivery_charge_value" name="delivery_charge_value" autocomplete="off">
+                    </div>
+                  </div><br>
                   <div class="form-group">
                   <div class="col-sm-4">
                     <label for="net_amount" class="control-label">Net Amount</label></div>
@@ -177,7 +185,7 @@
               <!-- /.box-body -->
 
               <div class="box-footer col-sm-12 col-md-12 col-xs-12 pull pull-left" style="margin-bottom:30px;">
-                <input type="hidden" id="delivery_charge" name="delivery_charge" autocomplete="off">
+               
                <!-- <input type="hidden" name="vat_charge_rate" value="<?php //echo $company_data['vat_charge_value'] ?>" autocomplete="off"> -->
                 <button type="submit" class="btn btn-success">Create Order</button>
                 <a href="<?php echo base_url('index.php/orders/') ?>" class="btn btn-danger">Back</a>
@@ -198,23 +206,45 @@
 <!-- /.content-wrapper -->
 
 <script type="text/javascript">
+ function confirmSubmission(event) {
+    if (confirm("Are you sure you want to create this order?")) {
+      // Proceed with form submission
+    } else {
+      // Prevent the form from submitting
+      event.preventDefault();
+    }
+  }
 
 $(document).ready(function() {
 
-$("#add_row").unbind('click').bind('click', function() {
-    var table = $("#product_info_table");
-    var count_table_tbody_tr = $("#product_info_table tbody tr").length;
-    var row_id = count_table_tbody_tr + 1;
+  $(document).on('change', '.sliced', function() {
+    var row = $(this).closest('tr'); // Get the closest row
+    var sliceSelected = row.find('.sliced').val(); // Get the value of .sliced within the same row
+    var seedSelected = row.find('.seed').val(); // Get the value of .seed within the same row
+    subAmount();
+});
 
-    $.ajax({
-        url: '<?php echo base_url('index.php/orders/getTableProductRow'); ?>',
-        type: 'post',
-        dataType: 'json',
-        success: function(response) {
-            var html = '<tr id="row_'+row_id+'">'+
+$(document).on('change', '.seed', function() {
+    var row = $(this).closest('tr'); // Get the closest row
+    var sliceSelected = row.find('.sliced').val(); // Get the value of .sliced within the same row
+    var seedSelected = row.find('.seed').val(); // Get the value of .seed within the same row
+    subAmount();
+});
+
+    $("#add_row").unbind('click').bind('click', function() {
+        var table = $("#product_info_table");
+        var count_table_tbody_tr = $("#product_info_table tbody tr").length;
+        var row_id = count_table_tbody_tr + 1;
+
+        $.ajax({
+            url: '<?php echo base_url('index.php/orders/getTableProductRow'); ?>',
+            type: 'post',
+            dataType: 'json',
+            success: function(response) {
+                var html = '<tr id="row_'+row_id+'">' +
                 '<td>'+ 
                     '<select class="form-control select_group category_name" data-row-id="'+row_id+'" id="category_'+row_id+'" name="category[]" style="width:100%;" onchange="getProductsByCategory(this)">'+
-                        '<option value="">Select Category</option>';
+                        '<option value="">Choose</option>';
                         // Add options for categories here
                         <?php foreach ($category as $key => $value): ?>
                             html += '<option value="<?php echo $value['prod_category'] ?>"><?php echo $value['prod_category'] ?></option>';  
@@ -373,72 +403,64 @@ function removeRow(tr_id)
   function subAmount() {
     var service_charge = 0; // Initialize additional charge to 0
 
-    // Check if either slice or seed is selected
-    var sliceSelected = $("#sliced_1").val();
-    var seedSelected = $("#seed_1").val();
-    var deliverycharge = 0;
+    // Check if either slice or seed is selected for any row
+    var tableProductLength = $("#product_info_table tbody tr").length;
 
-    if (sliceSelected || seedSelected) {
-        // If either slice or seed is selected, set additional charge to 0.50
-        service_charge = 0.50;
+    for (var x = 1; x <= tableProductLength; x++) {
+        var sliceSelected = $("#sliced_" + x).val();
+        var seedSelected = $("#seed_" + x).val();
+
+        if (sliceSelected || seedSelected) {
+            // If either slice or seed is selected for this row, add additional charge
+            service_charge += 0.5;
+        }
     }
 
-    var tableProductLength = $("#product_info_table tbody tr").length;
+    // Calculate total amount
     var totalSubAmount = 0;
 
-    for (var x = 0; x < tableProductLength; x++) {
-        var tr = $("#product_info_table tbody tr")[x];
-        var count = $(tr).attr('id');
-        count = count.substring(4);
-        totalSubAmount += Number($("#amount_" + count).val());
+    for (var x = 1; x <= tableProductLength; x++) {
+        totalSubAmount += Number($("#amount_" + x).val());
     }
 
-    totalSubAmount = totalSubAmount.toFixed(2);
-    $("#gross_amount").val(totalSubAmount);
-    $("#gross_amount_value").val(totalSubAmount);
+    // Calculate gross amount
+    var grossAmount = totalSubAmount + service_charge;
 
-    
+    // Update the input fields
+    $("#gross_amount").val(grossAmount.toFixed(2));
+    $("#gross_amount_value").val(grossAmount.toFixed(2));
+
     // Calculate GST
     var gstRate = 9; // Assuming a GST rate of 9%
+    var gstAmount = grossAmount * gstRate / 100;
 
-    var gstAmount = totalSubAmount * gstRate / 100;
-    var netAmountWithGST = Number(totalSubAmount) + gstAmount + Number(service_charge);
-
-    
-    if(netAmountWithGST < 20){
-        deliverycharge = 20.00;
-    }
-
-
-    $('#delivery_charge').val(deliverycharge);
-
-   
     // Update GST fields
     $("#gst").val(gstAmount.toFixed(2));
     $("#gst_rate").val(gstAmount.toFixed(2));
-    // $("#gst_value").val(gstAmount.toFixed(2));
 
-    // Update net amount including GST
-    var discount = $("#discount").val();
-    var netAmount;
-    if (discount) {
-        netAmount = (netAmountWithGST - discount).toFixed(2);
-    } else {
-        netAmount = netAmountWithGST.toFixed(2);
-    }
-    $("#service_charge").val(service_charge); // Update additional charge field
+    // Calculate net amount
+    var discount = $("#discount").val() || 0;
+    var netAmount = grossAmount + gstAmount - discount;
+
+    // Apply delivery charge if net amount is less than 20
+    var deliveryCharge = netAmount < 20 ? 20.00 : 0;
+
+    // Update delivery charge field
+    $("#delivery_charge").val(deliveryCharge);
+    $("#delivery_charge_value").val(deliveryCharge);
+
+    // Update service charge field
+    $("#service_charge").val(service_charge.toFixed(2));
     $("#service_charge_value").val(service_charge.toFixed(2));
 
-    var service_c =  $("#service_charge").val();
-   
+    // Calculate net amount including all charges
+    var finalAmount = netAmount + service_charge + deliveryCharge;
 
-    var gst_cc =  $("#gst").val();
-  
-
-
-    $("#net_amount").val(netAmount);
-    $("#net_amount_value").val(netAmount);
+    // Update net amount fields
+    $("#net_amount").val(finalAmount.toFixed(2));
+    $("#net_amount_value").val(finalAmount.toFixed(2));
 }
+
 
 
 </script>

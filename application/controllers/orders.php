@@ -15,7 +15,11 @@ class orders extends CI_Controller {
 
         $data['title'] = 'orders';
 
-		$data['orders'] = $this->order_model->getOrdersData();
+		$loginuser = $this->session->userdata('LoginSession');
+	
+		$data['user_id'] = $loginuser['id'];
+
+		$data['orders'] = $this->order_model->getorderuser($data['user_id']);
 
         $this->load->view('template/header.php', $data);
         $user = $this->session->userdata('user_register');
@@ -104,7 +108,7 @@ class orders extends CI_Controller {
 
         	if($update == true) {
         		$this->session->set_flashdata('success', 'Successfully updated');
-        		redirect('orders/update/'.$id, 'refresh');
+        		redirect('orders', 'refresh');
         	}
         	else {
         		$this->session->set_flashdata('errors', 'Error occurred!!');
@@ -121,18 +125,27 @@ class orders extends CI_Controller {
         		redirect('index.php/orders', 'refresh');
         	}
 
-            $result['order'] = $orders_data;
-    		$orders_item = $this->order_model->getOrdersItemData($orders_data['id']);
-
-    		foreach($orders_item as $k => $v) {
-    			$result['order_item'][] = $v;
-    		}
-    		$result['order'] = $orders_data;
+			$result['order'] = $orders_data;
 
 
     		$data['order_data'] = $result;
 
-            $data['products'] = $this->order_model->getActiveProductData();
+			foreach ($orders_data as $order) {
+				$orders_item = $this->order_model->getOrdersItemData($order->id);
+				// Process $orders_item as needed
+			}
+
+    		foreach($orders_item as $k => $v) {
+    			$result['order_item'][] = $v;
+    		}
+    		
+			$result['order'] = $orders_data;
+
+			$data['order_data'] = $result;
+
+			$data['order_total'] = $this->order_model->getOrdertotal($id);
+
+			$data['products'] = $this->order_model->getActiveProductData();
             $data['category'] = $this->order_model->getActivecatergoryData();
 
 
@@ -199,4 +212,42 @@ class orders extends CI_Controller {
 
 		echo json_encode($result);
 	}
+	public function printDiv($id)
+{
+    $data['print'] = 'print';
+    $orders_data = $this->order_model->getOrdersData($id);
+
+    foreach ($orders_data as $order) {
+        $orders_item = $this->order_model->getOrdersItemData($order->id);
+    }
+
+    foreach ($orders_item as $k => $v) {
+        $result['order_item'][] = $v;
+    }
+
+    $result['order'] = $orders_data;
+
+    $data['order_data'] = $result;
+    $data['order_total'] = $this->order_model->getOrdertotal($id);
+
+
+//	print_r($data['order_total']);
+
+	// Accessing the array at index 0
+$order_total_data = $data['order_total'][0];
+
+
+
+// Extracting datetime and discount values
+	$order_date = ($order_total_data['date_time'] !== null) ? date('d/m/Y', $order_total_data['date_time']) : '';
+	
+    $this->load->view('template/header.php', $data);
+    $user = $this->session->userdata('user_register');
+    $users = $this->session->userdata('normal_user');
+    $loginuser = $this->session->userdata('LoginSession');
+    $this->load->view('template/sidebar.php', array('user' => $user, 'users' => $users, 'data' => $data, 'loginuser' => $loginuser));
+    $this->load->view('invoice/print_invoice.php', array('data' => $data, 'order_date' => $order_date));
+    $this->load->view('template/footer.php');
+}
+
 }

@@ -8,6 +8,9 @@
 
     <section class="content">
     <div class="container-fluid">
+    <div >
+        <a href="<?php echo base_url('index.php/Userrolecontroller'); ?>" class="btn-sm btn btn-danger"><i class="fas fa-backward"></i> Back</a></td>
+        </div> 
         <div class="row justify-content-center">
             <div class="col-md-6">
                 <div class="card card-primary">

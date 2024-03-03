@@ -42,13 +42,17 @@
                 <th>Gross Amount</th>
                 <th>Slicing Service</th>
                 <th>Discount</th>
+                <th>Delivery Charge</th>
                 <th>GST</th>
                 <th>Net Amount</th>
-                <!-- <th>Action</th> -->
+                <th>Action</th> 
             </tr>
         </thead>
         <tbody>
-    <?php foreach ($orders as $key => $val): ?>
+          
+    <?php 
+    if(!empty($orders)){
+    foreach ($orders as $key => $val): ?>
         <tr>
             <td><?php echo $val->bill_no; ?></td>
             <td><?php echo date('Y-m-d H:i:s', $val->date_time); ?></td>
@@ -60,14 +64,20 @@
             <td><?php if($val->discount == '' || $val->discount == NULL || $val->discount == 0)
             { echo 'Discount not applied'; }else{
             echo $val->discount;}?></td>
+            <td><?php echo $val->delivery_charge; ?></td>
             <td><?php echo $val->gst_amt; ?></td>
             <td><?php echo $val->net_amount; ?></td>
-            <!-- <td><a target="__blank" href="'.base_url('orders/printDiv/'.$value['id']).'" class="btn btn-warning"><i class="fa fa-print"></i></a>
-            <a href="'.base_url('orders/update/'.$value['id']).'" class="btn btn-info"><i class="fa fa-pencil"></i></a>
-            <button type="button" class="btn btn-danger" onclick="removeFunc('.$value['id'].')" data-toggle="modal" data-target="#removeModal"><i class="fa fa-trash"></i></button>
+            <td><a target="__blank" href="<?php echo base_url('index.php/orders/printDiv/'.$val->id); ?>" class="btn-sm btn btn-warning"><i class="fas fa-print"></i></a>
+            <a href="<?php echo base_url('index.php/orders/update/'.$val->id); ?>" class="btn-sm btn btn-info"><i class="fas fa-edit"></i></a></td>
+            <!--<button type="button" class="btn btn-danger" onclick="removeFunc('.$value['id'].')" data-toggle="modal" data-target="#removeModal"><i class="fa fa-trash"></i></button>
           </td> -->
         </tr>
-    <?php endforeach; ?>
+    <?php endforeach; } 
+    else{
+      echo '<tr><td colspan="9" class="text-center">No orders found for this user</td></tr>';
+
+    }
+    ?>
 </tbody>
 
     </table>

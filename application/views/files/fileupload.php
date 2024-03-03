@@ -12,6 +12,9 @@
     <div class="content-wrapper" style="min-height: 1302.4px;">
         <div class="content-header">
             <div class="container-fluid">
+            <div >
+        <a href="<?php echo base_url('index.php/Userscontroller'); ?>" class="btn-sm btn btn-danger"><i class="fas fa-backward"></i> Back</a></td>
+        </div> 
                 <div class="row mb-2 justify-content-center">
                     <div class="col-sm-6">
                         <h3 class="m-0 text-center">Upload files for <?= isset($datanames['name']) ? $datanames['name'] : 'Unknown User'; ?></h3>
