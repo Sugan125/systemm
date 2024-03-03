@@ -68,7 +68,7 @@
                 <i class="menu-icon fa fa-clipboard"></i>
                 <span>Orders</span>
                 <span class="pull-right-container">
-                    <i class="fa fa-angle-left pull-right"></i>
+                    <i class="fa fa-angle-down pull-right" style="line-height: 2.1;"></i>
                 </span>
             </a>
             <ul class="treeview-menu" style="display: none;">
