@@ -78,16 +78,25 @@ public function getProductData($id = null)
 
 		$count_product = count($this->input->post('product'));
     	for($x = 0; $x < $count_product; $x++) {
-    		$items = array(
-    			'order_id' => $order_id,
-                'category' => $this->input->post('category')[$x],
-    			'product_id' => $this->input->post('product')[$x],
-    			'qty' => $this->input->post('qty')[$x],
-    			'rate' => $this->input->post('rate_value')[$x],
-    			'amount' => $this->input->post('amount_value')[$x],
-                'slice_type'=> $this->input->post('sliced')[$x],
-                'seed_type'=> $this->input->post('seed')[$x],
-    		);
+    		$category = !empty($this->input->post('category')[$x]) ? $this->input->post('category')[$x] : null;
+			$product_id = !empty($this->input->post('product')[$x]) ? $this->input->post('product')[$x] : null;
+			$qty = !empty($this->input->post('qty')[$x]) ? $this->input->post('qty')[$x] : null;
+			$rate = !empty($this->input->post('rate_value')[$x]) ? $this->input->post('rate_value')[$x] : null;
+			$amount = !empty($this->input->post('amount_value')[$x]) ? $this->input->post('amount_value')[$x] : null;
+			$slice_type = !empty($this->input->post('sliced')[$x]) ? $this->input->post('sliced')[$x] : null;
+			$seed_type = !empty($this->input->post('seed')[$x]) ? $this->input->post('seed')[$x] : null;
+
+			// Create the items array with the sanitized values
+			$items = array(
+				'order_id' => $order_id,
+				'category' => $category,
+				'product_id' => $product_id,
+				'qty' => $qty,
+				'rate' => $rate,
+				'amount' => $amount,
+				'slice_type' => $slice_type,
+				'seed_type' => $seed_type,
+			);
 
     		$this->db->insert('order_items', $items);
     	}

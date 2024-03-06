@@ -313,6 +313,7 @@ class Productcontroller extends CI_Controller {
                             $inserdata[$i]['prod_category'] = $value['C'];
                             $inserdata[$i]['prod_rate'] = $value['D'];
                             $inserdata[$i]['active'] = $value['E'];
+                            $inserdata[$i]['min_order'] = $value['F'];
                             $i++;
                         }
                         $result = $this->product_model->insert_import($inserdata);

@@ -71,7 +71,7 @@
                         <?php //print_r($v); ?>
                        <tr id="row_<?php echo $x; ?>">
                        <td>
-                       <select class="form-control category_name" data-row-id="row_1" id="category_1" name="category[]" onmousedown="if(this.options.length>8){this.size=8;}" onchange='this.size=0;' onblur="this.size=0;">
+                       <select class="form-control category_name" data-row-id="row_1" id="category_1" name="category[]" onmousedown="if(this.options.length>8){this.size=8;}" onchange='this.size=0;' onblur="this.size=0;" disabled>
                                 <option value="">Choose</option>
                                 <?php foreach ($category as $key => $v): ?>
                                     <option value="<?php echo $v['prod_category'] ?>" <?php if ($val['category'] == $v['prod_category']) { echo "selected='selected'"; } ?>><?php echo $v['prod_category'] ?></option>
@@ -80,10 +80,10 @@
                         </td>
                         
                         <td>
-                          <select class="form-control select_group product" data-row-id="row_<?php echo $x; ?>" id="product_<?php echo $x; ?>" name="product[]" style="width:100%;" onchange="getProductData(<?php echo $x; ?>)" required>
+                          <select class="form-control select_group product" data-row-id="row_<?php echo $x; ?>" id="product_<?php echo $x; ?>" name="product[]" style="width:100%;" onchange="getProductData(<?php echo $x; ?>)" required disabled>
                               <option value=""></option>
                               <?php foreach ($products as $k => $v): ?>
-                                <option value="<?php echo $val['product_id'] ?>" <?php if($val['product_id'] == $v['id']) { echo "selected='selected'"; } ?>><?php echo $v['product_name'] ?></option>
+                                <option value="<?php echo $val['product_id'] ?>" <?php if($val['product_id'] == $v['id']) { echo "selected='selected'"; } ?> ><?php echo $v['product_name'] ?></option>
                               <?php endforeach ?>
                             </select>
                           </td>
@@ -106,7 +106,7 @@
 
                             </td>
                          
-                          <td><input type="text" name="qty[]" id="qty_<?php echo $x; ?>" class="form-control" required onkeyup="getTotal(<?php echo $x; ?>)" value="<?php echo $val['qty'] ?>" autocomplete="off"></td>
+                          <td><input type="number" name="qty[]" id="qty_<?php echo $x; ?>" class="form-control" required onkeyup="getTotal(<?php echo $x; ?>)" value="<?php echo $val['qty'] ?>" autocomplete="off"></td>
                           <td>
                             <input type="text" name="rate[]" id="rate_<?php echo $x; ?>" class="form-control" disabled value="<?php echo $val['rate'] ?>" autocomplete="off">
                             <input type="hidden" name="rate_value[]" id="rate_value_<?php echo $x; ?>" class="form-control" value="<?php echo $val['rate'] ?>" autocomplete="off">
@@ -218,31 +218,88 @@
 <!-- /.content-wrapper -->
 
 <script type="text/javascript">
+   $(document).on('change', '.category_name', function() {
+    var rowId = $(this).data('row-id');
+    var categoryDropdown = document.getElementById('category_' + rowId);
+    var sliceDropdown = document.getElementById('sliced_' + rowId);
+    var seedDropdown = document.getElementById('seed_' + rowId);
+
+    if (categoryDropdown.value.toLowerCase() === 'bun') {
+        sliceDropdown.disabled = true;
+       
+        $('#msg').html('Slicing not available for Buns');
+    } else {
+        sliceDropdown.disabled = false;
+     
+        $('#msg').html('');
+    }
+});
 function confirmSubmission(event) {
-if (confirm("Are you sure you want to Update this order?")) {
-  // Proceed with form submission
-} else {
-  // Prevent the form from submitting
-  event.preventDefault();
+    event.preventDefault(); // Prevent the default form submission
+
+    // Find the closest form element to the clicked button
+    var form = event.target.closest('form');
+
+    // Show SweetAlert confirmation dialog
+    swal({
+        title: "Create Order",
+        text: "Are you sure you want to create this order?",
+        icon: "warning",
+        buttons: {
+            cancel: {
+                text: "Cancel",
+                value: false,
+                visible: true,
+                className: "btn btn-default",
+                closeModal: true
+            },
+            confirm: {
+                text: "Create Order",
+                value: true,
+                visible: true,
+                className: "btn btn-success",
+                closeModal: true
+            }
+        }
+    }).then((confirmed) => {
+        if (confirmed) {
+            // Proceed with form submission
+            form.submit();
+        }
+    });
 }
-}
+
 
 $(document).ready(function() {
 
-$("#add_row").unbind('click').bind('click', function() {
-    var table = $("#product_info_table");
-    var count_table_tbody_tr = $("#product_info_table tbody tr").length;
-    var row_id = count_table_tbody_tr + 1;
+  $(document).on('change', '.sliced', function() {
+    var row = $(this).closest('tr'); // Get the closest row
+    var sliceSelected = row.find('.sliced').val(); // Get the value of .sliced within the same row
+    var seedSelected = row.find('.seed').val(); // Get the value of .seed within the same row
+    subAmount();
+});
 
-    $.ajax({
-        url: '<?php echo base_url('index.php/orders/getTableProductRow'); ?>',
-        type: 'post',
-        dataType: 'json',
-        success: function(response) {
-            var html = '<tr id="row_'+row_id+'">'+
+$(document).on('change', '.seed', function() {
+    var row = $(this).closest('tr'); // Get the closest row
+    var sliceSelected = row.find('.sliced').val(); // Get the value of .sliced within the same row
+    var seedSelected = row.find('.seed').val(); // Get the value of .seed within the same row
+    subAmount();
+});
+
+    $("#add_row").unbind('click').bind('click', function() {
+        var table = $("#product_info_table");
+        var count_table_tbody_tr = $("#product_info_table tbody tr").length;
+        var row_id = count_table_tbody_tr + 1;
+
+        $.ajax({
+            url: '<?php echo base_url('index.php/orders/getTableProductRow'); ?>',
+            type: 'post',
+            dataType: 'json',
+            success: function(response) {
+              var html = '<tr id="row_'+row_id+'">' +
                 '<td>'+ 
-                    '<select class="form-control select_group category_name" data-row-id="'+row_id+'" id="category_'+row_id+'" name="category[]" style="width:100%;" onchange="getProductsByCategory(this)">'+
-                        '<option value="">Select Category</option>';
+                    '<select class="form-control select_group category_name" data-row-id="'+row_id+'" id="category_'+row_id+'" name="category[]" style="width:100%;" onchange="categoryChange('+row_id+')">'+
+                        '<option value="">Choose</option>';
                         // Add options for categories here
                         <?php foreach ($category as $key => $value): ?>
                             html += '<option value="<?php echo $value['prod_category'] ?>"><?php echo $value['prod_category'] ?></option>';  
@@ -269,7 +326,7 @@ $("#add_row").unbind('click').bind('click', function() {
                         '<option value="drizzle">Drizzle</option>'+
                     '</select>'+
                 '</td>'+
-                '<td><input type="number" name="qty[]" id="qty_'+row_id+'" class="form-control" onkeyup="getTotal('+row_id+')"></td>'+
+                '<td><input type="hidden" name="minn" id="minn" class="form-control" autocomplete="off"><input type="number" name="qty[]" id="qty_'+row_id+'" class="form-control" onkeyup="getTotal('+row_id+')"></td>'+
                 '<td><input type="text" name="rate[]" id="rate_'+row_id+'" class="form-control" disabled><input type="hidden" name="rate_value[]" id="rate_value_'+row_id+'" class="form-control"></td>'+
                 '<td><input type="text" name="amount[]" id="amount_'+row_id+'" class="form-control" disabled><input type="hidden" name="amount_value[]" id="amount_value_'+row_id+'" class="form-control"></td>'+
                 '<td><button type="button" class="btn btn-danger" onclick="removeRow(\''+row_id+'\')"><i class="fa fa-close"></i></button></td>'+
@@ -337,6 +394,37 @@ $('#product_info_table').on('change', '.sliced', function() {
 });
 }); // /document
 
+$(document).on('input', 'input[name^="qty"]', function() {
+    var rowId = $(this).attr('id').split('_')[1];
+    getTotal(rowId);
+});
+
+$('#product_info_table').on('change', 'input[name^="qty"]', function() {
+    var rowId = $(this).attr('id').split('_')[1];
+    var minOrder = parseInt($('#minn').val()); // Get the stored min_order value
+
+    // If the input value is less than the min_order value, set it to min_order
+    if ($(this).val() < minOrder) {
+      $(this).val(minOrder);
+      swal({
+          title: "Minimum Order Quantity",
+          text: "You cannot order less than the minimum quantity.",
+          icon: "warning",
+          buttons: {
+            confirm: {
+              text: "OK",
+              value: true,
+              visible: true,
+              className: "btn btn-primary",
+              closeModal: true
+            }
+          }
+        });
+    }
+
+    getTotal(rowId);
+});
+
 function removeRow(tr_id)
   {
     $("#product_info_table tbody tr#row_"+tr_id).remove();
@@ -358,45 +446,45 @@ function removeRow(tr_id)
   }
 
 
-  function getProductData(row_id)
-  {
+  function getProductData(row_id) {
+    var product_id = $("#product_" + row_id).val();
+    // alert(product_id);
+    
+        $.ajax({
+            url: '<?php echo base_url('index.php/orders/getProductValueById'); ?>',
+            type: 'post',
+            data: {
+                product_id: product_id
+            },
+            dataType: 'json',
+            success: function(response) {
+                // setting the rate value into the rate input field
+                $("#rate_" + row_id).val(response.prod_rate);
+                $("#rate_value_" + row_id).val(response.prod_rate);
 
-    var product_id = $("#product_"+row_id).val();  
-   // alert(product_id);  
-    if(product_id == "") {
-      $("#rate_"+row_id).val("");
-      $("#rate_value_"+row_id).val("");
+                // Check if min_order is not empty
+                if (response.min_order !== undefined && response.min_order !== null && response.min_order !== "") {
+                    $('#minn').val(response.min_order);
+                    $("#qty_" + row_id).val(response.min_order);
+                    $("#qty_value_" + row_id).val(response.min_order);
+                } else {
+                    $("#qty_" + row_id).val(1);
+                    $("#qty_value_" + row_id).val(1);
+                }
 
-      $("#qty_"+row_id).val("");           
+                var total = Number(response.prod_rate) * 1;
+                total = total.toFixed(2);
+                $("#amount_" + row_id).val(total);
+                $("#amount_value_" + row_id).val(total);
 
-      $("#amount_"+row_id).val("");
-      $("#amount_value_"+row_id).val("");
+                subAmount();
+            } // /success
+        }); // /ajax function to fetch the product data 
+    
+    $("#product_" + row_id).blur();
+}
 
-    } else {
-      $.ajax({
-        url: '<?php echo base_url('index.php/orders/getProductValueById'); ?>',
-        type: 'post',
-        data: {product_id : product_id},
-        dataType: 'json',
-        success:function(response) {
-          // setting the rate value into the rate input field
-      
-          $("#rate_"+row_id).val(response.prod_rate);
-          $("#rate_value_"+row_id).val(response.prod_rate);
 
-          $("#qty_"+row_id).val(1);
-          $("#qty_value_"+row_id).val(1);
-
-          var total = Number(response.prod_rate) * 1;
-          total = total.toFixed(2);
-          $("#amount_"+row_id).val(total);
-          $("#amount_value_"+row_id).val(total);
-          
-          subAmount();
-        } // /success
-      }); // /ajax function to fetch the product data 
-    }
-  }
 
   function subAmount() {
     var service_charge = 0; // Initialize additional charge to 0
@@ -458,5 +546,7 @@ function removeRow(tr_id)
     $("#net_amount").val(finalAmount.toFixed(2));
     $("#net_amount_value").val(finalAmount.toFixed(2));
 }
+
+
 
 </script>

@@ -63,54 +63,52 @@
                     </tr>
                   </thead>
 
-                   <tbody>
-                   
-                     <tr id="row_1">
+                  <tbody>
+                    <tr id="row_1">
                         <td>    
-                        <select class="form-control category_name" data-row-id="row_1" id="category_1" name="category[]" onmousedown="if(this.options.length>8){this.size=8;}" onchange='this.size=0;' onblur="this.size=0;">
-                        <option value="">Choose</option>
-                        <?php foreach ($category as $key => $value): ?>
-                          <option value="<?php echo $value['prod_category'] ?>"><?php echo $value['prod_category'] ?></option>  
-                        <?php endforeach ?>
-                        </select>
-                        </td>
-                        
-                       <td>
+                        <select class="form-control category_name" data-row-id="1" id="category_1" name="category[]" onchange="categoryChange(1)">
 
-                       <select class="form-control select_group product_1 dropdown dropup" onmousedown="if(this.options.length>8){this.size=8;}" onchange="getProductData(1)" onblur="this.size=0;" data-row-id="row_1" id="product_1" name="product[]" style="width:100%;" required>
-                       
-                        </select>
-
-                        </td>
-                        <td>    
-                        <select class="form-control sliced" id="sliced_1" name="sliced[]" onmousedown="if(this.options.length>8){this.size=8;}" onchange='slicechange()' onblur="this.size=0;">
-                        <option value="">Choose</option>
-                        <option value="12mm">12mm</option>
-                        <option value="20mm">20mm</option>
-                        </select>
-                        </td>
-                        <td>    
-                        <select class="form-control seed" id="seed_1" name="seed[]" onmousedown="if(this.options.length>8){this.size=8;}" onchange='seedchange()' onblur="this.size=0;">
-                        <option value="">Choose</option>
-                        <option value="white">White</option>
-                        <option value="black">Black</option>
-                        <option value="drizzle">Drizzle</option>
-                        </select>
-                        </td>
-                        <td><input type="number" name="qty[]" id="qty_1" class="form-control" required onkeyup="getTotal(1)"></td>
-                        <td>
-                          <input type="text" name="rate[]" id="rate_1" class="form-control" disabled autocomplete="off">
-                          <input type="hidden" name="rate_value[]" id="rate_value_1" class="form-control" autocomplete="off">
+                                <option value="">Choose</option>
+                                <?php foreach ($category as $key => $value): ?>
+                                    <option value="<?php echo $value['prod_category'] ?>"><?php echo $value['prod_category'] ?></option>  
+                                <?php endforeach ?>
+                            </select>
                         </td>
                         <td>
-                          <input type="text" name="amount[]" id="amount_1" class="form-control" disabled autocomplete="off">
-                          <input type="hidden" name="amount_value[]" id="amount_value_1" class="form-control" autocomplete="off">
+                            <select class="form-control select_group product_1 dropdown dropup" onmousedown="if(this.options.length>8){this.size=8;}" onchange="getProductData(1)" onblur="this.size=0;" data-row-id="row_1" id="product_1" name="product[]" style="width:100%;" required></select>
+                        </td>
+                        <td>    
+                            <select class="form-control sliced" id="sliced_1" name="sliced[]" onmousedown="if(this.options.length>8){this.size=8;}" onchange='slicechange()' onblur="this.size=0;">
+                                <option value="">Choose</option>
+                                <option value="12mm">12mm</option>
+                                <option value="20mm">20mm</option>
+                            </select>
+                        </td>
+                        <td>    
+                            <select class="form-control seed" id="seed_1" name="seed[]" onmousedown="if(this.options.length>8){this.size=8;}" onchange='seedchange()' onblur="this.size=0;">
+                                <option value="">Choose</option>
+                                <option value="white">White</option>
+                                <option value="black">Black</option>
+                                <option value="drizzle">Drizzle</option>
+                            </select>
+                        </td>
+                        <td>
+                        <input type="hidden" name="minn" id="minn" class="form-control" autocomplete="off">
+                          <input type="number" name="qty[]" id="qty_1" class="form-control" required onkeyup="getTotal(1)"></td>
+                        <td>
+                            <input type="text" name="rate[]" id="rate_1" class="form-control" disabled autocomplete="off">
+                            <input type="hidden" name="rate_value[]" id="rate_value_1" class="form-control" autocomplete="off">
+                        </td>
+                        <td>
+                            <input type="text" name="amount[]" id="amount_1" class="form-control" disabled autocomplete="off">
+                            <input type="hidden" name="amount_value[]" id="amount_value_1" class="form-control" autocomplete="off">
                         </td>
                         <td><button type="button" class="btn btn-danger" onclick="removeRow('1')"><i class="fa fa-close"></i></button></td>
-                     </tr>
-                   </tbody>
+                    </tr>
+                </tbody>
+               
                 </table>
-
+                <span id="msg" style="margin-left: 440px; color: red;"></span>
 
                 <div class="col-sm-12 col-md-12 col-xs-12 pull pull-right">
                 <div class="col-sm-6 col-md-6"></div>
@@ -146,8 +144,6 @@
                       <input type="hidden" class="form-control" id="service_charge_value" name="service_charge_value" autocomplete="off">
                     </div>
                   </div><br>
-                  <?php //endif; ?>
-                  <?php// if($is_vat_enabled == true): ?>
                  <!--  <div class="form-group">
                     <label for="vat_charge" class="col-sm-5 control-label">Vat <?php //echo $company_data['vat_charge_value'] ?> %</label>
                     <div class="col-sm-7">
@@ -163,6 +159,7 @@
                       <input type="text" class="form-control" id="discount" name="discount" placeholder="Discount" onkeyup="subAmount()" autocomplete="off">
                     </div>
                   </div><br>
+                
                   <div class="form-group" style="margin-bottom:30px;">
                     <div class="col-sm-4">
                     <label for="discount" class="control-label">Delivery Charge</label></div>
@@ -206,14 +203,57 @@
 <!-- /.content-wrapper -->
 
 <script type="text/javascript">
- function confirmSubmission(event) {
-    if (confirm("Are you sure you want to create this order?")) {
-      // Proceed with form submission
+   $(document).on('change', '.category_name', function() {
+    var rowId = $(this).data('row-id');
+    var categoryDropdown = document.getElementById('category_' + rowId);
+    var sliceDropdown = document.getElementById('sliced_' + rowId);
+    var seedDropdown = document.getElementById('seed_' + rowId);
+
+    if (categoryDropdown.value.toLowerCase() === 'bun') {
+        sliceDropdown.disabled = true;
+       
+        $('#msg').html('Slicing not available for Buns');
     } else {
-      // Prevent the form from submitting
-      event.preventDefault();
+        sliceDropdown.disabled = false;
+     
+        $('#msg').html('');
     }
-  }
+});
+function confirmSubmission(event) {
+    event.preventDefault(); // Prevent the default form submission
+
+    // Find the closest form element to the clicked button
+    var form = event.target.closest('form');
+
+    // Show SweetAlert confirmation dialog
+    swal({
+        title: "Create Order",
+        text: "Are you sure you want to create this order?",
+        icon: "warning",
+        buttons: {
+            cancel: {
+                text: "Cancel",
+                value: false,
+                visible: true,
+                className: "btn btn-default",
+                closeModal: true
+            },
+            confirm: {
+                text: "Create Order",
+                value: true,
+                visible: true,
+                className: "btn btn-success",
+                closeModal: true
+            }
+        }
+    }).then((confirmed) => {
+        if (confirmed) {
+            // Proceed with form submission
+            form.submit();
+        }
+    });
+}
+
 
 $(document).ready(function() {
 
@@ -241,9 +281,9 @@ $(document).on('change', '.seed', function() {
             type: 'post',
             dataType: 'json',
             success: function(response) {
-                var html = '<tr id="row_'+row_id+'">' +
+              var html = '<tr id="row_'+row_id+'">' +
                 '<td>'+ 
-                    '<select class="form-control select_group category_name" data-row-id="'+row_id+'" id="category_'+row_id+'" name="category[]" style="width:100%;" onchange="getProductsByCategory(this)">'+
+                    '<select class="form-control select_group category_name" data-row-id="'+row_id+'" id="category_'+row_id+'" name="category[]" style="width:100%;" onchange="categoryChange('+row_id+')">'+
                         '<option value="">Choose</option>';
                         // Add options for categories here
                         <?php foreach ($category as $key => $value): ?>
@@ -271,7 +311,7 @@ $(document).on('change', '.seed', function() {
                         '<option value="drizzle">Drizzle</option>'+
                     '</select>'+
                 '</td>'+
-                '<td><input type="number" name="qty[]" id="qty_'+row_id+'" class="form-control" onkeyup="getTotal('+row_id+')"></td>'+
+                '<td><input type="hidden" name="minn" id="minn" class="form-control" autocomplete="off"><input type="number" name="qty[]" id="qty_'+row_id+'" class="form-control" onkeyup="getTotal('+row_id+')"></td>'+
                 '<td><input type="text" name="rate[]" id="rate_'+row_id+'" class="form-control" disabled><input type="hidden" name="rate_value[]" id="rate_value_'+row_id+'" class="form-control"></td>'+
                 '<td><input type="text" name="amount[]" id="amount_'+row_id+'" class="form-control" disabled><input type="hidden" name="amount_value[]" id="amount_value_'+row_id+'" class="form-control"></td>'+
                 '<td><button type="button" class="btn btn-danger" onclick="removeRow(\''+row_id+'\')"><i class="fa fa-close"></i></button></td>'+
@@ -339,6 +379,37 @@ $('#product_info_table').on('change', '.sliced', function() {
 });
 }); // /document
 
+$(document).on('input', 'input[name^="qty"]', function() {
+    var rowId = $(this).attr('id').split('_')[1];
+    getTotal(rowId);
+});
+
+$('#product_info_table').on('change', 'input[name^="qty"]', function() {
+    var rowId = $(this).attr('id').split('_')[1];
+    var minOrder = parseInt($('#minn').val()); // Get the stored min_order value
+
+    // If the input value is less than the min_order value, set it to min_order
+    if ($(this).val() < minOrder) {
+      $(this).val(minOrder);
+      swal({
+          title: "Minimum Order Quantity",
+          text: "You cannot order less than the minimum quantity.",
+          icon: "warning",
+          buttons: {
+            confirm: {
+              text: "OK",
+              value: true,
+              visible: true,
+              className: "btn btn-primary",
+              closeModal: true
+            }
+          }
+        });
+    }
+
+    getTotal(rowId);
+});
+
 function removeRow(tr_id)
   {
     $("#product_info_table tbody tr#row_"+tr_id).remove();
@@ -360,45 +431,51 @@ function removeRow(tr_id)
   }
 
 
-  function getProductData(row_id)
-  {
-
-    var product_id = $("#product_"+row_id).val();  
-   // alert(product_id);  
-    if(product_id == "") {
-      $("#rate_"+row_id).val("");
-      $("#rate_value_"+row_id).val("");
-
-      $("#qty_"+row_id).val("");           
-
-      $("#amount_"+row_id).val("");
-      $("#amount_value_"+row_id).val("");
-
+  function getProductData(row_id) {
+    var product_id = $("#product_" + row_id).val();
+    // alert(product_id);
+    if (product_id == "") {
+        $("#rate_" + row_id).val("");
+        $("#rate_value_" + row_id).val("");
+        $("#qty_" + row_id).val("");
+        $("#amount_" + row_id).val("");
+        $("#amount_value_" + row_id).val("");
     } else {
-      $.ajax({
-        url: '<?php echo base_url('index.php/orders/getProductValueById'); ?>',
-        type: 'post',
-        data: {product_id : product_id},
-        dataType: 'json',
-        success:function(response) {
-          // setting the rate value into the rate input field
-      
-          $("#rate_"+row_id).val(response.prod_rate);
-          $("#rate_value_"+row_id).val(response.prod_rate);
+        $.ajax({
+            url: '<?php echo base_url('index.php/orders/getProductValueById'); ?>',
+            type: 'post',
+            data: {
+                product_id: product_id
+            },
+            dataType: 'json',
+            success: function(response) {
+                // setting the rate value into the rate input field
+                $("#rate_" + row_id).val(response.prod_rate);
+                $("#rate_value_" + row_id).val(response.prod_rate);
 
-          $("#qty_"+row_id).val(1);
-          $("#qty_value_"+row_id).val(1);
+                // Check if min_order is not empty
+                if (response.min_order !== undefined && response.min_order !== null && response.min_order !== "") {
+                    $('#minn').val(response.min_order);
+                    $("#qty_" + row_id).val(response.min_order);
+                    $("#qty_value_" + row_id).val(response.min_order);
+                } else {
+                    $("#qty_" + row_id).val(1);
+                    $("#qty_value_" + row_id).val(1);
+                }
 
-          var total = Number(response.prod_rate) * 1;
-          total = total.toFixed(2);
-          $("#amount_"+row_id).val(total);
-          $("#amount_value_"+row_id).val(total);
-          
-          subAmount();
-        } // /success
-      }); // /ajax function to fetch the product data 
+                var total = Number(response.prod_rate) * 1;
+                total = total.toFixed(2);
+                $("#amount_" + row_id).val(total);
+                $("#amount_value_" + row_id).val(total);
+
+                subAmount();
+            } // /success
+        }); // /ajax function to fetch the product data 
     }
-  }
+    $("#product_" + row_id).blur();
+}
+
+
 
   function subAmount() {
     var service_charge = 0; // Initialize additional charge to 0
