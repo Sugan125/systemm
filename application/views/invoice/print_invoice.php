@@ -8,6 +8,7 @@
           </h2>
         </div> 
       <div class="col-sm-7 col-xs-12" style="padding: 0px;">
+        <b>Sourdough Factory LLP</b><br>
         <b>UEN No. :</b> T12LL1071J<br>
         <b>GST Reg. :</b> M90373683Y<br>
         <b>Address: </b> 5 Mandai Link #07-05 Mandai Foodlink Singapore 728654<br>
@@ -18,6 +19,7 @@
           <div class="row invoice-info" style="margin: 0px; display: grid;">
         <?php foreach($order_total as $val => $order_data): ?>
                     <div class="invoice-col" style="margin: 0px;">
+                    <b>Invoice No: </b> 24020699<br>
                     <b>Date: </b> <?php echo $order_date; ?><br>
                     <b>Bill ID: </b> <?php echo $order_data['bill_no']; ?><br>
                     <b>Your Ref: </b> 123<br>
