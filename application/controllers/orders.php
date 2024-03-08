@@ -245,7 +245,6 @@ $order_total_data = $data['order_total'][0];
     $user = $this->session->userdata('user_register');
     $users = $this->session->userdata('normal_user');
     $loginuser = $this->session->userdata('LoginSession');
-    $this->load->view('template/sidebar.php', array('user' => $user, 'users' => $users, 'data' => $data, 'loginuser' => $loginuser));
     $this->load->view('invoice/print_invoice.php', array('data' => $data, 'order_date' => $order_date));
     $this->load->view('template/footer.php');
 }

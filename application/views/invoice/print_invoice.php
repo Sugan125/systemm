@@ -1,8 +1,5 @@
 <body onload="window.print();">
   <div class="container" >
-  <div>
-        <a href="<?php echo base_url('index.php/orders'); ?>" class="btn-sm btn btn-danger"><i class="fas fa-backward"></i> Back</a></td>
-        </div> 
     <section class="invoice">
       <div class="row">
         <div class="col-xs-12">
