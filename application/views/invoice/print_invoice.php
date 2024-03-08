@@ -15,8 +15,8 @@
         <b>Tel: </b> 6957 3420<br>
         <b>Email: </b> accounts@breadhearth.com<br>
       </div>
-        <div class="col-sm-5 col-xs-12" style="padding: 0px;">
-          <div class="row invoice-info" style="margin: 0px; display: grid;">
+        <div class="col-sm-5 col-xs-12" style="padding: 0px;float: right;">
+          <div class="row invoice-info" style="margin: 0px; display: grid;float: right;">
         <?php foreach($order_total as $val => $order_data): ?>
                     <div class="invoice-col" style="margin: 0px;">
                     <b>Invoice No: </b> 24020699<br>
@@ -32,12 +32,12 @@
         <div class="col-sm-12 col-xs-12" style="padding: 0px;">
         <h2 class="border" style="margin: 20px 0px;"></h2>
         </div> 
-        <div class="col-sm-7 col-xs-12" style="padding: 0px;">
+        <div class="col-sm-7 col-xs-12" style="padding: 0px;float: right;display: grid;text-align: left;">
         <b>Bill To:</b> JR F&B Concepts Pte Ltd<br>
 blk 3B River Valley Road #01-04<br>
 Singapore 179021<br>
       </div>
-      <div class="col-sm-5 col-xs-12" style="padding: 0px;">
+      <div class="col-sm-5 col-xs-12" style="padding: 0px;float: right;display: grid;text-align: right;">
         <b>Ship To:</b> JR F&B Concepts Pte Ltd<br>
 blk 3B River Valley Road #01-04<br>
 Singapore 179021<br>
