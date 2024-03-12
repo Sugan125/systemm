@@ -213,39 +213,49 @@ class orders extends CI_Controller {
 		echo json_encode($result);
 	}
 	public function printDiv($id)
-{
+	{
     $data['print'] = 'print';
-    $orders_data = $this->order_model->getOrdersData($id);
 
-    foreach ($orders_data as $order) {
-        $orders_item = $this->order_model->getOrdersItemData($order->id);
-    }
+	$loginuser = $this->session->userdata('LoginSession');
+	
+	$data['user_id'] = $loginuser['id'];
 
+	$user_id = $data['user_id'];
+
+    $orders_data = $this->order_model->getOrdersDatas($id,$user_id);
+
+	foreach ($orders_data as $order) {
+		$orders_item = $this->order_model->getOrdersItemDatas($id);
+	}
+	
+	
     foreach ($orders_item as $k => $v) {
         $result['order_item'][] = $v;
     }
 
     $result['order'] = $orders_data;
 
+	
     $data['order_data'] = $result;
     $data['order_total'] = $this->order_model->getOrdertotal($id);
 
+	// echo '<pre>';
+	// print_r($data['order_data']);
+	
+	
+	// 	// Accessing the array at index 0
+	$order_total_data = $data['order_total'][0];
 
-//	print_r($data['order_total']);
-
-	// Accessing the array at index 0
-$order_total_data = $data['order_total'][0];
 
 
-
-// Extracting datetime and discount values
+	// Extracting datetime and discount values
 	$order_date = ($order_total_data['date_time'] !== null) ? date('d/m/Y', $order_total_data['date_time']) : '';
 	
     $this->load->view('template/header.php', $data);
     $user = $this->session->userdata('user_register');
     $users = $this->session->userdata('normal_user');
     $loginuser = $this->session->userdata('LoginSession');
-    $this->load->view('invoice/print_invoice.php', array('data' => $data, 'order_date' => $order_date));
+    $this->load->view('invoice/print_invoice.php', array('data' => $data, 'order_date' => $order_date, 'result'));
     $this->load->view('template/footer.php');
 }
 

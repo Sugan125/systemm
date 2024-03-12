@@ -198,6 +198,23 @@ public function getProductData($id = null)
 		return $query->result_array();
 	}
 
+	public function getOrdersItemDatas($order_id = null)
+	{
+		if (!$order_id) {
+			return false;
+		}
+
+		$sql = "SELECT ord.*, pd.product_name , pd.product_id
+				FROM order_items ord 
+				LEFT JOIN products pd ON ord.product_id = pd.id 
+				WHERE ord.order_id = ?";
+
+		
+		$query = $this->db->query($sql, array($order_id));
+		return $query->result_array();
+	}
+
+
     public function countOrderItem($order_id)
 	{
 		if($order_id) {

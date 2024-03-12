@@ -19,7 +19,7 @@
           <div class="row invoice-info" style="margin: 0px; display: grid;float: right;">
         <?php foreach($order_total as $val => $order_data): ?>
                     <div class="invoice-col" style="margin: 0px;">
-                    <b>Invoice No: </b> 24020699<br>
+                    <b>Invoice No: </b> <?php echo $order_data['bill_no']; ?><br>
                     <b>Date: </b> <?php echo $order_date; ?><br>
                     <b>Bill ID: </b> <?php echo $order_data['bill_no']; ?><br>
                     <b>Your Ref: </b> 123<br>
@@ -34,13 +34,13 @@
         </div> 
         <div class="col-sm-7 col-xs-12" style="padding: 0px;float: right;display: grid;text-align: left;">
         <b>Bill To:</b> JR F&B Concepts Pte Ltd<br>
-blk 3B River Valley Road #01-04<br>
-Singapore 179021<br>
+        blk 3B River Valley Road #01-04<br>
+        Singapore 179021<br>
       </div>
       <div class="col-sm-5 col-xs-12" style="padding: 0px;float: right;display: grid;text-align: right;">
         <b>Ship To:</b> JR F&B Concepts Pte Ltd<br>
-blk 3B River Valley Road #01-04<br>
-Singapore 179021<br>
+        blk 3B River Valley Road #01-04<br>
+        Singapore 179021<br>
       </div>
       <div class="col-sm-12 col-xs-12" style="padding: 30px 0px;">
       <b>Salesman:</b> Henri<br>
@@ -57,56 +57,35 @@ Singapore 179021<br>
              <th>UOM</th>
              <th>Discount %</th>
              <th>Amount (S$)</th>
-                                     </tr>
+           </tr>
          </thead>
          <tbody>
-             <tr class="odd text-center">
-               <td>4</td>
-               <td>RB350</td>
-               <td>Rustic Baguette</td>
-               <td>$3.00</td>
-               <td>pc</td>
-               <td> </td>
-               <td>$12.00</td>
-             </tr>
-             <tr class="odd text-center">
-               <td>4</td>
-               <td>RB350</td>
-               <td>Rustic Baguette</td>
-               <td>$3.00</td>
-               <td>pc</td>
-               <td> </td>
-               <td>$12.00</td>
-             </tr>
-             <tr class="odd text-center">
-               <td>4</td>
-               <td>RB350</td>
-               <td>Rustic Baguette</td>
-               <td>$3.00</td>
-               <td>pc</td>
-               <td> </td>
-               <td>$12.00</td>
-             </tr>
-             <tr class="odd text-center">
-               <td>4</td>
-               <td>RB350</td>
-               <td>Rustic Baguette</td>
-               <td>$3.00</td>
-               <td>pc</td>
-               <td> </td>
-               <td>$12.00</td>
-             </tr>
+         <?php foreach ($data['order_data']['order_item'] as $order) : ?>
+    <tr class="odd text-center">
+        <td><?php echo isset($order['qty']) ? $order['qty'] : ''; ?></td>
+        <td><?php echo isset($order['product_id']) ? $order['product_id'] : ''; ?></td>
+        <td><?php echo isset($order['product_name']) ? $order['product_name'] : ''; ?></td>
+        <td>$<?php echo isset($order['rate']) ? $order['rate'] : ''; ?></td>
+        <td>pc</td>
+        <td> </td>
+        <td>$<?php echo isset($order['amount']) ? $order['amount'] : ''; ?></td>
+    </tr>
+<?php endforeach; ?>
+
          </tbody>
        </table>
-       <div class="col-xs-12" style="padding: 0px;float: right;">
+       <div class="col-xs-12" style="padding: 10px;float: right;">
           <div class="row total-amount" style="margin: 0px; display: grid;">
-        <?php foreach($order_total as $val => $order_data): ?>
+        <?php foreach($order_total as $val => $order):
+       //  print_r($order_data);
+          ?>
                     <div class="total-amount" style="margin: 0px;text-align: right;">
-                    <b>Total: </b> 123<br>
-                    <b>GST: </b> 123<br>
-                    <b>Less: Payment: </b> 123<br>
-                    <b>Balance Due: </b> 123<br>
-                    </div>
+                    <b>Gross Total: </b><?php echo isset($order['gross_amount']) ? $order['gross_amount'] : 0; ?><br>
+                    <b>GST: </b><?php echo isset($order['gst_amt']) ? $order['gst_amt'] : 0; ?><br>
+                    <b>Service Charge Rate: </b> <?php echo isset($order['service_charge_rate']) ? $order['service_charge_rate'] : 0; ?><br>
+                    <b>Delivery Charge: </b><?php echo isset($order['delivery_charge']) ? $order['delivery_charge'] : 0; ?><br>
+                    <b>Net Amount: </b><?php echo isset($order['net_amount']) ? $order['net_amount'] : 0; ?><br>  
+                  </div>
         <?php endforeach; ?>
       </div>
         </div> 
