@@ -11,6 +11,15 @@ class product_model extends CI_Model{
     return $this->db->get()->result();
 }
 
+public function product_details_user() {
+  $this->db->select('*');
+  $this->db->from('products');
+  $this->db->order_by('prod_category', 'ASC');
+  $this->db->order_by('product_name', 'ASC');
+ // $this->db->limit(10); // Set limit here
+  return $this->db->get()->result();
+}
+
 
     public function insert_product($data,$table){
         $this->db->insert($table,$data);

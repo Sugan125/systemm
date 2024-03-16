@@ -9,7 +9,7 @@
 
 <section class="content">
       <div class="container-fluid">
-      <div >
+      <div class="pull-right">
         <a href="<?php echo base_url('index.php/Productcontroller'); ?>" class="btn-sm btn btn-danger"><i class="fas fa-backward"></i> Back</a></td>
         </div> 
         <div class="row justify-content-center">

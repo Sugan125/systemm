@@ -227,8 +227,8 @@ function confirmSubmission(event) {
 
     // Show SweetAlert confirmation dialog
     swal({
-        title: "Create Order",
-        text: "Are you sure you want to create this order?",
+        title: "You are about to confirm this order?",
+        text: "An invoice will be sent to your Finance department",
         icon: "warning",
         buttons: {
             cancel: {
@@ -344,7 +344,7 @@ $('#product_info_table').on('change', '.category_name', function() {
         success: function(response) {
             var options = '<option value=""></option>';
             $.each(response, function(index, product) {
-                options += '<option value="' + product.id + '">' + product.product_name + '</option>';
+              options += '<option value="' + product.id + '">' + product.product_id + '-' + product.product_name + '</option>';
             });
             // Update the corresponding product select element using the stored reference
             currentRow.find('.product_' + currentRow.attr('id').split('_')[1]).html(options);
@@ -364,7 +364,7 @@ $('.category_name').on('change', function() {
         success: function(response) {
             var options = '<option value=""></option>';
             $.each(response, function(index, product) {
-                options += '<option value="' + product.id + '">' + product.product_name + '</option>';
+              options += '<option value="' + product.id + '">' + product.product_id + '-' + product.product_name + '</option>';
             });
             $('.product_1').html(options);
         }

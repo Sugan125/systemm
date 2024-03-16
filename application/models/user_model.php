@@ -114,7 +114,7 @@ function checkCurrentPassword($currentPassword)
 
 function checkUser($name,$password)
 	{
-		$query = $this->db->query("SELECT * from user_register where name='$name' AND password='$password'");
+		$query = $this->db->query("SELECT * from user_register where name='$name' AND password='$password' and status= 1 ");
 		if($query->num_rows()==1)
 		{
 			return $query->row();

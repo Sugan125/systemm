@@ -75,9 +75,13 @@ class Logincontroller extends CI_Controller {
                 $userData = array(
                     'id' => $status->id,
                     'name' => $status->name,
+					'company_name' => $status->company_name,
                     'email' => $status->email,
                     'address' => $status->address,
+					'delivery_address' => $status->delivery_address,
+					'address' => $status->address,
                     'contact' => $status->contact,
+					'status' => $status->status,
                     'profile_img' => $status->profile_img,
                     'access' => explode(',', $status->access),
                     'role' => explode(',', $status->role),
@@ -85,6 +89,8 @@ class Logincontroller extends CI_Controller {
                     'roles' => $status->role,
                 );
 
+				//echo '<pre>';
+			//	print_r($userData);
                 $this->session->set_userdata('LoginSession', $userData);
 
                 if ($user = $this->user_model->getNormalUser($status->email)) {

@@ -14,10 +14,13 @@
 <!-- Search Form -->
     <div class="card">
         <div class="card-header">
+        <div class="pull-right">
+        <a href="<?php echo base_url('index.php/Dashboardcontroller'); ?>" class="btn-sm btn btn-danger"><i class="fas fa-backward"></i> Back</a></td>
+        </div>
             <div class="row">
-                <div class="col-sm-9 col-md-9">
-                <a href="<?= base_url('index.php/Userrolecontroller/createaccess') ?>" class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> Add Access</a>
-                </div>
+                <!-- <div class="col-sm-9 col-md-9">
+                <a href="// base_url('index.php/Userrolecontroller/createaccess') ?>" class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> Add Access</a>
+                </div> -->
                 <div class="col-sm-3 col-md-3 ">
                         <form action="<?= base_url('index.php/Userrolecontroller/search'); ?>" method="get">
                             <div class="input-group">

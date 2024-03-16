@@ -17,10 +17,20 @@
               <?php if(isset($loginuser['roles']) && !empty($loginuser['roles']) == 'Admin' || isset($loginuser['roles']) && !empty($loginuser['roles']) == 'Owner' || isset($loginuser['roles']) && !empty($loginuser['roles']) == 'Users' || (isset($user->image)) ){ ?>
               
 
-              <li class="nav-item">
-                
-              <a href="<?= base_url('index.php/Userscontroller');?>" class="nav-link <?php if($this->uri->segment(1)== 'Userscontroller') echo 'active' ?>"> <i class="menu-icon fa fa-users"></i>Users </a>
-                    </li>
+        <li class="nav-item">
+            <a href="#" class="nav-link toggle-orders">
+                <i class="menu-icon fa fa-user-circle"></i>
+                <span>Users</span>
+                <span class="pull-right-container">
+                    <i class="fa fa-angle-down pull-right" style="line-height: 2.1;"></i>
+                </span>
+            </a>
+            <ul class="treeview-menu" style="display: none;">
+                <li class="nav-item "><a href="<?php echo base_url('index.php/Userscontroller/create') ?>" class="nav-link"><i class="fa fa-edit"></i>  Create Users</a></li>
+                <li class="nav-item"><a href="<?php echo base_url('index.php/Userscontroller') ?>" class="nav-link"><i class="fa fa-th-large"></i>  Manage Users</a></li>
+            </ul>
+        </li>
+
               <?php }?>
             
        
@@ -32,12 +42,21 @@
             (strpos($loginuser['roles'], 'Admin') !== false && strpos($loginuser['roles'], 'User') !== false)
         )
     ): ?>
-      
-
         <li class="nav-item">
-                
-        <a href="<?= base_url('index.php/Userrolecontroller');?>" class="nav-link <?php if($this->uri->segment(1) == 'Userrolecontroller') echo 'active' ?>"> <i class="menu-icon fa fa-user-circle"></i>Access </a>
-                      </li>
+        <a href="#" class="nav-link toggle-orders">
+                <i class="menu-icon fa fa-user-circle"></i>
+                <span>User Access</span>
+                <span class="pull-right-container">
+                    <i class="fa fa-angle-down pull-right" style="line-height: 2.1;"></i>
+                </span>
+            </a>
+            <ul class="treeview-menu" style="display: none;">
+                <li class="nav-item"><a href="<?php echo base_url('index.php/Userrolecontroller/createaccess') ?>" class="nav-link" <?php if($this->uri->segment(1) == 'Userrolecontroller/createaccess') echo 'active' ?>><i class="fa fa-user-circle"></i>  Set Access</a></li>
+                <li class="nav-item"><a href="<?php echo base_url('index.php/Userrolecontroller') ?>" <?php if($this->uri->segment(1) == 'Userrolecontroller') echo 'active' ?> class="nav-link"><i class="fa fa-user-circle"></i>  Manage Access</a></li>
+            
+            </ul>
+        <!-- <a href=" //base_url('index.php/Userrolecontroller');?>" class="nav-link // if($this->uri->segment(1) == 'Userrolecontroller') echo 'active' ?>"> <i class="menu-icon fa fa-user-circle"></i>Access </a> -->
+        </li>
     <?php endif; ?>
 
     <?php if ((isset($user->image)) || 
@@ -48,12 +67,28 @@
             (strpos($loginuser['roles'], 'Admin') !== false && strpos($loginuser['roles'], 'User') !== false)
         )
     ): ?>
-      
+
+        <li class="nav-item">
+            <a href="#" class="nav-link toggle-orders">
+                <i class="menu-icon fa fa-shopping-cart"></i>
+                <span>Products</span>
+                <span class="pull-right-container">
+                    <i class="fa fa-angle-down pull-right" style="line-height: 2.1;"></i>
+                </span>
+            </a>
+            <ul class="treeview-menu" style="display: none;">
+                <li class="nav-item"><a href="<?php echo base_url('index.php/Productcontroller/create') ?>" <?php if($this->uri->segment(1) == 'Productcontroller/create') echo 'active' ?> class="nav-link"><i class="fa fa-edit"></i>  Create Products</a></li>
+                <li class="nav-item"><a href="<?php echo base_url('index.php/Productcontroller') ?>" <?php if($this->uri->segment(1) == 'Productcontroller') echo 'active' ?> class="nav-link"><i class="fa fa-th-large"></i>  Manage Products</a></li>
+            
+            </ul>
+        </li>
+
+<!--       
 
         <li class="nav-item">
                 
-        <a href="<?= base_url('index.php/Productcontroller');?>" class="nav-link <?php if($this->uri->segment(1) == 'Productcontroller') echo 'active' ?>"> <i class="menu-icon fa fa-shopping-cart"></i>Products </a>
-                      </li>
+        <a href="<//base_url('index.php/Productcontroller');?>" class="nav-link //if($this->uri->segment(1) == 'Productcontroller') echo 'active' ?>"> <i class="menu-icon fa fa-shopping-cart"></i>Products </a>
+                      </li> -->
     <?php endif; ?>
 
                 <?php if(isset($loginuser['roles']) && !empty($loginuser['roles'])): ?>

@@ -34,8 +34,16 @@
                   </div>
                   <input type="text"  id="input_size" name="name" class="form-control" placeholder="Enter Username" value="<?= $row->name; ?>">
                 </div>
+
+                <label>Company Name</label>
+                  <div class="input-group mb-3" id="input_size"> 
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">@</span>
+                  </div>
+                  <input type="text" name="company_name" class="form-control" value="<?= $row->company_name; ?>" placeholder="Company Name">
+                </div>
                 
-                  <label>Email</label>
+                  <label>Company Email</label>
                   <div class="input-group mb-3" id="input_size" >
                     
                   <div class="input-group-prepend">
@@ -45,37 +53,52 @@
                 </div>
 
                   <div class="form-group">
-                  <label>Address</label>
+                  <label>Office Address</label>
                       <input type="text"  id="input_size" name="address" class="form-control" placeholder="Enter Address" value="<?= $row->address; ?>">
                   </div>
+
+                  <div class="form-group">
+                  <label>Delivery Address</label>
+                      <input type="text"  id="input_size" name="delivery_address" class="form-control" placeholder="Delivery Address" value="<?= $row->delivery_address; ?>">
+                  </div>
+
+                  <div class="form-group">
+                      <label for="status">Status</label>
+                      <select id="status" name="status" class="form-control">
+                          <option value="">Select Status</option>
+                          <option value="1" <?php echo ($row->status == 1 && $row->status !== null) ? 'selected' : ''; ?>>Active</option>
+                          <option value="0" <?php echo ($row->status == 0 && $row->status !== null) ? 'selected' : ''; ?>>Inactive</option>
+                      </select>
+                  </div>
+
                   
                   <div class="form-group">
-    <label>Role</label>
-    <div class="input-group mb-3" id="input_size">
-        <?php
-        $roles = array("Admin", "User","Owner");
-        $selectedRoles = explode(',', $row->role);
+                      <label>Role</label>
+                      <div class="input-group mb-3" id="input_size">
+                          <?php
+                          $roles = array("Admin", "User","Owner");
+                          $selectedRoles = explode(',', $row->role);
 
-        foreach ($roles as $role) {
-          
-            $checked = in_array($role, $selectedRoles) ? 'checked' : '';
+                          foreach ($roles as $role) {
+                            
+                              $checked = in_array($role, $selectedRoles) ? 'checked' : '';
 
-            if($role == 'Owner'){
-              $rolee = 'Manager';
-            }
-            else{
-              $rolee = $role;
-            }
+                              if($role == 'Owner'){
+                                $rolee = 'Manager';
+                              }
+                              else{
+                                $rolee = $role;
+                              }
 
-            echo '
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="checkbox" name="role[]" value="' . $role . '" id="' . $role . 'Checkbox" ' . $checked . '>
-                    <label class="form-check-label" for="' . $role . 'Checkbox">' . $rolee . '</label>
-                </div>';
-        }
-        ?>
-    </div>
-</div>
+                              echo '
+                                  <div class="form-check form-check-inline">
+                                      <input class="form-check-input" type="checkbox" name="role[]" value="' . $role . '" id="' . $role . 'Checkbox" ' . $checked . '>
+                                      <label class="form-check-label" for="' . $role . 'Checkbox">' . $rolee . '</label>
+                                  </div>';
+                          }
+                          ?>
+                      </div>
+                  </div>
 
                   <div class="form-group">
                   <label>Contact</label>

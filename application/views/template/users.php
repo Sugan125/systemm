@@ -9,6 +9,20 @@
   #file_top{
     margin-top:10px;
   }
+  .box-body {
+    overflow-x: auto;
+}
+
+.table-wrapper {
+    width: 100%; /* Ensure the wrapper takes full width */
+    overflow-x: auto; /* Enable horizontal scrolling */
+    white-space: nowrap; /* Prevent line breaks */
+}
+
+/* Ensure the table takes up the entire width */
+.table-wrapper table {
+    width: 100%;
+}
 </style>
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -23,29 +37,25 @@
 
 <!-- Search Form -->
     <div class="card">
-        <div class="card-header">
-            <div class="row">
-           
-                <div class="col-sm-9 col-md-9">
-                <?php if ((isset($user->image)) || (in_array('Admin', $loginuser['role']) || $loginuser['roles'] == 'Admin')  || (in_array('Add', $loginuser['access']) == 'Add' && in_array('User', $loginuser['role'])) ||  ($loginuser['accesss'] == 'Add' && $loginuser['roles' == 'User']) ||  $loginuser['roles'] == 'Owner') { ?>
-                <a href="<?= base_url('index.php/Userscontroller/create') ?>" class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> Create User</a>
-                <?php } ?>
-
-              </div>
-               
-                <div class="col-sm-3 col-md-3 ">
-                        <form action="<?= base_url('index.php/Userscontroller/search'); ?>" method="get">
-                            <div class="input-group">
-                                    <input type="text" class="form-control" placeholder="Search" name="keyword" value="<?= isset($keyword) ? $keyword : '' ?>">
-                                <div class="input-group-append">
-                                <button class="btn btn-sm" type="submit"><i class="fas fa-search"></i> Search</button>
-                                </div>
-                            </div>
-                        </form>
+    <div class="card-header">
+    <div class="row">
+        <div class="col-sm-3 col-md-3">
+            <form action="<?= base_url('index.php/Userscontroller/search'); ?>" method="get">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Search" name="keyword" value="<?= isset($keyword) ? $keyword : '' ?>">
+                    <div class="input-group-append">
+                        <button class="btn btn-sm" type="submit"><i class="fas fa-search"></i> Search</button>
+                    </div>
                 </div>
-
-            </div>
+            </form>
         </div>
+        <div class="col-sm-6 col-md-6"></div>
+        <div class="col-sm-3 col-md-3 d-flex justify-content-end">
+            <a href="<?php echo base_url('index.php/Dashboardcontroller'); ?>" class="btn-sm btn btn-danger"><i class="fas fa-backward"></i> Back</a>
+        </div>
+    </div>
+</div>
+
 
         <?php if( (isset($user->image)) || $loginuser['roles'] == 'Admin' || $loginuser['roles'] == 'Owner' || ((in_array('Admin', $loginuser['role']) && in_array('User', $loginuser['role'])))){ ?>
         <!-- /.card-header -->
@@ -53,16 +63,21 @@
        
        
 
-<table class="table table-bordered table-striped table-responsive equal-width-table">
+
+<table id="manageTable" class="table table-bordered table-hover table-striped">
+                           
   <thead>
     <tr class="text-center">
       <th>Name</th>
-      <th>Email</th>
-      <th>Address</th>
+      <th>Company Name</th>
+      <th>Company Email</th>
+      <th>Office Address</th>
+      <th>Delivery Address</th>
       <th>Mobile Number</th>
       <th>Role</th>
-      <th>File Upload</th>
-      <th>View Files</th>
+      <th>Status</th>
+      <!-- <th>File Upload</th>
+      <th>View Files</th> -->
       <th>Action</th>
     </tr>
   </thead>
@@ -75,20 +90,34 @@
       }
       else{
         $rolee = $row->role;
-      }?>
+      }
+      if($row->status == 0 && $row->status != NULL){ 
+        $status = 'In-Active';
+      }
+      else if($row->status == 1 && $row->status != NULL){ 
+        $status = 'Active';
+      }
+      else
+      {
+        $status = '';
+      }
+      ?>
       <tr class="odd text-center">
         <td><?= $row->name; ?></td>
+        <td><?= $row->company_name; ?></td>
         <td><?= $row->email; ?></td>
         <td><?= $row->address; ?></td>
+        <td><?= $row->delivery_address; ?></td>
         <td><?= $row->contact; ?></td>
         <td><?=  $rolee; ?></td>
-        <td>
-        <a href="<?= base_url('index.php/Userscontroller/fileupload/' . $row->id) ?>" class="btn btn-sm"><i class="fas fa-upload"></i> </a>
+        <td><?= $status; ?></td>
+        <!-- <td>
+        <a href="//base_url('index.php/Userscontroller/fileupload/' . $row->id) ?>" class="btn btn-sm"><i class="fas fa-upload"></i> </a>
         </td>
         <td>
-        <a href="<?= base_url('index.php/Userscontroller/viewfiles/' . $row->id) ?>" class="btn btn-sm"><i class="fa fa-folder-open">View Files</i> </a>
+        <a href=" //base_url('index.php/Userscontroller/viewfiles/' . $row->id) ?>" class="btn btn-sm"><i class="fa fa-folder-open">View Files</i> </a>
         
-        </td>
+        </td> -->
         <td>
           <a href="<?= base_url('index.php/Userscontroller/update/' . $row->id) ?>" class="btn  btn-sm"><i class="fas fa-edit"></i> </a>
           
@@ -124,12 +153,15 @@
          <thead>
            <tr class="text-center">
              <th>User Name</th>
-             <th>Email</th>
-             <th>Address</th>
+             <th>Company Name</th>
+             <th>Company Email</th>
+             <th>Office Address</th>
+             <th>Delivery Address</th>
              <th>Mobile Number</th>
-             <?php if ((in_array('Admin', $loginuser['role']) || $loginuser['roles'] == 'Admin') || (in_array('File Upload', $loginuser['access']) == 'File Upload' && in_array('User', $loginuser['role'])) ||  ($loginuser['accesss'] == 'File Upload' && $loginuser['roles' == 'User'])) { ?>
+             <!-- <th>Status</th>
+             <?php //if ((in_array('Admin', $loginuser['role']) || $loginuser['roles'] == 'Admin') || (in_array('File Upload', $loginuser['access']) == 'File Upload' && in_array('User', $loginuser['role'])) ||  ($loginuser['accesss'] == 'File Upload' && $loginuser['roles' == 'User'])) { ?>
              <th>Uploaded/View Files</th>
-             <?php } ?>
+             <?php //} ?> -->
              <?php if ((in_array('Admin', $loginuser['role']) || $loginuser['roles'] == 'Admin') || (in_array('Edit', $loginuser['access']) == 'Edit' && in_array('User', $loginuser['role'])) ||  ($loginuser['accesss'] == 'Edit' && $loginuser['roles' == 'User']) || ((!$loginuser['accesss'] == 'Edit' && $loginuser['access'] == 'Delete'))) { ?>
              <th>Action</th>
              <?php } ?>
@@ -138,8 +170,10 @@
          <tbody>
              <tr class="odd text-center">
                <td><?=  $loginuser['name']; ?></td>
+               <td><?=  $loginuser['company_name']; ?></td>
                <td><?= $loginuser['email']; ?></td>
                <td><?= $loginuser['address']; ?></td>
+               <td><?= $loginuser['delivery_address']; ?></td>
                <td><?= $loginuser['contact']; ?></td>
                <?php if ((in_array('File Upload', $loginuser['access'])) ||  ($loginuser['accesss'] == 'File Upload')) { ?>
                <td>

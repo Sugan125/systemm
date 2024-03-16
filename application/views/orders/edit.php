@@ -242,8 +242,8 @@ function confirmSubmission(event) {
 
     // Show SweetAlert confirmation dialog
     swal({
-        title: "Create Order",
-        text: "Are you sure you want to create this order?",
+         title: "You are about to confirm this order?",
+        text: "An invoice will be sent to your Finance department",
         icon: "warning",
         buttons: {
             cancel: {

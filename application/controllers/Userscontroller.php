@@ -14,8 +14,6 @@ class Userscontroller extends CI_Controller {
 
     public function index() {
         $data['title'] = 'Dashboard';
-    
-        // Pagination Config
         $config['base_url'] = site_url('Userscontroller/index');
         $config['total_rows'] = $this->user_model->count_all_users(); 
         $config['per_page'] = 10;
@@ -41,25 +39,14 @@ class Userscontroller extends CI_Controller {
 		$config['num_tag_close'] = '</span></li>'; 
 
         $page = ($this->uri->segment(3)) ? $this->uri->segment(3) : 1;
-       // $data['userss'] = $this->user_model->get_users($config['per_page'], $page);
-       $data['userss'] = $this->user_model->get_users();
-  
-        // foreach ($data['userss'] as $user) {
-            
-        //     $name = $user->name;
 
-        //     $data['files'] = $this->uploadmodel->get_file($name);
-        
-        // }
-        
-       
-        
-      //  var_dump($data['userss']);
+       $data['userss'] = $this->user_model->get_users();
 
         $this->load->view('template/header.php', $data);
         $user = $this->session->userdata('user_register');
         $users = $this->session->userdata('normal_user');
         $loginuser = $this->session->userdata('LoginSession');
+
         $data['total_rows'] = $this->user_model->count_all_users();
 
         if (isset($loginuser['roles']) && !empty($loginuser['roles']) && $loginuser['roles'] == 'Admin') {
@@ -71,9 +58,7 @@ class Userscontroller extends CI_Controller {
             $data['total_rows'] = $this->user_model->count_all_users();
             $this->pagination->initialize($config);
         }
-        
-
-        //var_dump($loginuser);
+       
         $this->load->view('template/header.php');
         $this->load->view('template/sidebar.php', array('user' => $user, 'users' => $users, 'data' => $data,'loginuser' => $loginuser));
         $this->load->view('template/users.php', $data);
@@ -141,19 +126,17 @@ class Userscontroller extends CI_Controller {
         $this->load->view('template/footer.php');
     }
 
-
-   
-
-
-
     public function adduser(){
 
         
 
        $data = array(
         'name'=>$this->input->post('name'),
+        'company_name'=>$this->input->post('company_name'),
        'email'=>$this->input->post('email'),
        'address'=>$this->input->post('address'),
+       'delivery_address'=>$this->input->post('delivery_address'),
+       'status'=>$this->input->post('status'),
        'contact'=>$this->input->post('contact'),
        'password'=>$this->input->post('password'),
        'role' => implode(',', $this->input->post('role'))
@@ -187,12 +170,15 @@ class Userscontroller extends CI_Controller {
 
     $data = array(
         'id'      => $id,
-        'name'    => $this->input->post('name'),
-        'email'   => $this->input->post('email'),
-        'address' => $this->input->post('address'),
-        'contact' => $this->input->post('contact'),
-        'password'=> $this->input->post('password'),
-        'role'    => implode(',', $role),
+        'name'=>$this->input->post('name'),
+        'company_name'=>$this->input->post('company_name'),
+        'email'=>$this->input->post('email'),
+        'address'=>$this->input->post('address'),
+        'delivery_address'=>$this->input->post('delivery_address'),
+        'status'=>$this->input->post('status'),
+        'contact'=>$this->input->post('contact'),
+        'password'=>$this->input->post('password'),
+        'role' => implode(',', $this->input->post('role'))
     );
  
      $this->user_model->update_datas($data,'user_register');

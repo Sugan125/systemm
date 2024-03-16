@@ -11,7 +11,7 @@
         </div>
 
         <div class="content mt-3">
-
+            <a href="<?php echo base_url('index.php/orders/manage_orders') ?>">
             <div class="col-sm-6 col-lg-3">
                 <div class="card text-white bg-flat-color-1">
                     <div class="card-body pb-0">
@@ -19,35 +19,36 @@
                     </div>
 
                 </div>
-            </div>
+            </div></a>
             <!--/.col-->
 
+            <a href="<?php echo base_url('index.php/Productcontroller') ?>">
             <div class="col-sm-6 col-lg-3">
                 <div class="card text-white bg-flat-color-5">
                     <div class="card-body pb-0">
-                        <p class="text-light" style="font-weight: 600;">View Invoice</p>
+                        <p class="text-light" style="font-weight: 600;">View Products</p>
 
                     </div>
                 </div>
-            </div>
+            </div></a>
             <!--/.col-->
-
+            <a href="<?php echo base_url('index.php/Userscontroller') ?>">
             <div class="col-sm-6 col-lg-3">
                 <div class="card text-white bg-flat-color-3">
-                    <div class="card-body pb-0">
-                        <p class="text-light" style="font-weight: 600;">View Products</p>
-                    </div>
-                </div>
-            </div>
-            <!--/.col-->
-
-            <div class="col-sm-6 col-lg-3">
-                <div class="card text-white bg-flat-color-4">
                     <div class="card-body pb-0">
                         <p class="text-light" style="font-weight: 600;">View Customer Details</p>
                     </div>
                 </div>
-            </div>
+            </div></a>
+            <!--/.col-->
+           <a href="<?php echo base_url('index.php/Userrolecontroller/') ?>">
+            <div class="col-sm-6 col-lg-3">
+                <div class="card text-white bg-flat-color-4">
+                    <div class="card-body pb-0">
+                        <p class="text-light" style="font-weight: 600;">View Access</p>
+                    </div>
+                </div>
+            </div></a>
             <!--/.col-->
 
             <div class="col-xl-6">

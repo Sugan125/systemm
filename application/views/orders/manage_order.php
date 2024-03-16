@@ -49,7 +49,9 @@
                         Order</a> -->
                     <!-- <br /> <br /> -->
 
-
+                    <div class="d-flex justify-content-end">
+            <a href="<?php echo base_url('index.php/Dashboardcontroller'); ?>" class="btn-sm btn btn-danger"><i class="fas fa-backward"></i> Back</a>
+        </div>
                     <div class="box">
                         <div class="box-header">
                             <h3 class="box-title">Manage Orders</h3>

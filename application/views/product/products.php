@@ -25,14 +25,25 @@
 <!-- Search Form -->
 <div class="card">
     <div class="card-header">
+    <div class="d-flex justify-content-end">
+            <a href="<?php echo base_url('index.php/Dashboardcontroller'); ?>" class="btn-sm btn btn-danger"><i class="fas fa-backward"></i> Back</a>
+        </div>
         <div class="row">
             <?php if ((isset($user->image)) || (in_array('Admin', $loginuser['role']) || $loginuser['roles'] == 'Admin') || (in_array('Add', $loginuser['access']) == 'Add' && in_array('User', $loginuser['role'])) || ($loginuser['accesss'] == 'Add' && $loginuser['roles' == 'User']) || $loginuser['roles'] == 'Owner') { ?>
                 <div class="col-sm-12 col-md-12 mb-3"><!-- Added mb-3 class for margin bottom -->
                     <div class="row justify-content-between">
-                        <div class="col-sm-6 col-md-6">
-                            <a href="<?= base_url('index.php/Productcontroller/create') ?>" class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> Create Product</a>
+                        <div class="col-sm-4 col-md-4">
+                        <form action="<?= base_url('index.php/Productcontroller/search'); ?>" method="get">
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="Search by Product/Category" name="keyword" value="<?= isset($keyword) ? $keyword : '' ?>">
+                                <div class="input-group-append">
+                                    <button class="btn btn-sm" type="submit"><i class="fas fa-search"></i> Search</button>
+                                </div>
+                            </div>
+                        </form>
+                            <!-- <a href="<// base_url('index.php/Productcontroller/create') ?>" class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> Create Product</a> -->
                         </div>
-                        <div class="col-sm-6 col-md-6 text-right">
+                        <div class="col-sm-8 col-md-8 text-right">
                             <form action="<?= base_url('index.php/Productcontroller/importfile') ?>" method="post" enctype="multipart/form-data">
                                 <label for="uploadFile" class="btn btn-primary btn-sm" style="margin-bottom: 0px;width: 45%;background: none;border: none;color: black;">
                                     Import <input type="file" id="uploadFile" name="uploadFile">
@@ -43,21 +54,6 @@
                     </div>
                 </div>
             <?php } ?>
-        </div>
-        
-        <div class="row">
-          <div class="col-sm-8 col-md-8">
-            </div>
-            <div class="col-sm-4 col-md-4  text-right d-flex justify-content-end">
-                <form action="<?= base_url('index.php/Productcontroller/search'); ?>" method="get">
-                    <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Search by Product/Category" name="keyword" value="<?= isset($keyword) ? $keyword : '' ?>">
-                        <div class="input-group-append">
-                            <button class="btn btn-sm" type="submit"><i class="fas fa-search"></i> Search</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
         </div>
     </div>
 </div>

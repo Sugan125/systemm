@@ -9,10 +9,11 @@
 
 <section class="content">
       <div class="container-fluid">
-        <div class="row justify-content-center">
-        <div >
+      <div class="pull-right">
         <a href="<?php echo base_url('index.php/Userscontroller'); ?>" class="btn-sm btn btn-danger"><i class="fas fa-backward"></i> Back</a></td>
-        </div>   <!-- left column -->
+        </div>  
+        <div class="row justify-content-center">
+         <!-- left column -->
           <div class="col-md-6">
             <!-- general form elements -->
             <div class="card card-primary">
@@ -31,8 +32,16 @@
                   </div>
                   <input type="text" name="name" class="form-control" placeholder="Enter Username">
                 </div>
+
+                <label>Company Name</label>
+                  <div class="input-group mb-3" id="input_size"> 
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">@</span>
+                  </div>
+                  <input type="text" name="company_name" class="form-control" placeholder="Company Name">
+                </div>
                 
-                  <label>Email</label>
+                  <label>Company Email</label>
                   <div class="input-group mb-3" id="input_size">
                     
                   <div class="input-group-prepend">
@@ -42,10 +51,23 @@
                 </div>
 
                   <div class="form-group">
-                  <label>Address</label>
-                      <input type="text"  id="input_size" name="address" class="form-control" placeholder="Enter Address">
+                  <label>Office Address</label>
+                      <input type="text"  id="input_size" name="address" class="form-control" placeholder="Office Address">
+                  </div>
+
+                  <div class="form-group">
+                  <label>Delivery Address</label>
+                      <input type="text"  id="input_size" name="delivery_address" class="form-control" placeholder="Delivery Address">
                   </div>
                   
+                  <div class="form-group">
+                      <label for="status">Status</label>
+                      <select id="status" name="status" class="form-control">
+                          <option value="1">Active</option>
+                          <option value="0">Inactive</option>
+                      </select>
+                  </div>
+
 
                   <div class="form-group">
                   <label>Contact</label>
@@ -58,6 +80,8 @@
                   </div>
                   <!-- /.input group -->
                 </div>
+
+                
 
                 <label>Role</label>
                   <div class="input-group mb-3" id="input_size">
