@@ -21,32 +21,38 @@
                     <div class="invoice-col" style="margin: 0px;">
                     <b>Invoice No: </b> <?php echo $order_data['bill_no']; ?><br>
                     <b>Date: </b> <?php echo $order_date; ?><br>
-                    <b>Bill ID: </b> <?php echo $order_data['bill_no']; ?><br>
-                    <b>Your Ref: </b> 123<br>
+                    <!-- <b>Bill ID: </b> <?php //echo $order_data['bill_no']; ?><br> -->
+                    <!-- <b>Your Ref: </b> 123<br>
                     <b>D/O No.: </b> 24020699<br>
-                    <b>Term: </b> Net 30<br>
+                    <b>Term: </b> Net 30<br> -->
                     </div>
-        <?php endforeach; ?>
+    
       </div>
         </div> 
         <div class="col-sm-12 col-xs-12" style="padding: 0px;">
         <h2 class="border" style="margin: 20px 0px;"></h2>
         </div> 
-        <div class="col-sm-7 col-xs-12" style="padding: 0px;float: right;display: grid;text-align: left;">
-        <b>Bill To:</b> JR F&B Concepts Pte Ltd<br>
-        blk 3B River Valley Road #01-04<br>
-        Singapore 179021<br>
+        <div class="col-sm-3 col-xs-12" style="padding: 0px;float: right;display: grid;text-align: left;">
+        <b>Bill To:</b><?php echo $order_data['address'];?> <br>
       </div>
-      <div class="col-sm-5 col-xs-12" style="padding: 0px;float: right;display: grid;text-align: right;">
-        <b>Ship To:</b> JR F&B Concepts Pte Ltd<br>
-        blk 3B River Valley Road #01-04<br>
-        Singapore 179021<br>
+      <div class="col-sm-6 col-xs-12" style="padding: 0px;float: right;display: grid;text-align: left;">
+      
+      </div>
+      <div class="col-sm-3 col-xs-12 pull-right" style="padding: 0px;float: right;display: grid;text-align: right;">
+        <b>Ship To:</b><?php echo $order_data['address'];?> <br>
       </div>
       <div class="col-sm-12 col-xs-12" style="padding: 30px 0px;">
       <b>Salesman:</b> Henri<br>
-      <b>Delivery Date:</b> 1/1/2024
+      <b>Delivery Date: </b><?php 
+      $added_days = 2;
+      $order_date_obj = DateTime::createFromFormat('d/m/Y', $order_date);
+      $order_date_obj->modify("+$added_days days");
+      $new_date = $order_date_obj->format('d/m/Y');
+      echo $new_date; 
+      ?>
       </div> 
       </div>
+      <?php endforeach; ?>
       <table class="table table-bordered table-striped table-responsive equal-width-table" style="display: inline-table;">
          <thead>
            <tr class="text-center">
@@ -77,7 +83,6 @@
        <div class="col-xs-12" style="padding: 10px;float: right;">
           <div class="row total-amount" style="margin: 0px; display: grid;">
         <?php foreach($order_total as $val => $order):
-       //  print_r($order_data);
           ?>
                     <div class="total-amount" style="margin: 0px;text-align: right;">
                     <b>Gross Total: </b><?php echo isset($order['gross_amount']) ? $order['gross_amount'] : 0; ?><br>

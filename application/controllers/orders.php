@@ -259,4 +259,64 @@ class orders extends CI_Controller {
     $this->load->view('template/footer.php');
 }
 
+public function printadmin($id)
+	{
+    $data['print'] = 'print';
+
+	$loginuser = $this->session->userdata('LoginSession');
+	
+	$data['user_id'] = $loginuser['id'];
+
+	$user_id = $data['user_id'];
+
+    $orders_data = $this->order_model->getOrdersadmin($id);
+
+	foreach ($orders_data as $order) {
+		$orders_item = $this->order_model->getadminorderdata($id);
+	}
+	
+	
+    foreach ($orders_item as $k => $v) {
+        $result['order_item'][] = $v;
+    }
+
+    $result['order'] = $orders_data;
+
+    $data['order_data'] = $result;
+    $data['order_total'] = $this->order_model->getorderadmintotal($id);
+
+	
+	$order_total_data = $data['order_total'][0];
+
+
+	$order_date = ($order_total_data['date_time'] !== null) ? date('d/m/Y', $order_total_data['date_time']) : '';
+	
+    $this->load->view('template/header.php', $data);
+    $user = $this->session->userdata('user_register');
+    $users = $this->session->userdata('normal_user');
+    $loginuser = $this->session->userdata('LoginSession');
+    $this->load->view('invoice/print_invoice.php', array('data' => $data, 'order_date' => $order_date, 'result'=>$result));
+    $this->load->view('template/footer.php');
+}
+
+
+public function manage_orders(){
+	$data['title'] = 'orders';
+
+	$loginuser = $this->session->userdata('LoginSession');
+
+	$data['user_id'] = $loginuser['id'];
+
+	$data['orders'] = $this->order_model->getmanageorder();
+
+	$this->load->view('template/header.php', $data);
+	$user = $this->session->userdata('user_register');
+	$users = $this->session->userdata('normal_user');
+	$loginuser = $this->session->userdata('LoginSession');
+	//var_dump($loginuser);
+	$this->load->view('template/sidebar.php', array('user' => $user, 'users' => $users, 'data' => $data,'loginuser' => $loginuser));
+	$this->load->view('orders/manage_order.php', $data);
+	$this->load->view('template/footer.php');
+}
+
 }

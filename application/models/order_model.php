@@ -158,7 +158,7 @@ public function getProductData($id = null)
 			return false;
 		}
 
-		$sql = "SELECT * FROM orders WHERE id = ?";
+		$sql = "SELECT ord.*, user.name as name, user.address as address FROM orders ord join user_register user WHERE ord.id = ? and user.id=ord.user_id";
 		$query = $this->db->query($sql, array($order_id));
 		return $query->result_array();
 	}
@@ -181,7 +181,7 @@ public function getProductData($id = null)
     public function getOrdersDatas($id = null,$user_id)
 	{
 		if($id) {
-			$sql = "SELECT * FROM orders WHERE id = ? and user_id = '".$user_id."'";
+			$sql = "SELECT ord.*,user.id as user_id,user.name as name,user.address as address FROM orders ord join user_register user WHERE ord.user_id = user.id  and ord.id = ? and ord.user_id = '".$user_id."'";
 			$query = $this->db->query($sql, array($id));
 			return $query->row_array();
 		}
@@ -222,5 +222,48 @@ public function getProductData($id = null)
 			$query = $this->db->query($sql, array($order_id));
 			return $query->num_rows();
 		}
+	}
+
+	public function getmanageorder() {
+	
+			$sql = "SELECT ord.*,us.name as name FROM orders ord join user_register us WHERE us.id = ord.user_id";
+			$query = $this->db->query($sql);
+			return $query->result(); 
+	
+	}
+
+	public function getOrdersadmin($id = null)
+	{
+		if($id) {
+			$sql = "SELECT ord.*,user.id as user_id,user.name as name,user.address as address FROM orders ord join user_register user WHERE ord.user_id = user.id and ord.id = ? ";
+			$query = $this->db->query($sql, array($id));
+			return $query->row_array();
+		}
+	}
+
+	public function getadminorderdata($order_id = null)
+	{
+		if (!$order_id) {
+			return false;
+		}
+
+		$sql = "SELECT ord.*, pd.product_name , pd.product_id
+				FROM order_items ord 
+				LEFT JOIN products pd ON ord.product_id = pd.id 
+				WHERE ord.order_id = ?";
+
+		
+		$query = $this->db->query($sql, array($order_id));
+		return $query->result_array();
+	}
+	public function getorderadmintotal($order_id = null)
+	{
+		if(!$order_id) {
+			return false;
+		}
+
+		$sql = "SELECT ord.*, user.name as name, user.address as address FROM orders ord join user_register user WHERE ord.id = ? and user.id=ord.user_id";
+		$query = $this->db->query($sql, array($order_id));
+		return $query->result_array();
 	}
 }
