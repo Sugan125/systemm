@@ -320,4 +320,96 @@ public function manage_orders(){
 	$this->load->view('template/footer.php');
 }
 
+
+public function printschedule()
+	{
+    $data['print'] = 'print';
+
+	$loginuser = $this->session->userdata('LoginSession');
+	
+	$data['user_id'] = $loginuser['id'];
+
+	$user_id = $data['user_id'];
+
+	$data['orders'] = $this->order_model->getmanageorder();
+
+    $this->load->view('template/header.php', $data);
+    $user = $this->session->userdata('user_register');
+    $users = $this->session->userdata('normal_user');
+    $loginuser = $this->session->userdata('LoginSession');
+	$this->load->view('template/sidebar.php', array('user' => $user, 'users' => $users, 'data' => $data,'loginuser' => $loginuser));
+	$this->load->view('invoice/print_schedule.php', array('data' => $data,));
+	$this->load->view('template/footer.php');
+}
+
+
+public function showschedule()
+	{
+    $data['print'] = 'print';
+
+	$schedule_date = $this->input->post('schedule_date');
+
+	$loginuser = $this->session->userdata('LoginSession');
+	
+	$data['user_id'] = $loginuser['id'];
+
+	$user_id = $data['user_id'];
+
+	$data['orders'] = $this->order_model->getscheduleorder($schedule_date);
+	
+	//print_r($data['orders']);
+    $this->load->view('template/header.php', $data);
+    $user = $this->session->userdata('user_register');
+    $users = $this->session->userdata('normal_user');
+    $loginuser = $this->session->userdata('LoginSession');
+	$this->load->view('invoice/show_schedule.php', array('data' => $data, 'schedule_date' => $schedule_date));
+	$this->load->view('template/footer.php');
+}
+
+
+public function showpacking()
+	{
+    $data['print'] = 'print';
+
+	$schedule_date = $this->input->post('schedule_date');
+
+	$loginuser = $this->session->userdata('LoginSession');
+	
+	$data['user_id'] = $loginuser['id'];
+
+	$user_id = $data['user_id'];
+
+	$data['orders'] = $this->order_model->getpackingorder($schedule_date);
+	
+	//print_r($data['orders']);
+    $this->load->view('template/header.php', $data);
+    $user = $this->session->userdata('user_register');
+    $users = $this->session->userdata('normal_user');
+    $loginuser = $this->session->userdata('LoginSession');
+	$this->load->view('invoice/show_packing.php', array('data' => $data, 'schedule_date' => $schedule_date));
+	$this->load->view('template/footer.php');
+}
+
+
+public function printpacking()
+	{
+		$data['print'] = 'print';
+
+		$loginuser = $this->session->userdata('LoginSession');
+		
+		$data['user_id'] = $loginuser['id'];
+	
+		$user_id = $data['user_id'];
+	
+		$data['orders'] = $this->order_model->getmanageorder();
+		
+		$this->load->view('template/header.php', $data);
+		$user = $this->session->userdata('user_register');
+		$users = $this->session->userdata('normal_user');
+		$loginuser = $this->session->userdata('LoginSession');
+		$this->load->view('template/sidebar.php', array('user' => $user, 'users' => $users, 'data' => $data,'loginuser' => $loginuser));
+		$this->load->view('invoice/print_packing.php', array('data' => $data,));
+		$this->load->view('template/footer.php');
+}
+
 }

@@ -139,6 +139,39 @@
         <?php endif; ?>
         <?php endif; ?>
 
+
+        <?php if ((isset($user->image)) || 
+        isset($loginuser['roles']) &&
+        !empty($loginuser['roles']) &&
+        (
+            ($loginuser['roles'] == 'Admin' || $loginuser['roles'] == 'Owner') ||
+            (strpos($loginuser['roles'], 'Admin') !== false && strpos($loginuser['roles'], 'User') !== false)
+        )
+    ): ?>
+
+        <li class="nav-item">
+            <a href="#" class="nav-link toggle-orders">
+                <i class="menu-icon fa fa-clipboard"></i>
+                <span>Reports</span>
+                <span class="pull-right-container">
+                    <i class="fa fa-angle-down pull-right" style="line-height: 2.1;"></i>
+                </span>
+            </a>
+            <ul class="treeview-menu" style="display: none;">
+                <li class="nav-item"><a href="<?php echo base_url('index.php/orders/printpacking/'); ?>" class="nav-link"><i class="fas fa-print"></i>  Packing List</a></li>
+                <li class="nav-item"><a href="<?php echo base_url('index.php/orders/printschedule/'); ?>"  class="nav-link"><i class="fas fa-print"></i>  Schedule List</a></li>
+            
+            </ul>
+        </li>
+
+<!--       
+
+        <li class="nav-item">
+                
+        <a href="<//base_url('index.php/Productcontroller');?>" class="nav-link //if($this->uri->segment(1) == 'Productcontroller') echo 'active' ?>"> <i class="menu-icon fa fa-shopping-cart"></i>Products </a>
+                      </li> -->
+    <?php endif; ?>
+
             </ul>
         </div>
     </nav>
