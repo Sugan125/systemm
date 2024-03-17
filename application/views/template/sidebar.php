@@ -159,7 +159,7 @@
             </a>
             <ul class="treeview-menu" style="display: none;">
                 <li class="nav-item"><a href="<?php echo base_url('index.php/orders/printpacking/'); ?>" class="nav-link"><i class="fas fa-print"></i>  Packing List</a></li>
-                <li class="nav-item"><a href="<?php echo base_url('index.php/orders/printschedule/'); ?>"  class="nav-link"><i class="fas fa-print"></i>  Schedule List</a></li>
+                <li class="nav-item"><a href="<?php echo base_url('index.php/orders/printschedule/'); ?>"  class="nav-link"><i class="fas fa-print"></i>  Production List</a></li>
             
             </ul>
         </li>

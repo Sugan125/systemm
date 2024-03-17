@@ -30,7 +30,7 @@
                     </div>
                     <div class="box">
                         <div class="box-header">
-                            <h3 class="box-title">Schedule List</h3>
+                            <h3 class="box-title">Production List</h3>
                         </div><br>
                         <div class="box-body" style="text-align: center;">
                         <form action="<?php echo base_url('index.php/orders/showschedule/'); ?>" method="post" target="_blank" style="display: inline-block;">
@@ -38,7 +38,7 @@
                                 <label for="schedule_date"><b>Select Date:</b></label>
                                 <input type="date" style="width: 100%;" id="schedule_date" name="schedule_date" class="form-control" required>
                             </div><br>
-                            <button type="submit" class="btn btn-danger"><i class="fas fa-print"></i> <b>DOWNLOAD SCHEDULE LIST</b></button>
+                            <button type="submit" class="btn btn-danger"><i class="fas fa-print"></i> <b>DOWNLOAD PRODUCTION LIST</b></button>
                         </form>
 
                         </div>    

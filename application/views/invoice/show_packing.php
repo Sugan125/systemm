@@ -17,36 +17,37 @@
   .container {
     max-width: 800px;
     padding: 20px;
-    border: 1px solid #ccc;
+  
   }
   table {
     width: 100%;
   }
   th, td {
-    padding: 8px;
+  
     text-align: left;
   }
 
-  th{
-    background-color:blue;
-    color:white;
-  }
+ 
 </style>
 </head>
 <body onload="window.print();">
 <div class="container" style="margin-top: 100px;">
-<h4>Packing List</h4>
     <div class="row">
      
-        <div class="col-md-6"> <!-- Left column for date -->
-            <?php
-            $schedule_date = $schedule_date; 
-            $formatted_date = date("d/m/Y", strtotime($schedule_date));
-            $day_of_week = date("l", strtotime($schedule_date));
-            echo "<p>Date: $formatted_date $day_of_week</p>";
-            ?>
+        <div class="col-md-2" style="padding-left: 0px;"> <!-- Left column for date -->
+            <button class="btn" style="background-color: #0065cc; color:white;"><b>Delivery Date</b></button>
+            
         </div>
-        <div class="col-md-6 text-right"> <!-- Right column for orders and outlet -->
+        <div class="col-md-6">
+        <?php
+            date_default_timezone_set('Asia/Singapore');
+            $schedule_date = $schedule_date; 
+            $formatted_date = date("d-m-Y", strtotime($schedule_date));
+            $day_of_week = date("l", strtotime($schedule_date));
+            $current_time = date("h:i A"); 
+            echo "<p> $day_of_week, $formatted_date $current_time</p>";
+            ?></div>
+        <div class="col-md-4 text-right"> <!-- Right column for orders and outlet -->
             <p><b>Orders: $
                 <?php 
                 $total_price = 0; 
@@ -56,9 +57,9 @@
                     $company_name = $row->company_name;
                 endforeach; 
                 echo $total_price; 
-                ?>
+                ?>&nbsp; Line : CK
             </b></p>
-            <p>Production Line (FES)</p>
+          
         </div>
         <?php 
 $current_company = null;
@@ -71,17 +72,18 @@ foreach($orders as $order):
         }
         echo "<table border='1'>
                 <thead>
+                  <tr><td colspan='2' style='height: 20px;'></td></tr>
                     <tr>
                         <th colspan='2'>{$order->company_name}</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr><td colspan='2'></td></tr>"; // Empty row for gap
+                    <tr><td colspan='2' style='height: 20px;'></td></tr>"; // Empty row for gap
         $current_company = $order->company_name;
     endif;
     echo "<tr>
-            <td>{$order->prod_id}</td>
-            <td>{$order->qty} pc</td>
+            <td style='border-right: none;'>{$order->prod_id}</td>
+            <td style='border-left:none; text-align:center'>{$order->qty} pc</td>
           </tr>";
 endforeach; 
 // Close the last tbody
