@@ -413,7 +413,7 @@ $('#product_info_table').on('change', 'input[name^="qty"]', function() {
 function removeRow(tr_id)
   {
     $("#product_info_table tbody tr#row_"+tr_id).remove();
-    
+    subAmount();
   }
 
   function getTotal(row = null) {
@@ -486,10 +486,11 @@ function removeRow(tr_id)
     for (var x = 1; x <= tableProductLength; x++) {
         var sliceSelected = $("#sliced_" + x).val();
         var seedSelected = $("#seed_" + x).val();
+        var qty = $("#qty_" + x).val();
 
         if (sliceSelected || seedSelected) {
             // If either slice or seed is selected for this row, add additional charge
-            service_charge += 0.5;
+            service_charge += 0.5*qty;
         }
     }
 

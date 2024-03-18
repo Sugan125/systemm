@@ -32,10 +32,10 @@
         <div class="col-sm-12 col-xs-12" style="padding: 0px;">
         <h2 class="border" style="margin: 20px 0px;"></h2>
         </div> 
-        <div class="col-sm-3 col-xs-12" style="padding: 0px;float: right;display: grid;text-align: left;">
-        <b>Bill To:</b><?php echo $order_data['address'];?> <br>
+        <div class="col-sm-4 col-xs-12" style="padding: 0px;float: right;display: grid;text-align: left;">
+        <b>Bill To:</b><?php echo $order_data['company_name'];  ?><br><?php echo $order_data['address'];?> <br>
       </div>
-      <div class="col-sm-6 col-xs-12" style="padding: 0px;float: right;display: grid;text-align: left;">
+      <div class="col-sm-5 col-xs-12" style="padding: 0px;float: right;display: grid;text-align: left;">
       
       </div>
       <div class="col-sm-3 col-xs-12 pull-right" style="padding: 0px;float: right;display: grid;text-align: right;">
@@ -67,7 +67,7 @@
          </thead>
          <tbody>
          <?php foreach ($data['order_data']['order_item'] as $order) : ?>
-    <tr class="odd text-center">
+        <tr class="odd text-center">
         <td><?php echo isset($order['qty']) ? $order['qty'] : ''; ?></td>
         <td><?php echo isset($order['product_id']) ? $order['product_id'] : ''; ?></td>
         <td><?php echo isset($order['product_name']) ? $order['product_name'] : ''; ?></td>

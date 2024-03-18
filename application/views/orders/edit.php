@@ -68,7 +68,7 @@
                     <?php if(isset($order_data['order_item'])): ?>
                       <?php $x = 1; ?>
                       <?php foreach ($order_data['order_item'] as $key => $val): ?>
-                        <?php //print_r($v); ?>
+                    
                        <tr id="row_<?php echo $x; ?>">
                        <td>
                        <select class="form-control category_name" data-row-id="row_1" id="category_1" name="category[]" onmousedown="if(this.options.length>8){this.size=8;}" onchange='this.size=0;' onblur="this.size=0;" disabled>
@@ -146,7 +146,6 @@
                       <input type="hidden" class="form-control" id="gst_rate" value="<?php echo $order_data['gst_amt'] ?>" name="gst_rate" value="9" autocomplete="off">
                     </div>
                   </div><br>
-                  <!-- <?php// if($is_service_enabled == true): ?> -->
                   <div class="form-group"  style="margin-bottom:30px;">
                     <div class="col-sm-4">
                     <label for="service_charge" class="control-label">Slicing Service:  <?php //echo $company_data['service_charge_value'] ?> </label>
@@ -156,16 +155,6 @@
                       <input type="hidden" class="form-control" id="service_charge_value"  value="<?php echo $order_data['service_charge_rate'] ?>" name="service_charge_value" autocomplete="off">
                     </div>
                   </div><br>
-                  <?php //endif; ?>
-                  <?php// if($is_vat_enabled == true): ?>
-                 <!--  <div class="form-group">
-                    <label for="vat_charge" class="col-sm-5 control-label">Vat <?php //echo $company_data['vat_charge_value'] ?> %</label>
-                    <div class="col-sm-7">
-                      <input type="text" class="form-control" id="vat_charge" name="vat_charge" disabled autocomplete="off">
-                      <input type="hidden" class="form-control" id="vat_charge_value" name="vat_charge_value" autocomplete="off">
-                    </div>
-                  </div>
-                  <?php// endif; ?> -->
                   <div class="form-group" style="margin-bottom:30px;">
                     <div class="col-sm-4">
                     <label for="discount" class="control-label">Discount</label></div>

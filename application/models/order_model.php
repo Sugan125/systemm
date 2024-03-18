@@ -13,7 +13,7 @@ class order_model extends CI_Model {
             return $query->result_array();
    }
    public function getProductsByCategory($categoryId) {
-    $sql = "SELECT * FROM products WHERE active = 1 AND prod_category = ? ORDER BY product_name";
+    $sql = "SELECT * FROM products WHERE active = 1 AND prod_category = ? ORDER BY product_id,product_name";
     $query = $this->db->query($sql, array($categoryId));
     return $query->result_array();
 }
@@ -158,7 +158,7 @@ public function getProductData($id = null)
 			return false;
 		}
 
-		$sql = "SELECT ord.*, user.name as name, user.address as address FROM orders ord join user_register user WHERE ord.id = ? and user.id=ord.user_id";
+		$sql = "SELECT ord.*, user.name as name, user.address as address,user.company_name as company_name FROM orders ord join user_register user WHERE ord.id = ? and user.id=ord.user_id";
 		$query = $this->db->query($sql, array($order_id));
 		return $query->result_array();
 	}

@@ -26,7 +26,17 @@
                 </span>
             </a>
             <ul class="treeview-menu" style="display: none;">
+            <?php if ((isset($user->image)) || 
+                    isset($loginuser['roles']) &&
+                    !empty($loginuser['roles']) &&
+                    (
+                        ($loginuser['roles'] == 'Admin' || $loginuser['roles'] == 'Owner') ||
+                        (strpos($loginuser['roles'], 'Admin') !== false && strpos($loginuser['roles'], 'User') !== false)
+                    )
+                ): ?>
                 <li class="nav-item "><a href="<?php echo base_url('index.php/Userscontroller/create') ?>" class="nav-link"><i class="fa fa-edit"></i>  Create Users</a></li>
+                 <?php endif; ?>
+               
                 <li class="nav-item"><a href="<?php echo base_url('index.php/Userscontroller') ?>" class="nav-link"><i class="fa fa-th-large"></i>  Manage Users</a></li>
             </ul>
         </li>

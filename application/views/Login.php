@@ -30,6 +30,21 @@
     .login-logo img {
             width: 100% !important;
     }
+    .input-group {
+    position: relative;
+}
+
+#togglePassword {
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    right: 11px; /* Adjust as needed */
+    transform: translateY(-50%);
+    z-index: 2; /* Ensure the icon is above the input */
+    font-size: 12px;
+}
+
+   
   </style>
 
   <!-- Google Font -->
@@ -58,10 +73,15 @@
                 <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
     </div>
     <div class="form-group has-feedback">
-        <input id="password" type="password" class="form-control " name="password" required autocomplete="current-password" placeholder="password">
-                <span class="glyphicon glyphicon-lock form-control-feedback"></span>
-    </div>
-  
+        <input id="password" type="password" class="form-control" name="password" required autocomplete="current-password" placeholder="Password">
+     
+            <span class="input-group-text" id="togglePassword">
+                <i class="fas fa-eye" id="eyeIcon"></i>
+            </span>
+
+</div>
+
+
     <div class="row">
         <div class="col-xs-12">
             <button type="submit" class="btn btn-primary btn-block btn-flat">
@@ -75,6 +95,7 @@
       
     </div>
 </form>
+ 
 
   </div>
 </div>
@@ -85,7 +106,24 @@
 <script src="https://cpbsvr2.cpbev.sg:1443/adminlte/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 <!-- iCheck -->
 <script src="https://cpbsvr2.cpbev.sg:1443/adminlte/plugins/iCheck/icheck.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
 <script>
+
+const togglePassword = document.querySelector('#togglePassword');
+    const password = document.querySelector('#password');
+
+    togglePassword.addEventListener('click', function (e) {
+        // toggle icon and password visibility
+        const icon = this.querySelector('#eyeIcon');
+        icon.classList.toggle('fa-eye');
+        icon.classList.toggle('fa-eye-slash');
+        
+        const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+        password.setAttribute('type', type);
+    });
+
+    
   $(function () {
     $('input').iCheck({
       checkboxClass: 'icheckbox_square-blue',
