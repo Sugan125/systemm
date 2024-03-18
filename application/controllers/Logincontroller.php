@@ -1,5 +1,3 @@
- 
-
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
@@ -9,7 +7,7 @@ class Logincontroller extends CI_Controller {
 
 	function __construct() {
         parent::__construct();
-		$this->load->model('user_model');
+		$this->load->model('User_model');
         $this->load->library('email');
 		$this->load->helper('url');
 		$this->load->library('session');
@@ -68,8 +66,8 @@ class Logincontroller extends CI_Controller {
         if ($this->form_validation->run() == TRUE) {
             $name = $this->input->post('name');
             $password = $this->input->post('password');
-            $this->load->model('user_model');
-            $status = $this->user_model->checkUser($name, $password);
+            $this->load->model('User_model');
+            $status = $this->User_model->checkUser($name, $password);
 
             if ($status != false) {
                 $userData = array(
@@ -89,11 +87,9 @@ class Logincontroller extends CI_Controller {
                     'roles' => $status->role,
                 );
 
-				//echo '<pre>';
-			//	print_r($userData);
                 $this->session->set_userdata('LoginSession', $userData);
 
-                if ($user = $this->user_model->getNormalUser($status->email)) {
+                if ($user = $this->User_model->getNormalUser($status->email)) {
                     $this->session->set_userdata('normal_user', $user);
                 }
 
@@ -137,15 +133,15 @@ class Logincontroller extends CI_Controller {
 			{
 				 $currentPassword = $this->input->post('currentPassword');
 				// $encryptCurrentPassword = sha1($currentPassword);
-				 $this->load->model('user_model');
-				 $check = $this->user_model->checkCurrentPassword($currentPassword);
+				 $this->load->model('User_model');
+				 $check = $this->User_model->checkCurrentPassword($currentPassword);
 
 				 echo 'helooo'.$check;
 				 if($check==true)
 				 {
 				 	$newPassword = $this->input->post('password');
 				 	//$encryptPassword = sha1($newPassword);
-				 	$this->user_model->updatePassword($newPassword);
+				 	$this->User_model->updatePassword($newPassword);
 
 				 	$this->session->set_flashdata('success','Password changed Successfully');
 				 	redirect(base_url('index.php/Logincontroller/changepasswordview'));
@@ -197,81 +193,78 @@ class Logincontroller extends CI_Controller {
 	}
 
 	public function send_password()
-	{
-		$toemail=$this->input->post('email');
-		
+{
+    $toemail = $this->input->post('email');
 
-		$config['protocol']  = 'smtp';
-		$config['smtp_host'] = 'ssl://smtp.gmail.com';
-		$config['smtp_port'] = '465';
-		$config['smtp_timeout'] = '7';
-		$config['smtp_user']  = 'mailto:suganyaulagu8@gmail.com';//host name
-		$config['smtp_pass'] = 'qqcb mupl eyeb azdo';//host pswd
-		$config['charset'] = 'utf-8';
-		$config['newline']  = "\r\n";
-		$config['mailtype'] = 'text'; // or html
-		$config['validation'] = TRUE; // bool whether to validate email or not     
-		$this->email->initialize($config);
-		$from_email = $toemail;//from mail it can be any mail of user
+    $config['protocol']  = 'smtp';
+    $config['smtp_host'] = 'ssl://mail.sourdoughfactory.com.sg';
+    $config['smtp_port'] = '465';
+    $config['smtp_timeout'] = '7';
+    $config['smtp_user']  = 'finance@sourdoughfactory.com.sg'; // Remove 'mailto:' prefix
+    $config['smtp_pass'] = 'achr3420';
+    $config['charset'] = 'utf-8';
+    $config['newline']  = "\r\n";
+    $config['mailtype'] = 'text'; // or html
+    $config['validation'] = TRUE;
 
-		function pswd_gen()
-		{
-			$pswd='';
-			$st='abcdefghijk';
-			for($i=0;$i<5;$i++){
-				$pswd.=$st[random_int(0,9)];
-			}
-			return $pswd;
-		}
+    $this->load->library('email', $config); // Load email library with configuration
 
-				$validateEmail = $this->user_model->validateEmail($from_email);
-				if($validateEmail!=false)
-				{
+    $from_email = 'finance@sourdoughfactory.com.sg'; // Set from email
 
-						$subject = "New password for your account";
-						$message = pswd_gen();
-						$msg = "Please login with your new password:  ".$message;
+    // Generate password
+    function pswd_gen()
+    {
+        $pswd = '';
+        $st = 'abcdefghijk';
+        for ($i = 0; $i < 5; $i++) {
+            $pswd .= $st[random_int(0, 9)];
+        }
+        return $pswd;
+    }
 
-						//echo$message."<br>";
-						$c=$this->user_model->changepswd($toemail,$message);
+    // Validate email
+    $validateEmail = $this->User_model->validateEmail($from_email);
+    if ($validateEmail != false) {
 
-						
+        $subject = "Invoice testing";
+        $message = pswd_gen();
+        $msg = "test invoice";
 
-						// $data['name'] = $this->user_model->fecth_name($toemail);
+        $c = $this->User_model->changepswd($toemail, $message);
 
-						// $flashdataMessage = 'Please check your email for new password! User:' . $data['name'];
+        // Set flash data message
+        $flashdataMessage = 'Please check your email for new password!';
 
-						$flashdataMessage = 'Please check your email for new password!';
+        // Load email library
+        $this->email->from($from_email, 'Sourdough Factory');
+        $this->email->to($toemail);
+        $this->email->subject($subject);
+        $this->email->message($msg);
 
-						//add to session
-						////echo$from_email;
-						// //echo$to_email;
-						////echo$subject;
-						////echo$message;
-						//Load email library
-						$this->email->from($from_email, 'Sourdough Factory');//    from(from_mail,identification)
-						$this->email->to($toemail);
-						$this->email->subject($subject);
-						$this->email->message($msg);
-						$this->email->send();
-
-						if ($c) 
-						{
-							$this->session->set_flashdata('sucess',$flashdataMessage);
-							redirect(base_url('index.php/Logincontroller/index'));
-						} 
-				}
-
-				else
-					{
-					
-						$this->session->set_flashdata('errorss','Your email does not exist!');
-						$this->load->view('forgot_password');	
-					}
-
-		
-	}
-
+        // Send email
+        if ($this->email->send()) {
+            $this->session->set_flashdata('success', $flashdataMessage);
+            redirect(base_url('index.php/Logincontroller/index'));
+        } else {
+            // Debugging statement
+            $debug_output = $this->email->print_debugger();
+            echo "Email sending failed: " . $debug_output;
+            exit;
+            // Uncomment the following lines if you want to redirect after debugging
+            /*
+            $this->session->set_flashdata('errorss', 'Email sending failed!');
+            redirect(base_url('index.php/Logincontroller/index'));
+            */
+        }
+    } else {
+        // Debugging statement
+        $debug_output = $this->email->print_debugger();
+        echo "Email sending failed: " . $debug_output;
+        
+        $this->session->set_flashdata('errorss', 'Your email does not exist!');
+        $this->load->view('forgot_password');
+    }
+}
 
 	public function google_login()
 	{
@@ -292,10 +285,10 @@ class Logincontroller extends CI_Controller {
 				$data['email'] = $user_info->email;
 				$data['image'] = $user_info->picture;
 				
-				if($user = $this->user_model->getUser($user_info->email)){
+				if($user = $this->User_model->getUser($user_info->email)){
 					$this->session->set_userdata('user_register',$user);
 				}else{
-					$this->user_model->createUser($data);
+					$this->User_model->createUser($data);
 				}
 
 				
@@ -311,3 +304,4 @@ class Logincontroller extends CI_Controller {
 
 	
 }
+?>
