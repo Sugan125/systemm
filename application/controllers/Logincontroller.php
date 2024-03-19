@@ -253,6 +253,7 @@ class Logincontroller extends CI_Controller {
 						$this->email->to($toemail);
 						$this->email->subject($subject);
 						$this->email->message($msg);
+						//$this->email->attach('C:\Users\Suganya Arun\Downloads\invoice_1.pdf');
 						$this->email->send();
 
 						if ($c) 
