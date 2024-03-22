@@ -1,10 +1,26 @@
-<body onload="window.print();">
+<head>
+  <style>
+       @page {
+      size: "A4 potrait";
+      margin-top: 50px;
+      margin-right: 50px;
+      margin-left: 50px;
+    } 
+    </style>
+</head>
+
+<body>
   <div class="container" >
     <section class="invoice">
       <div class="row" style="margin: 0px;">
         <div class="col-sm-12 col-xs-12" style="padding: 0px;">
           <h2 class="page-header">
-          <img src="<?php echo base_url('images/logo.jpg'); ?>" height="70" width="auto">
+            <?php
+            $image_path = base_url('images/logo.jpg');
+            $image_data = file_get_contents($image_path);
+            $base64_image = base64_encode($image_data);
+            ?>
+          <img src="data:image/jpeg;base64,<?php echo $base64_image; ?>" height="70" width="auto">
           </h2>
         </div> 
       <div class="col-sm-7 col-xs-12" style="padding: 0px;">
@@ -118,7 +134,14 @@
        </table>
        <div class="col-sm-12 col-xs-12" style="padding: 0px;">
        All cheque should be made payable to "Sourdough Factory LLP"<br>Bank transfer: DBS Bank Account Number: 072 000 7590
-       <br><img src="<?php echo base_url('images/pay-now.jpg'); ?>" height="70" width="auto"><br>Paynow: T12LL1071J</div>
+       <br>
+       <?php
+            $image_path = base_url('images/pay-now.jpg');
+            $image_data = file_get_contents($image_path);
+            $base64_image = base64_encode($image_data);
+            ?>
+          <img src="data:image/jpeg;base64,<?php echo $base64_image; ?>" height="70" width="auto">
+       <br>Paynow: T12LL1071J</div>
        <div class="col-sm-12 col-xs-12" style="padding: 0px;">
         <h2 style="margin-bottom: 50px;"></h2>
         </div> 

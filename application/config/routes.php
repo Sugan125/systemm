@@ -54,6 +54,7 @@ $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
 $route['Login'] =  'Logincontroller/index';
+$rout['orders'] = 'orders';
 
 
 

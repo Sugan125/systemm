@@ -50,60 +50,65 @@ public function getProductData($id = null)
 		// }
 	}
 
-    public function create()
-	{
-		$user = $this->session->userdata('normal_user');
+	public function create()
+{
+    $user = $this->session->userdata('normal_user');
+    $user_id = $user->id;
 
-        $user_id = $user->id;
-		// get store id from user id 
+    // Generate bill number
+    $bill_no = 'CDSTRO-' . strtoupper(substr(md5(uniqid(mt_rand(), true)), 0, 4));
 
-		$bill_no = 'CDSTRO-'.strtoupper(substr(md5(uniqid(mt_rand(), true)), 0, 4));
-    	$data = array(
-    		'bill_no' => $bill_no,
-    		'date_time' => strtotime(date('Y-m-d h:i:s a')),
-    		'gross_amount' => $this->input->post('gross_amount_value'),
-    		'service_charge_rate' => $this->input->post('service_charge_value'),
-			'delivery_charge' => $this->input->post('delivery_charge_value'),
-    		'net_amount' => $this->input->post('net_amount_value'),
-    		'discount' => $this->input->post('discount'),
-            'gst_amt'=> $this->input->post('gst_rate'),
-            'gst_percent'=>$this->input->post('gst_value'),
-    		'paid_status' => 2,
-    		'user_id' => $user_id,
-    	);
-       // print_r($data);
-        //exit;
-		$insert = $this->db->insert('orders', $data);
-		$order_id = $this->db->insert_id();
+    // Prepare order data
+    $data = array(
+        'bill_no' => $bill_no,
+        'date_time' => strtotime(date('Y-m-d h:i:s a')),
+        'gross_amount' => $this->input->post('gross_amount_value'),
+        'service_charge_rate' => $this->input->post('service_charge_value'),
+        'delivery_charge' => $this->input->post('delivery_charge_value'),
+        'net_amount' => $this->input->post('net_amount_value'),
+        'discount' => $this->input->post('discount'),
+        'gst_amt' => $this->input->post('gst_rate'),
+        'gst_percent' => $this->input->post('gst_value'),
+        'paid_status' => 2,
+        'user_id' => $user_id,
+    );
 
-		$count_product = count($this->input->post('product'));
-    	for($x = 0; $x < $count_product; $x++) {
-    		$category = !empty($this->input->post('category')[$x]) ? $this->input->post('category')[$x] : null;
-			$product_id = !empty($this->input->post('product')[$x]) ? $this->input->post('product')[$x] : null;
-			$qty = !empty($this->input->post('qty')[$x]) ? $this->input->post('qty')[$x] : null;
-			$rate = !empty($this->input->post('rate_value')[$x]) ? $this->input->post('rate_value')[$x] : null;
-			$amount = !empty($this->input->post('amount_value')[$x]) ? $this->input->post('amount_value')[$x] : null;
-			$slice_type = !empty($this->input->post('sliced')[$x]) ? $this->input->post('sliced')[$x] : null;
-			$seed_type = !empty($this->input->post('seed')[$x]) ? $this->input->post('seed')[$x] : null;
+    // Insert order data into database
+    $this->db->insert('orders', $data);
+    $order_id = $this->db->insert_id(); // Get the last inserted order ID
 
-			// Create the items array with the sanitized values
-			$items = array(
-				'order_id' => $order_id,
-				'category' => $category,
-				'product_id' => $product_id,
-				'qty' => $qty,
-				'rate' => $rate,
-				'amount' => $amount,
-				'slice_type' => $slice_type,
-				'seed_type' => $seed_type,
-			);
+    // Insert order items data into database
+    $count_product = count($this->input->post('product'));
+    for ($x = 0; $x < $count_product; $x++) {
+        // Extract item details from POST data
+        $category = !empty($this->input->post('category')[$x]) ? $this->input->post('category')[$x] : null;
+        $product_id = !empty($this->input->post('product')[$x]) ? $this->input->post('product')[$x] : null;
+        $qty = !empty($this->input->post('qty')[$x]) ? $this->input->post('qty')[$x] : null;
+        $rate = !empty($this->input->post('rate_value')[$x]) ? $this->input->post('rate_value')[$x] : null;
+        $amount = !empty($this->input->post('amount_value')[$x]) ? $this->input->post('amount_value')[$x] : null;
+        $slice_type = !empty($this->input->post('sliced')[$x]) ? $this->input->post('sliced')[$x] : null;
+        $seed_type = !empty($this->input->post('seed')[$x]) ? $this->input->post('seed')[$x] : null;
 
-    		$this->db->insert('order_items', $items);
-    	}
+        $items = array(
+            'order_id' => $order_id,
+            'category' => $category,
+            'product_id' => $product_id,
+            'qty' => $qty,
+            'rate' => $rate,
+            'amount' => $amount,
+            'slice_type' => $slice_type,
+            'seed_type' => $seed_type,
+        );
+        $this->db->insert('order_items', $items);
+    }
 
+    $query = $this->db->select('bill_no')->where('user_id', $user_id)->where('id', $order_id)->get('orders');
+    $result = $query->row_array();
+    $bill_no = $result['bill_no'];
 
-		return ($order_id) ? $order_id : false;
-	}
+    return array('id' => $order_id, 'order_id' => $order_id, 'bill_no' => $bill_no);
+}
+
 
     public function update($id)
 	{
@@ -262,7 +267,7 @@ public function getProductData($id = null)
 			return false;
 		}
 
-		$sql = "SELECT ord.*, user.name as name, user.address as address FROM orders ord join user_register user WHERE ord.id = ? and user.id=ord.user_id";
+		$sql = "SELECT ord.*, user.name as name, user.address as address, user.company_name as company_name FROM orders ord join user_register user WHERE ord.id = ? and user.id=ord.user_id";
 		$query = $this->db->query($sql, array($order_id));
 		return $query->result_array();
 	}
