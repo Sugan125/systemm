@@ -37,13 +37,8 @@
                     <div class="invoice-col" style="margin: 0px;">
                     <b>Invoice No: </b> <?php echo $order_data['bill_no']; ?><br>
                     <b>Date: </b> <?php echo $order_date; ?><br>
-                    <!-- <b>Bill ID: </b> <?php //echo $order_data['bill_no']; ?><br> -->
-                    <!-- <b>Your Ref: </b> 123<br>
-                    <b>D/O No.: </b> 24020699<br>
-                    <b>Term: </b> Net 30<br> -->
                     </div>
-    
-      </div>
+       </div>
         </div> 
         <div class="col-sm-12 col-xs-12" style="padding: 0px;">
         <h2 class="border" style="margin: 20px 0px;"></h2>
@@ -52,7 +47,6 @@
         <b>Bill To:</b><?php echo $order_data['company_name'];  ?><br><?php echo $order_data['address'];?> <br>
       </div>
       <div class="col-sm-5 col-xs-12" style="padding: 0px;float: right;display: grid;text-align: left;">
-      
       </div>
       <div class="col-sm-3 col-xs-12 pull-right" style="padding: 0px;float: right;display: grid;text-align: right;">
         <b>Ship To:</b><?php echo $order_data['address'];?> <br>
@@ -93,7 +87,6 @@
         <td>$<?php echo isset($order['amount']) ? $order['amount'] : ''; ?></td>
     </tr>
 <?php endforeach; ?>
-
          </tbody>
        </table>
        <div class="col-xs-12" style="padding: 10px;float: right;">
@@ -119,7 +112,7 @@
            <tr class="text-center">
              <th>RECEIVED BY</th>
              <th>FOR Sourdough Factory LLP</th>
-                                     </tr>
+            </tr>
          </thead>
          <tbody>
              <tr class="odd text-center">

@@ -159,9 +159,7 @@
              <th>Delivery Address</th>
              <th>Mobile Number</th>
              <!-- <th>Status</th>
-             <?php //if ((in_array('Admin', $loginuser['role']) || $loginuser['roles'] == 'Admin') || (in_array('File Upload', $loginuser['access']) == 'File Upload' && in_array('User', $loginuser['role'])) ||  ($loginuser['accesss'] == 'File Upload' && $loginuser['roles' == 'User'])) { ?>
-             <th>Uploaded/View Files</th>
-             <?php //} ?> -->
+          
              <?php if ((in_array('Admin', $loginuser['role']) || $loginuser['roles'] == 'Admin') || (in_array('Edit', $loginuser['access']) == 'Edit' && in_array('User', $loginuser['role'])) ||  ($loginuser['accesss'] == 'Edit' && $loginuser['roles' == 'User']) || ((!$loginuser['accesss'] == 'Edit' && $loginuser['access'] == 'Delete'))) { ?>
              <th>Action</th>
              <?php } ?>

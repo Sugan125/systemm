@@ -98,9 +98,7 @@
                                                     href="<?php echo base_url('index.php/orders/printadmin/'.$val->id); ?>"
                                                     class="btn-sm btn btn-warning"><i
                                                         class="fas fa-print"></i></a>
-                                                <!-- <a href="<?php// echo base_url('index.php/orders/update/'.$val->id); ?>"
-                                                    class="btn-sm btn btn-info"><i
-                                                        class="fas fa-edit"></i></a> -->
+                                               
                                                         <a target="__blank"
                                                     href="<?php echo base_url('index.php/orders/download/'.$val->id); ?>"
                                                     class="btn-sm btn btn-warning"><i

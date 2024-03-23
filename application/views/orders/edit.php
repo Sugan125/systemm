@@ -148,7 +148,7 @@
                   </div><br>
                   <div class="form-group"  style="margin-bottom:30px;">
                     <div class="col-sm-4">
-                    <label for="service_charge" class="control-label">Slicing Service:  <?php //echo $company_data['service_charge_value'] ?> </label>
+                    <label for="service_charge" class="control-label">Slicing Service:   </label>
                     </div>
                     <div class="col-sm-8">
                       <input type="text" class="form-control" id="service_charge" value="<?php echo $order_data['service_charge_rate'] ?>"  name="service_charge" disabled autocomplete="off">

@@ -12,6 +12,7 @@ class orders extends CI_Controller {
         $this->load->library('pagination');
         $this->load->library('session');
 		$this->load->library('email');
+		
     }
 
      public function index() {
@@ -45,11 +46,13 @@ class orders extends CI_Controller {
 			
 					$order_id = $order_id['order_id'];
 					
-					
 					$this->download($order_id); 
 					$this->send_invoice($bill_no); 
 
-				
+					$this->session->set_flashdata('success', 'Order Placed');
+        			redirect('orders', 'refresh');
+					
+					
 				
 			} 
 
@@ -354,7 +357,7 @@ public function download($id)
     file_put_contents($filepath, $dompdf->output());
 
     // Stream the PDF for download
-    $dompdf->stream($filename);
+  //  $dompdf->stream($filename);
 
     $this->load->view('template/footer.php');
 }
@@ -511,7 +514,7 @@ The Sourdough Factory Team";
 						$this->email->subject($subject);
 						$this->email->message($msg);
 					
-						$filepdath = FCPATH . 'files/' . $filename;
+					//	$filepdath = FCPATH . 'files/' . $filename;
 						$file_path = 'C:\xampp\htdocs\systemm\files\invoice_' . $bill_no . '.pdf';
 						$this->email->attach($file_path);
 						$this->email->send();

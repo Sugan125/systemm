@@ -21,7 +21,7 @@
                     <div class="invoice-col" style="margin: 0px;">
                     <b>Invoice No: </b> <?php echo $order_data['bill_no']; ?><br>
                     <b>Date: </b> <?php echo $order_date; ?><br>
-                    <!-- <b>Bill ID: </b> <?php //echo $order_data['bill_no']; ?><br> -->
+                    <!-- <b>Bill ID: </b> <br> -->
                     <!-- <b>Your Ref: </b> 123<br>
                     <b>D/O No.: </b> 24020699<br>
                     <b>Term: </b> Net 30<br> -->
