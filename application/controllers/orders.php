@@ -95,53 +95,51 @@ class orders extends CI_Controller {
     public function update($id)
 	{
 
+	
 		$this->data['page_title'] = 'Update Order';
 
-		$this->form_validation->set_rules('product[]', 'Product name', 'trim|required');
+		$this->form_validation->set_rules('qty[]', 'qty', 'trim|required');
 
 
         if ($this->form_validation->run() == TRUE) {
 
         	$update = $this->order_model->update($id);
 
-        	if($update == true) {
-        		$this->session->set_flashdata('success', 'Successfully updated');
-        		redirect('orders', 'refresh');
-        	}
-        	else {
-        		$this->session->set_flashdata('errors', 'Error occurred!!');
-        		redirect('orders/update/'.$id, 'refresh');
-        	}
+		
+			$this->session->set_flashdata('success', 'Order Updated Successfully');
+			redirect('orders', 'refresh');
         }
         else {
 
-        	$result = array();
-        	$orders_data = $this->order_model->getOrdersData($id);
+        	$loginuser = $this->session->userdata('LoginSession');
+	
+			$data['user_id'] = $loginuser['id'];
 
-        	if(empty($orders_data)) {
-        		$this->session->set_flashdata('errors', 'The request data does not exists');
-        		redirect('index.php/orders', 'refresh');
-        	}
+			$user_id = $data['user_id'];
 
-			$result['order'] = $orders_data;
-
-
-    		$data['order_data'] = $result;
+			$orders_data = $this->order_model->getOrdersDatas($id,$user_id);
 
 			foreach ($orders_data as $order) {
-				$orders_item = $this->order_model->getOrdersItemData($order->id);
-				// Process $orders_item as needed
+				$orders_item = $this->order_model->getOrdersItemDatas($id);
+			}
+			
+			
+			foreach ($orders_item as $k => $v) {
+				$result['order_item'][] = $v;
 			}
 
-    		foreach($orders_item as $k => $v) {
-    			$result['order_item'][] = $v;
-    		}
-    		
 			$result['order'] = $orders_data;
 
+			
 			$data['order_data'] = $result;
-
 			$data['order_total'] = $this->order_model->getOrdertotal($id);
+
+			// echo '<pre>';
+			// print_r($data['order_data']);
+			
+			
+			// 	// Accessing the array at index 0
+			$order_total_data = $data['order_total'][0];
 
 			$data['products'] = $this->order_model->getActiveProductData();
             $data['category'] = $this->order_model->getActivecatergoryData();

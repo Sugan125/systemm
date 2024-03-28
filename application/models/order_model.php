@@ -110,53 +110,65 @@ public function getProductData($id = null)
 }
 
 
-    public function update($id)
-	{
-		if($id) {
-            $user = $this->session->userdata('normal_user');
+public function update($id)
+{
+    if($id) {
+        // Retrieve user information from session
+        $user = $this->session->userdata('normal_user');
+        $user_id = $user->id;
 
-            $user_id = $user->id;
+        // Data to update in the orders table
+        $order_data = array(
+            'gross_amount' => $this->input->post('gross_amount_value'),
+            'service_charge_rate' => $this->input->post('service_charge_value'),
+            'delivery_charge' => $this->input->post('delivery_charge_value'),
+            'net_amount' => $this->input->post('net_amount_value'),
+            'discount' => $this->input->post('discount'),
+            'gst_amt' => $this->input->post('gst_rate'),
+            'gst_percent' => $this->input->post('gst_value'),
+            'paid_status' => 2, // Assuming 2 indicates confirmed/paid status
+            'user_id' => $user_id,
+        );
 
-			$data = array(
-                'gross_amount' => $this->input->post('gross_amount_value'),
-                'service_charge_rate' => $this->input->post('service_charge_value'),
-				'delivery_charge' => $this->input->post('delivery_charge_value'),
-                'net_amount' => $this->input->post('net_amount_value'),
-                'discount' => $this->input->post('discount'),
-                'gst_amt'=> $this->input->post('gst_rate'),
-                'gst_percent'=>$this->input->post('gst_value'),
-                'paid_status' => 2,
-                'user_id' => $user_id,
-	    	);
+        // Update order data in the orders table
+        $this->db->where('id', $id);
+        $update_order = $this->db->update('orders', $order_data);
 
-			$this->db->where('id', $id);
-			$update = $this->db->update('orders', $data);
+        if (!$update_order) {
+            // Error occurred while updating order data
+            $this->session->set_flashdata('error', 'Failed to update order. Please try again.');
+            redirect('orders/update/' . $id, 'refresh');
+        }
 
-			// now remove the order item data 
-			$this->db->where('order_id', $id);
-			$this->db->delete('order_items');
 
-			$count_product = count($this->input->post('product'));
-	    	for($x = 0; $x < $count_product; $x++) {
-	    		$items = array(
-	    			'order_id' => $id,
-                    'category' => $this->input->post('category')[$x],
-                    'product_id' => $this->input->post('product')[$x],
-                    'qty' => $this->input->post('qty')[$x],
-                    'rate' => $this->input->post('rate_value')[$x],
-                    'amount' => $this->input->post('amount_value')[$x],
-                    'slice_type'=> $this->input->post('sliced')[$x],
-                    'seed_type'=> $this->input->post('seed')[$x],
-	    		);
-	    		$this->db->insert('order_items', $items);
-	    	}
-
-	    	
-	    	
-
-			return true;
+		$product = $this->input->post('product');
+		if (is_array($product)) {
+			$count_product = count($product);
+		} else {
+			// Handle the case when $product is not an array
+			$count_product = 0; // or any default value you prefer
 		}
-	}
+
+        // Re-insert updated order items
+        for ($x = 0; $x < $count_product; $x++) {
+            $order_item_data = array(
+                'order_id' => $id,
+                'category' => $this->input->post('category')[$x],
+                'product_id' => $this->input->post('product')[$x],
+                'qty' => $this->input->post('qty')[$x],
+                'rate' => $this->input->post('rate_value')[$x],
+                'amount' => $this->input->post('amount_value')[$x],
+                'slice_type' => $this->input->post('sliced')[$x],
+                'seed_type' => $this->input->post('seed')[$x],
+            );
+            // Insert order item data into order_items table
+            $this->db->insert('order_items', $order_item_data);
+        }
+
+        return array('update' => true);
+    }
+}
+
 	public function getOrdertotal($order_id = null)
 	{
 		if(!$order_id) {
@@ -209,7 +221,7 @@ public function getProductData($id = null)
 			return false;
 		}
 
-		$sql = "SELECT ord.*, pd.product_name , pd.product_id
+		$sql = "SELECT ord.*, pd.product_name , pd.product_id as prod_id
 				FROM order_items ord 
 				LEFT JOIN products pd ON ord.product_id = pd.id 
 				WHERE ord.order_id = ?";
