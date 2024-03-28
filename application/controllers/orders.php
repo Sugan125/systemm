@@ -345,11 +345,14 @@ public function download($id)
 	$html = $this->load->view('invoice/download_invoice.php', array('data' => $data, 'order_date' => $order_date, 'result'=>$result), true);
 	$dompdf = new Dompdf();
 	$dompdf->loadHtml($html);
-	$dompdf->render();
-	$dompdf->setPaper('A4', 'portrait');
-	$filename = 'invoice_'.$bill_no .'.pdf'; // Example: invoice_123.pdf
+	
+	$dompdf->loadHtml($html);
 
-    // Specify the path where you want to save the PDF file
+	$dompdf->setPaper(array(0, 0, 840, 840), 'portrait'); 
+	$dompdf->render();
+
+	$filename = 'invoice_'.$bill_no .'.pdf';
+
 	$filepath = FCPATH . 'files/' . $filename;
 
 
