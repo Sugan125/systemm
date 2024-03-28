@@ -308,5 +308,77 @@ public function getpackingorder($schedule_date) {
 }
 
 
+public function repeat_order($id)
+{
+    if($id) {
+     
+        $user = $this->session->userdata('normal_user');
+        $user_id = $user->id;
+
+		$bill_no = 'CDSTRO-' . strtoupper(substr(md5(uniqid(mt_rand(), true)), 0, 4));
+
+
+		$sql = "select * from orders where id=".$id;
+		$query = $this->db->query($sql);
+		$orderss = $query->result_array(); 
+
+		foreach($orderss as $row){
+		$data = array(
+			'bill_no' => $bill_no,
+			'date_time' => strtotime(date('Y-m-d h:i:s a')),
+			'gross_amount' => $row['gross_amount'],
+			'service_charge_rate' => $row['service_charge_rate'],
+			'delivery_charge' => $row['delivery_charge'],
+			'net_amount' => $row['net_amount'],
+			'discount' => $row['discount'],
+			'gst_amt' => $row['gst_amt'],
+			'gst_percent' => $row['gst_percent'],
+			'paid_status' => 2,
+			'user_id' => $user_id,
+		);
+	
+		
+		$this->db->insert('orders', $data);
+		$order_id = $this->db->insert_id(); 
+		}
+		
+		$sqll = "SELECT * FROM order_items WHERE order_id=" . $id;
+		$queryy = $this->db->query($sqll);
+		$orders_items = $queryy->result_array();
+
+		foreach ($orders_items as $rows) {
+			// Extracting fields from the current row
+			$category = $rows['category'];
+			$product_id = $rows['product_id'];
+			$qty = $rows['qty'];
+			$rate = $rows['rate'];
+			$amount = $rows['amount'];
+			$slice_type = $rows['slice_type'];
+			$seed_type = $rows['seed_type'];
+
+			// Constructing the array for insertion
+			$items = array(
+				'order_id' => $order_id,
+				'category' => $category,
+				'product_id' => $product_id,
+				'qty' => $qty,
+				'rate' => $rate,
+				'amount' => $amount,
+				'slice_type' => $slice_type,
+				'seed_type' => $seed_type,
+			);
+
+			// Inserting the constructed array into the database
+			$this->db->insert('order_items', $items);
+		}
+		
+		$query = $this->db->select('bill_no')->where('user_id', $user_id)->where('id', $order_id)->get('orders');
+		$result = $query->row_array();
+		$bill_no = $result['bill_no'];
+	
+		return array('id' => $order_id, 'order_id' => $order_id, 'bill_no' => $bill_no);
+    }
+}
+
 
 }

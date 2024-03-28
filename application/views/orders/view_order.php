@@ -68,7 +68,8 @@
             <td><?php echo $val->gst_amt; ?></td>
             <td><?php echo $val->net_amount; ?></td>
             <td><a target="__blank" href="<?php echo base_url('index.php/orders/printDiv/'.$val->id); ?>" class="btn-sm btn btn-warning"><i class="fas fa-print"></i></a>
-            <a href="<?php echo base_url('index.php/orders/update/'.$val->id); ?>" class="btn-sm btn btn-info"><i class="fas fa-edit"></i></a></td>
+            <a href="<?php echo base_url('index.php/orders/update/'.$val->id); ?>" class="btn-sm btn btn-info"><i class="fas fa-edit"></i></a>
+            <a href="<?php echo base_url('index.php/orders/repeat_order/'.$val->id); ?>" class="btn-sm btn btn-info"><i class="fas fa-repeat"></i> Repeat Order</a></td>
             <!--<button type="button" class="btn btn-danger" onclick="removeFunc('.$value['id'].')" data-toggle="modal" data-target="#removeModal"><i class="fa fa-trash"></i></button>
           </td> -->
         </tr>

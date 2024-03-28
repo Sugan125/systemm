@@ -523,4 +523,76 @@ The Sourdough Factory Team";
 
 	}
 
+
+	public function repeat_order($id)
+	{
+
+	
+		$this->data['page_title'] = 'Update Order';
+
+		$this->form_validation->set_rules('gross_amount_value', 'gross_amount_value', 'trim|required');
+
+
+        if ($this->form_validation->run() == TRUE) {
+
+        	$update = $this->order_model->repeat_order($id);
+
+			$bill_no = $update['bill_no'];
+			
+					$order_id = $update['order_id'];
+					
+					$this->download($order_id); 
+					$this->send_invoice($bill_no); 
+
+			$this->session->set_flashdata('success', 'Order Placed Successfully');
+			redirect('orders', 'refresh');
+        }
+        else {
+
+        	$loginuser = $this->session->userdata('LoginSession');
+	
+			$data['user_id'] = $loginuser['id'];
+
+			$user_id = $data['user_id'];
+
+			$orders_data = $this->order_model->getOrdersDatas($id,$user_id);
+
+			foreach ($orders_data as $order) {
+				$orders_item = $this->order_model->getOrdersItemDatas($id);
+			}
+			
+			
+			foreach ($orders_item as $k => $v) {
+				$result['order_item'][] = $v;
+			}
+
+			$result['order'] = $orders_data;
+
+			
+			$data['order_data'] = $result;
+			$data['order_total'] = $this->order_model->getOrdertotal($id);
+
+			// echo '<pre>';
+			// print_r($data['order_data']);
+			
+			
+			// 	// Accessing the array at index 0
+			$order_total_data = $data['order_total'][0];
+
+			$data['products'] = $this->order_model->getActiveProductData();
+            $data['category'] = $this->order_model->getActivecatergoryData();
+
+
+
+            $this->load->view('template/header.php', $data);
+            $user = $this->session->userdata('user_register');
+            $users = $this->session->userdata('normal_user');
+            $loginuser = $this->session->userdata('LoginSession');
+            //var_dump($loginuser);
+            $this->load->view('template/sidebar.php', array('user' => $user, 'users' => $users, 'data' => $data,'loginuser' => $loginuser));
+            $this->load->view('orders/repeat_order.php', $data);
+            $this->load->view('template/footer.php');
+        }
+	}
+
 }
