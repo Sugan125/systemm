@@ -43,6 +43,7 @@
 <body onload="window.print();">
 <div class="container" style="margin-top: 100px;">
     <div class="row">
+    <div class="col-md-12"><p style="font-weight: bold;">Production Scedule</p></div>
         <div class="col-md-6">
             <?php
             date_default_timezone_set('Asia/Singapore');
@@ -50,7 +51,7 @@
             $formatted_date = date("d-m-Y", strtotime($schedule_date));
             $day_of_week = date("l", strtotime($schedule_date));
             $current_time = date("h:i A"); 
-            echo "<p>Date: $formatted_date $day_of_week $current_time</p>";
+            echo "<p>Order Date: $formatted_date $day_of_week $current_time</p>";
             ?>
         </div>
         <div class="col-md-6 text-right"> 
@@ -78,7 +79,6 @@
           <th></th>
           <th>Category</th>
           <th>S/O</th>
-          <th>Daily</th>
           <th>Customers</th>
           <th>Total Qty</th>
           <th>UOM</th>
@@ -95,7 +95,6 @@
                 <td><?= $row->product_id; ?></td>
                 <td><?= $row->product_name; ?></td>
                 <td><?= $row->category; ?></td>
-                <td>0</td>
                 <td>0</td>
                 <td><?= $row->qty; ?></td>
                 <td><?= $row->qty; ?></td>
