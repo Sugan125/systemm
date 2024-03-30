@@ -48,17 +48,17 @@
             echo "<p> $day_of_week, $formatted_date $current_time</p>";
             ?></div>
         <div class="col-md-4 text-right"> <!-- Right column for orders and outlet -->
-            <p><b>Orders: $
-                <?php 
+            <!-- <p><b>Orders: $
+                <?php /*
                 $total_price = 0; 
                 $company_name = null;
                 foreach($orders as $val => $row):  
                     $total_price += $row->amount; 
                     $company_name = $row->company_name;
                 endforeach; 
-                echo $total_price; 
+                echo $total_price; */
                 ?>&nbsp; Line : CK
-            </b></p>
+            </b></p> -->
           
         </div>
         <?php 

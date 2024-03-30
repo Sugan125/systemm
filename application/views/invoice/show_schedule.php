@@ -55,15 +55,15 @@
             ?>
         </div>
         <div class="col-md-6 text-right"> 
-            <p><b>Orders: $
-                <?php 
+            <!-- <p><b>Orders: $
+                <?php /*
                 $total_price = 0; 
                 foreach($orders as $val => $row):  
                     $total_price += $row->amount; 
                 endforeach; 
-                echo $total_price; 
+                echo $total_price; */
                 ?>
-            </b></p>
+            </b></p> -->
             <p>Production Line (CK)</p>
         </div>
     <table border="1">
@@ -78,6 +78,7 @@
           <th>Item</th>
           <th></th>
           <th>Category</th>
+          <th>Daily</th>
           <th>S/O</th>
           <th>Customers</th>
           <th>Total Qty</th>
@@ -95,6 +96,7 @@
                 <td><?= $row->product_id; ?></td>
                 <td><?= $row->product_name; ?></td>
                 <td><?= $row->category; ?></td>
+                <td>0</td>
                 <td>0</td>
                 <td><?= $row->qty; ?></td>
                 <td><?= $row->qty; ?></td>
