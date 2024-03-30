@@ -2475,4 +2475,9 @@ header .form-inline {
   }
 }
 
+.total-amount tbody tr td {
+  width: 150px;
+  text-align: center;
+  padding: 5px;
+}
 

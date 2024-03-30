@@ -14,6 +14,7 @@
         <b>Address: </b> 5 Mandai Link #07-05 Mandai Foodlink Singapore 728654<br>
         <b>Tel: </b> 6957 3420<br>
         <b>Email: </b> accounts@breadhearth.com<br>
+        <b>SFA License No.: </b> PL18J0136<br>
       </div>
         <div class="col-sm-5 col-xs-12" style="padding: 0px;float: right;">
           <div class="row invoice-info" style="margin: 0px; display: grid;float: right;">
@@ -22,9 +23,9 @@
                     <b>Invoice No: </b> <?php echo $order_data['bill_no']; ?><br>
                     <b>Date: </b> <?php echo $order_date; ?><br>
                     <!-- <b>Bill ID: </b> <br> -->
-                    <!-- <b>Your Ref: </b> 123<br>
+                    <b>Your Ref: </b> 123<br>
                     <b>D/O No.: </b> 24020699<br>
-                    <b>Term: </b> Net 30<br> -->
+                    <b>Term: </b> C.O.D<br>
                     </div>
     
       </div>
@@ -53,7 +54,7 @@
       </div> 
       </div>
       <?php endforeach; ?>
-      <table class="table table-bordered table-striped table-responsive equal-width-table" style="display: inline-table;">
+      <table class="table table-bordered table-striped table-responsive equal-width-table" style="display: inline-table;margin: 0px;">
          <thead>
            <tr class="text-center">
              <th>Qty</th>
@@ -61,7 +62,7 @@
              <th>Description</th>
              <th>Price</th>
              <th>UOM</th>
-             <th>Discount %</th>
+             <th>Service Charge</th>
              <th>Amount (S$)</th>
            </tr>
          </thead>
@@ -73,32 +74,35 @@
         <td><?php echo isset($order['product_name']) ? $order['product_name'] : ''; ?></td>
         <td>$<?php echo isset($order['rate']) ? $order['rate'] : ''; ?></td>
         <td>pc</td>
-        <td> </td>
+        <td>$<?php echo isset($order['service_charge_rate']) ? $order['service_charge_rate'] : 0; ?></td>
         <td>$<?php echo isset($order['amount']) ? $order['amount'] : ''; ?></td>
     </tr>
 <?php endforeach; ?>
 
          </tbody>
        </table>
-       <div class="col-xs-12" style="padding: 10px;float: right;">
-          <div class="row total-amount" style="margin: 0px; display: grid;">
+       <div class="col-xs-12" style="padding: 0px;float: right;border: #e2e2e2 solid 1px;">
+          <div class="row total-amount" style="margin: 0px;display: grid;padding: 10px;">
         <?php foreach($order_total as $val => $order):
           ?>
-                    <div class="total-amount" style="margin: 0px;text-align: right;">
-                    <b>Gross Total: </b><?php echo isset($order['gross_amount']) ? $order['gross_amount'] : 0; ?><br>
-                    <b>GST: </b><?php echo isset($order['gst_amt']) ? $order['gst_amt'] : 0; ?><br>
-                    <b>Service Charge Rate: </b> <?php echo isset($order['service_charge_rate']) ? $order['service_charge_rate'] : 0; ?><br>
-                    <b>Delivery Charge: </b><?php echo isset($order['delivery_charge']) ? $order['delivery_charge'] : 0; ?><br>
-                    <b>Net Amount: </b><?php echo isset($order['net_amount']) ? $order['net_amount'] : 0; ?><br>  
-                  </div>
-        <?php endforeach; ?>
+  <table class="col-xs-12 total-amount" style="margin-left: auto;">
+  <tr>
+    <th>Total:</th>
+    <td><?php echo isset($order['gross_amount']) ? $order['gross_amount'] : 0; ?></td>
+  </tr>
+  <tr>
+    <th>GST:</th>
+    <td><?php echo isset($order['gst_amt']) ? $order['gst_amt'] : 0; ?></td>
+  </tr>
+  <tr>
+    <th>Balance Due:</th>
+    <td><?php echo isset($order['net_amount']) ? $order['net_amount'] : 0; ?></td>
+  </tr>
+</table>
+<?php endforeach; ?>
       </div>
         </div> 
-        <div class="col-sm-12 col-xs-12" style="padding: 0px;">
-          <p>Memo:</p>
-          <p><b>Thank You!</b> We appreciate your business. For guaranteed freshness, please consume within 8 hours upon recieving of baked goods.</p>
-        </div> 
-        <table class="table table-bordered table-striped table-responsive equal-width-table" style="display: inline-table;">
+        <!-- <table class="table table-bordered table-striped table-responsive equal-width-table" style="display: inline-table;">
          <thead>
            <tr class="text-center">
              <th>RECEIVED BY</th>
@@ -115,10 +119,20 @@
                <td> </td>
              </tr>
          </tbody>
-       </table>
+       </table> -->
+       <div class="col-sm-7 col-xs-12" style="padding: 0px;">
+       <p><b>Memo: Open at 1.30pm</b></p>
+          <p>We appreciate your business. For guaranteed freshness, please consume within 8 hours upon recieving of baked goods.</p>
+       </div>
        <div class="col-sm-12 col-xs-12" style="padding: 0px;">
-       All cheque should be made payable to "Sourdough Factory LLP"<br>Bank transfer: DBS Bank Account Number: 072 000 7590
-       <br><img src="<?php echo base_url('images/pay-now.jpg'); ?>" height="70" width="auto"><br>Paynow: T12LL1071J</div>
+       <p> </p>
+       </div>
+
+       <div class="col-sm-7 col-xs-12" style="padding: 0px;">
+       <p>All cheque should be made payable to <b>"Sourdough Factory LLP"</b><br>Bank transfer: <b>DBS</b><br>Bank Account Number: <b>072 000 7590</b></p>
+       </div>
+       <div class="col-sm-5 col-xs-12" style="padding: 0px;float: right;display: grid;">
+       <p><img src="<?php echo base_url('images/pay-now.jpg'); ?>" height="100" width="auto" style="float: right;"></p><p><span style="float: right;">Paynow: T12LL1071J</span></p></div>
        <div class="col-sm-12 col-xs-12" style="padding: 0px;">
         <h2 style="margin-bottom: 50px;"></h2>
         </div> 
