@@ -55,13 +55,13 @@ public function getProductData($id = null)
     $user = $this->session->userdata('normal_user');
     $user_id = $user->id;
 
-	if (date('H') >= 17) {
-        // Redirect or show an error message indicating that orders cannot be placed after 5 PM
-        $this->session->set_flashdata('error', 'Orders cannot be placed after 5 PM.');
-        redirect('orders', 'refresh');
-    }
+	// if (date('H') >= 17) {
+    //     // Redirect or show an error message indicating that orders cannot be placed after 5 PM
+    //     $this->session->set_flashdata('error', 'Orders cannot be placed after 5 PM.');
+    //     redirect('orders', 'refresh');
+    // }
 
-	else{
+	//else{
     //$bill_no = 'CDSTRO-' . strtoupper(substr(md5(uniqid(mt_rand(), true)), 0, 4));
 	$current_year_month = date('ym');
 
@@ -133,7 +133,7 @@ public function getProductData($id = null)
     $bill_no = $result['bill_no'];
 
     return array('id' => $order_id, 'order_id' => $order_id, 'bill_no' => $bill_no);
-	}
+	//}
 }
 
 
