@@ -56,7 +56,7 @@ class PHPExcel_Writer_PDF_DomPDF extends PHPExcel_Writer_PDF_Core implements PHP
         $fileHandle = parent::prepareForSave($pFilename);
 
         //  Default PDF paper size
-        $paperSize = 'A4';    //    A4    (8.5 in. by 11 in.)
+        $paperSize = 'LETTER';    //    Letter    (8.5 in. by 11 in.)
 
         //  Check for paper size and page orientation
         if (is_null($this->getSheetIndex())) {
