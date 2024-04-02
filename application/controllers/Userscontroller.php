@@ -143,19 +143,19 @@ class Userscontroller extends CI_Controller {
     );
 
     $status = $this->user_model->is_email_exists($data['email']);
-        echo 'heoo'.$status;
-        if($status!=false){
-            // Email already exists, show an error message or take appropriate action
-            $this->session->set_flashdata('error', '<div class="alert alert-danger alert-dismissible fade show" role="alert">Email already exists!
-                <button type="button" class="close" data-dismiss="alert" aria-label="close"> <span aria-hidden="true">&times;</span></button></div>');
-            redirect('Userscontroller');
-        } 
-        else{
+        // echo 'heoo'.$status;
+        // if($status!=false){
+        //     // Email already exists, show an error message or take appropriate action
+        //     $this->session->set_flashdata('error', '<div class="alert alert-danger alert-dismissible fade show" role="alert">Email already exists!
+        //         <button type="button" class="close" data-dismiss="alert" aria-label="close"> <span aria-hidden="true">&times;</span></button></div>');
+        //     redirect('Userscontroller');
+        // } 
+        // else{
     $this->user_model->insert_data($data,'user_register');
     $this->session->set_flashdata('created','<div class="alert alert-success alert-dismissible fade show" role="alert">User Created Successfully!
     <button type="button" class="close" data-dismiss="alert" arial-label="close"> <span aria-hidden="true">&times;</span></button></div>');
     redirect('Userscontroller');
-        }
+       // }
     }
 
     public function updateuser($id){

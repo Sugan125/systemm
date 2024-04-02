@@ -55,10 +55,36 @@ public function getProductData($id = null)
     $user = $this->session->userdata('normal_user');
     $user_id = $user->id;
 
-    // Generate bill number
-    $bill_no = 'CDSTRO-' . strtoupper(substr(md5(uniqid(mt_rand(), true)), 0, 4));
+	if (date('H') >= 17) {
+        // Redirect or show an error message indicating that orders cannot be placed after 5 PM
+        $this->session->set_flashdata('error', 'Orders cannot be placed after 5 PM.');
+        redirect('orders', 'refresh');
+    }
 
-    // Prepare order data
+	else{
+    //$bill_no = 'CDSTRO-' . strtoupper(substr(md5(uniqid(mt_rand(), true)), 0, 4));
+	$current_year_month = date('ym');
+
+	$sql = "SELECT bill_no FROM orders ORDER BY bill_no DESC LIMIT 1";
+	$query = $this->db->query($sql);
+	
+	if ($query->num_rows() > 0) {
+		$latest_invoice_number = $query->row()->bill_no;
+		$latest_invoice_month = substr($latest_invoice_number, 0, 4); 
+		$latest_invoice_counter = intval(substr($latest_invoice_number, 4)); 
+		if ($latest_invoice_month == $current_year_month) {
+			$invoice_counter = $latest_invoice_counter + 1;
+		} else {
+			
+			$invoice_counter = 1;
+		}
+	} else {
+		
+		$invoice_counter = 1;
+	}
+	
+	$bill_no = $current_year_month . sprintf('%04d', $invoice_counter);
+	
     $data = array(
         'bill_no' => $bill_no,
         'date_time' => strtotime(date('Y-m-d h:i:s a')),
@@ -107,6 +133,7 @@ public function getProductData($id = null)
     $bill_no = $result['bill_no'];
 
     return array('id' => $order_id, 'order_id' => $order_id, 'bill_no' => $bill_no);
+	}
 }
 
 
@@ -315,8 +342,25 @@ public function repeat_order($id)
         $user = $this->session->userdata('normal_user');
         $user_id = $user->id;
 
-		$bill_no = 'CDSTRO-' . strtoupper(substr(md5(uniqid(mt_rand(), true)), 0, 4));
+		$current_year_month = date('ym');
 
+		$sql = "SELECT bill_no FROM orders ORDER BY bill_no DESC LIMIT 1";
+		$query = $this->db->query($sql);
+		
+		if ($query->num_rows() > 0) {
+			$latest_invoice_number = $query->row()->bill_no;
+			$latest_invoice_month = substr($latest_invoice_number, 0, 4); 
+			$latest_invoice_counter = intval(substr($latest_invoice_number, 4)); 
+			if ($latest_invoice_month == $current_year_month) {
+				$invoice_counter = $latest_invoice_counter + 1;
+			} else {
+				$invoice_counter = 1;
+			}
+		} else {
+			$invoice_counter = 1;
+		}
+		
+		$bill_no = $current_year_month . sprintf('%04d', $invoice_counter);
 
 		$sql = "select * from orders where id=".$id;
 		$query = $this->db->query($sql);

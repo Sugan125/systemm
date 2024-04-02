@@ -48,7 +48,6 @@ class orders extends CI_Controller {
 					
 					$this->download($order_id); 
 					$this->send_invoice($bill_no); 
-
 					$this->session->set_flashdata('success', 'Order Placed');
         			redirect('orders', 'refresh');
 					
@@ -343,10 +342,8 @@ public function download($id)
 	$html = $this->load->view('invoice/download_invoice.php', array('data' => $data, 'order_date' => $order_date, 'result'=>$result), true);
 	$dompdf = new Dompdf();
 	$dompdf->loadHtml($html);
-	
-	$dompdf->loadHtml($html);
 
-	$dompdf->setPaper(array(0, 0, 840, 840), 'portrait'); 
+	$dompdf->setPaper(array(0, 0, 840, 1188), 'portrait'); 	
 	$dompdf->render();
 
 	$filename = 'invoice_'.$bill_no .'.pdf';
