@@ -356,7 +356,7 @@ public function download($id)
     file_put_contents($filepath, $dompdf->output());
 
     //Stream the PDF for download
-    $dompdf->stream($filename);
+    //$dompdf->stream($filename);
 
     $this->load->view('template/footer.php');
 }
@@ -477,7 +477,7 @@ public function send_invoice($bill_no)
 	{
 		//$toemail='suganyaulagu8@gmail.com';
 
-		$toemail='kharfaim@gmail.com';
+		$toemail='suganyaulagu8@gmail.com';
 		
 		$config['protocol']  = 'smtp';
 		$config['smtp_host'] = 'ssl://smtp.gmail.com';
