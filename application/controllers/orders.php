@@ -48,6 +48,7 @@ class orders extends CI_Controller {
 					
 					$this->download($order_id); 
 					$this->send_invoice($bill_no); 
+					//exit;
 					$this->session->set_flashdata('success', 'Order Placed');
         			redirect('orders', 'refresh');
 					
@@ -354,8 +355,8 @@ public function download($id)
     // Save the PDF to the specified location
     file_put_contents($filepath, $dompdf->output());
 
-    // Stream the PDF for download
-  //  $dompdf->stream($filename);
+    //Stream the PDF for download
+    //$dompdf->stream($filename);
 
     $this->load->view('template/footer.php');
 }
@@ -474,6 +475,8 @@ public function printpacking()
 
 public function send_invoice($bill_no)
 	{
+		//$toemail='suganyaulagu8@gmail.com';
+
 		$toemail='suganyaulagu8@gmail.com';
 		
 		$config['protocol']  = 'smtp';
