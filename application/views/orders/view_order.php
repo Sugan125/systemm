@@ -23,8 +23,37 @@
             <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             <?php echo $this->session->flashdata('errors'); ?>
           </div>
-        <?php endif; ?>
-          <a href="<?php echo base_url('index.php/orders/create') ?>" class="btn btn-success">Add Order</a>
+        <?php endif;
+         ?>
+              <?php
+                    $user = $this->session->userdata('normal_user');
+                    $user_id = $user->id;
+                    $sql = "select * from user_register where id=".$user_id;
+                    $query = $this->db->query($sql);
+                    $restrict_time = $query->row()->restrict_time;
+                      // Get the current time
+                      date_default_timezone_set('Asia/Singapore');
+                      $current_time = date("H:i");
+
+                      // Define the start and end times for the restriction (assuming 23:00 to 06:00 in this example)
+                      $start_time = "16:00";
+                      $end_time = "21:00"; 
+                      
+                    
+                      if ($restrict_time == 1 && (($current_time >= $start_time) && ($current_time <= $end_time))) { 
+                          // Time is within the restricted range, redirect to order_restrict page
+                          $url = base_url('index.php/orders/order_restrict');
+                        } else if ($restrict_time == 0 && (($current_time >= $start_time) && ($current_time <= $end_time))) {
+                          // Time is outside the restricted range, allow creating orders
+                          $url = base_url('index.php/orders/create');
+                      }
+                      else{
+                        $url = base_url('index.php/orders/create');
+                      }
+                   
+                  
+                    ?>
+          <a href="<?php echo $url; ?>" class="btn btn-success">Add Order</a>
           <br /> <br />
 
 
@@ -41,7 +70,6 @@
                 <th>Date Time</th>
                 <th>Gross Amount</th>
                 <th>Slicing Service</th>
-                <th>Discount</th>
                 <th>Delivery Charge</th>
                 <th>GST</th>
                 <th>Net Amount</th>
@@ -59,17 +87,41 @@
             <td><?php echo $val->gross_amount; ?></td>
             <td><?php if( $val->service_charge_rate == NULL){
               echo "No service charge";
-            } else { echo $val->service_charge_rate; } ?></td>
-
-            <td><?php if($val->discount == '' || $val->discount == NULL || $val->discount == 0)
-            { echo 'Discount not applied'; }else{
-            echo $val->discount;}?></td>
+            } else { echo $val->service_charge_rate; } ?></td>          
             <td><?php echo $val->delivery_charge; ?></td>
             <td><?php echo $val->gst_amt; ?></td>
             <td><?php echo $val->net_amount; ?></td>
             <td><a target="__blank" href="<?php echo base_url('index.php/orders/printDiv/'.$val->id); ?>" class="btn-sm btn btn-warning"><i class="fas fa-print"></i></a>
             <a href="<?php echo base_url('index.php/orders/update/'.$val->id); ?>" class="btn-sm btn btn-info"><i class="fas fa-edit"></i></a>
-            <a href="<?php echo base_url('index.php/orders/repeat_order/'.$val->id); ?>" class="btn-sm btn btn-info"><i class="fas fa-repeat"></i> Repeat Order</a></td>
+            <?php
+                    $user = $this->session->userdata('normal_user');
+                    $user_id = $user->id;
+                    $sql = "select * from user_register where id=".$user_id;
+                    $query = $this->db->query($sql);
+                    $restrict_time = $query->row()->restrict_time;
+                      // Get the current time
+                      date_default_timezone_set('Asia/Singapore');
+                      $current_time = date("H:i");
+
+                      // Define the start and end times for the restriction (assuming 23:00 to 06:00 in this example)
+                      $start_time = "16:00";
+                      $end_time = "21:00"; 
+                      
+                    
+                      if ($restrict_time == 1 && (($current_time >= $start_time) && ($current_time <= $end_time))) { 
+                          // Time is within the restricted range, redirect to order_restrict page
+                          $url = base_url('index.php/orders/order_restrict');
+                        } else if ($restrict_time == 0 && (($current_time >= $start_time) && ($current_time <= $end_time))) {
+                          // Time is outside the restricted range, allow creating orders
+                          $url = base_url('index.php/orders/repeat_order/'.$val->id);
+                      }
+                      else{
+                        $url = base_url('index.php/orders/repeat_order/'.$val->id);
+                      }
+                   
+                  
+                    ?>
+            <a href="<?php echo $url; ?>" class="btn-sm btn btn-info"><i class="fas fa-repeat"></i> Repeat Order</a></td>
             <!--<button type="button" class="btn btn-danger" onclick="removeFunc('.$value['id'].')" data-toggle="modal" data-target="#removeModal"><i class="fa fa-trash"></i></button>
           </td> -->
         </tr>

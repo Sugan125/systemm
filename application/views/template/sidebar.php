@@ -123,7 +123,34 @@
                 </span>
             </a>
             <ul class="treeview-menu" style="display: none;">
-                <li class="nav-item "><a href="<?php echo base_url('index.php/orders/create') ?>" class="nav-link"><i class="fa fa-edit"></i>  Create Order</a></li>
+                <li class="nav-item ">
+                    <?php
+                    $user = $this->session->userdata('normal_user');
+                    $user_id = $user->id;
+                    $sql = "select * from user_register where id=".$user_id;
+                    $query = $this->db->query($sql);
+                    $restrict_time = $query->row()->restrict_time;
+                   
+                      date_default_timezone_set('Asia/Singapore');
+                      $current_time = date("H:i");
+                      
+                      $start_time = "16:00";
+                      $end_time = "21:00"; 
+                      
+                    
+                      if ($restrict_time == 1 && (($current_time >= $start_time) && ($current_time <= $end_time))) { 
+                        
+                          $url = base_url('index.php/orders/order_restrict');
+                      } else if ($restrict_time == 0 && (($current_time >= $start_time) && ($current_time <= $end_time))) {
+                         
+                          $url = base_url('index.php/orders/create');
+                      } else {
+                         
+                          $url = base_url('index.php/orders/create');
+                      }
+                    ?>
+                    <a href="<?php echo $url; ?>" class="nav-link"><i class="fa fa-edit"></i>  Create Order</a>
+                </li>
                 <li class="nav-item"><a href="<?php echo base_url('index.php/orders') ?>" class="nav-link"><i class="fa fa-th-large"></i>  Manage Orders</a></li>
             </ul>
         </li>

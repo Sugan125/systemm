@@ -55,6 +55,14 @@
                     </select>
                 </div>
 
+                <label>Minimum Order Count</label>
+                <div class="input-group mb-3" id="input_size">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">@</span>
+                    </div>
+                    <input type="number" name="min_order" class="form-control" value="<?= $row->min_order; ?>" placeholder="Enter Min Order">
+                </div>
+
                   <div class="form-group">
                   <label>Category</label>
 
@@ -66,14 +74,14 @@
                   </div>
                 </div>
 
-                <div class="form-group">
+                    <!-- <div class="form-group">
                 <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="checkbox" <?= ($row->add_on_slice == "" && $row->add_on_seed == "") ? "checked" : "" ?> value="no_add_on" id="no_add_on">
+                          <input class="form-check-input" type="checkbox"  value="no_add_on" id="no_add_on">
                           <label class="form-check-label" for="no_add_on">No add-on</label>
                       </div>
-                  </div>
+                  </div> -->
 
-                  <div class="form-group" id="hide_add_on">
+                  <div class="form-group" id="hide_add_on" hidden>
                 <label>Add-on</label>
                   <div class="input-group mb-3" id="input_size">
                       <div class="form-check form-check-inline">

@@ -67,7 +67,6 @@
                                             <th>Date Time</th>
                                             <th>Gross Amount</th>
                                             <th>Slicing Service</th>
-                                            <th>Discount</th>
                                             <th>Delivery Charge</th>
                                             <th>GST</th>
                                             <th>Net Amount</th>
@@ -86,10 +85,6 @@
                                             <td><?php if( $val->service_charge_rate == NULL){
                                                 echo "No service charge";
                                             } else { echo $val->service_charge_rate; } ?></td>
-
-                                            <td><?php if($val->discount == '' || $val->discount == NULL || $val->discount == 0)
-                                                { echo 'Discount not applied'; }else{
-                                                    echo $val->discount;}?></td>
                                             <td><?php echo $val->delivery_charge; ?></td>
                                             <td><?php echo $val->gst_amt; ?></td>
                                             <td><?php echo $val->net_amount; ?></td>
@@ -99,10 +94,10 @@
                                                     class="btn-sm btn btn-warning"><i
                                                         class="fas fa-print"></i></a>
                                                
-                                                        <a target="__blank"
+                                                        <!-- <a target="__blank"
                                                     href="<?php echo base_url('index.php/orders/download/'.$val->id); ?>"
                                                     class="btn-sm btn btn-warning"><i
-                                                        class="fas fa-download"></i></a>
+                                                        class="fas fa-download"></i></a> -->
                                             </td>
                                            
                                         </tr>

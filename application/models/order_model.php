@@ -65,7 +65,7 @@ public function getProductData($id = null)
     //$bill_no = 'CDSTRO-' . strtoupper(substr(md5(uniqid(mt_rand(), true)), 0, 4));
 	$current_year_month = date('ym');
 
-	$sql = "SELECT bill_no FROM orders ORDER BY bill_no DESC LIMIT 1";
+	$sql = "SELECT bill_no FROM orders WHERE LENGTH(bill_no) = 8 ORDER BY bill_no DESC LIMIT 1;";
 	$query = $this->db->query($sql);
 	
 	if ($query->num_rows() > 0) {
@@ -202,7 +202,7 @@ public function update($id)
 			return false;
 		}
 
-		$sql = "SELECT ord.*, user.name as name, user.address as address,user.company_name as company_name FROM orders ord join user_register user WHERE ord.id = ? and user.id=ord.user_id";
+		$sql = "SELECT ord.*, user.name as name, user.address as address,user.delivery_address as delivery_address,user.company_name as company_name FROM orders ord join user_register user WHERE ord.id = ? and user.id=ord.user_id";
 		$query = $this->db->query($sql, array($order_id));
 		return $query->result_array();
 	}
@@ -306,7 +306,7 @@ public function update($id)
 			return false;
 		}
 
-		$sql = "SELECT ord.*, user.name as name, user.address as address, user.company_name as company_name FROM orders ord join user_register user WHERE ord.id = ? and user.id=ord.user_id";
+		$sql = "SELECT ord.*, user.name as name, user.address as address,user.delivery_address as delivery_address, user.company_name as company_name FROM orders ord join user_register user WHERE ord.id = ? and user.id=ord.user_id";
 		$query = $this->db->query($sql, array($order_id));
 		return $query->result_array();
 	}
@@ -344,7 +344,7 @@ public function repeat_order($id)
 
 		$current_year_month = date('ym');
 
-		$sql = "SELECT bill_no FROM orders ORDER BY bill_no DESC LIMIT 1";
+		$sql = "SELECT bill_no FROM orders WHERE LENGTH(bill_no) = 8 ORDER BY bill_no DESC LIMIT 1;";
 		$query = $this->db->query($sql);
 		
 		if ($query->num_rows() > 0) {

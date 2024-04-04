@@ -591,5 +591,22 @@ The Sourdough Factory Team";
             $this->load->view('template/footer.php');
         }
 	}
-
+	public function order_restrict(){
+		$data['title'] = 'orders';
+	
+		$loginuser = $this->session->userdata('LoginSession');
+	
+		$data['user_id'] = $loginuser['id'];
+	
+		$data['orders'] = $this->order_model->getmanageorder();
+	
+		$this->load->view('template/header.php', $data);
+		$user = $this->session->userdata('user_register');
+		$users = $this->session->userdata('normal_user');
+		$loginuser = $this->session->userdata('LoginSession');
+		//var_dump($loginuser);
+		$this->load->view('template/sidebar.php', array('user' => $user, 'users' => $users, 'data' => $data,'loginuser' => $loginuser));
+		$this->load->view('orders/order_restrict.php', $data);
+		$this->load->view('template/footer.php');
+	}
 }

@@ -26,7 +26,7 @@
           <?php endif; ?>
 
           <div class="box-header">
-              <h3 class="box-title">Update/Preview Order</h3>
+              <h3 class="box-title">Repeat Order</h3>
             </div>
           <div class="box" style="margin-top:20px;">
             
@@ -132,10 +132,35 @@
                   <?php foreach ($order_total as $key => $order_data): ?>
                     <div class="form-group" style="margin-bottom:30px;">
                       <div class="col-sm-4">
-                      <label for="gross_amount" class="control-label">Gross Amount</label></div>
+                      <label for="gross_amount" class="control-label">Total</label></div>
                       <div class="col-sm-8">
                         <input type="text" class="form-control" id="gross_amount" value="<?php echo $order_data['gross_amount'] ?>" name="gross_amount" disabled autocomplete="off">
                         <input type="hidden" class="form-control" id="gross_amount_value" value="<?php echo $order_data['gross_amount'] ?>" name="gross_amount_value" autocomplete="off">
+                      </div>
+                    </div><br>
+                    
+                    <div class="form-group"  style="margin-bottom:30px;">
+                      <div class="col-sm-4">
+                      <label for="service_charge" class="control-label">Slicing Service:   </label>
+                      </div>
+                      <div class="col-sm-8">
+                        <input type="text" class="form-control" id="service_charge" value="<?php echo $order_data['service_charge_rate'] ?>"  name="service_charge" disabled autocomplete="off">
+                        <input type="hidden" class="form-control" id="service_charge_value"  value="<?php echo $order_data['service_charge_rate'] ?>" name="service_charge_value" autocomplete="off">
+                      </div>
+                    </div><br>
+                    <!-- <div class="form-group" style="margin-bottom:30px;">
+                      <div class="col-sm-4">
+                      <label for="discount" class="control-label">Discount</label></div>
+                      <div class="col-sm-8">
+                        <input type="text" disabled class="form-control" id="discount" name="discount" value="<?php echo $order_data['discount'] ?>" placeholder="Discount" onkeyup="subAmount()" autocomplete="off">
+                      </div>
+                    </div><br> -->
+                    <div class="form-group" style="margin-bottom:30px;">
+                      <div class="col-sm-4">
+                      <label for="discount" class="control-label">Delivery Charge</label></div>
+                      <div class="col-sm-8">
+                        <input type="text" class="form-control" id="delivery_charge" value="<?php echo $order_data['delivery_charge'] ?>" name="delivery_charge" disabled  autocomplete="off">
+                        <input type="hidden" class="form-control" id="delivery_charge_value" value="<?php echo $order_data['delivery_charge'] ?>" name="delivery_charge_value" autocomplete="off">
                       </div>
                     </div><br>
                     <div class="form-group" style="margin-bottom:30px;">
@@ -147,33 +172,9 @@
                         <input type="hidden" class="form-control" id="gst_rate" value="<?php echo $order_data['gst_amt'] ?>" name="gst_rate" value="9" autocomplete="off">
                       </div>
                     </div><br>
-                    <div class="form-group"  style="margin-bottom:30px;">
-                      <div class="col-sm-4">
-                      <label for="service_charge" class="control-label">Slicing Service:   </label>
-                      </div>
-                      <div class="col-sm-8">
-                        <input type="text" class="form-control" id="service_charge" value="<?php echo $order_data['service_charge_rate'] ?>"  name="service_charge" disabled autocomplete="off">
-                        <input type="hidden" class="form-control" id="service_charge_value"  value="<?php echo $order_data['service_charge_rate'] ?>" name="service_charge_value" autocomplete="off">
-                      </div>
-                    </div><br>
-                    <div class="form-group" style="margin-bottom:30px;">
-                      <div class="col-sm-4">
-                      <label for="discount" class="control-label">Discount</label></div>
-                      <div class="col-sm-8">
-                        <input type="text" disabled class="form-control" id="discount" name="discount" value="<?php echo $order_data['discount'] ?>" placeholder="Discount" onkeyup="subAmount()" autocomplete="off">
-                      </div>
-                    </div><br>
-                    <div class="form-group" style="margin-bottom:30px;">
-                      <div class="col-sm-4">
-                      <label for="discount" class="control-label">Delivery Charge</label></div>
-                      <div class="col-sm-8">
-                        <input type="text" class="form-control" id="delivery_charge" value="<?php echo $order_data['delivery_charge'] ?>" name="delivery_charge" disabled  autocomplete="off">
-                        <input type="hidden" class="form-control" id="delivery_charge_value" value="<?php echo $order_data['delivery_charge'] ?>" name="delivery_charge_value" autocomplete="off">
-                      </div>
-                    </div><br>
                     <div class="form-group">
                     <div class="col-sm-4">
-                      <label for="net_amount" class="control-label">Net Amount</label></div>
+                      <label for="net_amount" class="control-label">Grand Total</label></div>
                       <div class="col-sm-8">
                         <input type="text" class="form-control" id="net_amount"  value="<?php echo $order_data['net_amount'] ?>" name="net_amount" disabled autocomplete="off">
                         <input type="hidden" class="form-control" id="net_amount_value"  value="<?php echo $order_data['net_amount'] ?>" name="net_amount_value" autocomplete="off">
@@ -188,7 +189,41 @@
                   <input type="hidden" id="delivery_charge" name="delivery_charge" autocomplete="off">  
                   <input type="hidden" name="service_charge_rate"  autocomplete="off">
                   <!-- <a target="__blank" href="<?php echo base_url() . 'index.php/orders/printDiv/'.$order_data['id'] ?>" class="btn btn-default" >Print</a> -->
-                  <button type="submit" class="btn btn-success">Repeat Order</button>
+                  <?php
+                    $user = $this->session->userdata('normal_user');
+                    $user_id = $user->id;
+                    $sql = "select * from user_register where id=".$user_id;
+                    $query = $this->db->query($sql);
+                    $restrict_time = $query->row()->restrict_time;
+                      // Get the current time
+                      date_default_timezone_set('Asia/Singapore');
+                      $current_time = date("H:i");
+
+                      // Define the start and end times for the restriction (assuming 23:00 to 06:00 in this example)
+                      $start_time = "16:00";
+                      $end_time = "21:00"; 
+                      
+                    
+                      if ($restrict_time == 1 && (($current_time >= $start_time) && ($current_time <= $end_time))) { 
+                          // Time is within the restricted range, redirect to order_restrict page
+                          $btn = 'disabled';
+                          $text = '<div class="heading">🚀 Orders Opening at 9:00 PM! 🚀</div>
+                          <p>🔔 Please wait patiently! 🔔</p>
+                          <p>Our ordering system is currently closed after 4:00 PM.</p>';
+                      } else if ($restrict_time == 0 && (($current_time >= $start_time) && ($current_time <= $end_time))) {
+                          // Time is outside the restricted range, allow creating orders
+                          $btn = '';
+                          $text = '';
+                      }
+                      else{
+                        $btn = '';
+                        $text = '';
+                      }
+                   
+                  
+                    ?>
+                    <?php echo $text; ?>
+                  <button type="submit" class="btn btn-success" <?php echo $btn; ?>>Repeat Order</button>
                   <a href="<?php echo base_url('index.php/orders/') ?>" class="btn btn-danger">Back</a>
                 </div>
                 <?php endforeach; ?>

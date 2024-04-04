@@ -49,10 +49,19 @@
                 </div>
             </form>
         </div>
+        
         <div class="col-sm-6 col-md-6"></div>
         <div class="col-sm-3 col-md-3 d-flex justify-content-end">
             <a href="<?php echo base_url('index.php/Dashboardcontroller'); ?>" class="btn-sm btn btn-danger"><i class="fas fa-backward"></i> Back</a>
         </div>
+        <div class="col-sm-12 col-md-12 text-right">
+                            <form action="<?= base_url('index.php/Userscontroller/importfile') ?>" method="post" enctype="multipart/form-data">
+                                <label for="uploadFile" class="btn btn-primary btn-sm" style="margin-bottom: 0px;width: 45%;background: none;border: none;color: black;">
+                                    Import <input type="file" id="uploadFile" name="uploadFile">
+                                </label>
+                                <input type="submit" name="submit" class="btn btn-primary btn-sm" value="Upload" />
+                            </form>
+                        </div>
     </div>
 </div>
 
@@ -75,6 +84,7 @@
       <th>Delivery Address</th>
       <th>Mobile Number</th>
       <th>Role</th>
+      <th>Restrict time</th>
       <th>Status</th>
       <!-- <th>File Upload</th>
       <th>View Files</th> -->
@@ -110,6 +120,8 @@
         <td><?= $row->delivery_address; ?></td>
         <td><?= $row->contact; ?></td>
         <td><?=  $rolee; ?></td>
+        <!-- Change id="restrictCheckbox" to class="restrictCheckbox" -->
+        <td> <input type="checkbox" class="restrictCheckbox" data-id="<?php echo $row->id; ?>" <?php if($row->restrict_time == 1){ echo 'checked'; } ?>></td>
         <td><?= $status; ?></td>
         <!-- <td>
         <a href="//base_url('index.php/Userscontroller/fileupload/' . $row->id) ?>" class="btn btn-sm"><i class="fas fa-upload"></i> </a>
@@ -158,7 +170,7 @@
              <th>Office Address</th>
              <th>Delivery Address</th>
              <th>Mobile Number</th>
-             <!-- <th>Status</th>
+          
           
              <?php if ((in_array('Admin', $loginuser['role']) || $loginuser['roles'] == 'Admin') || (in_array('Edit', $loginuser['access']) == 'Edit' && in_array('User', $loginuser['role'])) ||  ($loginuser['accesss'] == 'Edit' && $loginuser['roles' == 'User']) || ((!$loginuser['accesss'] == 'Edit' && $loginuser['access'] == 'Delete'))) { ?>
              <th>Action</th>
@@ -215,6 +227,77 @@
     </div>
 
 </div>
-          
+
+<script>
+$(document).ready(function(){
+  $('.restrictCheckbox').click(function(){
+  //  alert('Checkbox clicked');
+    var userId = $(this).data('id');
+    var isChecked = $(this).prop('checked') ? 1 : 0; 
+    $.ajax({
+        url: '<?php echo base_url('index.php/Userscontroller/update_restrict_time'); ?>',
+        method: 'POST',
+        data: { userId: userId, isChecked: isChecked },
+        dataType: 'json', 
+        success: function(response){
+            if(response.status === 'success'){
+                if(response.isChecked === '1'){
+                  $('.restrictCheckbox[data-id="' + userId + '"]').prop('checked', true);
+                swal({
+                    title: "Success",
+                    text: "Restrict time Enabled.",
+                    icon: "success",
+                    buttons: {
+                        confirm: {
+                            text: "OK",
+                            value: true,
+                            visible: true,
+                            className: "btn btn-primary",
+                            closeModal: true
+                        }
+                    }
+                }).then((value) => {
+                    // Reload the page after success
+                    window.location.reload();
+                });
+                  
+                } else {
+                  $('.restrictCheckbox[data-id="' + userId + '"]').prop('checked', false);
+                swal({
+                    title: "Success",
+                    text: "Restrict time Disabled.",
+                    icon: "success",
+                    buttons: {
+                        confirm: {
+                            text: "OK",
+                            value: true,
+                            visible: true,
+                            className: "btn btn-primary",
+                            closeModal: true
+                        }
+                    }
+                }).then((value) => {
+                    // Reload the page after success
+                    window.location.reload();
+                });
+                  
+                }
+
+                
+            } else {
+              
+                alert('Error updating restrict time.');
+            }
+        },
+        error: function(xhr, status, error){
+            console.log('AJAX Error:', error);
+        }
+    });
+});
+
+});
+</script>
+
+
 </body>
 </html>

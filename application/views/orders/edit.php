@@ -132,10 +132,35 @@
                   <?php foreach ($order_total as $key => $order_data): ?>
                     <div class="form-group" style="margin-bottom:30px;">
                       <div class="col-sm-4">
-                      <label for="gross_amount" class="control-label">Gross Amount</label></div>
+                      <label for="gross_amount" class="control-label">Total</label></div>
                       <div class="col-sm-8">
                         <input type="text" class="form-control" id="gross_amount" value="<?php echo $order_data['gross_amount'] ?>" name="gross_amount" disabled autocomplete="off">
                         <input type="hidden" class="form-control" id="gross_amount_value" value="<?php echo $order_data['gross_amount'] ?>" name="gross_amount_value" autocomplete="off">
+                      </div>
+                    </div><br>
+                   
+                    <div class="form-group"  style="margin-bottom:30px;">
+                      <div class="col-sm-4">
+                      <label for="service_charge" class="control-label">Slicing Service:   </label>
+                      </div>
+                      <div class="col-sm-8">
+                        <input type="text" class="form-control" id="service_charge" value="<?php echo $order_data['service_charge_rate'] ?>"  name="service_charge" disabled autocomplete="off">
+                        <input type="hidden" class="form-control" id="service_charge_value"  value="<?php echo $order_data['service_charge_rate'] ?>" name="service_charge_value" autocomplete="off">
+                      </div>
+                    </div><br>
+                    <!-- <div class="form-group" style="margin-bottom:30px;">
+                      <div class="col-sm-4">
+                      <label for="discount" class="control-label">Discount</label></div>
+                      <div class="col-sm-8">
+                        <input type="text" class="form-control" id="discount" name="discount" value="<?php echo $order_data['discount'] ?>" placeholder="Discount" onkeyup="subAmount()" autocomplete="off">
+                      </div>
+                    </div><br> -->
+                    <div class="form-group" style="margin-bottom:30px;">
+                      <div class="col-sm-4">
+                      <label for="discount" class="control-label">Delivery Charge</label></div>
+                      <div class="col-sm-8">
+                        <input type="text" class="form-control" id="delivery_charge" value="<?php echo $order_data['delivery_charge'] ?>" name="delivery_charge" disabled  autocomplete="off">
+                        <input type="hidden" class="form-control" id="delivery_charge_value" value="<?php echo $order_data['delivery_charge'] ?>" name="delivery_charge_value" autocomplete="off">
                       </div>
                     </div><br>
                     <div class="form-group" style="margin-bottom:30px;">
@@ -147,33 +172,9 @@
                         <input type="hidden" class="form-control" id="gst_rate" value="<?php echo $order_data['gst_amt'] ?>" name="gst_rate" value="9" autocomplete="off">
                       </div>
                     </div><br>
-                    <div class="form-group"  style="margin-bottom:30px;">
-                      <div class="col-sm-4">
-                      <label for="service_charge" class="control-label">Slicing Service:   </label>
-                      </div>
-                      <div class="col-sm-8">
-                        <input type="text" class="form-control" id="service_charge" value="<?php echo $order_data['service_charge_rate'] ?>"  name="service_charge" disabled autocomplete="off">
-                        <input type="hidden" class="form-control" id="service_charge_value"  value="<?php echo $order_data['service_charge_rate'] ?>" name="service_charge_value" autocomplete="off">
-                      </div>
-                    </div><br>
-                    <div class="form-group" style="margin-bottom:30px;">
-                      <div class="col-sm-4">
-                      <label for="discount" class="control-label">Discount</label></div>
-                      <div class="col-sm-8">
-                        <input type="text" class="form-control" id="discount" name="discount" value="<?php echo $order_data['discount'] ?>" placeholder="Discount" onkeyup="subAmount()" autocomplete="off">
-                      </div>
-                    </div><br>
-                    <div class="form-group" style="margin-bottom:30px;">
-                      <div class="col-sm-4">
-                      <label for="discount" class="control-label">Delivery Charge</label></div>
-                      <div class="col-sm-8">
-                        <input type="text" class="form-control" id="delivery_charge" value="<?php echo $order_data['delivery_charge'] ?>" name="delivery_charge" disabled  autocomplete="off">
-                        <input type="hidden" class="form-control" id="delivery_charge_value" value="<?php echo $order_data['delivery_charge'] ?>" name="delivery_charge_value" autocomplete="off">
-                      </div>
-                    </div><br>
                     <div class="form-group">
                     <div class="col-sm-4">
-                      <label for="net_amount" class="control-label">Net Amount</label></div>
+                      <label for="net_amount" class="control-label">Grand Total</label></div>
                       <div class="col-sm-8">
                         <input type="text" class="form-control" id="net_amount"  value="<?php echo $order_data['net_amount'] ?>" name="net_amount" disabled autocomplete="off">
                         <input type="hidden" class="form-control" id="net_amount_value"  value="<?php echo $order_data['net_amount'] ?>" name="net_amount_value" autocomplete="off">

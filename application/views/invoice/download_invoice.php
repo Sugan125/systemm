@@ -47,7 +47,7 @@
           </div>
           <div style="box-sizing: border-box; float: right; width: 50%; text-align: right; ">
             <b>Ship To:</b>  <?php
-            $address = $order_data['address'];
+            $address = $order_data['delivery_address'];
             $max_length = 45; 
             $address_lines = wordwrap($address, $max_length, "<br>", true);
             echo $address_lines;
@@ -58,7 +58,7 @@
         <div style="padding: 20px 0; text-align: left;">
           <b style="font-weight: bold;">Salesman:</b> Henri<br>
           <b style="font-weight: bold;">Delivery Date: </b><?php
-           $added_days = 2;
+           $added_days = 3;
            $order_date_obj = DateTime::createFromFormat('d/m/Y', $order_date);
            $order_date_obj->modify("+$added_days days");
            $new_date = $order_date_obj->format('d/m/Y'); echo $new_date; ?>

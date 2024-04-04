@@ -75,7 +75,7 @@
                             </select>
                         </td>
                         <td>
-                            <select class="form-control select_group product_1 dropdown dropup" onmousedown="if(this.options.length>8){this.size=8;}" onchange="getProductData(1)" onblur="this.size=0;" data-row-id="row_1" id="product_1" name="product[]" style="width:100%;" required></select>
+                            <select class="form-control product_name select_group product_1 dropdown dropup" onmousedown="if(this.options.length>8){this.size=8;}" onchange="getProductData(1)" onblur="this.size=0;" data-row-id="row_1" id="product_1" name="product[]" style="width:100%;" required></select>
                         </td>
                         <td>    
                             <select class="form-control sliced" id="sliced_1" name="sliced[]" onmousedown="if(this.options.length>8){this.size=8;}" onchange='slicechange()' onblur="this.size=0;">
@@ -113,27 +113,18 @@
                 <div class="col-sm-12 col-md-12 col-xs-12 pull pull-right">
                 <div class="col-sm-6 col-md-6"></div>
                 <div class="col-sm-6 col-md-6">
-                <span style="margin-left: 200px;"><b>SGD($)</b></span>
+                <span style="margin-left: 250px;"><b>SGD($)</b></span>
                   <div class="form-group" style="margin-bottom:30px;">
                   
                     <div class="col-sm-4">
-                    <label for="gross_amount" class="control-label">Gross Amount</label></div>
+                    <label for="gross_amount" class="control-label">Total</label></div>
                     <div class="col-sm-8">
                       
                       <input type="text" class="form-control" id="gross_amount" name="gross_amount" disabled autocomplete="off">
                       <input type="hidden" class="form-control" id="gross_amount_value" name="gross_amount_value" autocomplete="off">
                     </div>
                   </div><br>
-                  <div class="form-group" style="margin-bottom:30px;">
-                    <div class="col-sm-4">
-                    <label for="gross_amount" class="control-label">GST (9%)</label></div>
-                    <div class="col-sm-8">
-                        
-                      <input type="text" class="form-control" id="gst" name="gst_amt" disabled autocomplete="off">
-                      <input type="hidden" class="form-control" id="gst_value" name="gst_value" value="9" autocomplete="off">
-                      <input type="hidden" class="form-control" id="gst_rate" name="gst_rate" value="9" autocomplete="off">
-                    </div>
-                  </div><br>
+                  
                   <!-- <?php// if($is_service_enabled == true): ?> -->
                   <div class="form-group"  style="margin-bottom:30px;">
                     <div class="col-sm-4">
@@ -152,13 +143,13 @@
                     </div>
                   </div>
                   <?php// endif; ?> -->
-                  <div class="form-group" style="margin-bottom:30px;">
+                  <!-- <div class="form-group" style="margin-bottom:30px;">
                     <div class="col-sm-4">
                     <label for="discount" class="control-label">Discount</label></div>
                     <div class="col-sm-8">
                       <input type="text" class="form-control" id="discount" name="discount" placeholder="Discount" onkeyup="subAmount()" autocomplete="off">
                     </div>
-                  </div><br>
+                  </div><br> -->
                 
                   <div class="form-group" style="margin-bottom:30px;">
                     <div class="col-sm-4">
@@ -168,9 +159,19 @@
                       <input type="hidden" class="form-control" id="delivery_charge_value" name="delivery_charge_value" autocomplete="off">
                     </div>
                   </div><br>
+                  <div class="form-group" style="margin-bottom:30px;">
+                    <div class="col-sm-4">
+                    <label for="gross_amount" class="control-label">GST (9%)</label></div>
+                    <div class="col-sm-8">
+                        
+                      <input type="text" class="form-control" id="gst" name="gst_amt" disabled autocomplete="off">
+                      <input type="hidden" class="form-control" id="gst_value" name="gst_value" value="9" autocomplete="off">
+                      <input type="hidden" class="form-control" id="gst_rate" name="gst_rate" value="9" autocomplete="off">
+                    </div>
+                  </div><br>
                   <div class="form-group">
                   <div class="col-sm-4">
-                    <label for="net_amount" class="control-label">Net Amount</label></div>
+                    <label for="net_amount" class="control-label">Grand Total</label></div>
                     <div class="col-sm-8">
                       <input type="text" class="form-control" id="net_amount" name="net_amount" disabled autocomplete="off">
                       <input type="hidden" class="form-control" id="net_amount_value" name="net_amount_value" autocomplete="off">
@@ -184,7 +185,41 @@
               <div class="box-footer col-sm-12 col-md-12 col-xs-12 pull pull-left" style="margin-bottom:30px;">
                
                <!-- <input type="hidden" name="vat_charge_rate" value="<?php //echo $company_data['vat_charge_value'] ?>" autocomplete="off"> -->
-                <button type="submit" class="btn btn-success">Create Order</button>
+               <?php
+                    $user = $this->session->userdata('normal_user');
+                    $user_id = $user->id;
+                    $sql = "select * from user_register where id=".$user_id;
+                    $query = $this->db->query($sql);
+                    $restrict_time = $query->row()->restrict_time;
+                      // Get the current time
+                      date_default_timezone_set('Asia/Singapore');
+                      $current_time = date("H:i");
+
+                      // Define the start and end times for the restriction (assuming 23:00 to 06:00 in this example)
+                      $start_time = "16:00";
+                      $end_time = "21:00"; 
+                      
+                    
+                      if ($restrict_time == 1 && (($current_time >= $start_time) && ($current_time <= $end_time))) { 
+                          // Time is within the restricted range, redirect to order_restrict page
+                          $btn = 'disabled';
+                          $text = '<div class="heading">🚀 Orders Opening at 9:00 PM! 🚀</div>
+                          <p>🔔 Please wait patiently! 🔔</p>
+                          <p>Our ordering system is currently closed after 4:00 PM.</p>';
+                      } else if ($restrict_time == 0 && (($current_time >= $start_time) && ($current_time <= $end_time))) {
+                          // Time is outside the restricted range, allow creating orders
+                          $btn = '';
+                          $text = '';
+                      }
+                      else{
+                        $btn = '';
+                        $text = '';
+                      }
+                   
+                  
+                    ?>
+                    <?php echo $text; ?>
+                <button type="submit" class="btn btn-success" <?php echo $btn; ?>>Create Order</button>
                 <a href="<?php echo base_url('index.php/orders/') ?>" class="btn btn-danger">Back</a>
               </div>
             </form>
@@ -203,22 +238,23 @@
 <!-- /.content-wrapper -->
 
 <script type="text/javascript">
-   $(document).on('change', '.category_name', function() {
-    var rowId = $(this).data('row-id');
-    var categoryDropdown = document.getElementById('category_' + rowId);
-    var sliceDropdown = document.getElementById('sliced_' + rowId);
-    var seedDropdown = document.getElementById('seed_' + rowId);
+//    $(document).on('change', '.category_name', function() {
+//     var rowId = $(this).data('row-id');
+//     var categoryDropdown = document.getElementById('category_' + rowId);
+//     var productDropdown = document.getElementById('product_' + rowId);
+//     var sliceDropdown = document.getElementById('sliced_' + rowId);
+//     var seedDropdown = document.getElementById('seed_' + rowId);
 
-    if (categoryDropdown.value.toLowerCase() === 'bun') {
-        sliceDropdown.disabled = true;
+//     if (categoryDropdown.value.toLowerCase() === 'bun') {
+//         sliceDropdown.disabled = true;
        
-        $('#msg').html('Slicing not available for Buns');
-    } else {
-        sliceDropdown.disabled = false;
+//         $('#msg').html('Slicing not available for Buns');
+//     } else {
+//         sliceDropdown.disabled = false;
      
-        $('#msg').html('');
-    }
-});
+//         $('#msg').html('');
+//     }
+// });
 function confirmSubmission(event) {
     event.preventDefault(); // Prevent the default form submission
 
@@ -292,7 +328,7 @@ $(document).on('change', '.seed', function() {
                     html += '</select>'+
                 '</td>'+
                 '<td>'+ 
-                    '<select class="form-control select_group product_'+row_id+'" data-row-id="'+row_id+'" id="product_'+row_id+'" name="product[]" style="width:100%;"  required onchange="getProductData('+row_id+')">'+
+                    '<select class="form-control select_group product_name product_'+row_id+'" data-row-id="'+row_id+'" id="product_'+row_id+'" name="product[]" style="width:100%;"  required onchange="getProductData('+row_id+')">'+
                       
                     '</select>'+
                 '</td>'+ 
@@ -433,7 +469,6 @@ function removeRow(tr_id)
 
   function getProductData(row_id) {
     var product_id = $("#product_" + row_id).val();
-    // alert(product_id);
     if (product_id == "") {
         $("#rate_" + row_id).val("");
         $("#rate_value_" + row_id).val("");
@@ -451,22 +486,46 @@ function removeRow(tr_id)
             success: function(response) {
                 // setting the rate value into the rate input field
                 $("#rate_" + row_id).val(response.prod_rate);
-                $("#rate_value_" + row_id).val(response.prod_rate);
+                $("#rate_value_" + row_id).val(response.prod_rate)
+
+                if (response.add_on_slice == 0) {
+                    $("#sliced_" + row_id).prop('disabled', true);
+                    $('#msg').html('Slice not available for ' + response.product_id + '-' + response.product_name);
+                } else {
+                  $("#sliced_" + row_id).prop('disabled', false);
+                }
+
+                if (response.add_on_seed == 0) {
+                  $("#seed_" + row_id).prop('disabled', true);
+                    $('#msg').html('Seed not available for ' + response.product_id + '-' + response.product_name);
+                } else {
+                  $("#seed_" + row_id).prop('disabled', false);
+                }
+
+                if (response.add_on_seed == 0 && response.add_on_slice == 0) {
+                  $('#msg').html('Slice and Seed not available for ' + response.product_id + '-' + response.product_name);
+                }
 
                 // Check if min_order is not empty
                 if (response.min_order !== undefined && response.min_order !== null && response.min_order !== "") {
-                    $('#minn').val(response.min_order);
-                    $("#qty_" + row_id).val(response.min_order);
-                    $("#qty_value_" + row_id).val(response.min_order);
-                } else {
-                    $("#qty_" + row_id).val(1);
-                    $("#qty_value_" + row_id).val(1);
-                }
+                      $('#minn').val(response.min_order);
+                      $("#qty_" + row_id).val(response.min_order);
+                      $("#qty_value_" + row_id).val(response.min_order);
+                      var total = Number(response.prod_rate) * Number(response.min_order);
+                  } else {
+                      $("#qty_" + row_id).val(1);
+                      $("#qty_value_" + row_id).val(1);
+                      var total = Number(response.prod_rate) * 1;
+                  }
 
-                var total = Number(response.prod_rate) * 1;
-                total = total.toFixed(2);
-                $("#amount_" + row_id).val(total);
-                $("#amount_value_" + row_id).val(total);
+                  // Include delivery charge in the total amount
+                  var deliveryCharge = parseFloat($("#delivery_charge").val()) || 0;
+                  total += deliveryCharge;
+
+                  total = total.toFixed(2);
+                  $("#amount_" + row_id).val(total);
+                  $("#amount_value_" + row_id).val(total);
+
 
                 subAmount();
             } // /success
@@ -502,39 +561,32 @@ function removeRow(tr_id)
     }
 
     // Calculate gross amount
-    var grossAmount = totalSubAmount + service_charge;
+    var grossAmount = totalSubAmount;
 
-    // Update the input fields
     $("#gross_amount").val(grossAmount.toFixed(2));
     $("#gross_amount_value").val(grossAmount.toFixed(2));
 
-    // Calculate GST
-    var gstRate = 9; // Assuming a GST rate of 9%
-    var gstAmount = grossAmount * gstRate / 100;
+    
+    var discount = $("#discount").val() || 0;
+    var netAmount = grossAmount;
 
-    // Update GST fields
+    var deliveryCharge = netAmount < 20 ? 20.00 : 0;
+
+    var totall = grossAmount +  service_charge + deliveryCharge;
+    var gstRate = 9; 
+    var gstAmount = totall * gstRate / 100;
+
     $("#gst").val(gstAmount.toFixed(2));
     $("#gst_rate").val(gstAmount.toFixed(2));
 
-    // Calculate net amount
-    var discount = $("#discount").val() || 0;
-    var netAmount = grossAmount + gstAmount - discount;
-
-    // Apply delivery charge if net amount is less than 20
-    var deliveryCharge = netAmount < 20 ? 20.00 : 0;
-
-    // Update delivery charge field
     $("#delivery_charge").val(deliveryCharge);
     $("#delivery_charge_value").val(deliveryCharge);
 
-    // Update service charge field
     $("#service_charge").val(service_charge.toFixed(2));
     $("#service_charge_value").val(service_charge.toFixed(2));
 
-    // Calculate net amount including all charges
-    var finalAmount = netAmount + service_charge + deliveryCharge;
+    var finalAmount = netAmount + service_charge + gstAmount  + deliveryCharge;
 
-    // Update net amount fields
     $("#net_amount").val(finalAmount.toFixed(2));
     $("#net_amount_value").val(finalAmount.toFixed(2));
 }
