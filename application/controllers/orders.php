@@ -9,6 +9,7 @@ class orders extends CI_Controller {
         parent::__construct();
         $this->load->helper('url');
         $this->load->model('order_model');
+		$this->load->model('user_model');
         $this->load->library('pagination');
         $this->load->library('session');
 		$this->load->library('email');
@@ -612,4 +613,40 @@ The Sourdough Factory Team";
 		$this->load->view('orders/order_restrict.php', $data);
 		$this->load->view('template/footer.php');
 	}
+
+	public function admin_orders() {
+		$data['title'] = 'Orders';
+	
+		$this->form_validation->set_rules('product[]', 'Product name', 'trim|required');
+	
+		if ($this->form_validation->run() == TRUE) {
+			$order_id = $this->order_model->admin_create();
+			$bill_no = $order_id['bill_no'];
+		
+				$order_id = $order_id['order_id'];
+				
+				$this->download($order_id); 
+				$this->send_invoice($bill_no); 
+				//exit;
+				$this->session->set_flashdata('success', 'Order Placed Successfully');
+				redirect('orders/manage_orders', 'refresh');
+		} 
+
+		else {
+			$data['products'] = $this->order_model->getActiveProductData();
+			$data['category'] = $this->order_model->getActivecatergoryData();
+
+			$this->load->view('template/header.php', $data);
+			$user = $this->session->userdata('user_register');
+			$users = $this->session->userdata('normal_user');
+			$data['userss'] = $this->user_model->get_roleuserss();
+			$loginuser = $this->session->userdata('LoginSession');
+	
+			$this->load->view('template/sidebar.php', array('user' => $user, 'users' => $users, 'data' => $data,'loginuser' => $loginuser));
+			$this->load->view('orders/admin_order.php', $data);
+			$this->load->view('template/footer.php');
+		}
+	}
+
+	
 }

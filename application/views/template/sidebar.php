@@ -170,6 +170,7 @@
                 </span>
             </a>
             <ul class="treeview-menu" style="display: none;">
+            <li class="nav-item"><a href="<?php echo base_url('index.php/orders/admin_orders') ?>" class="nav-link"><i class="fa fa-edit"></i>  Create Orders</a></li>
                 <li class="nav-item"><a href="<?php echo base_url('index.php/orders/manage_orders') ?>" class="nav-link"><i class="fa fa-th-large"></i>  Manage Orders</a></li>
             </ul>
         </li>

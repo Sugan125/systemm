@@ -26,12 +26,12 @@
         <?php endif; ?>
 
         <div class="box-header">
-            <h3 class="box-title">Add Order</h3>
+            <h3 class="box-title">Create Order for any user</h3>
           </div>
         <div class="box" style="margin-top:20px;">
           
           <!-- /.box-header -->
-          <form role="form" action="<?php base_url('orders/create') ?>" method="post" class="form-horizontal" onsubmit="confirmSubmission(event)">
+          <form role="form" action="<?php base_url('orders/admin_orders') ?>" method="post" class="form-horizontal" onsubmit="confirmSubmission(event)">
            
                 
               <div class="box-body pull-right">
@@ -47,6 +47,9 @@
                
                  
                </div>
+
+              
+
 
                
                 <table class="table table-bordered table-hover" id="product_info_table">
@@ -111,7 +114,21 @@
                 <span id="msg" style="margin-left: 440px; color: red;"></span>
 
                 <div class="col-sm-12 col-md-12 col-xs-12 pull pull-right">
-                <div class="col-sm-6 col-md-6"></div>
+                <div class="col-sm-6 col-md-6">
+                <div class="input-group mb-3" id="input_size" style="width: 50%!important;">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">@</span>
+                    </div>
+                    <select name="user_id" class="form-control" required oninvalid="this.setCustomValidity('Please select a user')">
+                        <option value="">Select User Name</option>
+                        <?php foreach ($userss as $row) :
+                        if($row->role != 'Owner') {?>
+                            <option name="user_id" value="<?= $row->id; ?>"><?= $row->name; ?></option>
+                            <?php } ?>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                </div>
                 <div class="col-sm-6 col-md-6">
                 <span style="margin-left: 250px;"><b>SGD($)</b></span>
                   <div class="form-group" style="margin-bottom:30px;">
@@ -125,7 +142,7 @@
                     </div>
                   </div><br>
                   
-                  <!-- <?php// if($is_service_enabled == true): ?> -->
+   
                   <div class="form-group"  style="margin-bottom:30px;">
                     <div class="col-sm-4">
                     <label for="service_charge" class="control-label">Slicing Service: <?php //echo $company_data['service_charge_value'] ?> </label>
@@ -135,21 +152,7 @@
                       <input type="hidden" class="form-control" id="service_charge_value" name="service_charge_value" autocomplete="off">
                     </div>
                   </div><br>
-                 <!--  <div class="form-group">
-                    <label for="vat_charge" class="col-sm-5 control-label">Vat <?php //echo $company_data['vat_charge_value'] ?> %</label>
-                    <div class="col-sm-7">
-                      <input type="text" class="form-control" id="vat_charge" name="vat_charge" disabled autocomplete="off">
-                      <input type="hidden" class="form-control" id="vat_charge_value" name="vat_charge_value" autocomplete="off">
-                    </div>
-                  </div>
-                  <?php// endif; ?> -->
-                  <!-- <div class="form-group" style="margin-bottom:30px;">
-                    <div class="col-sm-4">
-                    <label for="discount" class="control-label">Discount</label></div>
-                    <div class="col-sm-8">
-                      <input type="text" class="form-control" id="discount" name="discount" placeholder="Discount" onkeyup="subAmount()" autocomplete="off">
-                    </div>
-                  </div><br> -->
+             
                 
                   <div class="form-group" style="margin-bottom:30px;">
                     <div class="col-sm-4">
@@ -183,43 +186,8 @@
               <!-- /.box-body -->
 
               <div class="box-footer col-sm-12 col-md-12 col-xs-12 pull pull-left" style="margin-bottom:30px;">
-               
-               <!-- <input type="hidden" name="vat_charge_rate" value="<?php //echo $company_data['vat_charge_value'] ?>" autocomplete="off"> -->
-               <?php
-                    $user = $this->session->userdata('normal_user');
-                    $user_id = $user->id;
-                    $sql = "select * from user_register where id=".$user_id;
-                    $query = $this->db->query($sql);
-                    $restrict_time = $query->row()->restrict_time;
-                      // Get the current time
-                      date_default_timezone_set('Asia/Singapore');
-                      $current_time = date("H:i");
-
-                      // Define the start and end times for the restriction (assuming 23:00 to 06:00 in this example)
-                      $start_time = "16:00";
-                      $end_time = "21:00"; 
-                      
-                    
-                      if ($restrict_time == 1 && (($current_time >= $start_time) && ($current_time <= $end_time))) { 
-                          // Time is within the restricted range, redirect to order_restrict page
-                          $btn = 'disabled';
-                          $text = '<div class="heading">🚀 Orders Opening at 9:00 PM! 🚀</div>
-                          <p>🔔 Please wait patiently! 🔔</p>
-                          <p>Our ordering system is currently closed after 4:00 PM.</p>';
-                      } else if ($restrict_time == 0 && (($current_time >= $start_time) && ($current_time <= $end_time))) {
-                          // Time is outside the restricted range, allow creating orders
-                          $btn = '';
-                          $text = '';
-                      }
-                      else{
-                        $btn = '';
-                        $text = '';
-                      }
-                   
-                  
-                    ?>
-                    <?php echo $text; ?>
-                <button type="submit" class="btn btn-success" <?php echo $btn; ?>>Create Order</button>
+            
+                <button type="submit" class="btn btn-success">Create Order</button>
                 <a href="<?php echo base_url('index.php/orders/') ?>" class="btn btn-danger">Back</a>
               </div>
             </form>
@@ -238,23 +206,7 @@
 <!-- /.content-wrapper -->
 
 <script type="text/javascript">
-//    $(document).on('change', '.category_name', function() {
-//     var rowId = $(this).data('row-id');
-//     var categoryDropdown = document.getElementById('category_' + rowId);
-//     var productDropdown = document.getElementById('product_' + rowId);
-//     var sliceDropdown = document.getElementById('sliced_' + rowId);
-//     var seedDropdown = document.getElementById('seed_' + rowId);
 
-//     if (categoryDropdown.value.toLowerCase() === 'bun') {
-//         sliceDropdown.disabled = true;
-       
-//         $('#msg').html('Slicing not available for Buns');
-//     } else {
-//         sliceDropdown.disabled = false;
-     
-//         $('#msg').html('');
-//     }
-// });
 function confirmSubmission(event) {
     event.preventDefault(); // Prevent the default form submission
 
@@ -523,11 +475,10 @@ function removeRow(tr_id)
                       $("#qty_value_" + row_id).val(1);
                       var total = Number(response.prod_rate) * 1;
                   }
-                 
-
                   // Include delivery charge in the total amount
                   var deliveryCharge = parseFloat($("#delivery_charge").val()) || 0;
                   total += deliveryCharge;
+
 
                   total = total.toFixed(2);
                   $("#amount_" + row_id).val(total);

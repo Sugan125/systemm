@@ -70,7 +70,7 @@
          <?php foreach ($data['order_data']['order_item'] as $order) : ?>
         <tr class="odd text-center">
         <td><?php echo isset($order['qty']) ? $order['qty'] : ''; ?></td>
-        <td><?php echo isset($order['prod_id']) ? $order['prod_id'] : ''; ?></td>
+        <td><?php echo isset($order['product_id']) ? $order['product_id'] : ''; ?></td>
         <td><?php echo isset($order['product_name']) ? $order['product_name'] : ''; ?></td>
         <td>$<?php echo isset($order['rate']) ? $order['rate'] : ''; ?></td>
         <td>pc</td>
