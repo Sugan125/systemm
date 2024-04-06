@@ -217,9 +217,14 @@ public function get_roleusers($limit, $offset) {
 
 
 public function get_roleuserss() {
- 
   return $this->db->get('user_register')->result();
 }
+
+public function get_roleuser_access($user_id) {
+  $this->db->where('id !=', $user_id);
+  return $this->db->get('user_register')->result();
+}
+
 
 public function createrole($data,$table){
  

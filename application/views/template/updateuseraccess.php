@@ -84,6 +84,11 @@
                                     <input class="form-check-input" type="checkbox" name="access[]" value="File Upload" <?= (in_array('File Upload', explode(',', $row->access))) ? 'checked' : ''; ?> id="userCheckbox">
                                     <label class="form-check-label" for="userCheckbox">File Upload</label>
                                 </div>
+
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" name="access[]" value="Create Order" <?= (in_array('Create Order', explode(',', $row->access))) ? 'checked' : ''; ?> id="userCheckbox">
+                                    <label class="form-check-label" for="userCheckbox">'Create Order</label>
+                                </div>
                                 <!-- Add more checkboxes as needed -->
                             </div>
                         </div>

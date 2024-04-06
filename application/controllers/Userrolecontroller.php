@@ -61,7 +61,11 @@ class Userrolecontroller extends CI_Controller {
     public function createaccess() {
         $data['title'] = 'Dashboard';
 
-        $data['userss'] = $this->user_model->get_roleuserss();
+        $loginuser = $this->session->userdata('LoginSession');
+	
+		$data['user_id'] = $loginuser['id'];
+
+        $data['userss'] = $this->user_model->get_roleuser_access($data['user_id']);
 
         $data['total_rows'] = $this->user_model->count_all_user_role();
         

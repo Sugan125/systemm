@@ -56,10 +56,10 @@
                   <thead>
                     <tr>
                       <th style="width:15%">Category</th>
-                      <th style="width:25%">Product</th>
+                      <th style="width:30%">Product / Packing Size</th>
                       <th style="width:10%">Pre-Slice</th>
                       <th style="width:10%">Seed</th>
-                      <th style="width:10%">Qty</th>
+                      <th style="width:10%">Qty (Pkt)</th>
                       <th style="width:10%">Rate</th>
                       <th style="width:10%">Amount</th>
                       <th style="width:10%"><button type="button" id="add_row" class="btn btn-info"><i class="fa fa-plus"></i></button></th>
@@ -332,7 +332,14 @@ $('#product_info_table').on('change', '.category_name', function() {
         success: function(response) {
             var options = '<option value=""></option>';
             $.each(response, function(index, product) {
-              options += '<option value="' + product.id + '">' + product.product_id + '-' + product.product_name + '</option>';
+
+              if(product.min_order>1){
+              var qty_pkt = ' ('+ product.min_order + 'pcs/pkt)';
+              }
+              else{
+                var qty_pkt = '';
+              }
+              options += '<option value="' + product.id + '">' + product.product_id + '-' + product.product_name + qty_pkt + '</option>';
             });
             // Update the corresponding product select element using the stored reference
             currentRow.find('.product_' + currentRow.attr('id').split('_')[1]).html(options);
@@ -352,7 +359,13 @@ $('.category_name').on('change', function() {
         success: function(response) {
             var options = '<option value=""></option>';
             $.each(response, function(index, product) {
-              options += '<option value="' + product.id + '">' + product.product_id + '-' + product.product_name + '</option>';
+              if(product.min_order>1){
+              var qty_pkt = ' ('+ product.min_order + 'pcs/pkt)';
+              }
+              else{
+                var qty_pkt = '';
+              }
+              options += '<option value="' + product.id + '">' + product.product_id + '-' + product.product_name + qty_pkt +  '</option>';
             });
             $('.product_1').html(options);
         }
