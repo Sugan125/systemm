@@ -54,6 +54,7 @@
         <div class="col-sm-3 col-md-3 d-flex justify-content-end">
             <a href="<?php echo base_url('index.php/Dashboardcontroller'); ?>" class="btn-sm btn btn-danger"><i class="fas fa-backward"></i> Back</a>
         </div>
+        <?php if( (isset($user->image)) || $loginuser['roles'] == 'Admin' || $loginuser['roles'] == 'Owner' || ((in_array('Admin', $loginuser['role']) && in_array('User', $loginuser['role'])))){ ?>
         <div class="col-sm-12 col-md-12 text-right">
                             <form action="<?= base_url('index.php/Userscontroller/importfile') ?>" method="post" enctype="multipart/form-data">
                                 <label for="uploadFile" class="btn btn-primary btn-sm" style="margin-bottom: 0px;width: 45%;background: none;border: none;color: black;">
@@ -62,6 +63,7 @@
                                 <input type="submit" name="submit" class="btn btn-primary btn-sm" value="Upload" />
                             </form>
                         </div>
+                        <?php } ?>
     </div>
 </div>
 

@@ -44,7 +44,7 @@
                                 aria-hidden="true">&times;</span></button>
                         <?php echo $this->session->flashdata('errors'); ?>
                     </div>
-                    <?php endif; ?>
+                    <?php endif; ?>                
                     <!-- <a href="<?php echo base_url('index.php/orders/create') ?>" class="btn btn-success">Add
                         Order</a> -->
                     <!-- <br /> <br /> -->
@@ -117,9 +117,18 @@
                 <!-- col-md-12 -->
             </div>
             <!-- /.row -->
+            <div class="row">
+    <div class="col-sm-6 d-flex justify-content-start">
+        <?php $total_rowss = $total_rows; echo "Showing 1 to 10 of ".$total_rowss." entries"; ?>
+    </div>
+    <div class="col-sm-6 d-flex justify-content-end">
+        <?php echo $this->pagination->create_links(); ?>
+    </div>
+</div>
         </section>
         <!-- /.content -->
     </div>
+   
     <!-- /.content-wrapper -->
     <!-- remove brand modal -->
     <div class="modal fade" tabindex="-1" role="dialog" id="removeModal">
