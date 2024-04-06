@@ -10,6 +10,7 @@ class orders extends CI_Controller {
         $this->load->helper('url');
         $this->load->model('order_model');
 		$this->load->model('user_model');
+		$this->load->model('excel_export_model');
         $this->load->library('pagination');
         $this->load->library('session');
 		$this->load->library('email');
@@ -730,5 +731,27 @@ The Sourdough Factory Team";
         $this->load->view('orders/manage_order.php', $data);
         $this->load->view('template/footer.php');
     }
+
+	public function export_sales()
+	{
+    $data['print'] = 'print';
+
+	$loginuser = $this->session->userdata('LoginSession');
+	
+	$data['user_id'] = $loginuser['id'];
+
+	$user_id = $data['user_id'];
+
+	$data["employee_data"] = $this->excel_export_model->fetch_data();
+
+    $this->load->view('template/header.php', $data);
+    $user = $this->session->userdata('user_register');
+    $users = $this->session->userdata('normal_user');
+    $loginuser = $this->session->userdata('LoginSession');
+	$this->load->view('template/sidebar.php', array('user' => $user, 'users' => $users, 'data' => $data,'loginuser' => $loginuser));
+	$this->load->view('invoice/export_data.php', array('data' => $data,));
+	$this->load->view('template/footer.php');
+}
+
 	
 }
