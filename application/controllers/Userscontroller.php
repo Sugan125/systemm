@@ -14,31 +14,37 @@ class Userscontroller extends CI_Controller {
 
     public function index() {
         $data['title'] = 'Dashboard';
-        $config['base_url'] = site_url('Userscontroller/index');
+        $config['base_url'] = site_url('Userscontroller/search');
         $config['total_rows'] = $this->user_model->count_all_users(); 
         $config['per_page'] = 10;
         $config['uri_segment'] = 3;
-        $config['full_tag_open']= '<ul  class="pagination">';
-		$config['full_tag_close']= '</ul'>
-		$config['first_link']= 'First';
-		$config['last_link']= 'Last';
-		$config['first_tag_open']=  '<li  class="page-item"><spann class="page-link">';
-		$config['first_tag_close'] = '</span></li>';
-		$config['prev_link']= 'Previous';
-		$config['prev_tag_open'] = '<li class="page-item"><span class="page-link">';
+        $config['use_page_numbers'] = TRUE;
+    
+        $config['full_tag_open'] = '<ul class="pagination">';
+        $config['full_tag_close'] = '</ul>';
+        $config['first_link'] = 'First';
+        $config['last_link'] = 'Last';
+        $config['first_tag_open'] = '<li class="page-item"><span class="page-link">';
+        $config['first_tag_close'] = '</span></li>';
+        $config['prev_link'] = 'Previous';
+        $config['prev_tag_open'] = '<li class="page-item"><span class="page-link">';
+        $config['prev_tag_close'] = '</span></li>';
+        $config['next_link'] = 'Next';
+        $config['next_tag_open'] = '<li class="page-item"><span class="page-link">';
+        $config['next_tag_close'] = '</span></li>';
+        $config['last_tag_open'] = '<li class="page-item"><span class="page-link">';
+        $config['last_tag_close'] = '</span></li>';
+        $config['cur_tag_open'] = '<li class="page-item active"><span class="page-link">';
+        $config['cur_tag_close'] = '</span></li>';
+        $config['num_tag_open'] = '<li class="page-item"><span class="page-link">';
+        $config['num_tag_close'] = '</span></li>'; 
+    
+        $page = ($this->uri->segment(3)) ? $this->uri->segment(3) : 1; // Set the default page to 1
+        $offset = ($page - 1) * $config['per_page'];
 
-		$config['prev_tag_close'] = '</span></li>';
-		$config['next_link']= 'Next';
-		$config['next_tag_open'] = '<li class="page-item"><span class="page-link">';
-		$config['next_tag_close'] = '</span></li>';
-		$config['last_tag_open'] = '<li class="page-item"><span class="page-link">';
-		$config['last_tag_close'] = '</span></li>';
-		$config['cur_tag_open'] = '<li class="page-item active"><a class="page-link" href="#">';
-		$config['cur_tag_close'] = '</a></li>';
-		$config['num_tag_open'] = '<li class="page-item"><span class="page-link">';
-		$config['num_tag_close'] = '</span></li>'; 
+        $config['total_rows'] = $this->user_model->count_all_users();
 
-        $page = ($this->uri->segment(3)) ? $this->uri->segment(3) : 1;
+	    $this->pagination->initialize($config);
 
        $data['userss'] = $this->user_model->get_users();
 
@@ -48,6 +54,8 @@ class Userscontroller extends CI_Controller {
         $loginuser = $this->session->userdata('LoginSession');
 
         $data['total_rows'] = $this->user_model->count_all_users();
+
+      
 
         if (isset($loginuser['roles']) && !empty($loginuser['roles']) && $loginuser['roles'] == 'Admin') {
             $data['total_rows'] = $this->user_model->count_all_users();
@@ -97,12 +105,15 @@ class Userscontroller extends CI_Controller {
     
         $page = ($this->uri->segment(3)) ? $this->uri->segment(3) : 1; // Set the default page to 1
         $offset = ($page - 1) * $config['per_page'];
+
+        $data['keyword'] = $keyword;
+
+        $config['total_rows'] = $this->user_model->count_all_users();
+
+	    $this->pagination->initialize($config);
         $data['userss'] = $this->user_model->search_users($keyword, $config['per_page'], $offset);
         $data['total_rows'] = $this->user_model->count_search_results($keyword);
-    
-        $this->pagination->initialize($config);
-        $data['keyword'] = $keyword;
-    
+        
         $this->load->view('template/header.php', $data);
         $user = $this->session->userdata('user_register');
         $users = $this->session->userdata('normal_user');
@@ -135,7 +146,13 @@ class Userscontroller extends CI_Controller {
         'company_name'=>$this->input->post('company_name'),
        'email'=>$this->input->post('email'),
        'address'=>$this->input->post('address'),
+       'address_line2'=>$this->input->post('address_line2'),
+       'address_city'=>$this->input->post('address_city'),
+       'address_postcode'=>$this->input->post('address_postcode'),
        'delivery_address'=>$this->input->post('delivery_address'),
+       'delivery_address_line2'=>$this->input->post('delivery_address_line2'),
+       'delivery_address_city'=>$this->input->post('delivery_city'),
+       'delivery_address_postcode'=>$this->input->post('delivery_postcode'),
        'status'=>$this->input->post('status'),
        'contact'=>$this->input->post('contact'),
        'password'=>$this->input->post('password'),
@@ -466,19 +483,25 @@ class Userscontroller extends CI_Controller {
                         if($flag){
                             $flag =false;
                             continue;
-                        }
+                        }   
                         $inserdata[$i]['name'] = $value['A'];
                         $inserdata[$i]['email'] = $value['J'];
                         $inserdata[$i]['address'] = $value['B'];
+                        $inserdata[$i]['address_line2'] = $value['C'];
+                        $inserdata[$i]['address_city'] = $value['D'];
+                        $inserdata[$i]['address_postcode'] = $value['E'];
                         $inserdata[$i]['company_name'] = $value['A'];
                         $inserdata[$i]['delivery_address'] = $value['F'];
-                        $inserdata[$i]['role'] = $value['N'];
-                        $inserdata[$i]['status'] = $value['O'];
+                        $inserdata[$i]['delivery_address_line2'] = $value['G'];
+                        $inserdata[$i]['delivery_address_city'] = $value['H'];
+                        $inserdata[$i]['delivery_address_postcode'] = $value['I'];
+                        $inserdata[$i]['role'] = 'User';
+                        $inserdata[$i]['status'] = '1';
                         $i++;
                     }
                     $result = $this->user_model->insert_import($inserdata);
                     if($result){
-                        $this->session->set_flashdata('imported','<div class="alert alert-success alert-dismissible fade show" role="alert">Products Imported Successfully!
+                        $this->session->set_flashdata('imported','<div class="alert alert-success alert-dismissible fade show" role="alert">Users Imported Successfully!
                         <button type="button" class="close" data-dismiss="alert" arial-label="close"> <span aria-hidden="true">&times;</span></button></div>');
                         redirect('Userscontroller');
                     }else{

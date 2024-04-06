@@ -104,7 +104,7 @@ class Userrolecontroller extends CI_Controller {
         );
     
         $this->user_model->createrole($data, 'user_register');
-        $this->session->set_flashdata('updated', '<div class="alert alert-success alert-dismissible fade show" role="alert">User access Updated Successfully!
+        $this->session->set_flashdata('updated', '<div class="alert alert-success alert-dismissible fade show" role="alert">User access Updated Successfully! Please logout and login if you set access of own account.
             <button type="button" class="close" data-dismiss="alert" aria-label="close"> <span aria-hidden="true">&times;</span></button></div>');
         redirect('Userrolecontroller');
     }

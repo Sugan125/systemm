@@ -31,9 +31,9 @@
     <select name="name" id="userSelect" class="form-control">
         <option value="">Select User Name</option>
         <?php foreach ($userss as $row) :
-            if($row->role != 'Owner') {?>
+          //  if($row->role != 'Owner') {?>
                 <option value="<?= $row->name; ?>" data-role="<?= $row->role; ?>"><?= $row->name; ?></option>
-            <?php } ?>
+            <?php// } ?>
         <?php endforeach; ?>
     </select>
 </div>
@@ -74,15 +74,15 @@
         <label class="form-check-label" for="userCheckbox">Delete</label>
     </div>
 
-
+<!-- 
     <div class="form-check form-check-inline">
         <input class="form-check-input" type="checkbox" name="access[]" value="File Upload" id="filecheck">
         <label class="form-check-label" for="userCheckbox">File Upload</label>
-    </div>
+    </div> -->
 
-    <div class="form-check form-check-inline"  id="create_order" style="display: none;">
+    <div class="form-check form-check-inline"  id="create_order">
         <input class="form-check-input" type="checkbox" name="access[]" value="Create Order" id="ordercheck">
-        <label class="form-check-label" for="userCheckbox">Create Order</label>
+        <label class="form-check-label" for="userCheckbox">Create Order For Admin/Manager</label>
     </div>
     <!-- Add more checkboxes as needed -->
 </div>  
@@ -105,12 +105,12 @@
             var selectedRole = $(this).find(':selected').data('role'); // Get the data-id value of the selected option
             var selectedAccess = $(this).find(':selected').data('access');
 
-            if (selectedRole === 'Admin') {
-                $('#create_order').show(); // Show the "Create Order" checkbox
-            } else {
-                $('#create_order').hide(); // Hide the "Create Order" checkbox for other roles
-                $('#ordercheck').prop('checked', false); // Uncheck the checkbox if it was checked before
-            }
+            if (selectedRole === 'Admin' || selectedRole === 'Owner') {
+            $('#ordercheck').prop('disabled', false); // Enable the checkbox
+        } else {
+            $('#ordercheck').prop('disabled', true); // Disable the checkbox
+            $('#ordercheck').prop('checked', false); // Uncheck the checkbox if it was checked before
+        }
 
 
             $('input[type="checkbox"]').prop('checked', false); // Uncheck all checkboxes first

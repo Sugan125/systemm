@@ -64,7 +64,7 @@ class user_model extends CI_Model{
 
   //public function get_users($limit, $offset) {
     public function get_users() {
- //     $this->db->limit($limit, $offset);
+    $this->db->limit(10);
       return $this->db->get('user_register')->result();
   }
 
@@ -80,7 +80,7 @@ class user_model extends CI_Model{
     $this->db->limit($limit, $offset);
 
     $query = $this->db->get('user_register');
-    //var_dump($this->db->last_query()); // Check the generated SQL query
+   // var_dump($this->db->last_query()); // Check the generated SQL query
     return $query->result();
 }
       
@@ -221,7 +221,7 @@ public function get_roleuserss() {
 }
 
 public function get_roleuser_access($user_id) {
-  $this->db->where('id !=', $user_id);
+ // $this->db->where('id !=', $user_id);
   return $this->db->get('user_register')->result();
 }
 

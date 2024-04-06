@@ -34,6 +34,8 @@
 <?= $this->session->flashdata('created'); ?>
 <?= $this->session->flashdata('updated'); ?>
 <?= $this->session->flashdata('deleted'); ?>
+<?= $this->session->flashdata('imported'); ?>
+
 
 <!-- Search Form -->
     <div class="card">
@@ -118,8 +120,8 @@
         <td><?= $row->name; ?></td>
         <td><?= $row->company_name; ?></td>
         <td><?= $row->email; ?></td>
-        <td><?= $row->address; ?></td>
-        <td><?= $row->delivery_address; ?></td>
+        <td><?= $row->address; ?><?= $row->address_line2; ?><?= $row->address_city; ?><?= $row->address_postcode; ?></td>
+        <td><?= $row->delivery_address; ?><?= $row->delivery_address_line2; ?><?= $row->delivery_address_city; ?><?= $row->delivery_address_postcode; ?></td>
         <td><?= $row->contact; ?></td>
         <td><?=  $rolee; ?></td>
         <!-- Change id="restrictCheckbox" to class="restrictCheckbox" -->
