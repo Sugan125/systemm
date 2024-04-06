@@ -415,7 +415,88 @@ class Userscontroller extends CI_Controller {
             }
         }
     }
+    public function update_restrict_time(){
+        $userId = $this->input->post('userId');
+        $isChecked = $this->input->post('isChecked');
+    
+        // Update the restrict_time column in the database
+        $this->db->set('restrict_time', $isChecked);
+        $this->db->where('id', $userId);
+        $this->db->update('user_register');
+    
+        // Check if the update was successful
+        if($this->db->affected_rows() > 0){
+            // Return success response with isChecked value
+            echo json_encode(array('status' => 'success', 'isChecked' => $isChecked));
+        } else {
+            // Return error response
+            echo json_encode(array('status' => 'error'));
+        }
+    }
 
+    public function importfile(){
+        if ($this->input->post('submit')) {
+            $path = './uploads/';
+            require_once APPPATH . "/third_party/PHPExcel.php";
+            $config['upload_path'] = $path;
+            $config['allowed_types'] = 'xlsx|xls|csv';
+            $config['remove_spaces'] = TRUE;
+            $this->load->library('upload', $config);
+            $this->upload->initialize($config);
+            if (!$this->upload->do_upload('uploadFile')) {
+                $error = array('error' => $this->upload->display_errors());
+            } else {
+                $data = array('upload_data' => $this->upload->data());
+            }
+            if(empty($error)){
+                if (!empty($data['upload_data']['file_name'])) {
+                    $import_xls_file = $data['upload_data']['file_name'];
+                } else {
+                    $import_xls_file = 0;
+                }
+                $inputFileName = $path . $import_xls_file;
+                try {
+                    $inputFileType = PHPExcel_IOFactory::identify($inputFileName);
+                    $objReader = PHPExcel_IOFactory::createReader($inputFileType);
+                    $objPHPExcel = $objReader->load($inputFileName);
+                    $allDataInSheet = $objPHPExcel->getActiveSheet()->toArray(null, true, true, true);
+                    $flag = true;
+                    $i=0;
+                    foreach ($allDataInSheet as $value) {
+                        if($flag){
+                            $flag =false;
+                            continue;
+                        }
+                        $inserdata[$i]['name'] = $value['A'];
+                        $inserdata[$i]['email'] = $value['J'];
+                        $inserdata[$i]['address'] = $value['B'];
+                        $inserdata[$i]['company_name'] = $value['A'];
+                        $inserdata[$i]['delivery_address'] = $value['F'];
+                        $inserdata[$i]['role'] = $value['N'];
+                        $inserdata[$i]['status'] = $value['O'];
+                        $i++;
+                    }
+                    $result = $this->user_model->insert_import($inserdata);
+                    if($result){
+                        $this->session->set_flashdata('imported','<div class="alert alert-success alert-dismissible fade show" role="alert">Products Imported Successfully!
+                        <button type="button" class="close" data-dismiss="alert" arial-label="close"> <span aria-hidden="true">&times;</span></button></div>');
+                        redirect('Userscontroller');
+                    }else{
+                        echo "ERROR !";
+                    }
+                } catch (Exception $e) {
+                    die('Error loading file "' . pathinfo($inputFileName, PATHINFO_BASENAME)
+                            . '": ' .$e->getMessage());
+                }
+            }else{
+                echo $error['error'];
+            }
+        }
+        $this->load->view('import');
+    }
+    
+    
+    
    
 }
 

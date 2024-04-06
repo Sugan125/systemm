@@ -257,4 +257,16 @@ $query = $this->db->get('user_register');
 return $query->result();
 }
 
+
+public function insert_import($data) {
+ 
+  $res = $this->db->insert_batch('user_register',$data);
+  if($res){
+      return TRUE;
+  }else{
+      return FALSE;
+  }
+
+}
+
 }

@@ -65,7 +65,7 @@ public function getProductData($id = null)
     //$bill_no = 'CDSTRO-' . strtoupper(substr(md5(uniqid(mt_rand(), true)), 0, 4));
 	$current_year_month = date('ym');
 
-	$sql = "SELECT bill_no FROM orders ORDER BY bill_no DESC LIMIT 1";
+	$sql = "SELECT bill_no FROM orders WHERE LENGTH(bill_no) = 8 ORDER BY bill_no DESC LIMIT 1;";
 	$query = $this->db->query($sql);
 	
 	if ($query->num_rows() > 0) {
@@ -202,7 +202,7 @@ public function update($id)
 			return false;
 		}
 
-		$sql = "SELECT ord.*, user.name as name, user.address as address,user.company_name as company_name FROM orders ord join user_register user WHERE ord.id = ? and user.id=ord.user_id";
+		$sql = "SELECT ord.*, user.name as name, user.address as address,user.delivery_address as delivery_address,user.company_name as company_name FROM orders ord join user_register user WHERE ord.id = ? and user.id=ord.user_id";
 		$query = $this->db->query($sql, array($order_id));
 		return $query->result_array();
 	}
@@ -306,7 +306,7 @@ public function update($id)
 			return false;
 		}
 
-		$sql = "SELECT ord.*, user.name as name, user.address as address, user.company_name as company_name FROM orders ord join user_register user WHERE ord.id = ? and user.id=ord.user_id";
+		$sql = "SELECT ord.*, user.name as name, user.address as address,user.delivery_address as delivery_address, user.company_name as company_name FROM orders ord join user_register user WHERE ord.id = ? and user.id=ord.user_id";
 		$query = $this->db->query($sql, array($order_id));
 		return $query->result_array();
 	}
@@ -344,7 +344,7 @@ public function repeat_order($id)
 
 		$current_year_month = date('ym');
 
-		$sql = "SELECT bill_no FROM orders ORDER BY bill_no DESC LIMIT 1";
+		$sql = "SELECT bill_no FROM orders WHERE LENGTH(bill_no) = 8 ORDER BY bill_no DESC LIMIT 1;";
 		$query = $this->db->query($sql);
 		
 		if ($query->num_rows() > 0) {
@@ -423,6 +423,84 @@ public function repeat_order($id)
 		return array('id' => $order_id, 'order_id' => $order_id, 'bill_no' => $bill_no);
     }
 }
+
+public function admin_create()
+{
+
+	$user_id = $this->input->post('user_id');
+  
+	$current_year_month = date('ym');
+
+	$sql = "SELECT bill_no FROM orders WHERE LENGTH(bill_no) = 8 ORDER BY bill_no DESC LIMIT 1;";
+	$query = $this->db->query($sql);
+	
+	if ($query->num_rows() > 0) {
+		$latest_invoice_number = $query->row()->bill_no;
+		$latest_invoice_month = substr($latest_invoice_number, 0, 4); 
+		$latest_invoice_counter = intval(substr($latest_invoice_number, 4)); 
+		if ($latest_invoice_month == $current_year_month) {
+			$invoice_counter = $latest_invoice_counter + 1;
+		} else {
+			
+			$invoice_counter = 1;
+		}
+	} else {
+		
+		$invoice_counter = 1;
+	}
+	
+	$bill_no = $current_year_month . sprintf('%04d', $invoice_counter);
+	
+    $data = array(
+        'bill_no' => $bill_no,
+        'date_time' => strtotime(date('Y-m-d h:i:s a')),
+        'gross_amount' => $this->input->post('gross_amount_value'),
+        'service_charge_rate' => $this->input->post('service_charge_value'),
+        'delivery_charge' => $this->input->post('delivery_charge_value'),
+        'net_amount' => $this->input->post('net_amount_value'),
+        'discount' => $this->input->post('discount'),
+        'gst_amt' => $this->input->post('gst_rate'),
+        'gst_percent' => $this->input->post('gst_value'),
+        'paid_status' => 2,
+        'user_id' =>	$this->input->post('user_id'),
+    );
+
+   
+    $this->db->insert('orders', $data);
+    $order_id = $this->db->insert_id(); 
+
+  
+    $count_product = count($this->input->post('product'));
+    for ($x = 0; $x < $count_product; $x++) {
+        $category = !empty($this->input->post('category')[$x]) ? $this->input->post('category')[$x] : null;
+        $product_id = !empty($this->input->post('product')[$x]) ? $this->input->post('product')[$x] : null;
+        $qty = !empty($this->input->post('qty')[$x]) ? $this->input->post('qty')[$x] : null;
+        $rate = !empty($this->input->post('rate_value')[$x]) ? $this->input->post('rate_value')[$x] : null;
+        $amount = !empty($this->input->post('amount_value')[$x]) ? $this->input->post('amount_value')[$x] : null;
+        $slice_type = !empty($this->input->post('sliced')[$x]) ? $this->input->post('sliced')[$x] : null;
+        $seed_type = !empty($this->input->post('seed')[$x]) ? $this->input->post('seed')[$x] : null;
+
+        $items = array(
+            'order_id' => $order_id,
+            'category' => $category,
+            'product_id' => $product_id,
+            'qty' => $qty,
+            'rate' => $rate,
+            'amount' => $amount,
+            'slice_type' => $slice_type,
+            'seed_type' => $seed_type,
+        );
+        $this->db->insert('order_items', $items);
+    }
+    $query = $this->db->select('bill_no')->where('user_id', $user_id)->where('id', $order_id)->get('orders');
+    $result = $query->row_array();
+    $bill_no = $result['bill_no'];
+
+    return array('id' => $order_id, 'order_id' => $order_id, 'bill_no' => $bill_no);
+	
+}
+
+
 
 
 }

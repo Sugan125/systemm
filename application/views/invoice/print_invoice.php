@@ -40,12 +40,12 @@
       
       </div>
       <div class="col-sm-3 col-xs-12 pull-right" style="padding: 0px;float: right;display: grid;text-align: right;">
-        <b>Ship To:</b><?php echo $order_data['address'];?> <br>
+        <b>Ship To:</b><?php echo $order_data['delivery_address'];?> <br>
       </div>
       <div class="col-sm-12 col-xs-12" style="padding: 30px 0px;">
       <b>Salesman:</b> Henri<br>
       <b>Delivery Date: </b><?php 
-      $added_days = 2;
+      $added_days = 3;
       $order_date_obj = DateTime::createFromFormat('d/m/Y', $order_date);
       $order_date_obj->modify("+$added_days days");
       $new_date = $order_date_obj->format('d/m/Y');
@@ -70,7 +70,7 @@
          <?php foreach ($data['order_data']['order_item'] as $order) : ?>
         <tr class="odd text-center">
         <td><?php echo isset($order['qty']) ? $order['qty'] : ''; ?></td>
-        <td><?php echo isset($order['prod_id']) ? $order['prod_id'] : ''; ?></td>
+        <td><?php echo isset($order['product_id']) ? $order['product_id'] : ''; ?></td>
         <td><?php echo isset($order['product_name']) ? $order['product_name'] : ''; ?></td>
         <td>$<?php echo isset($order['rate']) ? $order['rate'] : ''; ?></td>
         <td>pc</td>

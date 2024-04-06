@@ -9,6 +9,44 @@
   #file_top{
     margin-top:10px;
   }
+  /* Hide default checkbox */
+.toggle-switch input[type="checkbox"] {
+    display: none;
+}
+
+/* Slider */
+.slider {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 20px;
+    background-color: #ccc;
+    border-radius: 20px;
+    transition: background-color 0.3s;
+}
+
+/* Slider round button */
+.slider:before {
+    position: absolute;
+    content: '';
+    height: 16px;
+    width: 16px;
+    left: 2px;
+    bottom: 2px;
+    background-color: white;
+    border-radius: 50%;
+    transition: transform 0.3s;
+}
+
+/* Checked state */
+.toggle-switch input[type="checkbox"]:checked + .slider {
+    background-color: #2196F3;
+}
+
+.toggle-switch input[type="checkbox"]:checked + .slider:before {
+    transform: translateX(20px);
+}
+
 </style>
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -69,6 +107,9 @@
       <th>Category</th>
       <th>Image</th>
       <th>Active</th>
+      <th>Minimum Order</th>
+      <th>Slice</th>
+      <th>Seed</th>
       <th>Price</th>
       <th>Action</th>
     </tr>
@@ -92,6 +133,20 @@
         <td> <img id="HideImg" src="<?= base_url();?>uploads/<?= $row->prod_img; ?>" alt="Image Not Found" onerror="this.src='<?= base_url();?>uploads/no_product.png';" style="width:100%; height:100%;"></td>
         <!-- <td> //$row->add_on_slice; ?>// echo //$comma ?> //$row->add_on_seed; ?></td> -->
         <td><?= $row->active; ?></td>
+        <td><?= $row->min_order; ?></td>
+        <td>
+    <label class="toggle-switch">
+        <input type="checkbox" class="toggleCheckbox add_on_slice" data-id="<?= $row->id ?>" <?= $row->add_on_slice ? 'checked' : '' ?>>
+        <span class="slider"></span>
+    </label>
+</td>
+<td>
+    <label class="toggle-switch">
+        <input type="checkbox" class="toggleCheckbox add_on_seed" data-id="<?= $row->id ?>" <?= $row->add_on_seed ? 'checked' : '' ?>>
+        <span class="slider"></span>
+    </label>
+</td>
+
         <td>$<?= $row->prod_rate; ?></td>   
         <td>
           <a href="<?= base_url('index.php/productcontroller/updateproduct/' . $row->id) ?>" class="btn  btn-sm"><i class="fas fa-edit"></i> </a>
@@ -119,6 +174,141 @@
     </div>
 
 </div>
-       
+<script>
+$(document).ready(function(){
+  $('.add_on_slice').click(function(){
+  //  alert('Checkbox clicked');
+    var productid = $(this).data('id');
+    var isChecked = $(this).prop('checked') ? 1 : 0; 
+    $.ajax({
+        url: '<?php echo base_url('index.php/Productcontroller/update_slice'); ?>',
+        method: 'POST',
+        data: { productid: productid, isChecked: isChecked },
+        dataType: 'json', 
+        success: function(response){
+            if(response.status === 'success'){
+                if(response.isChecked === '1'){
+                  $('.add_on_slice[data-id="' + productid + '"]').prop('checked', true);
+                swal({
+                    title: "Success",
+                    text: "Slicing Enabled For this Product",
+                    icon: "success",
+                    buttons: {
+                        confirm: {
+                            text: "OK",
+                            value: true,
+                            visible: true,
+                            className: "btn btn-primary",
+                            closeModal: true
+                        }
+                    }
+                }).then((value) => {
+                    // Reload the page after success
+                    window.location.reload();
+                });
+                  
+                } else {
+                  $('.add_on_slice[data-id="' + productid + '"]').prop('checked', false);
+                swal({
+                    title: "Success",
+                    text: "Slicing Disabled For this Product",
+                    icon: "success",
+                    buttons: {
+                        confirm: {
+                            text: "OK",
+                            value: true,
+                            visible: true,
+                            className: "btn btn-primary",
+                            closeModal: true
+                        }
+                    }
+                }).then((value) => {
+                    // Reload the page after success
+                    window.location.reload();
+                });
+                  
+                }
+
+                
+            } else {
+              
+                alert('Error updating Enable/disable slice option.');
+            }
+        },
+        error: function(xhr, status, error){
+            console.log('AJAX Error:', error);
+        }
+    });
+});
+
+
+
+$('.add_on_seed').click(function(){
+  //  alert('Checkbox clicked');
+    var productid = $(this).data('id');
+    var isChecked = $(this).prop('checked') ? 1 : 0; 
+    $.ajax({
+        url: '<?php echo base_url('index.php/Productcontroller/update_seed'); ?>',
+        method: 'POST',
+        data: { productid: productid, isChecked: isChecked },
+        dataType: 'json', 
+        success: function(response){
+            if(response.status === 'success'){
+                if(response.isChecked === '1'){
+                  $('.add_on_seed[data-id="' + productid + '"]').prop('checked', true);
+                swal({
+                    title: "Success",
+                    text: "Seed Enabled For this Product",
+                    icon: "success",
+                    buttons: {
+                        confirm: {
+                            text: "OK",
+                            value: true,
+                            visible: true,
+                            className: "btn btn-primary",
+                            closeModal: true
+                        }
+                    }
+                }).then((value) => {
+                    // Reload the page after success
+                    window.location.reload();
+                });
+                  
+                } else {
+                  $('.add_on_seed[data-id="' + productid + '"]').prop('checked', false);
+                swal({
+                    title: "Success",
+                    text: "Seed Disabled For this Product",
+                    icon: "success",
+                    buttons: {
+                        confirm: {
+                            text: "OK",
+                            value: true,
+                            visible: true,
+                            className: "btn btn-primary",
+                            closeModal: true
+                        }
+                    }
+                }).then((value) => {
+                    // Reload the page after success
+                    window.location.reload();
+                });
+                  
+                }
+
+                
+            } else {
+              
+                alert('Error updating Enable/disable seed option.');
+            }
+        },
+        error: function(xhr, status, error){
+            console.log('AJAX Error:', error);
+        }
+    });
+});
+
+});
+</script>
 </body>
 </html>

@@ -172,6 +172,7 @@ class Productcontroller extends CI_Controller {
             'add_on_slice' => $this->input->post('add_on_slice'),
             'add_on_seed' => $this->input->post('add_on_seed'),
             'active' => $this->input->post('active'),
+            'min_order' => $this->input->post('min_order'),
             'prod_img' => $image_path, // Image path
             'prod_rate' => $this->input->post('prod_rate'),
             'deleted'=> '0',
@@ -249,13 +250,14 @@ class Productcontroller extends CI_Controller {
             'add_on_slice' => $this->input->post('add_on_slice'),
             'add_on_seed' => $this->input->post('add_on_seed'),
             'active' => $this->input->post('active'),
+            'min_order' => $this->input->post('min_order'),
             'prod_img' => $image_path, // Image path
             'prod_rate' => $this->input->post('prod_rate'),
             'deleted'=> '0',
         );
        
          $this->product_model->update_datas($data,'products');
-         $this->session->set_flashdata('updated','<div class="alert alert-success alert-dismissible fade show" role="alert">User Updated Successfully!
+         $this->session->set_flashdata('updated','<div class="alert alert-success alert-dismissible fade show" role="alert">Product Updated Successfully!
          <button type="button" class="close" data-dismiss="alert" arial-label="close"> <span aria-hidden="true">&times;</span></button></div>');
          redirect('productcontroller');
          }
@@ -333,6 +335,45 @@ class Productcontroller extends CI_Controller {
                 }
             }
             $this->load->view('import');
+        }
+
+        public function update_slice(){
+            $productid = $this->input->post('productid');
+            $isChecked = $this->input->post('isChecked');
+        
+            // Update the restrict_time column in the database
+            $this->db->set('add_on_slice', $isChecked);
+            $this->db->where('id', $productid);
+            $this->db->update('products');
+        
+            // Check if the update was successful
+            if($this->db->affected_rows() > 0){
+                // Return success response with isChecked value
+                echo json_encode(array('status' => 'success', 'isChecked' => $isChecked));
+            } else {
+                // Return error response
+                echo json_encode(array('status' => 'error'));
+            }
+        }
+
+
+        public function update_seed(){
+            $productid = $this->input->post('productid');
+            $isChecked = $this->input->post('isChecked');
+        
+            // Update the restrict_time column in the database
+            $this->db->set('add_on_seed', $isChecked);
+            $this->db->where('id', $productid);
+            $this->db->update('products');
+        
+            // Check if the update was successful
+            if($this->db->affected_rows() > 0){
+                // Return success response with isChecked value
+                echo json_encode(array('status' => 'success', 'isChecked' => $isChecked));
+            } else {
+                // Return error response
+                echo json_encode(array('status' => 'error'));
+            }
         }
         
 }

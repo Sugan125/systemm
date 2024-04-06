@@ -38,15 +38,29 @@
             <button class="btn" style="background-color: #0065cc; color:white;"><b>Delivery Date</b></button>
             
         </div>
-        <div class="col-md-6">
+        <div class="col-md-4" style="padding-right: 0px;padding-left: 0px;">
         <?php
             date_default_timezone_set('Asia/Singapore');
-            $schedule_date = $schedule_date; 
-            $formatted_date = date("d-m-Y", strtotime($schedule_date));
-            $day_of_week = date("l", strtotime($schedule_date));
+            $schedule_dates = date("Y-m-d", strtotime($schedule_date . " +3 days"));
+            $formatted_date = date("d-m-Y", strtotime($schedule_dates));
+            $day_of_week = date("l", strtotime($schedule_dates));
             $current_time = date("h:i A"); 
             echo "<p> $day_of_week, $formatted_date $current_time</p>";
             ?></div>
+
+        <div class="col-md-2"> <!-- Left column for date -->
+            <b>Order Date</b>
+        </div>
+        <div class="col-md-4">
+        <?php
+            date_default_timezone_set('Asia/Singapore');
+            $schedule_date = $schedule_date;
+            $formatted_date = date("d-m-Y", strtotime($schedule_date));
+            $day_of_week = date("l", strtotime($schedule_date));
+            $current_time = date("h:i A"); 
+            echo "<p> $day_of_week, $formatted_date </p>";
+            ?></div>
+            
         <div class="col-md-4 text-right"> <!-- Right column for orders and outlet -->
             <!-- <p><b>Orders: $
                 <?php /*
