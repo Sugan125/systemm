@@ -267,6 +267,8 @@ public function printadmin($id)
 
     $orders_data = $this->order_model->getOrdersadmin($id);
 
+	
+
 	foreach ($orders_data as $order) {
 		$orders_item = $this->order_model->getadminorderdata($id);
 	}

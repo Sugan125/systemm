@@ -34,13 +34,13 @@
         <h2 class="border" style="margin: 20px 0px;"></h2>
         </div> 
         <div class="col-sm-4 col-xs-12" style="padding: 0px;float: right;display: grid;text-align: left;">
-        <b>Bill To:</b><?php echo $order_data['company_name'];  ?><br><?php echo $order_data['address'];?> <br>
+        <b>Bill To:</b><?php echo $order_data['company_name'];  ?><br><?php echo $order_data['address'] .' '. $order_data['address_line2']  .' '. $order_data['address_city'] .' '. $order_data['address_postcode'];;?> <br>
       </div>
       <div class="col-sm-5 col-xs-12" style="padding: 0px;float: right;display: grid;text-align: left;">
       
       </div>
       <div class="col-sm-3 col-xs-12 pull-right" style="padding: 0px;float: right;display: grid;text-align: right;">
-        <b>Ship To:</b><?php echo $order_data['delivery_address'];?> <br>
+        <b>Ship To:</b><?php echo $order_data['delivery_address'] .' '. $order_data['delivery_address_line2'] .' '. $order_data['delivery_address_city'] .' '. $order_data['delivery_address_postcode']; ?> <br>
       </div>
       <div class="col-sm-12 col-xs-12" style="padding: 30px 0px;">
       <b>Salesman:</b> Henri<br>

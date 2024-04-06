@@ -42,7 +42,7 @@
         <div style="box-sizing: border-box; float: left; width: 50%;">
             <b>Bill To:</b> <?php echo $order_data['company_name']; ?><br>
             <?php
-            $address = $order_data['address'];
+          $address = $order_data['address'] .' '. $order_data['address_line2']  .' '. $order_data['address_city'] .' '. $order_data['address_postcode'];
             $max_length = 45; 
             $address_lines = wordwrap($address, $max_length, "<br>", true);
             echo $address_lines;
@@ -51,7 +51,7 @@
           </div>
           <div style="box-sizing: border-box; float: right; width: 50%; text-align: right; ">
             <b>Ship To:</b>  <?php
-            $address = $order_data['delivery_address'];
+            $address = $order_data['delivery_address'] .' '. $order_data['delivery_address_line2'] .' '. $order_data['delivery_address_city'] .' '. $order_data['delivery_address_postcode'];
             $max_length = 45; 
             $address_lines = wordwrap($address, $max_length, "<br>", true);
             echo $address_lines;

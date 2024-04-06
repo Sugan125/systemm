@@ -76,7 +76,8 @@
                                     <tbody>
                                         <?php 
                                     if(!empty($orders)){
-                                        foreach ($orders as $key => $val): ?>
+                                        foreach ($orders as $key => $val):
+                                        ?>
                                         <tr>
                                             <td><?php echo $val->bill_no; ?></td>
                                             <td><?php echo $val->name; ?></td>

@@ -16,10 +16,6 @@ class user_model extends CI_Model{
     public function is_email_exists($email) {
       $query = $this->db->query("SELECT * FROM user_register WHERE email='".$email."'");
 
-      echo "Query: " . $this->db->last_query() . "<br>";
-    echo "Rows found: " . $query->num_rows() . "<br>";
-    
-    
       if ($query->num_rows() >= 1) {
     return true;
       
@@ -234,8 +230,6 @@ public function createrole($data,$table){
   // Get the last executed query
   $query = $this->db->last_query();
 
-  // Echo the query
-  echo $query;
 
 }
 

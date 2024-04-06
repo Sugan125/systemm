@@ -272,6 +272,8 @@ public function update($id)
 	
 			$sql = "SELECT ord.*,us.name as name FROM orders ord join user_register us WHERE us.id = ord.user_id limit 10";
 			$query = $this->db->query($sql);
+			
+			
 			return $query->result(); 
 	
 	}
@@ -279,10 +281,12 @@ public function update($id)
 	public function getOrdersadmin($id = null)
 	{
 		if($id) {
-			$sql = "SELECT ord.*,user.id as user_id,user.name as name,user.address as address FROM orders ord join user_register user WHERE ord.user_id = user.id and ord.id = ? ";
+			$sql = "SELECT ord.*,user.* FROM orders ord join user_register user WHERE ord.user_id = user.id and ord.id = ? ";
 			$query = $this->db->query($sql, array($id));
 			return $query->row_array();
 		}
+
+
 	}
 
 	public function getadminorderdata($order_id = null)
@@ -306,7 +310,7 @@ public function update($id)
 			return false;
 		}
 
-		$sql = "SELECT ord.*, user.name as name, user.address as address,user.delivery_address as delivery_address, user.company_name as company_name FROM orders ord join user_register user WHERE ord.id = ? and user.id=ord.user_id";
+		$sql = "SELECT ord.*, user.*, user.company_name as company_name FROM orders ord join user_register user WHERE ord.id = ? and user.id=ord.user_id";
 		$query = $this->db->query($sql, array($order_id));
 		return $query->result_array();
 	}
@@ -514,7 +518,7 @@ public function search_orders($keyword, $limit, $offset) {
     // $this->db->or_like('prod_category', $keyword);
     // $this->db->or_like('product_id', $keyword);
     $this->db->limit($limit, $offset);
-    $this->db->select('ord.*, us.*'); // Select fields from both tables
+    $this->db->select('ord.*, us.name as name'); // Select fields from both tables
 
     $this->db->from('orders ord');
     $this->db->join('user_register us', 'us.id = ord.user_id');

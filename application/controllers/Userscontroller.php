@@ -504,15 +504,11 @@ class Userscontroller extends CI_Controller {
                         $this->session->set_flashdata('imported','<div class="alert alert-success alert-dismissible fade show" role="alert">Users Imported Successfully!
                         <button type="button" class="close" data-dismiss="alert" arial-label="close"> <span aria-hidden="true">&times;</span></button></div>');
                         redirect('Userscontroller');
-                    }else{
-                        echo "ERROR !";
                     }
                 } catch (Exception $e) {
                     die('Error loading file "' . pathinfo($inputFileName, PATHINFO_BASENAME)
                             . '": ' .$e->getMessage());
                 }
-            }else{
-                echo $error['error'];
             }
         }
         $this->load->view('import');
