@@ -112,12 +112,28 @@ class Logincontroller extends CI_Controller {
     $this->load->view('Login.php', $data);
 }
 
-    function logout()
-	{
-		session_unset();
-		session_destroy();
-		redirect(base_url('index.php/Logincontroller/index'));
-	}
+function logout() {
+    // Check if session is active
+    if (session_status() == PHP_SESSION_ACTIVE) {
+        // Unset all session variables
+        $_SESSION = array();
+
+        // Destroy the session
+        session_destroy();
+
+        // Ensure all session data is deleted
+        if (ini_get("session.use_cookies")) {
+            $params = session_get_cookie_params();
+            setcookie(session_name(), '', time() - 42000,
+                $params["path"], $params["domain"],
+                $params["secure"], $params["httponly"]
+            );
+        }
+    }
+
+    // Redirect to login page
+    redirect(base_url('index.php/Logincontroller/index'));
+}
 
 
 	public function forgotPassword(){
