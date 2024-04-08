@@ -74,7 +74,7 @@
         <td><?php echo isset($order['product_name']) ? $order['product_name'] : ''; ?></td>
         <td>$<?php echo isset($order['rate']) ? $order['rate'] : ''; ?></td>
         <td>pc</td>
-        <td>$<?php echo isset($order['service_charge_rate']) ? $order['service_charge_rate'] : 0; ?></td>
+        <td>$<?php echo isset($order['service_charge']) ? $order['service_charge'] : 0; ?></td>
         <td>$<?php echo isset($order['amount']) ? $order['amount'] : ''; ?></td>
     </tr>
 <?php endforeach; ?>

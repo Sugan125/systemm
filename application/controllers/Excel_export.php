@@ -83,11 +83,11 @@ $object->getActiveSheet()->setCellValueByColumnAndRow(8, $excel_row, $row->prod_
 $object->getActiveSheet()->setCellValueByColumnAndRow(9, $excel_row, $row->qty);
 $object->getActiveSheet()->setCellValueByColumnAndRow(10, $excel_row, $row->product_name);
 $object->getActiveSheet()->setCellValueByColumnAndRow(11, $excel_row, $row->rate);
-$object->getActiveSheet()->setCellValueByColumnAndRow(13, $excel_row, $row->amount);
+$object->getActiveSheet()->setCellValueByColumnAndRow(14, $excel_row, $row->amount);
 $object->getActiveSheet()->setCellValueByColumnAndRow(17, $excel_row, 'Sale;'.$row->name);
-$object->getActiveSheet()->setCellValueByColumnAndRow(19, $excel_row, $shipping_date);
+$object->getActiveSheet()->setCellValueByColumnAndRow(20, $excel_row, $shipping_date);
 $object->getActiveSheet()->setCellValueByColumnAndRow(21, $excel_row, 'SR9');
-$object->getActiveSheet()->setCellValueByColumnAndRow(22, $excel_row, $row->gst_amt);
+$object->getActiveSheet()->setCellValueByColumnAndRow(22, $excel_row, $row->gst_amount);
 $object->getActiveSheet()->setCellValueByColumnAndRow(25, $excel_row, $row->id);
 
    $excel_row++;

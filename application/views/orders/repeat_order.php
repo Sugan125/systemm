@@ -59,6 +59,7 @@
                         <th style="width:10%">Seed</th>
                         <th style="width:10%">Qty (Pkt)</th>
                         <th style="width:10%">Rate</th>
+                        <th style="width:5%">Service_charge</th>
                         <th style="width:10%">Amount</th>
                         <!-- <th style="width:10%"><button type="button" id="add_row" class="btn btn-info"><i class="fa fa-plus"></i></button></th> -->
                       </tr>
@@ -112,10 +113,23 @@
                               <input type="text" name="rate[]" id="rate_<?php echo $x; ?>" class="form-control" disabled value="<?php echo $val['rate'] ?>" autocomplete="off">
                               <input type="hidden" name="rate_value[]" id="rate_value_<?php echo $x; ?>" class="form-control" value="<?php echo $val['rate'] ?>" autocomplete="off">
                             </td>
-                            <td>
+                            <td hidden>
+                            <input type="text" name="gst_percent[]" id="gst_percent_1" class="form-control" disabled  value="<?php echo $val['gst_percent'] ?>" autocomplete="off">
+                            <input type="hidden" name="gst_percent_val[]" id="gst_percent_val_1" class="form-control"  value="<?php echo $val['gst_percent'] ?>" autocomplete="off">
+                        </td>
+                        <td>
+                            <input type="text" name="service_charge_lineitem[]" id="service_charge_lineitem_1" value="<?php echo $val['service_charge'] ?>"  class="form-control" disabled autocomplete="off">
+                            <input type="hidden" name="service_charge_itemval[]" id="service_charge_itemval_1"  value="<?php echo $val['service_charge'] ?>" class="form-control" autocomplete="off">
+                        </td>
+                        <td>
                               <input type="text" name="amount[]" id="amount_<?php echo $x; ?>" class="form-control" disabled value="<?php echo $val['amount'] ?>" autocomplete="off">
                               <input type="hidden" name="amount_value[]" id="amount_value_<?php echo $x; ?>" class="form-control" value="<?php echo $val['amount'] ?>" autocomplete="off">
                             </td>
+                        <td hidden>
+                            <input type="text" name="gst_amount[]" id="gst_amount_1" class="form-control"  value="<?php echo $val['gst_amount'] ?>" disabled autocomplete="off">
+                            <input type="hidden" name="gst_amount_value[]" id="gst_amount_value_1" class="form-control" value="<?php echo $val['gst_amount'] ?>" autocomplete="off">
+                        </td>
+              
                             <!-- <td><button type="button" class="btn btn-danger" onclick="removeRow('<?php echo $x; ?>')"><i class="fa fa-close"></i></button></td> -->
                         </tr>
                         <?php $x++; ?>

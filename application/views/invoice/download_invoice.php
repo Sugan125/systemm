@@ -89,7 +89,7 @@
             <td style="padding: 10px; border: 1px solid #ccc; text-align:center;"><?php echo isset($order['product_name']) ? $order['product_name'] : ''; ?></td>
             <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">$<?php echo isset($order['rate']) ? $order['rate'] : ''; ?></td>
             <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">pc</td>
-            <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">$<?php echo isset($order['service_charge_rate']) ? $order['service_charge_rate'] : 0; ?></td>
+            <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">$<?php echo isset($order['service_charge']) ? $order['service_charge'] : 0; ?></td>
             <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">$<?php echo isset($order['amount']) ? $order['amount'] : ''; ?></td>
           </tr>
           <?php endforeach; ?>

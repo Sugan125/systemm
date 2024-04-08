@@ -115,6 +115,10 @@ public function getProductData($id = null)
         $slice_type = !empty($this->input->post('sliced')[$x]) ? $this->input->post('sliced')[$x] : null;
         $seed_type = !empty($this->input->post('seed')[$x]) ? $this->input->post('seed')[$x] : null;
 
+		$service_charge = !empty($this->input->post('service_charge_itemval')[$x]) ? $this->input->post('service_charge_itemval')[$x] : null;
+        $gst_amt = !empty($this->input->post('gst_amount_value')[$x]) ? $this->input->post('gst_amount_value')[$x] : null;
+		$gst_percent = 9;
+
         $items = array(
             'order_id' => $order_id,
             'category' => $category,
@@ -124,6 +128,9 @@ public function getProductData($id = null)
             'amount' => $amount,
             'slice_type' => $slice_type,
             'seed_type' => $seed_type,
+			'service_charge' => $service_charge,
+			'gst_percent' => $gst_percent,
+			'gst_amount' => $gst_amt,
         );
         $this->db->insert('order_items', $items);
     }
@@ -187,6 +194,9 @@ public function update($id)
                 'amount' => $this->input->post('amount_value')[$x],
                 'slice_type' => $this->input->post('sliced')[$x],
                 'seed_type' => $this->input->post('seed')[$x],
+				'service_charge' =>$this->input->post('service_charge_itemval')[$x],
+				'gst_percent' => 9,
+				'gst_amount' => $this->input->post('gst_amount_value')[$x],
             );
             // Insert order item data into order_items table
             $this->db->insert('order_items', $order_item_data);
@@ -202,7 +212,9 @@ public function update($id)
 			return false;
 		}
 
-		$sql = "SELECT ord.*, user.name as name, user.address as address,user.delivery_address as delivery_address,user.company_name as company_name FROM orders ord join user_register user WHERE ord.id = ? and user.id=ord.user_id";
+		$sql = "SELECT ord.*, user.name as name, user.address as address,user.delivery_address as delivery_address, user.address_line2 as address_line2,
+		user.address_city, user.address_postcode,  user.delivery_address_line2, user.delivery_address_city,
+		user.delivery_address_postcode,user.company_name as company_name FROM orders ord join user_register user WHERE ord.id = ? and user.id=ord.user_id";
 		$query = $this->db->query($sql, array($order_id));
 		return $query->result_array();
 	}
@@ -225,7 +237,9 @@ public function update($id)
     public function getOrdersDatas($id = null,$user_id)
 	{
 		if($id) {
-			$sql = "SELECT ord.*,user.id as user_id,user.name as name,user.address as address FROM orders ord join user_register user WHERE ord.user_id = user.id  and ord.id = ? and ord.user_id = '".$user_id."'";
+			$sql = "SELECT ord.*,user.id as user_id,user.name as name,user.address as address, user.address_line2 as address_line2,
+			user.address_city, user.address_postcode, user.delivery_address, user.delivery_address_line2, user.delivery_address_city,
+			user.delivery_address_postcode  FROM orders ord join user_register user WHERE ord.user_id = user.id  and ord.id = ? and ord.user_id = '".$user_id."'";
 			$query = $this->db->query($sql, array($id));
 			return $query->row_array();
 		}
@@ -403,19 +417,23 @@ public function repeat_order($id)
 			$amount = $rows['amount'];
 			$slice_type = $rows['slice_type'];
 			$seed_type = $rows['seed_type'];
+			$service_charge = $rows['service_charge'];
+			$gst_amt = $rows['gst_amount'];
+			$gst_percent = $rows['gst_percent'];
 
-			// Constructing the array for insertion
-			$items = array(
-				'order_id' => $order_id,
-				'category' => $category,
-				'product_id' => $product_id,
-				'qty' => $qty,
-				'rate' => $rate,
-				'amount' => $amount,
-				'slice_type' => $slice_type,
-				'seed_type' => $seed_type,
-			);
-
+        $items = array(
+            'order_id' => $order_id,
+            'category' => $category,
+            'product_id' => $product_id,
+            'qty' => $qty,
+            'rate' => $rate,
+            'amount' => $amount,
+            'slice_type' => $slice_type,
+            'seed_type' => $seed_type,
+			'service_charge' => $service_charge,
+			'gst_percent' => $gst_percent,
+			'gst_amount' => $gst_amt,
+        );
 			// Inserting the constructed array into the database
 			$this->db->insert('order_items', $items);
 		}
@@ -484,6 +502,10 @@ public function admin_create()
         $slice_type = !empty($this->input->post('sliced')[$x]) ? $this->input->post('sliced')[$x] : null;
         $seed_type = !empty($this->input->post('seed')[$x]) ? $this->input->post('seed')[$x] : null;
 
+		$service_charge = !empty($this->input->post('service_charge_itemval')[$x]) ? $this->input->post('service_charge_itemval')[$x] : null;
+        $gst_amt = !empty($this->input->post('gst_amount_value')[$x]) ? $this->input->post('gst_amount_value')[$x] : null;
+		$gst_percent = 9;
+
         $items = array(
             'order_id' => $order_id,
             'category' => $category,
@@ -493,6 +515,9 @@ public function admin_create()
             'amount' => $amount,
             'slice_type' => $slice_type,
             'seed_type' => $seed_type,
+			'service_charge' => $service_charge,
+			'gst_percent' => $gst_percent,
+			'gst_amount' => $gst_amt,
         );
         $this->db->insert('order_items', $items);
     }

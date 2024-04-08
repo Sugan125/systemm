@@ -59,6 +59,7 @@
                         <th style="width:10%">Seed</th>
                         <th style="width:10%">Qty (Pkt)</th>
                         <th style="width:10%">Rate</th>
+                        <th style="width:5%">Service_charge</th>
                         <th style="width:10%">Amount</th>
                         <th style="width:10%"><button type="button" id="add_row" class="btn btn-info"><i class="fa fa-plus"></i></button></th>
                       </tr>
@@ -112,10 +113,22 @@
                               <input type="text" name="rate[]" id="rate_<?php echo $x; ?>" class="form-control" disabled value="<?php echo $val['rate'] ?>" autocomplete="off">
                               <input type="hidden" name="rate_value[]" id="rate_value_<?php echo $x; ?>" class="form-control" value="<?php echo $val['rate'] ?>" autocomplete="off">
                             </td>
-                            <td>
-                              <input type="text" name="amount[]" id="amount_<?php echo $x; ?>" class="form-control" disabled value="<?php echo $val['amount'] ?>" autocomplete="off">
-                              <input type="hidden" name="amount_value[]" id="amount_value_<?php echo $x; ?>" class="form-control" value="<?php echo $val['amount'] ?>" autocomplete="off">
-                            </td>
+                            <td hidden>
+                            <input type="text" name="gst_percent[]" id="gst_percent_1" class="form-control" disabled autocomplete="off">
+                            <input type="hidden" name="gst_percent_val[]" id="gst_percent_val_1" class="form-control" autocomplete="off">
+                        </td>
+                        <td>
+                            <input type="text" name="service_charge_lineitem[]" id="service_charge_lineitem_1" class="form-control" disabled autocomplete="off">
+                            <input type="hidden" name="service_charge_itemval[]" id="service_charge_itemval_1" class="form-control" autocomplete="off">
+                        </td>
+                        <td>
+                            <input type="text" name="amount[]" id="amount_1" class="form-control" disabled autocomplete="off">
+                            <input type="hidden" name="amount_value[]" id="amount_value_1" class="form-control" autocomplete="off">
+                        </td>
+                        <td hidden>
+                            <input type="text" name="gst_amount[]" id="gst_amount_1" class="form-control" disabled autocomplete="off">
+                            <input type="hidden" name="gst_amount_value[]" id="gst_amount_value_1" class="form-control" autocomplete="off">
+                        </td>
                             <td><button type="button" class="btn btn-danger" onclick="removeRow('<?php echo $x; ?>')"><i class="fa fa-close"></i></button></td>
                         </tr>
                         <?php $x++; ?>
@@ -141,7 +154,7 @@
                    
                     <div class="form-group"  style="margin-bottom:30px;">
                       <div class="col-sm-4">
-                      <label for="service_charge" class="control-label">Slicing Service:   </label>
+                      <label for="service_charge" class="control-label">Total Service charge: <?php //echo $company_data['service_charge_value'] ?> </label>
                       </div>
                       <div class="col-sm-8">
                         <input type="text" class="form-control" id="service_charge" value="<?php echo $order_data['service_charge_rate'] ?>"  name="service_charge" disabled autocomplete="off">
@@ -263,19 +276,25 @@
 
   $(document).ready(function() {
 
+ 
     $(document).on('change', '.sliced', function() {
-      var row = $(this).closest('tr'); // Get the closest row
-      var sliceSelected = row.find('.sliced').val(); // Get the value of .sliced within the same row
-      var seedSelected = row.find('.seed').val(); // Get the value of .seed within the same row
-      subAmount();
-  });
+    var row = $(this).closest('tr'); // Get the closest row
+    var sliceSelected = row.find('.sliced').val(); // Get the value of .sliced within the same row
+    var seedSelected = row.find('.seed').val(); // Get the value of .seed within the same row
+    subAmount();
+    var rows = $(this).closest('tr').attr('id').split('_')[1]; // Get the row number from the closest row
+        getTotal(rows); // Call getTotal function with row information
+});
 
-  $(document).on('change', '.seed', function() {
-      var row = $(this).closest('tr'); // Get the closest row
-      var sliceSelected = row.find('.sliced').val(); // Get the value of .sliced within the same row
-      var seedSelected = row.find('.seed').val(); // Get the value of .seed within the same row
-      subAmount();
-  });
+$(document).on('change', '.seed', function() {
+    var row = $(this).closest('tr'); // Get the closest row
+    var sliceSelected = row.find('.sliced').val(); // Get the value of .sliced within the same row
+    var seedSelected = row.find('.seed').val(); // Get the value of .seed within the same row
+    subAmount();
+    var rows= $(this).closest('tr').attr('id').split('_')[1]; // Get the row number from the closest row
+        getTotal(rows); // Call getTotal function with row information
+   
+});
 
       $("#add_row").unbind('click').bind('click', function() {
           var table = $("#product_info_table");
@@ -319,8 +338,11 @@
                   '</td>'+
                   '<td><input type="hidden" name="minn" id="minn" class="form-control" autocomplete="off"><input type="number" name="qty[]" id="qty_'+row_id+'" class="form-control" onkeyup="getTotal('+row_id+')"></td>'+
                   '<td><input type="text" name="rate[]" id="rate_'+row_id+'" class="form-control" disabled><input type="hidden" name="rate_value[]" id="rate_value_'+row_id+'" class="form-control"></td>'+
-                  '<td><input type="text" name="amount[]" id="amount_'+row_id+'" class="form-control" disabled><input type="hidden" name="amount_value[]" id="amount_value_'+row_id+'" class="form-control"></td>'+
-                  '<td><button type="button" class="btn btn-danger" onclick="removeRow(\''+row_id+'\')"><i class="fa fa-close"></i></button></td>'+
+                  '<td hidden><input type="text" name="gst_percent[]" id="gst_percent_'+row_id+'" class="form-control" disabled><input type="hidden" name="gst_percent_val[]" id="gst_percent_val_'+row_id+'" class="form-control"></td>'+
+                '<td><input type="text" name="service_charge_lineitem[]" id="service_charge_lineitem_'+row_id+'" class="form-control" disabled><input type="hidden" name="service_charge_itemval[]" id="service_charge_itemval_'+row_id+'" class="form-control"></td>'+
+                '<td><input type="text" name="amount[]" id="amount_'+row_id+'" class="form-control" disabled><input type="hidden" name="amount_value[]" id="amount_value_'+row_id+'" class="form-control"></td>'+
+                '<td hidden><input type="text" name="gst_amount[]" id="gst_amount_'+row_id+'" class="form-control" disabled><input type="hidden" name="gst_amount_value[]" id="gst_amount_value_'+row_id+'" class="form-control"></td>'+
+             '<td><button type="button" class="btn btn-danger" onclick="removeRow(\''+row_id+'\')"><i class="fa fa-close"></i></button></td>'+
               '</tr>';
 
               if(count_table_tbody_tr >= 1) {
@@ -390,11 +412,15 @@
   });
 
   $('#product_info_table').on('change', '.seed', function() {
-          subAmount();
-      });
-  $('#product_info_table').on('change', '.sliced', function() {
-      subAmount();
-  });
+  var row = $(this).closest('tr').attr('id').split('_')[1]; // Get the row number from the closest row
+        getTotal(row); // Call getTotal function with row information
+        subAmount();
+    });
+$('#product_info_table').on('change', '.sliced', function() {
+  var row = $(this).closest('tr').attr('id').split('_')[1]; // Get the row number from the closest row
+        getTotal(row); // Call getTotal function with row information
+    subAmount();
+});
   }); // /document
 
   $(document).on('input', 'input[name^="qty"]', function() {
@@ -434,19 +460,40 @@
       
     }
 
-    function getTotal(row = null) {
-      if(row) {
-        var total = Number($("#rate_value_"+row).val()) * Number($("#qty_"+row).val());
-        total = total.toFixed(2);
-        $("#amount_"+row).val(total);
-        $("#amount_value_"+row).val(total);
-        
-        subAmount();
+    
+  function getTotal(row = null) {
+    if (row) {
+        var service_charge = 0;
+        var sliceSelected = $("#sliced_" + row).val();
+        var seedSelected = $("#seed_" + row).val();
 
-      } else {
+        if (sliceSelected || seedSelected) {
+            service_charge = 0.5 * Number($("#qty_" + row).val());
+        }
+
+        var total = Number($("#rate_value_" + row).val()) * Number($("#qty_" + row).val());
+        var total_amt = total + service_charge;
+        var gst = total * 9 / 100;
+
+        $("#amount_" + row).val(total_amt.toFixed(2));
+        $("#amount_value_" + row).val(total_amt.toFixed(2));
+
+        $("#gst_percent_" + row).val('9');
+        $("#gst_percent_val_" + row).val('9');
+
+        $("#service_charge_lineitem_" + row).val(service_charge.toFixed(2));
+        $("#service_charge_itemval_" + row).val(service_charge.toFixed(2));
+
+        $("#gst_amount_" + row).val(gst.toFixed(2));
+        $("#gst_amount_value_" + row).val(gst.toFixed(2));
+
+        subAmount();
+    } else {
         alert('no row !! please refresh the page');
-      }
     }
+}
+
+
 
 
     function getProductData(row_id) {
@@ -481,6 +528,7 @@
                   $("#amount_value_" + row_id).val(total);
 
                   subAmount();
+                  getTotal(row_id);
               } // /success
           }); // /ajax function to fetch the product data 
       
