@@ -86,7 +86,7 @@ public function getProductData($id = null)
 	$bill_no = $current_year_month . sprintf('%04d', $invoice_counter);
 
 	$do_bill_no = 'DO'.$current_year_month . sprintf('%04d', $invoice_counter);
-	
+	date_default_timezone_set('Asia/Singapore');
     $data = array(
         'bill_no' => $bill_no,
 		'do_bill_no'=>$do_bill_no,
@@ -124,6 +124,9 @@ public function getProductData($id = null)
         $gst_amt = !empty($this->input->post('gst_amount_value')[$x]) ? $this->input->post('gst_amount_value')[$x] : null;
 		$gst_percent = 9;
 
+		date_default_timezone_set('Asia/Singapore');
+		$current_date_time = new DateTime('now');
+		$created_date = $current_date_time->format('Y-m-d H:i:s');
         $items = array(
             'order_id' => $order_id,
             'category' => $category,
@@ -136,6 +139,7 @@ public function getProductData($id = null)
 			'service_charge' => $service_charge,
 			'gst_percent' => $gst_percent,
 			'gst_amount' => $gst_amt,
+			'created_date' => $created_date
         );
         $this->db->insert('order_items', $items);
     }
@@ -189,6 +193,9 @@ public function update($id)
 		}
 
         // Re-insert updated order items
+		date_default_timezone_set('Asia/Singapore');
+		$current_date_time = new DateTime('now');
+		$created_date = $current_date_time->format('Y-m-d H:i:s');
         for ($x = 0; $x < $count_product; $x++) {
             $order_item_data = array(
                 'order_id' => $id,
@@ -202,6 +209,7 @@ public function update($id)
 				'service_charge' =>$this->input->post('service_charge_itemval')[$x],
 				'gst_percent' => 9,
 				'gst_amount' => $this->input->post('gst_amount_value')[$x],
+				'created_date' => $created_date
             );
             // Insert order item data into order_items table
             $this->db->insert('order_items', $order_item_data);
@@ -426,6 +434,10 @@ public function repeat_order($id)
 			$gst_amt = $rows['gst_amount'];
 			$gst_percent = $rows['gst_percent'];
 
+
+		date_default_timezone_set('Asia/Singapore');
+		$current_date_time = new DateTime('now');
+		$created_date = $current_date_time->format('Y-m-d H:i:s');
         $items = array(
             'order_id' => $order_id,
             'category' => $category,
@@ -438,6 +450,7 @@ public function repeat_order($id)
 			'service_charge' => $service_charge,
 			'gst_percent' => $gst_percent,
 			'gst_amount' => $gst_amt,
+			'created_date' => $created_date
         );
 			// Inserting the constructed array into the database
 			$this->db->insert('order_items', $items);
@@ -512,6 +525,9 @@ public function admin_create()
         $gst_amt = !empty($this->input->post('gst_amount_value')[$x]) ? $this->input->post('gst_amount_value')[$x] : null;
 		$gst_percent = 9;
 
+		date_default_timezone_set('Asia/Singapore');
+		$current_date_time = new DateTime('now');
+		$created_date = $current_date_time->format('Y-m-d H:i:s');
         $items = array(
             'order_id' => $order_id,
             'category' => $category,
@@ -524,6 +540,7 @@ public function admin_create()
 			'service_charge' => $service_charge,
 			'gst_percent' => $gst_percent,
 			'gst_amount' => $gst_amt,
+			'created_date' => $created_date
         );
         $this->db->insert('order_items', $items);
     }
