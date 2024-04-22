@@ -189,21 +189,35 @@
         )
     ): ?>
 
-        <li class="nav-item">
-            <a href="#" class="nav-link toggle-orders">
-                <i class="menu-icon fa fa-clipboard"></i>
-                <span>Reports</span>
-                <span class="pull-right-container">
-                    <i class="fa fa-angle-down pull-right" style="line-height: 2.1;"></i>
-                </span>
-            </a>
-            <ul class="treeview-menu" style="display: none;">
-                <li class="nav-item"><a href="<?php echo base_url('index.php/orders/printpacking/'); ?>" class="nav-link"><i class="fas fa-print"></i>  Packing List</a></li>
-                <li class="nav-item"><a href="<?php echo base_url('index.php/orders/printschedule/'); ?>"  class="nav-link"><i class="fas fa-print"></i>  Production List</a></li>
-                <li class="nav-item"><a href="<?php echo base_url('index.php/orders/export_sales/'); ?>"  class="nav-link"><i class="fas fa-print"></i>  Export Sales</a></li>
-            
-            </ul>
-        </li>
+    <li class="nav-item">
+        <a href="#" class="nav-link toggle-orders">
+            <i class="menu-icon fa fa-clipboard"></i>
+            <span>Reports</span>
+            <span class="pull-right-container">
+                <i class="fa fa-angle-down pull-right" style="line-height: 2.1;"></i>
+            </span>
+        </a>
+        <ul class="treeview-menu" style="display: none;">
+            <li class="nav-item"><a href="<?php echo base_url('index.php/orders/printpacking/'); ?>" class="nav-link"><i class="fas fa-print"></i>  Packing List</a></li>
+            <li class="nav-item"><a href="<?php echo base_url('index.php/orders/printschedule/'); ?>"  class="nav-link"><i class="fas fa-print"></i>  Production List</a></li>
+        </ul>
+    </li>
+
+    <li class="nav-item">
+        <a href="#" class="nav-link toggle-orders">
+            <i class="menu-icon fa fa-clipboard"></i>
+            <span>Sales</span>
+            <span class="pull-right-container">
+                <i class="fa fa-angle-down pull-right" style="line-height: 2.1;"></i>
+            </span>
+        </a>
+        <ul class="treeview-menu" style="display: none;">
+        <li class="nav-item"><a href="<?php echo base_url('index.php/orders/export_sales/'); ?>"  class="nav-link"><i class="fas fa-print"></i>  Export Sales</a></li>
+        <li class="nav-item"><a href="<?php echo base_url('index.php/orders/print_invoice_bydate/'); ?>"  class="nav-link"><i class="fas fa-print"></i>  Print Invoice</a></li>
+        <li class="nav-item"><a href="<?php echo base_url('index.php/orders/print_do/'); ?>"  class="nav-link"><i class="fas fa-print"></i>  Print DO</a></li>
+        </ul>
+    </li>
+
 
 <!--       
 
@@ -298,7 +312,7 @@
     $(document).ready(function(){
         $(".toggle-orders").click(function(){
             $(this).next(".treeview-menu").toggle();
-        });
+        });       
     });
 </script>
 

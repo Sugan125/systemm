@@ -84,9 +84,12 @@ public function getProductData($id = null)
 	}
 	
 	$bill_no = $current_year_month . sprintf('%04d', $invoice_counter);
+
+	$do_bill_no = 'DO'.$current_year_month . sprintf('%04d', $invoice_counter);
 	
     $data = array(
         'bill_no' => $bill_no,
+		'do_bill_no'=>$do_bill_no,
         'date_time' => strtotime(date('Y-m-d h:i:s a')),
         'gross_amount' => $this->input->post('gross_amount_value'),
         'service_charge_rate' => $this->input->post('service_charge_value'),
@@ -98,6 +101,8 @@ public function getProductData($id = null)
         'paid_status' => 2,
         'user_id' => $user_id,
     );
+
+
 
     // Insert order data into database
     $this->db->insert('orders', $data);
@@ -472,9 +477,10 @@ public function admin_create()
 	}
 	
 	$bill_no = $current_year_month . sprintf('%04d', $invoice_counter);
-	
+	$do_bill_no = 'DO'.$current_year_month . sprintf('%04d', $invoice_counter);
     $data = array(
         'bill_no' => $bill_no,
+		'do_bill_no'=>$do_bill_no,
         'date_time' => strtotime(date('Y-m-d h:i:s a')),
         'gross_amount' => $this->input->post('gross_amount_value'),
         'service_charge_rate' => $this->input->post('service_charge_value'),
@@ -553,5 +559,24 @@ public function search_orders($keyword, $limit, $offset) {
     return $query->result();
 }
 
+
+public function getinvoice($date) {
+	
+	$sql = "SELECT bill_no FROM orders WHERE  DATE(FROM_UNIXTIME(date_time)) = '$date'";
+	$query = $this->db->query($sql);
+	//echo $this->db->last_query();
+	return $query->result(); 
+
+}
+
+
+public function getdo($date) {
+	
+	$sql = "SELECT do_bill_no FROM orders WHERE  DATE(FROM_UNIXTIME(date_time)) = '$date'";
+	$query = $this->db->query($sql);
+	//echo $this->db->last_query();
+	return $query->result(); 
+
+}
 
 }
