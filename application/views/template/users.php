@@ -86,6 +86,7 @@
       <th>Company Email</th>
       <th>Office Address</th>
       <th>Delivery Address</th>
+      <th>Delivery Address2</th>
       <th>Mobile Number</th>
       <th>Role</th>
       <th>Restrict time</th>
@@ -98,7 +99,8 @@
   <tbody>
 
   
-    <?php foreach ($userss as $row):
+    <?php foreach ($userss as $row){
+    //  print_r($row);
       if($row->role == 'Owner'){ 
         $rolee = 'Manager';
       }
@@ -120,8 +122,9 @@
         <td><?= $row->name; ?></td>
         <td><?= $row->company_name; ?></td>
         <td><?= $row->email; ?></td>
-        <td><?= $row->address; ?><?= $row->address_line2; ?><?= $row->address_city; ?><?= $row->address_postcode; ?></td>
-        <td><?= $row->delivery_address; ?><?= $row->delivery_address_line2; ?><?= $row->delivery_address_city; ?><?= $row->delivery_address_postcode; ?></td>
+        <td><?= ($row->address ? $row->address . ', ' : '') . ($row->address_line2 ? $row->address_line2 . ', ' : '') . ($row->address_line3 ? $row->address_line3 . ', ' : '') . ($row->address_line4 ? $row->address_line4 . ', ' : '') . ($row->address_city ? $row->address_city . ', ' : '') . ($row->address_postcode ? $row->address_postcode : ''); ?></td>
+        <td><?= ($row->delivery_address ? $row->delivery_address . ', ' : '') . ($row->delivery_address_line2 ? $row->delivery_address_line2 . ', ' : '') . ($row->delivery_address_line3 ? $row->delivery_address_line3 . ', ' : '') . ($row->delivery_address_line4 ? $row->delivery_address_line4 . ', ' : '') . ($row->delivery_address_city ? $row->delivery_address_city . ', ' : '') . ($row->delivery_address_postcode ? $row->delivery_address_postcode : ''); ?></td>
+        <td><?= ($row->address2 ? $row->address2 . ', ' : '') . ($row->address2_line2 ? $row->address2_line2 . ', ' : '') . ($row->address2_line3 ? $row->address2_line3 . ', ' : '') . ($row->address2_line4 ? $row->address2_line4 . ', ' : '') . ($row->address2_city ? $row->address2_city . ', ' : '') . ($row->address2_postcode ? $row->address2_postcode : ''); ?></td>
         <td><?= $row->contact; ?></td>
         <td><?=  $rolee; ?></td>
         <!-- Change id="restrictCheckbox" to class="restrictCheckbox" -->
@@ -141,17 +144,17 @@
         </td>
       </tr>
      
-    <?php endforeach; ?>
+    <?php } ?>
   </tbody>
 </table>
 
             <br>
             <!-- Pagination Links -->
             <div class="row">
-            <div class="col-sm-10">
+            <div class="col-sm-6">
                 <?php $total_rowss = $total_rows; echo "Showing 1 to 10 of ".$total_rowss." entries"; ?>
             </div>
-                <div class="col-sm-2">
+                <div class="col-sm-6">
                     <?php echo $this->pagination->create_links(); ?>
                 </div>
             </div>

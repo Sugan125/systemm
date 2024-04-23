@@ -484,19 +484,41 @@ class Userscontroller extends CI_Controller {
                             $flag =false;
                             continue;
                         }   
+                        $inserdata[$i]['company_name'] = $value['A'];
                         $inserdata[$i]['name'] = $value['A'];
-                        $inserdata[$i]['email'] = $value['J'];
+
                         $inserdata[$i]['address'] = $value['B'];
                         $inserdata[$i]['address_line2'] = $value['C'];
-                        $inserdata[$i]['address_city'] = $value['D'];
-                        $inserdata[$i]['address_postcode'] = $value['E'];
-                        $inserdata[$i]['company_name'] = $value['A'];
-                        $inserdata[$i]['delivery_address'] = $value['F'];
-                        $inserdata[$i]['delivery_address_line2'] = $value['G'];
-                        $inserdata[$i]['delivery_address_city'] = $value['H'];
-                        $inserdata[$i]['delivery_address_postcode'] = $value['I'];
+
+                        $inserdata[$i]['address_line3'] = $value['D'];
+                        $inserdata[$i]['address_line4'] = $value['E'];
+
+                        $inserdata[$i]['address_city'] = $value['F'];
+                        $inserdata[$i]['address_postcode'] = $value['G'];
+
+                        $inserdata[$i]['email'] = $value['H'];
+
+                       
+                        $inserdata[$i]['delivery_address'] = $value['I'];
+                        $inserdata[$i]['delivery_address_line2'] = $value['J'];
+
+                        $inserdata[$i]['delivery_address_line3'] = $value['K'];
+                        $inserdata[$i]['delivery_address_line4'] = $value['L'];
+
+                        $inserdata[$i]['delivery_address_city'] = $value['N'];
+                        $inserdata[$i]['delivery_address_postcode'] = $value['M'];
+
+                        $inserdata[$i]['address2'] = $value['O'];
+                        $inserdata[$i]['address2_line2'] = $value['P'];
+
+                        $inserdata[$i]['address2_line3'] = $value['Q'];
+                        $inserdata[$i]['address2_line4'] = $value['R'];
+
+                        $inserdata[$i]['address2_city'] = $value['S'];
+                        $inserdata[$i]['address2_postcode'] = $value['T'];
+
                         $inserdata[$i]['role'] = 'User';
-                        $inserdata[$i]['status'] = '1';
+                        $inserdata[$i]['status'] = '0';
                         $i++;
                     }
                     $result = $this->user_model->insert_import($inserdata);

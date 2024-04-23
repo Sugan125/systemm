@@ -73,6 +73,7 @@ class user_model extends CI_Model{
   public function search_users($keyword, $limit, $offset) {
     $this->db->like('name', $keyword);
     $this->db->or_like('email', $keyword);
+    $this->db->or_like('company_name', $keyword);
     $this->db->limit($limit, $offset);
 
     $query = $this->db->get('user_register');
