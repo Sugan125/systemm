@@ -124,8 +124,14 @@
                 <span id="msg" style="margin-left: 440px; color: red;"></span>
 
                 <div class="col-sm-12 col-md-12 col-xs-12 pull pull-right">
-                <div class="col-sm-6 col-md-6"></div>
-                <div class="col-sm-6 col-md-6">
+                <div class="form-group">
+                <div class="col-sm-4 col-md-4">
+                <label for="feed_back" class="control-label">Feedback</label>
+                <textarea class="form-control" id="feed_back" name="feed_back" autocomplete="off"></textarea>
+                </div>
+                </div>
+
+                <div class="col-sm-7 col-md-7">
                 <span style="margin-left: 250px;"><b>SGD($)</b></span>
                   <div class="form-group" style="margin-bottom:30px;">
                   
@@ -191,7 +197,9 @@
                     </div>
                   </div>
                   </div>
+
                 </div>
+                <div class="col-sm-1 col-md-1"></div>
               </div>
               <!-- /.box-body -->
 

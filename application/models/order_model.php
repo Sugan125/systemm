@@ -98,6 +98,7 @@ public function getProductData($id = null)
         'discount' => $this->input->post('discount'),
         'gst_amt' => $this->input->post('gst_rate'),
         'gst_percent' => $this->input->post('gst_value'),
+		'feed_back' => $this->input->post('feed_back'),
         'paid_status' => 2,
         'user_id' => $user_id,
     );
