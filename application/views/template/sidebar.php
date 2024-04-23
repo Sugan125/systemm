@@ -135,7 +135,7 @@
                       $current_time = date("H:i");
                       
                       $start_time = "16:00";
-                      $end_time = "21:00"; 
+                      $end_time = "24:00"; 
                       
                     
                       if ($restrict_time == 1 && (($current_time >= $start_time) && ($current_time <= $end_time))) { 

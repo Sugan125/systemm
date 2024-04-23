@@ -210,13 +210,13 @@
 
                       // Define the start and end times for the restriction (assuming 23:00 to 06:00 in this example)
                       $start_time = "16:00";
-                      $end_time = "21:00"; 
+                      $end_time = "24:00"; 
                       
                     
                       if ($restrict_time == 1 && (($current_time >= $start_time) && ($current_time <= $end_time))) { 
                           // Time is within the restricted range, redirect to order_restrict page
                           $btn = 'disabled';
-                          $text = '<div class="heading">🚀 Orders Opening at 9:00 PM! 🚀</div>
+                          $text = '<div class="heading">🚀 Orders Opening at 12:01 AM! 🚀</div>
                           <p>🔔 Please wait patiently! 🔔</p>
                           <p>Our ordering system is currently closed after 4:00 PM.</p>';
                       } else if ($restrict_time == 0 && (($current_time >= $start_time) && ($current_time <= $end_time))) {
