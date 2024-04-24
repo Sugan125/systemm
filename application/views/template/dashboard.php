@@ -11,7 +11,21 @@
         </div>
 
         <div class="content mt-3">
-            <a href="<?php echo base_url('index.php/orders/manage_orders') ?>">
+            <?php
+        $loginuser = $this->session->userdata('LoginSession');
+        if (isset($loginuser['roles']) && !empty($loginuser['roles'])) {
+            if ($loginuser['roles'] == 'Admin' || $loginuser['roles'] == 'Owner') {
+                echo '<a href="' . base_url('index.php/orders/manage_orders') . '">';
+            } elseif ($loginuser['roles'] == 'User') {
+                echo '<a href="' . base_url('index.php/orders') . '">';
+            } else {
+                echo '<a href="' . base_url('index.php/orders') . '">';
+            }
+        }
+        ?>
+        
+        
+           
             <div class="col-sm-6 col-lg-3">
                 <div class="card text-white bg-flat-color-1">
                     <div class="card-body pb-0">
@@ -23,6 +37,18 @@
             <!--/.col-->
 
             <a href="<?php echo base_url('index.php/Productcontroller') ?>">
+            <?php
+        $loginuser = $this->session->userdata('LoginSession');
+        if ($loginuser['roles'] == 'Admin' || $loginuser['roles'] == 'Owner') {
+            if ($loginuser['roles'] == 'Admin') {
+                echo '<a href="' . base_url('index.php/Productcontroller') . '">';
+            } elseif ($loginuser['roles'] == 'User') {
+                echo '<a href="' . base_url('index.php/Productcontroller/userproduct') . '">';
+            } else {
+                echo '<a href="' . base_url('index.php/Productcontroller/userproduct') . '">';
+            }
+        }
+        ?>
             <div class="col-sm-6 col-lg-3">
                 <div class="card text-white bg-flat-color-5">
                     <div class="card-body pb-0">
@@ -41,7 +67,14 @@
                 </div>
             </div></a>
             <!--/.col-->
-           <a href="<?php echo base_url('index.php/Userrolecontroller/') ?>">
+           <?php
+        $loginuser = $this->session->userdata('LoginSession');
+        if (isset($loginuser['roles']) && !empty($loginuser['roles'])) {
+            if ($loginuser['roles'] == 'Admin' || $loginuser['roles'] == 'Owner') {
+                echo '<a href="' . base_url('index.php/Userrolecontroller') . '">';
+            } 
+        }
+        ?>
             <div class="col-sm-6 col-lg-3">
                 <div class="card text-white bg-flat-color-4">
                     <div class="card-body pb-0">
