@@ -55,6 +55,7 @@ public function getProductData($id = null)
     $user = $this->session->userdata('normal_user');
     $user_id = $user->id;
 
+	$email = $user->email;
 	// if (date('H') >= 17) {
     //     // Redirect or show an error message indicating that orders cannot be placed after 5 PM
     //     $this->session->set_flashdata('error', 'Orders cannot be placed after 5 PM.');
@@ -149,7 +150,7 @@ public function getProductData($id = null)
     $result = $query->row_array();
     $bill_no = $result['bill_no'];
 
-    return array('id' => $order_id, 'order_id' => $order_id, 'bill_no' => $bill_no);
+    return array('id' => $order_id, 'order_id' => $order_id, 'bill_no' => $bill_no,'email'=>$email);
 	//}
 }
 
@@ -373,6 +374,7 @@ public function repeat_order($id)
      
         $user = $this->session->userdata('normal_user');
         $user_id = $user->id;
+		$email = $user->email;
 
 		$current_year_month = date('ym');
 
@@ -393,7 +395,8 @@ public function repeat_order($id)
 		}
 		
 		$bill_no = $current_year_month . sprintf('%04d', $invoice_counter);
-
+		$do_bill_no = 'DO'.$current_year_month . sprintf('%04d', $invoice_counter);
+   
 		$sql = "select * from orders where id=".$id;
 		$query = $this->db->query($sql);
 		$orderss = $query->result_array(); 
@@ -401,6 +404,7 @@ public function repeat_order($id)
 		foreach($orderss as $row){
 		$data = array(
 			'bill_no' => $bill_no,
+			'do_bill_no'=>$do_bill_no,
 			'date_time' => strtotime(date('Y-m-d h:i:s a')),
 			'gross_amount' => $row['gross_amount'],
 			'service_charge_rate' => $row['service_charge_rate'],
@@ -461,12 +465,16 @@ public function repeat_order($id)
 		$result = $query->row_array();
 		$bill_no = $result['bill_no'];
 	
-		return array('id' => $order_id, 'order_id' => $order_id, 'bill_no' => $bill_no);
+		return array('id' => $order_id, 'order_id' => $order_id, 'bill_no' => $bill_no, 'email' => $email);
     }
 }
 
 public function admin_create()
 {
+
+	$user = $this->session->userdata('normal_user');
+   
+	$email = $user->email;
 
 	$user_id = $this->input->post('user_id');
   
@@ -549,7 +557,7 @@ public function admin_create()
     $result = $query->row_array();
     $bill_no = $result['bill_no'];
 
-    return array('id' => $order_id, 'order_id' => $order_id, 'bill_no' => $bill_no);
+    return array('id' => $order_id, 'order_id' => $order_id, 'bill_no' => $bill_no,'email' => $email);
 	
 }
 

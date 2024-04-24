@@ -45,11 +45,12 @@ class orders extends CI_Controller {
 			if ($this->form_validation->run() == TRUE) {
 				$order_id = $this->order_model->create();
 				$bill_no = $order_id['bill_no'];
-			
+				$email = $order_id['email'];
+
 					$order_id = $order_id['order_id'];
 					
 					$this->download($order_id); 
-					$this->send_invoice($bill_no); 
+					$this->send_invoice($bill_no,$email); 
 					//exit;
 					$this->session->set_flashdata('success', 'Order Placed');
         			redirect('orders', 'refresh');
@@ -510,11 +511,12 @@ public function printpacking()
 		$this->load->view('template/footer.php');
 }
 
-public function send_invoice($bill_no)
+public function send_invoice($bill_no,$email)
 	{
 		//$toemail='suganyaulagu8@gmail.com';
-
-		$toemail='suganyaulagu8@gmail.com';
+		
+		$toemail= 'suganyaulagu8@gmail.com';
+		$cc_email = $email;
 		
 		$config['protocol']  = 'smtp';
 		$config['smtp_host'] = 'ssl://smtp.gmail.com';
@@ -540,7 +542,7 @@ public function send_invoice($bill_no)
 
 		$current_date_time = date('Y-m-d H:i:s');
 
-		$msg = "Dear Finance Department, Please find the attached invoice for your review and processing: Invoice No:  $bill_no, Date:  $current_date_time
+		$msg = "Hi, Please find the attached invoice for your review and processing: Invoice No:  $bill_no, Date:  $current_date_time
 
 
 Best regards,
@@ -549,6 +551,7 @@ The Sourdough Factory Team";
 						$flashdataMessage = 'Please check your email for new password!';
 						$this->email->from($from_email, 'Sourdough Factory');
 						$this->email->to($toemail);
+						$this->email->cc($cc_email); 
 						$this->email->subject($subject);
 						$this->email->message($msg);
 					
@@ -575,11 +578,13 @@ The Sourdough Factory Team";
         	$update = $this->order_model->repeat_order($id);
 
 			$bill_no = $update['bill_no'];
-			
+
+			$email = $update['email'];
+
 					$order_id = $update['order_id'];
 					
 					$this->download($order_id); 
-					$this->send_invoice($bill_no); 
+					$this->send_invoice($bill_no,$email); 
 
 			$this->session->set_flashdata('success', 'Order Placed Successfully');
 			redirect('orders', 'refresh');
@@ -658,11 +663,13 @@ The Sourdough Factory Team";
 		if ($this->form_validation->run() == TRUE) {
 			$order_id = $this->order_model->admin_create();
 			$bill_no = $order_id['bill_no'];
-		
+
+			$email = $order_id['email'];
+			
 				$order_id = $order_id['order_id'];
 				
 				$this->download($order_id); 
-				$this->send_invoice($bill_no); 
+				$this->send_invoice($bill_no,$email); 
 				//exit;
 				$this->session->set_flashdata('success', 'Order Placed Successfully');
 				redirect('orders/manage_orders', 'refresh');

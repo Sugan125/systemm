@@ -223,7 +223,7 @@
                        <?php echo "Showing 1 to 10 of ".$total_rows." entries"; ?>
                    </div>
                        <div class="col-sm-2">
-                           <?php echo $this->pagination->create_links(); ?>
+                           <?php //echo $this->pagination->create_links(); ?>
                        </div>
                    </div>
        
