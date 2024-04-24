@@ -36,7 +36,7 @@
                       $current_time = date("H:i");
 
                       // Define the start and end times for the restriction (assuming 23:00 to 06:00 in this example)
-                      $start_time = "16:00";
+                      $start_time = "21:00";
                       $end_time = "24:00"; 
                       
                     
@@ -104,7 +104,7 @@
                       $current_time = date("H:i");
 
                       // Define the start and end times for the restriction (assuming 23:00 to 06:00 in this example)
-                      $start_time = "16:00";
+                      $start_time = "21:00";
                       $end_time = "24:00"; 
                       
                     

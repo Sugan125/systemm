@@ -33,7 +33,7 @@
     <div class="box">
         <div class="heading">🚀 Orders Opening at 12:01 AM! 🚀</div>
         <p>🔔 Please wait patiently! 🔔</p>
-        <p>Our ordering system is currently closed after 4:00 pm. </p>
+        <p>Our ordering system is currently closed after 9:00 pm. </p>
         <!-- <p>In the meantime, feel free to browse our products and prepare your shopping list!</p> -->
         <!-- <p>⏰ Set your alarms ⏰ so you won't forget!</p> -->
         <!-- <p>🎁 Get ready to place your order and enjoy your shopping experience! 🎁</p> -->

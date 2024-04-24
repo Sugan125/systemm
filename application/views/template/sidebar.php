@@ -134,7 +134,7 @@
                       date_default_timezone_set('Asia/Singapore');
                       $current_time = date("H:i");
                       
-                      $start_time = "16:00";
+                      $start_time = "21:00";
                       $end_time = "24:00"; 
                       
                     
