@@ -36,7 +36,7 @@
             </div></a>
             <!--/.col-->
 
-            <a href="<?php echo base_url('index.php/Productcontroller') ?>">
+           
             <?php
         $loginuser = $this->session->userdata('LoginSession');
         if ($loginuser['roles'] == 'Admin' || $loginuser['roles'] == 'Owner') {
