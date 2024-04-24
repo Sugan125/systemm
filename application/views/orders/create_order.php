@@ -1,5 +1,36 @@
 
+<head>
+  <style>
+    .msg{
+      margin-left: 440px; 
+    }
+   /* Media query for screens smaller than 768px (typical mobile devices) */
+@media (max-width: 767px) {
+    /* Adjust the width of inputs for mobile view */
+    th,
+    td {
+        width: 100%!important; /* Set width to 100% for full width */
+        display: block; /* Display inputs and headers as block elements */
+    }
 
+    /* Optionally, adjust spacing between inputs and headers */
+    th,
+    td {
+        margin-bottom: 10px; /* Add margin for spacing */
+    }
+
+    .create_order{
+      margin-top:20px;
+    }
+
+    .msg{
+      margin-left: 0px; 
+    }
+}
+
+
+    </style>
+</head>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
@@ -49,7 +80,7 @@
                </div>
 
                
-                <table class="table table-bordered table-hover" id="product_info_table">
+                <table class="table table-bordered table-hover table-responsive equal-width-table" id="product_info_table">
                   <thead>
                     <tr>
                       <th style="width:15%">Category</th>
@@ -121,7 +152,7 @@
                 </tbody>
                
                 </table>
-                <span id="msg" style="margin-left: 440px; color: red;"></span>
+                <span id="msg" class="msg" style="color: red;"></span>
 
                 <div class="col-sm-12 col-md-12 col-xs-12 pull pull-right">
                 <div class="form-group">
@@ -240,8 +271,8 @@
                   
                     ?>
                     <?php echo $text; ?>
-                <button type="submit" class="btn btn-success" <?php echo $btn; ?>>Create Order</button>
-                <a href="<?php echo base_url('index.php/orders/') ?>" class="btn btn-danger">Back</a>
+                <button type="submit" class="btn btn-success create_order" <?php echo $btn; ?>>Create Order</button>
+                <a href="<?php echo base_url('index.php/orders/') ?>" class="btn btn-danger create_order">Back</a>
               </div>
             </form>
           <!-- /.box-body -->
