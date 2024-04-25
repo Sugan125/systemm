@@ -515,8 +515,8 @@ public function send_invoice($bill_no,$email)
 	{
 		//$toemail='suganyaulagu8@gmail.com';
 		
-		$toemail= 'suganyaulagu8@gmail.com';
-		$cc_email = $email;
+		$toemail= $email;
+		//$cc_email = $email;
 		
 		$config['protocol']  = 'smtp';
 		$config['smtp_host'] = 'ssl://smtp.gmail.com';
@@ -551,7 +551,7 @@ The Sourdough Factory Team";
 						$flashdataMessage = 'Please check your email for new password!';
 						$this->email->from($from_email, 'Sourdough Factory');
 						$this->email->to($toemail);
-						$this->email->cc($cc_email); 
+						//$this->email->cc($cc_email); 
 						$this->email->subject($subject);
 						$this->email->message($msg);
 					
