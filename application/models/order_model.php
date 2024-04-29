@@ -86,12 +86,36 @@ public function getProductData($id = null)
 	
 	$bill_no = $current_year_month . sprintf('%04d', $invoice_counter);
 
+	$date_time = strtotime(date('Y-m-d h:i:s a'));
+
+	$delivery_date = strtotime('+3 days', $date_time);
+
+
+	$delivery_date_formatted = date('Y-m-d h:i:s a', $delivery_date);
+
 	$do_bill_no = 'DO'.$current_year_month . sprintf('%04d', $invoice_counter);
 	date_default_timezone_set('Asia/Singapore');
+
+	
+	$pre_order = $this->input->post('pre_order_date');
+
+	if($pre_order == '0000-00-00' || $pre_order == null || $pre_order == ''){
+		
+		$order_date = $delivery_date_formatted;
+
+	}
+
+	else{
+
+		$order_date = $pre_order;
+	}
+
+
     $data = array(
         'bill_no' => $bill_no,
 		'do_bill_no'=>$do_bill_no,
-        'date_time' => strtotime(date('Y-m-d h:i:s a')),
+        'date_time' => $date_time,
+		'delivery_date' =>$order_date,
         'gross_amount' => $this->input->post('gross_amount_value'),
         'service_charge_rate' => $this->input->post('service_charge_value'),
         'delivery_charge' => $this->input->post('delivery_charge_value'),
@@ -129,6 +153,28 @@ public function getProductData($id = null)
 		date_default_timezone_set('Asia/Singapore');
 		$current_date_time = new DateTime('now');
 		$created_date = $current_date_time->format('Y-m-d H:i:s');
+		
+		// Add 3 days to the current date and time
+		$delivery_date = clone $current_date_time;
+		$delivery_date->modify('+3 days');
+
+		// Format the delivery date as desired
+		$delivery_date_formatted = $delivery_date->format('Y-m-d H:i:s');
+
+		$pre_order = $this->input->post('pre_order_date');
+
+		if($pre_order == '0000-00-00' || $pre_order == null || $pre_order == ''){
+			
+			$order_date = $delivery_date_formatted;
+
+		}
+
+		else{
+
+			$order_date = $pre_order;
+		}
+
+
         $items = array(
             'order_id' => $order_id,
             'category' => $category,
@@ -141,7 +187,8 @@ public function getProductData($id = null)
 			'service_charge' => $service_charge,
 			'gst_percent' => $gst_percent,
 			'gst_amount' => $gst_amt,
-			'created_date' => $created_date
+			'created_date' => $created_date,
+			'delivery_date' => $order_date,
         );
         $this->db->insert('order_items', $items);
     }
@@ -344,10 +391,10 @@ public function update($id)
 		return $query->result_array();
 	}
 
-	public function getscheduleorder($schedule_date) {
+	public function getscheduleorder($schedule_date	) {
 		$date = $schedule_date;
 		$formatted_schedule_date = date("d/m/y", strtotime($date));
-		$sql = "SELECT ordd.*,prod.product_id as product_id,prod.product_name as product_name FROM order_items ordd join products prod WHERE DATE(ordd.created_date) = '$schedule_date' and ordd.product_id=prod.id";
+		$sql = "SELECT ordd.*,prod.product_id as product_id,prod.product_name as product_name FROM order_items ordd join products prod WHERE DATE(ordd.delivery_date) = '$schedule_date' and ordd.product_id=prod.id";
 		$query = $this->db->query($sql);
 		return $query->result(); 
 
@@ -361,7 +408,7 @@ public function getpackingorder($schedule_date) {
 	JOIN order_items orrr ON ord.id = orrr.order_id 
 	JOIN user_register uss ON ord.user_id = uss.id 
 	join products prod ON orrr.product_id=prod.id
-	WHERE DATE(orrr.created_date) = '$schedule_date';";
+	WHERE DATE(orrr.delivery_date) = '$schedule_date';";
 	$query = $this->db->query($sql);
 	return $query->result(); 
 
@@ -401,11 +448,23 @@ public function repeat_order($id)
 		$query = $this->db->query($sql);
 		$orderss = $query->result_array(); 
 
+		$bill_no = $current_year_month . sprintf('%04d', $invoice_counter);
+
+		$date_time = strtotime(date('Y-m-d h:i:s a'));
+
+		$delivery_date = strtotime('+3 days', $date_time);
+
+
+		$delivery_date_formatted = date('Y-m-d h:i:s a', $delivery_date);
+
+		
+
 		foreach($orderss as $row){
 		$data = array(
 			'bill_no' => $bill_no,
 			'do_bill_no'=>$do_bill_no,
-			'date_time' => strtotime(date('Y-m-d h:i:s a')),
+			'date_time' => $date_time,
+			'delivery_date' => $delivery_date_formatted,
 			'gross_amount' => $row['gross_amount'],
 			'service_charge_rate' => $row['service_charge_rate'],
 			'delivery_charge' => $row['delivery_charge'],
@@ -455,7 +514,8 @@ public function repeat_order($id)
 			'service_charge' => $service_charge,
 			'gst_percent' => $gst_percent,
 			'gst_amount' => $gst_amt,
-			'created_date' => $created_date
+			'created_date' => $created_date,
+			'delivery_date' => $delivery_date_formatted,
         );
 			// Inserting the constructed array into the database
 			$this->db->insert('order_items', $items);
@@ -497,13 +557,36 @@ public function admin_create()
 		
 		$invoice_counter = 1;
 	}
+
+	$date_time = strtotime(date('Y-m-d h:i:s a'));
+
+	$delivery_date = strtotime('+3 days', $date_time);
+
+
+	$delivery_date_formatted = date('Y-m-d h:i:s a', $delivery_date);
+
+
+	$pre_order = $this->input->post('pre_order_date');
+
+		if($pre_order == '0000-00-00' || $pre_order == null || $pre_order == ''){
+			
+			$order_date = $delivery_date_formatted;
+
+		}
+
+		else{
+
+			$order_date = $pre_order;
+		}
+
 	
 	$bill_no = $current_year_month . sprintf('%04d', $invoice_counter);
 	$do_bill_no = 'DO'.$current_year_month . sprintf('%04d', $invoice_counter);
     $data = array(
         'bill_no' => $bill_no,
 		'do_bill_no'=>$do_bill_no,
-        'date_time' => strtotime(date('Y-m-d h:i:s a')),
+        'date_time' => $date_time,
+		'delivery_date' => $order_date,
         'gross_amount' => $this->input->post('gross_amount_value'),
         'service_charge_rate' => $this->input->post('service_charge_value'),
         'delivery_charge' => $this->input->post('delivery_charge_value'),
@@ -537,6 +620,28 @@ public function admin_create()
 		date_default_timezone_set('Asia/Singapore');
 		$current_date_time = new DateTime('now');
 		$created_date = $current_date_time->format('Y-m-d H:i:s');
+		
+		// Add 3 days to the current date and time
+		$delivery_date = clone $current_date_time;
+		$delivery_date->modify('+3 days');
+
+		// Format the delivery date as desired
+		$delivery_date_formatted = $delivery_date->format('Y-m-d H:i:s');
+
+		$pre_order = $this->input->post('pre_order_date');
+
+		if($pre_order == '0000-00-00' || $pre_order == null || $pre_order == ''){
+			
+			$order_date = $delivery_date_formatted;
+
+		}
+
+		else{
+
+			$order_date = $pre_order;
+		}
+
+		
         $items = array(
             'order_id' => $order_id,
             'category' => $category,
@@ -549,7 +654,8 @@ public function admin_create()
 			'service_charge' => $service_charge,
 			'gst_percent' => $gst_percent,
 			'gst_amount' => $gst_amt,
-			'created_date' => $created_date
+			'created_date' => $created_date,
+			'delivery_date' => $order_date,
         );
         $this->db->insert('order_items', $items);
     }
@@ -598,7 +704,7 @@ public function getinvoice($date) {
 
 public function getdo($date) {
 	
-	$sql = "SELECT do_bill_no FROM orders WHERE  DATE(FROM_UNIXTIME(date_time)) = '$date'";
+	$sql = "SELECT do_bill_no FROM orders WHERE  DATE(delivery_date) = '$date'";
 	$query = $this->db->query($sql);
 	//echo $this->db->last_query();
 	return $query->result(); 

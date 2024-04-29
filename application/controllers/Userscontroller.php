@@ -191,7 +191,13 @@ class Userscontroller extends CI_Controller {
         'company_name'=>$this->input->post('company_name'),
         'email'=>$this->input->post('email'),
         'address'=>$this->input->post('address'),
+        'address_line2'=>$this->input->post('address_line2'),
+        'address_city'=>$this->input->post('address_city'),
+        'address_postcode'=>$this->input->post('address_postcode'),
         'delivery_address'=>$this->input->post('delivery_address'),
+        'delivery_address_line2'=>$this->input->post('delivery_address_line2'),
+        'delivery_address_city'=>$this->input->post('delivery_city'),
+        'delivery_address_postcode'=>$this->input->post('delivery_postcode'),
         'status'=>$this->input->post('status'),
         'contact'=>$this->input->post('contact'),
         'password'=>$this->input->post('password'),
@@ -235,8 +241,8 @@ class Userscontroller extends CI_Controller {
         $loginuser = $this->session->userdata('LoginSession');
         //var_dump($loginuser);
         $this->load->view('template/sidebar.php', array('user' => $user, 'users' => $users, 'title' => $title,'loginuser' => $loginuser));
-    $this->load->view('template/updateuserpage.php',$data);
-   $this->load->view('template/footer.php');
+        $this->load->view('template/updateuserpage.php',$data);
+        $this->load->view('template/footer.php');
      }
     
 

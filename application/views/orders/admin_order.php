@@ -84,6 +84,7 @@
                         <td>    
                             <select class="form-control sliced" id="sliced_1" name="sliced[]" onmousedown="if(this.options.length>8){this.size=8;}" onchange='slicechange()' onblur="this.size=0;">
                                 <option value="">Choose</option>
+                                <option value="Unsliced">Unsliced</option>
                                 <option value="12mm">12mm</option>
                                 <option value="20mm">20mm</option>
                             </select>
@@ -93,7 +94,11 @@
                                 <option value="">Choose</option>
                                 <option value="white">White</option>
                                 <option value="black">Black</option>
+                                <option value="White black mix">White black mix</option>
                                 <option value="drizzle">Drizzle</option>
+                                <option value="White drizzle">White drizzle</option>
+                                <option value="Black drizzle">Black drizzle</option>
+                                <option value="Seedless">Seedless</option>
                             </select>
                         </td>
                         <td>
@@ -141,6 +146,9 @@
                         <?php endforeach; ?>
                     </select>
                 </div>
+                <br>
+                <label>Pre Order Date (If required)</label>
+                <input type="date" name="pre_order_date" id="pre_order" class="form-control"  autocomplete="off" style="width:100%;">
                 </div>
                 <div class="col-sm-6 col-md-6">
                 <span style="margin-left: 250px;"><b>SGD($)</b></span>
@@ -219,7 +227,25 @@
 <!-- /.content-wrapper -->
 
 <script type="text/javascript">
+var today = new Date();
 
+// Calculate the date 7 days from now
+var sevenDaysFromNow = new Date(today);
+sevenDaysFromNow.setDate(sevenDaysFromNow.getDate() + 7);
+
+// Set the minimum date for the pre-order input field
+var preOrderInput = document.getElementById('pre_order');
+preOrderInput.min = today.toISOString().split('T')[0];
+preOrderInput.max = sevenDaysFromNow.toISOString().split('T')[0];
+
+// Disable input field after the 7-day period
+preOrderInput.addEventListener('input', function() {
+    var selectedDate = new Date(preOrderInput.value);
+    if (selectedDate > sevenDaysFromNow) {
+        preOrderInput.value = ''; // Clear input if date is beyond the allowed range
+        alert('You can only select a date within the next 7 days.');
+    }
+});
 function confirmSubmission(event) {
     event.preventDefault(); // Prevent the default form submission
 
@@ -306,6 +332,7 @@ $(document).on('change', '.seed', function() {
                 '<td>'+ 
                     '<select class="form-control select_group sliced" data-row-id="'+row_id+'" id="sliced_'+row_id+'" name="sliced[]" style="width:100%;" onchange="slicechange(this)">'+
                         '<option value="">Choose</option>'+
+                        '<option value="Unsliced">Unsliced</option>'+
                         '<option value="12mm">12mm</option>'+
                         '<option value="20mm">20mm</option>'+
                     '</select>'+
@@ -313,9 +340,13 @@ $(document).on('change', '.seed', function() {
                 '<td>'+ 
                     '<select class="form-control select_group seed" data-row-id="'+row_id+'" id="seed_'+row_id+'" name="seed[]" style="width:100%;" onchange="seedchange(this)">'+
                         '<option value="">Choose</option>'+
-                        '<option value="white">White</option>'+
-                        '<option value="black">Black</option>'+
-                        '<option value="drizzle">Drizzle</option>'+
+                        '<option value="White">White</option>'+
+                        '<option value="Black">Black</option>'+
+                        '<option value="White black mix">White black mix</option>'+
+                        '<option value="Drizzle">Drizzle</option>'+
+                        '<option value="White drizzle">White drizzle</option>'+
+                        '<option value="Black drizzle">Black drizzle</option>'+
+                        '<option value="Seedless">Seedless</option>'+
                     '</select>'+
                 '</td>'+
                 '<td><input type="hidden" name="minn" id="minn" class="form-control" autocomplete="off"><input type="number" name="qty[]" id="qty_'+row_id+'" class="form-control" onkeyup="getTotal('+row_id+')"></td>'+
@@ -520,6 +551,7 @@ function removeRow(tr_id)
                 if (response.min_order !== undefined && response.min_order !== null && response.min_order !== "") {
                       $('#minn').val(response.min_order);
                       $("#qty_" + row_id).val(response.min_order);
+                      $("#qty_" + row_id).prop('step', response.min_order);
                       $("#qty_value_" + row_id).val(response.min_order);
                       var total = Number(response.prod_rate) * Number(response.min_order);
                   } else {

@@ -48,10 +48,14 @@
             <?php
             date_default_timezone_set('Asia/Singapore');
             $schedule_date = $schedule_date; 
-            $formatted_date = date("d-m-Y", strtotime($schedule_date));
-            $day_of_week = date("l", strtotime($schedule_date));
-            $current_time = date("h:i A"); 
+
+            $order_date = strtotime($schedule_date . ' -3 days');
+
+            $formatted_date = date("d-m-Y", $order_date); // Use $order_date directly
+            $day_of_week = date("l", $order_date); // Use $order_date directly
+            $current_time = date("h:i A"); // Use $order_date directly
             echo "<p>Order Date: $formatted_date $day_of_week $current_time</p>";
+
             ?>
         </div>
         <div class="col-md-6 text-right"> 
