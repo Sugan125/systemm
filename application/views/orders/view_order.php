@@ -83,7 +83,7 @@
     foreach ($orders as $key => $val): ?>
         <tr>
             <td><?php echo $val->bill_no; ?></td>
-            <td><?php echo date('Y-m-d H:i:s', $val->date_time); ?></td>
+            <td><?php echo empty($val->created_date) ? date('Y-m-d', $val->date_time) : $val->created_date; ?></td>
             <td><?php echo $val->gross_amount; ?></td>
             <td><?php if( $val->service_charge_rate == NULL){
               echo "No service charge";

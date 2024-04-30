@@ -21,7 +21,7 @@
         <?php foreach($order_total as $val => $order_data): ?>
                     <div class="invoice-col" style="margin: 0px;">
                     <b>Invoice No: </b> <?php echo $order_data['bill_no']; ?><br>
-                    <b>Date: </b> <?php echo $order_date; ?><br>
+                    <b style="font-weight: bold;">Date and Time: </b> <?php echo empty($order_data['created_date']) ? $order_date : $order_data['created_date']; ?><br>
                     <!-- <b>Bill ID: </b> <br> -->
                     <b>Your Ref: </b> 123<br>
                     <b>D/O No.: </b>  <?php echo $order_data['do_bill_no']; ?><br>

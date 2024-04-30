@@ -694,7 +694,7 @@ public function search_orders($keyword, $limit, $offset) {
 
 public function getinvoice($date) {
 	
-	$sql = "SELECT bill_no FROM orders WHERE  DATE(FROM_UNIXTIME(date_time)) = '$date'";
+	$sql = "SELECT bill_no FROM orders WHERE   DATE(delivery_date) = '$date'";
 	$query = $this->db->query($sql);
 	//echo $this->db->last_query();
 	return $query->result(); 

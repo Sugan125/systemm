@@ -64,7 +64,8 @@
                              <tr>
                                             <th>Invoice no</th>
                                             <th>Customer Name</th>
-                                            <th>Date Time</th>
+                                            <th>Order Date and Time</th>
+                                            <th>Delivery Date</th>
                                             <th>Gross Amount</th>
                                             <th>Slicing Service</th>
                                             <th>Delivery Charge</th>
@@ -81,7 +82,8 @@
                                         <tr>
                                             <td><?php echo $val->bill_no; ?></td>
                                             <td><?php echo $val->name; ?></td>
-                                            <td><?php echo date('Y-m-d', $val->date_time); ?></td>
+                                            <td><?php echo empty($val->created_date) ? date('Y-m-d', $val->date_time) : $val->created_date; ?></td>
+                                            <td><?php echo $val->delivery_date; ?></td>
                                             <td><?php echo $val->gross_amount; ?></td>
                                             <td><?php if( $val->service_charge_rate == NULL){
                                                 echo "No service charge";
@@ -104,7 +106,7 @@
                                         </tr>
                                         <?php endforeach; } 
                                     else{
-                                        echo '<tr><td colspan="9" class="text-center">No orders found for this user</td></tr>';
+                                        echo '<tr><td colspan="10" class="text-center">No orders found for this user</td></tr>';
                                     }
                                     ?>
                                     </tbody>

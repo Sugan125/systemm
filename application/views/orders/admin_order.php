@@ -92,13 +92,10 @@
                         <td>    
                             <select class="form-control seed" id="seed_1" name="seed[]" onmousedown="if(this.options.length>8){this.size=8;}" onchange='seedchange()' onblur="this.size=0;">
                                 <option value="">Choose</option>
-                                <option value="white">White</option>
-                                <option value="black">Black</option>
-                                <option value="White black mix">White black mix</option>
-                                <option value="drizzle">Drizzle</option>
-                                <option value="White drizzle">White drizzle</option>
-                                <option value="Black drizzle">Black drizzle</option>
                                 <option value="Seedless">Seedless</option>
+                                <option value="White drizzle">White drizzle</option>
+                                <option value="Black drizzle">Black drizzle</option>  
+                                <option value="White black mix">White black mix</option>                               
                             </select>
                         </td>
                         <td>
@@ -340,13 +337,10 @@ $(document).on('change', '.seed', function() {
                 '<td>'+ 
                     '<select class="form-control select_group seed" data-row-id="'+row_id+'" id="seed_'+row_id+'" name="seed[]" style="width:100%;" onchange="seedchange(this)">'+
                         '<option value="">Choose</option>'+
-                        '<option value="White">White</option>'+
-                        '<option value="Black">Black</option>'+
-                        '<option value="White black mix">White black mix</option>'+
-                        '<option value="Drizzle">Drizzle</option>'+
+                        '<option value="Seedless">Seedless</option>'+
                         '<option value="White drizzle">White drizzle</option>'+
                         '<option value="Black drizzle">Black drizzle</option>'+
-                        '<option value="Seedless">Seedless</option>'+
+                        '<option value="White black mix">White black mix</option>'+
                     '</select>'+
                 '</td>'+
                 '<td><input type="hidden" name="minn" id="minn" class="form-control" autocomplete="off"><input type="number" name="qty[]" id="qty_'+row_id+'" class="form-control" onkeyup="getTotal('+row_id+')"></td>'+
