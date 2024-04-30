@@ -927,4 +927,16 @@ public function downaloaddo()
     }
 }
 
+public function deleteorder($id){
+	$delete = $this->order_model->deleteorder($id);
+
+	if($delete){
+		$this->session->set_flashdata('deleted', 'Order Deleted Successfully');
+		redirect('orders/manage_orders', 'refresh');
+		
+	}
+	else{
+		return false;
+	}
+}
 }

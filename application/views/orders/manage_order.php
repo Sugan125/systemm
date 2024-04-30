@@ -43,8 +43,15 @@
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
                                 aria-hidden="true">&times;</span></button>
                         <?php echo $this->session->flashdata('errors'); ?>
+                        
                     </div>
-                    <?php endif; ?>                
+                    <?php elseif($this->session->flashdata('deleted')): ?>
+                    <div class="alert alert-danger alert-dismissible" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                        <?php echo $this->session->flashdata('deleted'); ?>
+                    </div>
+                    <?php endif; ?>       
                     <!-- <a href="<?php echo base_url('index.php/orders/create') ?>" class="btn btn-success">Add
                         Order</a> -->
                     <!-- <br /> <br /> -->
@@ -97,10 +104,12 @@
                                                     class="btn-sm btn btn-warning"><i
                                                         class="fas fa-print"></i></a>
                                                
-                                                        <!-- <a target="__blank"
-                                                    href="<?php echo base_url('index.php/orders/download/'.$val->id); ?>"
-                                                    class="btn-sm btn btn-warning"><i
-                                                        class="fas fa-download"></i></a> -->
+                                                <a href="<?php echo base_url('index.php/orders/deleteorder/'.$val->id); ?>"
+                                                    class="btn-sm btn btn-danger delete-order">
+                                                    <i class="fas fa-trash"></i>
+                                                </a>
+
+
                                             </td>
                                            
                                         </tr>
@@ -223,7 +232,54 @@
                 });
             }
         }
+       
     </script>
+<script>
+     document.addEventListener('DOMContentLoaded', function () {
+        // Select the delete-order class
+        const deleteButtons = document.querySelectorAll('.delete-order');
+
+        // Add event listener to each delete button
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', function (event) {
+                event.preventDefault(); // Prevent the default action
+
+                // Show SweetAlert confirmation dialog
+                swal({
+        title: "Are you sure?",
+        text: "You want to delete this order?",
+        icon: "warning",
+        buttons: {
+            cancel: {
+                text: "Cancel",
+                value: false,
+                visible: true,
+                className: "btn btn-default",
+                closeModal: true
+            },
+            confirm: {
+                text: "Delete",
+                value: true,
+                visible: true,
+                className: "btn btn-success",
+                closeModal: true
+            }
+        }
+    }).then((confirmed) => {
+        if (confirmed) {
+            // Proceed with form submission
+            deleteOrder(button.href);
+        }
+    });
+            });
+        });
+
+        // Function to redirect to the delete URL
+        function deleteOrder(url) {
+            window.location.href = url;
+        }
+    });
+</script>
 
 </body>
 

@@ -711,4 +711,17 @@ public function getdo($date) {
 
 }
 
+public function deleteorder($id){
+    // Delete order from 'orders' table
+    $this->db->where('id', $id);
+    $this->db->delete('orders');
+
+    // Delete associated items from 'order_items' table
+    $this->db->where('order_id', $id);
+    $this->db->delete('order_items');
+
+    // No need to return any data here since it's a deletion operation
+    // Return true or false based on the success of deletion
+    return ($this->db->affected_rows() > 0);
+}
 }
