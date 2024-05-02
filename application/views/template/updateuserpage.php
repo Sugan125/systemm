@@ -42,6 +42,14 @@
                   </div>
                   <input type="text" name="company_name" class="form-control" value="<?= $row->company_name; ?>" placeholder="Company Name">
                 </div>
+
+                <label>Brand Name</label>
+                  <div class="input-group mb-3" id="input_size"> 
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">@</span>
+                  </div>
+                  <input type="text" name="brand_name" class="form-control" value="<?= $row->brand_name; ?>" placeholder="Brand Name">
+                </div>
                 
                   <label>Company Email</label>
                   <div class="input-group mb-3" id="input_size" >

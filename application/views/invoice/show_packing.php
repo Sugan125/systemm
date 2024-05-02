@@ -88,7 +88,7 @@ foreach($orders as $order):
                 <thead>
                   <tr><td colspan='3' style='height: 20px;'></td></tr>
                     <tr>
-                        <th colspan='3'>{$order->company_name}</th>
+                        <th colspan='3'>{$order->company_name}<br>{$order->brand_name}</th>
                     </tr>
                 </thead>
                 <tbody>

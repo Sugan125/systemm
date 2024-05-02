@@ -77,12 +77,13 @@
        
 
 
-<table id="manageTable" class="table table-bordered table-hover table-striped">
+<table id="manageTable" class="table table-bordered table-responsive table-hover table-striped">
                            
   <thead>
     <tr class="text-center">
       <th>Name</th>
       <th>Company Name</th>
+      <th>Brand Name</th>
       <th>Company Email</th>
       <th>Office Address</th>
       <th>Delivery Address</th>
@@ -121,6 +122,7 @@
       <tr class="odd text-center">
         <td><?= $row->name; ?></td>
         <td><?= $row->company_name; ?></td>
+        <td><?= $row->brand_name; ?></td>
         <td><?= $row->email; ?></td>
         <td><?= ($row->address ? $row->address . ', ' : '') . ($row->address_line2 ? $row->address_line2 . ', ' : '') . ($row->address_line3 ? $row->address_line3 . ', ' : '') . ($row->address_line4 ? $row->address_line4 . ', ' : '') . ($row->address_city ? $row->address_city . ', ' : '') . ($row->address_postcode ? $row->address_postcode : ''); ?></td>
         <td><?= ($row->delivery_address ? $row->delivery_address . ', ' : '') . ($row->delivery_address_line2 ? $row->delivery_address_line2 . ', ' : '') . ($row->delivery_address_line3 ? $row->delivery_address_line3 . ', ' : '') . ($row->delivery_address_line4 ? $row->delivery_address_line4 . ', ' : '') . ($row->delivery_address_city ? $row->delivery_address_city . ', ' : '') . ($row->delivery_address_postcode ? $row->delivery_address_postcode : ''); ?></td>
@@ -173,6 +175,7 @@
            <tr class="text-center">
              <th>User Name</th>
              <th>Company Name</th>
+             <th>Brand Name</th>
              <th>Company Email</th>
              <th>Office Address</th>
              <th>Delivery Address</th>
@@ -188,6 +191,7 @@
              <tr class="odd text-center">
                <td><?=  $loginuser['name']; ?></td>
                <td><?=  $loginuser['company_name']; ?></td>
+               <td><?=  $loginuser['brand_name']; ?></td>
                <td><?= $loginuser['email']; ?></td>
                <td><?= $loginuser['address']; ?></td>
                <td><?= $loginuser['delivery_address']; ?></td>
