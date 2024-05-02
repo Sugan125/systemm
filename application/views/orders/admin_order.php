@@ -480,7 +480,7 @@ function removeRow(tr_id)
 
         var total = Number($("#rate_value_" + row).val()) * Number($("#qty_" + row).val());
         var total_amt = total + service_charge;
-        var gst = total * 9 / 100;
+        var gst = total_amt * 9 / 100;
 
         $("#amount_" + row).val(total_amt.toFixed(2));
         $("#amount_value_" + row).val(total_amt.toFixed(2));
@@ -615,7 +615,7 @@ function removeRow(tr_id)
 
     var deliveryCharge = netAmount < 20 ? 20.00 : 0;
 
-    var totall = grossAmount +  service_charge + deliveryCharge;
+    var totall = grossAmount + deliveryCharge;
     var gstRate = 9; 
     var gstAmount = totall * gstRate / 100;
 
@@ -628,7 +628,7 @@ function removeRow(tr_id)
     $("#service_charge").val(service_charge.toFixed(2));
     $("#service_charge_value").val(service_charge.toFixed(2));
 
-    var finalAmount = netAmount + service_charge + gstAmount  + deliveryCharge;
+    var finalAmount = netAmount + gstAmount  + deliveryCharge;
 
     $("#net_amount").val(finalAmount.toFixed(2));
     $("#net_amount_value").val(finalAmount.toFixed(2));

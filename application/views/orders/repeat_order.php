@@ -483,18 +483,36 @@
     }
 
     function getTotal(row = null) {
-      if(row) {
-        var total = Number($("#rate_value_"+row).val()) * Number($("#qty_"+row).val());
-        total = total.toFixed(2);
-        $("#amount_"+row).val(total);
-        $("#amount_value_"+row).val(total);
-        
-        subAmount();
+    if (row) {
+        var service_charge = 0;
+        var sliceSelected = $("#sliced_" + row).val();
+      //  var seedSelected = $("#seed_" + row).val();
+      //if (sliceSelected || seedSelected) {
+        if (sliceSelected) {
+            service_charge = 0.5 * Number($("#qty_" + row).val());
+        }
 
-      } else {
+        var total = Number($("#rate_value_" + row).val()) * Number($("#qty_" + row).val());
+        var total_amt = total + service_charge;
+        var gst = total_amt * 9 / 100;
+
+        $("#amount_" + row).val(total_amt.toFixed(2));
+        $("#amount_value_" + row).val(total_amt.toFixed(2));
+
+        $("#gst_percent_" + row).val('9');
+        $("#gst_percent_val_" + row).val('9');
+
+        $("#service_charge_lineitem_" + row).val(service_charge.toFixed(2));
+        $("#service_charge_itemval_" + row).val(service_charge.toFixed(2));
+
+        $("#gst_amount_" + row).val(gst.toFixed(2));
+        $("#gst_amount_value_" + row).val(gst.toFixed(2));
+
+        subAmount();
+    } else {
         alert('no row !! please refresh the page');
-      }
     }
+}
 
 
     function getProductData(row_id) {
@@ -536,67 +554,61 @@
   }
 
 
+  function subAmount() {
+    var service_charge = 0; // Initialize additional charge to 0
 
-    function subAmount() {
-      var service_charge = 0; // Initialize additional charge to 0
+    // Check if either slice or seed is selected for any row
+    var tableProductLength = $("#product_info_table tbody tr").length;
 
-      // Check if either slice or seed is selected for any row
-      var tableProductLength = $("#product_info_table tbody tr").length;
+    for (var x = 1; x <= tableProductLength; x++) {
+        var sliceSelected = $("#sliced_" + x).val();
+      //  var seedSelected = $("#seed_" + x).val();
+        var qty = $("#qty_" + x).val();
 
-      for (var x = 1; x <= tableProductLength; x++) {
-          var sliceSelected = $("#sliced_" + x).val();
-          var seedSelected = $("#seed_" + x).val();
+       // if (sliceSelected || seedSelected) {
+        if (sliceSelected) {
+            // If either slice or seed is selected for this row, add additional charge
+            service_charge += 0.5*qty;
+        }
+    }
 
-          if (sliceSelected || seedSelected) {
-              // If either slice or seed is selected for this row, add additional charge
-              service_charge += 0.5;
-          }
-      }
+    // Calculate total amount
+    var totalSubAmount = 0;
 
-      // Calculate total amount
-      var totalSubAmount = 0;
+    for (var x = 1; x <= tableProductLength; x++) {
+        totalSubAmount += Number($("#amount_" + x).val());
+    }
 
-      for (var x = 1; x <= tableProductLength; x++) {
-          totalSubAmount += Number($("#amount_" + x).val());
-      }
+    // Calculate gross amount
+    var grossAmount = totalSubAmount;
 
-      // Calculate gross amount
-      var grossAmount = totalSubAmount + service_charge;
+    $("#gross_amount").val(grossAmount.toFixed(2));
+    $("#gross_amount_value").val(grossAmount.toFixed(2));
 
-      // Update the input fields
-      $("#gross_amount").val(grossAmount.toFixed(2));
-      $("#gross_amount_value").val(grossAmount.toFixed(2));
+    
+    var discount = $("#discount").val() || 0;
+    var netAmount = grossAmount;
 
-      // Calculate GST
-      var gstRate = 9; // Assuming a GST rate of 9%
-      var gstAmount = grossAmount * gstRate / 100;
+    var deliveryCharge = netAmount < 20 ? 20.00 : 0;
 
-      // Update GST fields
-      $("#gst").val(gstAmount.toFixed(2));
-      $("#gst_rate").val(gstAmount.toFixed(2));
+    var totall = grossAmount + deliveryCharge;
+    var gstRate = 9; 
+    var gstAmount = totall * gstRate / 100;
 
-      // Calculate net amount
-      var discount = $("#discount").val() || 0;
-      var netAmount = grossAmount + gstAmount - discount;
+    $("#gst").val(gstAmount.toFixed(2));
+    $("#gst_rate").val(gstAmount.toFixed(2));
 
-      // Apply delivery charge if net amount is less than 20
-      var deliveryCharge = netAmount < 20 ? 20.00 : 0;
+    $("#delivery_charge").val(deliveryCharge);
+    $("#delivery_charge_value").val(deliveryCharge);
 
-      // Update delivery charge field
-      $("#delivery_charge").val(deliveryCharge);
-      $("#delivery_charge_value").val(deliveryCharge);
+    $("#service_charge").val(service_charge.toFixed(2));
+    $("#service_charge_value").val(service_charge.toFixed(2));
 
-      // Update service charge field
-      $("#service_charge").val(service_charge.toFixed(2));
-      $("#service_charge_value").val(service_charge.toFixed(2));
+    var finalAmount = netAmount + gstAmount  + deliveryCharge;
 
-      // Calculate net amount including all charges
-      var finalAmount = netAmount + service_charge + deliveryCharge;
-
-      // Update net amount fields
-      $("#net_amount").val(finalAmount.toFixed(2));
-      $("#net_amount_value").val(finalAmount.toFixed(2));
-  }
+    $("#net_amount").val(finalAmount.toFixed(2));
+    $("#net_amount_value").val(finalAmount.toFixed(2));
+}
 
 
 
