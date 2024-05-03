@@ -76,6 +76,7 @@ class Logincontroller extends CI_Controller {
                     'id' => $status->id,
                     'name' => $status->name,
 					'company_name' => $status->company_name,
+					'brand_name' => $status->brand_name,
                     'email' => $status->email,
                     'address' => $status->address,
 					'delivery_address' => $status->delivery_address,

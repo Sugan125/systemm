@@ -41,7 +41,10 @@
         <div class="col-md-4" style="padding-right: 0px;padding-left: 0px;">
         <?php
             date_default_timezone_set('Asia/Singapore');
-            $schedule_dates = date("Y-m-d", strtotime($schedule_date));
+            foreach($orders as $order):
+              $schedules_date = $order->delivery_date;
+            endforeach;
+            $schedule_dates = date("Y-m-d", strtotime($schedules_date));
             $formatted_date = date("d-m-Y", strtotime($schedule_dates));
             $day_of_week = date("l", strtotime($schedule_dates));
             $current_time = date("h:i A"); 
@@ -54,7 +57,10 @@
         <div class="col-md-4">
         <?php
             date_default_timezone_set('Asia/Singapore');
-            $schedule_date = date("Y-m-d", strtotime($schedule_date . " -3 days"));
+            foreach($orders as $order):
+              $schedules_date = $order->delivery_date;
+            endforeach;
+            $schedule_date = date("Y-m-d", strtotime($schedules_date . " -3 days"));
             $formatted_date = date("d-m-Y", strtotime($schedule_date));
             $day_of_week = date("l", strtotime($schedule_date));
             $current_time = date("h:i A"); 
