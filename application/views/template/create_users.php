@@ -67,6 +67,16 @@
                   <label>Office Address Line 2</label>
                       <input type="text"  id="input_size" name="address_line2" class="form-control" placeholder="Office Address Line 2">
                   </div>
+
+                  <div class="form-group">
+                  <label>Office Address Line 3</label>
+                      <input type="text"  id="input_size" name="address_line3" class="form-control" placeholder="Office Address Line 3">
+                  </div>
+
+                  <div class="form-group">
+                  <label>Office Address Line 4</label>
+                      <input type="text"  id="input_size" name="address_line4" class="form-control" placeholder="Office Address Line 4">
+                  </div>
                   
                   <div class="form-group">
                   <label>Office City</label>
@@ -80,25 +90,103 @@
                   </div>
 
                   <div class="form-group">
-                  <label>Delivery Address Line 1</label>
-                      <input type="text"  id="input_size" name="delivery_address" class="form-control" placeholder="Delivery Address Line 1">
+                  <label>Shipping Address Line 1</label>
+                      <input type="text"  id="input_size" name="delivery_address" class="form-control" placeholder="Shipping Address Line 1">
                   </div>
 
                   <div class="form-group">
-                  <label>Delivery Address Line 2</label>
-                      <input type="text"  id="input_size" name="delivery_address_line2" class="form-control" placeholder="Delivery Address Line 2">
-                  </div>
-
-
-                  <div class="form-group">
-                  <label>Delivery City</label>
-                      <input type="text"  id="input_size" name="delivery_city" class="form-control" placeholder="Delivery City">
+                  <label>Shipping Address Line 2</label>
+                      <input type="text"  id="input_size" name="delivery_address_line2" class="form-control" placeholder="Shipping Address Line 2">
                   </div>
 
 
                   <div class="form-group">
-                  <label>Delivery Postcode</label>
-                      <input type="text"  id="input_size" name="delivery_postcode" class="form-control" placeholder="Delivery Postcode">
+                  <label>Shipping Address Line 3</label>
+                      <input type="text"  id="input_size" name="delivery_address_line3" class="form-control" placeholder="Shipping Address Line 2">
+                  </div>
+
+                  <div class="form-group">
+                  <label>Shipping Address Line 4</label>
+                      <input type="text"  id="input_size" name="delivery_address_line4" class="form-control" placeholder="Shipping Address Line 2">
+                  </div>
+
+
+                  <div class="form-group">
+                  <label>Shipping City</label>
+                      <input type="text"  id="input_size" name="delivery_city" class="form-control" placeholder="Shipping City">
+                  </div>
+
+
+                  <div class="form-group">
+                  <label>Shipping Postcode</label>
+                      <input type="text"  id="input_size" name="delivery_postcode" class="form-control" placeholder="Shipping Postcode">
+                  </div>
+
+                  <div class="form-group">
+                  <label>Shipping Address 2 Line 1</label>
+                      <input type="text"  id="input_size" name="address2" class="form-control" placeholder="Shipping Address 2 Line 1">
+                  </div>
+
+                  <div class="form-group">
+                  <label>Shipping Address 2 Line 2</label>
+                      <input type="text"  id="input_size" name="address2_line2" class="form-control" placeholder="Shipping Address 2 Line 2">
+                  </div>
+
+
+                  <div class="form-group">
+                  <label>Shipping Address 2 Line 3</label>
+                      <input type="text"  id="input_size" name="address2_line3" class="form-control" placeholder="Shipping Address 2 Line 2">
+                  </div>
+
+                  <div class="form-group">
+                  <label>Shipping Address 2 Line 4</label>
+                      <input type="text"  id="input_size" name="address2_line4" class="form-control" placeholder="Shipping Address 2 Line 2">
+                  </div>
+
+
+                  <div class="form-group">
+                  <label>Shipping 2 City</label>
+                      <input type="text"  id="input_size" name="address2_city" class="form-control" placeholder="Shipping 2 City">
+                  </div>
+
+
+                  <div class="form-group">
+                  <label>Shipping 2 Postcode</label>
+                      <input type="text"  id="input_size" name="address2_postcode" class="form-control" placeholder="Shipping 2 Postcode">
+                  </div>
+                  
+                  
+                  <div class="form-group">
+                  <label>Shipping Address 3 Line 1</label>
+                      <input type="text"  id="input_size" name="address3" class="form-control" placeholder="Shipping Address 3 Line 1">
+                  </div>
+
+                  <div class="form-group">
+                  <label>Shipping Address 3 Line 2</label>
+                      <input type="text"  id="input_size" name="address3_line2" class="form-control" placeholder="Shipping Address 3 Line 2">
+                  </div>
+
+
+                  <div class="form-group">
+                  <label>Shipping Address 3 Line 3</label>
+                      <input type="text"  id="input_size" name="address3_line3" class="form-control" placeholder="Shipping Address 3 Line 2">
+                  </div>
+
+                  <div class="form-group">
+                  <label>Shipping Address 3 Line 4</label>
+                      <input type="text"  id="input_size" name="address3_line4" class="form-control" placeholder="Shipping Address 3 Line 2">
+                  </div>
+
+
+                  <div class="form-group">
+                  <label>Shipping 3 City</label>
+                      <input type="text"  id="input_size" name="address3_city" class="form-control" placeholder="Shipping 3 City">
+                  </div>
+
+
+                  <div class="form-group">
+                  <label>Shipping 3 Postcode</label>
+                      <input type="text"  id="input_size" name="address3_postcode" class="form-control" placeholder="Shipping 3 Postcode">
                   </div>
                   
                   <div class="form-group">

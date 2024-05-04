@@ -86,8 +86,9 @@
       <th>Brand Name</th>
       <th>Company Email</th>
       <th>Office Address</th>
-      <th>Delivery Address</th>
-      <th>Delivery Address2</th>
+      <th>Shipping Address</th>
+      <th>Shipping Address2</th>
+      <th>Shipping Address3</th>
       <th>Mobile Number</th>
       <th>Role</th>
       <th>Restrict time</th>
@@ -127,6 +128,7 @@
         <td><?= ($row->address ? $row->address . ', ' : '') . ($row->address_line2 ? $row->address_line2 . ', ' : '') . ($row->address_line3 ? $row->address_line3 . ', ' : '') . ($row->address_line4 ? $row->address_line4 . ', ' : '') . ($row->address_city ? $row->address_city . ', ' : '') . ($row->address_postcode ? $row->address_postcode : ''); ?></td>
         <td><?= ($row->delivery_address ? $row->delivery_address . ', ' : '') . ($row->delivery_address_line2 ? $row->delivery_address_line2 . ', ' : '') . ($row->delivery_address_line3 ? $row->delivery_address_line3 . ', ' : '') . ($row->delivery_address_line4 ? $row->delivery_address_line4 . ', ' : '') . ($row->delivery_address_city ? $row->delivery_address_city . ', ' : '') . ($row->delivery_address_postcode ? $row->delivery_address_postcode : ''); ?></td>
         <td><?= ($row->address2 ? $row->address2 . ', ' : '') . ($row->address2_line2 ? $row->address2_line2 . ', ' : '') . ($row->address2_line3 ? $row->address2_line3 . ', ' : '') . ($row->address2_line4 ? $row->address2_line4 . ', ' : '') . ($row->address2_city ? $row->address2_city . ', ' : '') . ($row->address2_postcode ? $row->address2_postcode : ''); ?></td>
+        <td><?= ($row->address3 ? $row->address3 . ', ' : '') . ($row->address3_line2 ? $row->address3_line2 . ', ' : '') . ($row->address3_line3 ? $row->address3_line3 . ', ' : '') . ($row->address3_line4 ? $row->address3_line4 . ', ' : '') . ($row->address3_city ? $row->address3_city . ', ' : '') . ($row->address3_postcode ? $row->address3_postcode : ''); ?></td>
         <td><?= $row->contact; ?></td>
         <td><?=  $rolee; ?></td>
         <!-- Change id="restrictCheckbox" to class="restrictCheckbox" -->
@@ -178,10 +180,10 @@
              <th>Brand Name</th>
              <th>Company Email</th>
              <th>Office Address</th>
-             <th>Delivery Address</th>
+             <th>Shipping Address</th>
+             <th>Shipping Address2</th>
+             <th>Shipping Address3</th>
              <th>Mobile Number</th>
-          
-          
              <?php if ((in_array('Admin', $loginuser['role']) || $loginuser['roles'] == 'Admin') || (in_array('Edit', $loginuser['access']) == 'Edit' && in_array('User', $loginuser['role'])) ||  ($loginuser['accesss'] == 'Edit' && $loginuser['roles' == 'User']) || ((!$loginuser['accesss'] == 'Edit' && $loginuser['access'] == 'Delete'))) { ?>
              <th>Action</th>
              <?php } ?>
@@ -193,9 +195,11 @@
                <td><?=  $loginuser['company_name']; ?></td>
                <td><?=  $loginuser['brand_name']; ?></td>
                <td><?= $loginuser['email']; ?></td>
-               <td><?= $loginuser['address']; ?></td>
-               <td><?= $loginuser['delivery_address']; ?></td>
-               <td><?= $loginuser['contact']; ?></td>
+               <td><?= ($loginuser['address'] ? $loginuser['address'] . ', ' : '') . ($loginuser['address_line2'] ? $loginuser['address_line2'] . ', ' : '') . ($loginuser['address_line3'] ? $loginuser['address_line3'] . ', ' : '') . ($loginuser['address_line4'] ? $loginuser['address_line4'] . ', ' : '') . ($loginuser['address_city'] ? $loginuser['address_city'] . ', ' : '') . ($loginuser['address_postcode'] ? $loginuser['address_postcode'] : ''); ?></td>
+              <td><?= ($loginuser['delivery_address'] ? $loginuser['delivery_address'] . ', ' : '') . ($loginuser['delivery_address_line2'] ? $loginuser['delivery_address_line2'] . ', ' : '') . ($loginuser['delivery_address_line3'] ? $loginuser['delivery_address_line3'] . ', ' : '') . ($loginuser['delivery_address_line4'] ? $loginuser['delivery_address_line4'] . ', ' : '') . ($loginuser['delivery_address_city'] ? $loginuser['delivery_address_city'] . ', ' : '') . ($loginuser['delivery_address_postcode'] ? $loginuser['delivery_address_postcode'] : ''); ?></td>
+              <td><?= ($loginuser['address2'] ? $loginuser['address2'] . ', ' : '') . ($loginuser['address2_line2'] ? $loginuser['address2_line2'] . ', ' : '') . ($loginuser['address2_line3'] ? $loginuser['address2_line3'] . ', ' : '') . ($loginuser['address2_line4'] ? $loginuser['address2_line4'] . ', ' : '') . ($loginuser['address2_city'] ? $loginuser['address2_city'] . ', ' : '') . ($loginuser['address2_postcode'] ? $loginuser['address2_postcode'] : ''); ?></td>
+              <td><?= ($loginuser['address3'] ? $loginuser['address3'] . ', ' : '') . ($loginuser['address3_line2'] ? $loginuser['address3_line2'] . ', ' : '') . ($loginuser['address3_line3'] ? $loginuser['address3_line3'] . ', ' : '') . ($loginuser['address3_line4'] ? $loginuser['address3_line4'] . ', ' : '') . ($loginuser['address3_city'] ? $loginuser['address3_city'] . ', ' : '') . ($loginuser['address3_postcode'] ? $loginuser['address3_postcode'] : ''); ?></td>
+              <td><?= $loginuser['contact']; ?></td>
                <?php if ((in_array('File Upload', $loginuser['access'])) ||  ($loginuser['accesss'] == 'File Upload')) { ?>
                <td>
                <a href="<?= base_url('index.php/Userscontroller/fileupload/' . $loginuser['id']) ?>" class="btn btn-warning"><i class="fas fa-upload"></i> </a> 

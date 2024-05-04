@@ -139,8 +139,6 @@ class Userscontroller extends CI_Controller {
 
     public function adduser(){
 
-        
-
        $data = array(
         'name'=>$this->input->post('name'),
         'company_name'=>$this->input->post('company_name'),
@@ -148,12 +146,32 @@ class Userscontroller extends CI_Controller {
        'email'=>$this->input->post('email'),
        'address'=>$this->input->post('address'),
        'address_line2'=>$this->input->post('address_line2'),
+       'address_line3'=>$this->input->post('address_line3'),
+       'address_line4'=>$this->input->post('address_line4'),
        'address_city'=>$this->input->post('address_city'),
        'address_postcode'=>$this->input->post('address_postcode'),
+
        'delivery_address'=>$this->input->post('delivery_address'),
        'delivery_address_line2'=>$this->input->post('delivery_address_line2'),
+       'delivery_address_line3'=>$this->input->post('delivery_address_line3'),
+       'delivery_address_line4'=>$this->input->post('delivery_address_line4'),
        'delivery_address_city'=>$this->input->post('delivery_city'),
        'delivery_address_postcode'=>$this->input->post('delivery_postcode'),
+
+       'address2'=>$this->input->post('address2'),
+       'address2_line2'=>$this->input->post('address2_line2'),
+       'address2_line3'=>$this->input->post('address2_line3'),
+       'address2_line4'=>$this->input->post('address2_line4'),
+       'address2_city'=>$this->input->post('address2_city'),
+       'address2_postcode'=>$this->input->post('address2_postcode'),
+
+       'address3'=>$this->input->post('address3'),
+       'address3_line2'=>$this->input->post('address3_line2'),
+       'address3_line3'=>$this->input->post('address3_line3'),
+       'address3_line4'=>$this->input->post('address3_line4'),
+       'address3_city'=>$this->input->post('address3_city'),
+       'address3_postcode'=>$this->input->post('address3_postcode'),
+
        'status'=>$this->input->post('status'),
        'contact'=>$this->input->post('contact'),
        'password'=>$this->input->post('password'),
@@ -194,12 +212,31 @@ class Userscontroller extends CI_Controller {
         'email'=>$this->input->post('email'),
         'address'=>$this->input->post('address'),
         'address_line2'=>$this->input->post('address_line2'),
+        'address_line3'=>$this->input->post('address_line3'),
+        'address_line4'=>$this->input->post('address_line4'),
         'address_city'=>$this->input->post('address_city'),
         'address_postcode'=>$this->input->post('address_postcode'),
         'delivery_address'=>$this->input->post('delivery_address'),
         'delivery_address_line2'=>$this->input->post('delivery_address_line2'),
+        'delivery_address_line3'=>$this->input->post('delivery_address_line3'),
+        'delivery_address_line4'=>$this->input->post('delivery_address_line4'),
         'delivery_address_city'=>$this->input->post('delivery_city'),
         'delivery_address_postcode'=>$this->input->post('delivery_postcode'),
+
+        'address2'=>$this->input->post('address2'),
+        'address2_line2'=>$this->input->post('address2_line2'),
+        'address2_line3'=>$this->input->post('address2_line3'),
+        'address2_line4'=>$this->input->post('address2_line4'),
+        'address2_city'=>$this->input->post('address2_city'),
+        'address2_postcode'=>$this->input->post('address2_postcode'),
+
+        'address3'=>$this->input->post('address3'),
+        'address3_line2'=>$this->input->post('address3_line2'),
+        'address3_line3'=>$this->input->post('address3_line3'),
+        'address3_line4'=>$this->input->post('address3_line4'),
+        'address3_city'=>$this->input->post('address3_city'),
+        'address3_postcode'=>$this->input->post('address3_postcode'),
+
         'status'=>$this->input->post('status'),
         'contact'=>$this->input->post('contact'),
         'password'=>$this->input->post('password'),
