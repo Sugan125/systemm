@@ -51,7 +51,11 @@
           </div>
           <div style="box-sizing: border-box; float: right; width: 50%; text-align: right; ">
             <b>Ship To:</b>  <?php
-            $address = $order_data['delivery_address'] .' '. $order_data['delivery_address_line2'] .' '. $order_data['delivery_address_city'] .' '. $order_data['delivery_address_postcode'];
+           if (!empty($order_data['shipping_address']) || !empty($order_data['shipping_address_line2']) || !empty($order_data['shipping_address_line3']) || !empty($order_data['shipping_address_line4']) || !empty($order_data['shipping_address_city']) || !empty($order_data['shipping_address_postcode'])) {
+              $address = $order_data['shipping_address'] .' '. $order_data['shipping_address_line2'] .' '. $order_data['shipping_address_line3'] .' '. $order_data['shipping_address_line4'] .' '. $order_data['shipping_address_city'] .' '. $order_data['shipping_address_postcode']; 
+           } else {
+               $address = $order_data['delivery_address'] .' '. $order_data['delivery_address_line2'] .' '. $order_data['delivery_address_line3'] .' '. $order_data['delivery_address_line4'] .' '. $order_data['delivery_address_city'] .' '. $order_data['delivery_address_postcode'];
+           }
             $max_length = 45; 
             $address_lines = wordwrap($address, $max_length, "<br>", true);
             echo $address_lines;

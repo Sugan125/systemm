@@ -939,4 +939,39 @@ public function deleteorder($id){
 		return false;
 	}
 }
+
+public function update_shipping(){
+    $shipping_address = $this->input->post('shipping_address');
+    $shipping_address_line2 = $this->input->post('shipping_address_line2');
+    $shipping_address_line3 = $this->input->post('shipping_address_line3');
+    $shipping_address_line4 = $this->input->post('shipping_address_line4');
+    $shipping_address_city = $this->input->post('shipping_address_city');
+    $shipping_address_postcode = $this->input->post('shipping_address_postcode');    
+
+    $user_id = $this->input->post('user_id');
+
+    // Set shipping address fields
+    $this->db->set('shipping_address', !empty($shipping_address) ? $shipping_address : NULL);
+    $this->db->set('shipping_address_line2', !empty($shipping_address_line2) ? $shipping_address_line2 : NULL);
+    $this->db->set('shipping_address_line3', !empty($shipping_address_line3) ? $shipping_address_line3 : NULL);
+    $this->db->set('shipping_address_line4', !empty($shipping_address_line4) ? $shipping_address_line4 : NULL);
+    $this->db->set('shipping_address_city', !empty($shipping_address_city) ? $shipping_address_city : NULL);
+    $this->db->set('shipping_address_postcode', !empty($shipping_address_postcode) ? $shipping_address_postcode : NULL);
+
+    // Set the WHERE condition
+    $this->db->where('id', $user_id);
+
+    // Execute the update query
+    $result = $this->db->update('user_register');
+
+    // Check if the update was successful
+    if ($result) {
+        // Update successful
+        return true;
+    } else {
+        // Update failed
+        return false;
+    }
+}
+
 }

@@ -40,7 +40,16 @@
       
       </div>
       <div class="col-sm-3 col-xs-12 pull-right" style="padding: 0px;float: right;display: grid;text-align: right;">
-        <b>Ship To:</b><?php echo $order_data['delivery_address'] .' '. $order_data['delivery_address_line2'] .' '. $order_data['delivery_address_city'] .' '. $order_data['delivery_address_postcode']; ?> <br>
+      <b>Ship To:</b>
+      <?php 
+      if (!empty($order_data['shipping_address']) || !empty($order_data['shipping_address_line2']) || !empty($order_data['shipping_address_line3']) || !empty($order_data['shipping_address_line4']) || !empty($order_data['shipping_address_city']) || !empty($order_data['shipping_address_postcode'])) {
+          echo $order_data['shipping_address'] .' '. $order_data['shipping_address_line2'] .' '. $order_data['shipping_address_line3'] .' '. $order_data['shipping_address_line4'] .' '. $order_data['shipping_address_city'] .' '. $order_data['shipping_address_postcode']; 
+      } else {
+          echo $order_data['delivery_address'] .' '. $order_data['delivery_address_line2'] .' '. $order_data['delivery_address_line3'] .' '. $order_data['delivery_address_line4'] .' '. $order_data['delivery_address_city'] .' '. $order_data['delivery_address_postcode'];
+      }
+      ?>
+      <br>
+
       </div>
       <div class="col-sm-12 col-xs-12" style="padding: 30px 0px;">
       <b>Salesman:</b> Henri<br>

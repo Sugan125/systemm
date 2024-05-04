@@ -274,9 +274,7 @@ public function update($id)
 			return false;
 		}
 
-		$sql = "SELECT ord.*, user.name as name, user.address as address,user.delivery_address as delivery_address, user.address_line2 as address_line2,
-		user.address_city, user.address_postcode,  user.delivery_address_line2, user.delivery_address_city,
-		user.delivery_address_postcode,user.company_name as company_name FROM orders ord join user_register user WHERE ord.id = ? and user.id=ord.user_id";
+		$sql = "SELECT ord.*, user.* FROM orders ord join user_register user WHERE ord.id = ? and user.id=ord.user_id";
 		$query = $this->db->query($sql, array($order_id));
 		return $query->result_array();
 	}
