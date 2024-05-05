@@ -472,11 +472,11 @@ function removeRow(tr_id)
     if (row) {
         var service_charge = 0;
         var sliceSelected = $("#sliced_" + row).val();
-        var seedSelected = $("#seed_" + row).val();
-
-        if (sliceSelected || seedSelected) {
-            service_charge = 0.5 * Number($("#qty_" + row).val());
-        }
+         //  var seedSelected = $("#seed_" + row).val();
+          //if (sliceSelected || seedSelected) {
+            if (sliceSelected) {
+                service_charge = 0.5 * Number($("#qty_" + row).val());
+            }
 
         var total = Number($("#rate_value_" + row).val()) * Number($("#qty_" + row).val());
         var total_amt = total + service_charge;
@@ -587,10 +587,11 @@ function removeRow(tr_id)
 
     for (var x = 1; x <= tableProductLength; x++) {
         var sliceSelected = $("#sliced_" + x).val();
-        var seedSelected = $("#seed_" + x).val();
+      //  var seedSelected = $("#seed_" + x).val();
         var qty = $("#qty_" + x).val();
 
-        if (sliceSelected || seedSelected) {
+       // if (sliceSelected || seedSelected) {
+        if (sliceSelected) {
             // If either slice or seed is selected for this row, add additional charge
             service_charge += 0.5*qty;
         }
