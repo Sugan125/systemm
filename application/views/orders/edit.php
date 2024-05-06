@@ -32,7 +32,7 @@
             
             <!-- /.box-header -->
             
-            <form role="form" action="<?php echo base_url('index.php/orders/update/'.$id); ?>" method="post" class="form-horizontal" onsubmit="confirmSubmission(event)">
+            <form role="form" id="update_orders"  action="<?php echo base_url('index.php/orders/update/'.$id); ?>" method="post" class="form-horizontal" onsubmit="confirmSubmission(event)">
 
                   
                 <div class="box-body pull-right">
@@ -213,7 +213,19 @@
                   <input type="hidden" id="delivery_charge" name="delivery_charge" autocomplete="off">  
                   <input type="hidden" name="service_charge_rate"  autocomplete="off">
                   <a target="__blank" href="<?php echo base_url() . 'index.php/orders/printDiv/'.$order_data['id'] ?>" class="btn btn-default" >Print</a>
-                  <button type="submit" class="btn btn-success">Save Changes</button>
+                  <?php if($loginuser['address2'] != NULL || $loginuser['address3'] != NULL) {
+
+                  $modal_id = '<a class="galName" href="#myModal" data-toggle="modal" >';
+                  $end_id = ' </a>';
+
+                  } 
+                  else{
+                  $modal_id = '';
+                  $end_id = '';
+                  }
+                  ?>
+
+                  <?php echo  $modal_id; ?><button type="submit" class="btn btn-success">Save Changes</button><?php echo  $end_id; ?>
                   <a href="<?php echo base_url('index.php/orders/') ?>" class="btn btn-danger">Back</a>
                 </div>
                 <?php endforeach; ?>
@@ -230,6 +242,59 @@
   </div>
   <!-- /.content-wrapper -->
 
+  <div class="modal fade hide modal-creator" id="myModal" style="display: none;" aria-hidden="true">
+    <div class="modal-dialog modal-md"> <!-- Changed modal-dialog size to modal-sm for a smaller modal -->
+        <div class="modal-content">
+            <div class="modal-header">
+                
+                <h3>Please choose shipping address</h3>
+                <button type="button" class="close" data-dismiss="modal">×</button>
+            </div>
+            <div class="modal-body">
+                <form id="shippingAddressForm">
+                <div class="form-group">
+                <label for="shippingAddress1">
+                    <input type="checkbox" id="shippingAddress1" name="shippingAddress1" class="shippingAddressCheckbox">
+                    <?php echo !empty($loginuser['delivery_address']) ? $loginuser['delivery_address'] : ''; ?>
+                    <?php echo !empty($loginuser['delivery_address_line2']) ? ', ' . $loginuser['delivery_address_line2'] : ''; ?>
+                    <?php echo !empty($loginuser['delivery_address_line3']) ? ', ' . $loginuser['delivery_address_line3'] : ''; ?>
+                    <?php echo !empty($loginuser['delivery_address_line4']) ? ', ' . $loginuser['delivery_address_line4'] : ''; ?>
+                    <?php echo !empty($loginuser['delivery_address_city']) ? ', ' . $loginuser['delivery_address_city'] : ''; ?>
+                    <?php echo !empty($loginuser['delivery_address_postcode']) ? ', ' . $loginuser['delivery_address_postcode'] : ''; ?>
+                </label>
+                </div>
+                <div class="form-group">
+                    <label for="shippingAddress2">
+                        <?php echo !empty($loginuser['address2']) ? '<input type="checkbox" id="shippingAddress2" name="shippingAddress2" class="shippingAddressCheckbox">' : ''; ?>
+                        <?php echo !empty($loginuser['address2']) ? $loginuser['address2'] : ''; ?>
+                        <?php echo !empty($loginuser['address2_line2']) ? ', ' . $loginuser['address2_line2'] : ''; ?>
+                        <?php echo !empty($loginuser['address2_line3']) ? ', ' . $loginuser['address2_line3'] : ''; ?>
+                        <?php echo !empty($loginuser['address2_line4']) ? ', ' . $loginuser['address2_line4'] : ''; ?>
+                        <?php echo !empty($loginuser['address2_city']) ? ', ' . $loginuser['address2_city'] : ''; ?>
+                        <?php echo !empty($loginuser['address2_postcode']) ? ', ' . $loginuser['address2_postcode'] : ''; ?>
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label for="shippingAddress3">
+                        <?php echo !empty($loginuser['address3']) ? '<input type="checkbox" id="shippingAddress3" name="shippingAddress3" class="shippingAddressCheckbox">' : ''; ?>
+                        <?php echo !empty($loginuser['address3']) ? $loginuser['address3'] : ''; ?>
+                        <?php echo !empty($loginuser['address3_line2']) ? ', ' . $loginuser['address3_line2'] : ''; ?>
+                        <?php echo !empty($loginuser['address3_line3']) ? ', ' . $loginuser['address3_line3'] : ''; ?>
+                        <?php echo !empty($loginuser['address3_line4']) ? ', ' . $loginuser['address3_line4'] : ''; ?>
+                        <?php echo !empty($loginuser['address3_city']) ? ', ' . $loginuser['address3_city'] : ''; ?>
+                        <?php echo !empty($loginuser['address3_postcode']) ? ', ' . $loginuser['address3_postcode'] : ''; ?>
+                    </label>
+                </div>
+                </form>
+            </div><!-- /modal-body -->
+            <div class="modal-footer">
+                <!-- <p class="span3 resize">The following images are sized incorrectly. Click to edit</p> -->
+                <button type="button" class="btn" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="handleNext()">Next</button>
+            </div>
+        </div><!-- /modal-content -->
+    </div><!-- /modal-dialog -->
+</div><!-- /myModal -->
   <script type="text/javascript">
     var today = new Date();
 
@@ -268,40 +333,6 @@ preOrderInput.addEventListener('input', function() {
           $('#msg').html('');
       }
   });
-  function confirmSubmission(event) {
-      event.preventDefault(); // Prevent the default form submission
-
-      // Find the closest form element to the clicked button
-      var form = event.target.closest('form');
-
-      // Show SweetAlert confirmation dialog
-      swal({
-          title: "You are about to update this order?",
-          text: "An invoice will be sent to your Finance department",
-          icon: "warning",
-          buttons: {
-              cancel: {
-                  text: "Cancel",
-                  value: false,
-                  visible: true,
-                  className: "btn btn-default",
-                  closeModal: true
-              },
-              confirm: {
-                  text: "Create Order",
-                  value: true,
-                  visible: true,
-                  className: "btn btn-success",
-                  closeModal: true
-              }
-          }
-      }).then((confirmed) => {
-          if (confirmed) {
-              // Proceed with form submission
-              form.submit();
-          }
-      });
-  }
 
 
   $(document).ready(function() {
@@ -673,4 +704,97 @@ function subAmount() {
 
 
 
+function handleNext() {
+    var selectedAddress = '';
+    var shipping_address = '';
+    var shipping_address_line2 = '';
+    var shipping_address_line3 = '';
+    var shipping_address_line4 = '';
+    var shipping_address_city = '';
+    var shipping_address_postcode = '';
+
+    if ($('#shippingAddress1').is(':checked')) {
+        shipping_address = "<?php echo $loginuser['delivery_address']; ?>";
+        shipping_address_line2 = "<?php echo !empty($loginuser['delivery_address_line2']) ? $loginuser['delivery_address_line2'] : ''; ?>";
+        shipping_address_line3 = "<?php echo !empty($loginuser['delivery_address_line3']) ? $loginuser['delivery_address_line3'] : ''; ?>";
+        shipping_address_line4 = "<?php echo !empty($loginuser['delivery_address_line4']) ? $loginuser['delivery_address_line4'] : ''; ?>";
+        shipping_address_city = "<?php echo !empty($loginuser['delivery_address_city']) ? $loginuser['delivery_address_city'] : ''; ?>";
+        shipping_address_postcode = "<?php echo !empty($loginuser['delivery_address_postcode']) ? $loginuser['delivery_address_postcode'] : ''; ?>";
+    } else if ($('#shippingAddress2').is(':checked')) {
+        shipping_address = "<?php echo $loginuser['address2']; ?>";
+        shipping_address_line2 = "<?php echo !empty($loginuser['address2_line2']) ? $loginuser['address2_line2'] : ''; ?>";
+        shipping_address_line3 = "<?php echo !empty($loginuser['address2_line3']) ? $loginuser['address2_line3'] : ''; ?>";
+        shipping_address_line4 = "<?php echo !empty($loginuser['address2_line4']) ? $loginuser['address2_line4'] : ''; ?>";
+        shipping_address_city = "<?php echo !empty($loginuser['address2_city']) ? $loginuser['address2_city'] : ''; ?>";
+        shipping_address_postcode = "<?php echo !empty($loginuser['address2_postcode']) ? $loginuser['address2_postcode'] : ''; ?>";
+    } else if ($('#shippingAddress3').is(':checked')) {
+        shipping_address = "<?php echo $loginuser['address3']; ?>";
+        shipping_address_line2 = "<?php echo !empty($loginuser['address3_line2']) ? $loginuser['address3_line2'] : ''; ?>";
+        shipping_address_line3 = "<?php echo !empty($loginuser['address3_line3']) ? $loginuser['address3_line3'] : ''; ?>";
+        shipping_address_line4 = "<?php echo !empty($loginuser['address3_line4']) ? $loginuser['address3_line4'] : ''; ?>";
+        shipping_address_city = "<?php echo !empty($loginuser['address3_city']) ? $loginuser['address3_city'] : ''; ?>";
+        shipping_address_postcode = "<?php echo !empty($loginuser['address3_postcode']) ? $loginuser['address3_postcode'] : ''; ?>";
+    }
+
+    var user_id = "<?php echo $loginuser['id']; ?>";
+
+    $.ajax({
+        type: 'POST',
+        url: '<?php echo base_url("index.php/orders/update_shipping"); ?>',
+        data: { 
+            shipping_address: shipping_address,
+            shipping_address_line2: shipping_address_line2,
+            shipping_address_line3: shipping_address_line3,
+            shipping_address_line4: shipping_address_line4,
+            shipping_address_city: shipping_address_city,
+            shipping_address_postcode: shipping_address_postcode,
+            user_id: user_id 
+        },
+        success: function(response) {
+            $('#myModal').modal('hide');
+            swal("Address Updated!", "You can now proceed to create the order.", "success").then((value) => {
+                confirmSubmission(event);
+            });
+        },
+        error: function(xhr, status, error) {
+            swal("Error", "Failed to update address. Please try again.", "error");
+        }
+    });
+}
+
+
+function confirmSubmission(event) {
+    event.preventDefault(); // Prevent the default form submission
+
+    // Find the closest form element to the clicked button
+    var form = document.getElementById('update_orders');
+
+    // Show SweetAlert confirmation dialog
+    swal({
+        title: "You are about to update this order?",
+        text: "An invoice will be sent to your Finance department",
+        icon: "warning",
+        buttons: {
+            cancel: {
+                text: "Cancel",
+                value: false,
+                visible: true,
+                className: "btn btn-default",
+                closeModal: true
+            },
+            confirm: {
+                text: "Create Order",
+                value: true,
+                visible: true,
+                className: "btn btn-success",
+                closeModal: true
+            }
+        }
+    }).then((confirmed) => {
+        if (confirmed) {
+            // Proceed with form submission
+            form.submit();
+        }
+    });
+}
   </script>

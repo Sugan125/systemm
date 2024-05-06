@@ -109,7 +109,17 @@ public function getProductData($id = null)
 
 		$order_date = $pre_order;
 	}
+	
+	date_default_timezone_set('UTC');
 
+	// Create a DateTime object for the current time
+	$current_date_time = new DateTime('now');
+	
+	// Add 8 hours to adjust to Singapore time (GMT+8)
+	$current_date_time->modify('+8 hours');
+	
+	// Format the datetime
+	$created_date = $current_date_time->format('Y-m-d H:i:s');
 
     $data = array(
         'bill_no' => $bill_no,
@@ -126,6 +136,7 @@ public function getProductData($id = null)
 		'feed_back' => $this->input->post('feed_back'),
         'paid_status' => 2,
         'user_id' => $user_id,
+		'created_date' => $created_date,
     );
 
 
@@ -150,8 +161,15 @@ public function getProductData($id = null)
         $gst_amt = !empty($this->input->post('gst_amount_value')[$x]) ? $this->input->post('gst_amount_value')[$x] : null;
 		$gst_percent = 9;
 
-		date_default_timezone_set('Asia/Singapore');
+		date_default_timezone_set('UTC');
+
+		// Create a DateTime object for the current time
 		$current_date_time = new DateTime('now');
+		
+		// Add 8 hours to adjust to Singapore time (GMT+8)
+		$current_date_time->modify('+8 hours');
+		
+		// Format the datetime
 		$created_date = $current_date_time->format('Y-m-d H:i:s');
 		
 		// Add 3 days to the current date and time
@@ -230,6 +248,17 @@ public function update($id)
 			$order_date = $pre_order;
 		}
 
+		date_default_timezone_set('UTC');
+
+		// Create a DateTime object for the current time
+		$current_date_time = new DateTime('now');
+			
+			// Add 8 hours to adjust to Singapore time (GMT+8)
+		$current_date_time->modify('+8 hours');
+			
+			// Format the datetime
+		$created_date = $current_date_time->format('Y-m-d H:i:s');
+
         // Data to update in the orders table
         $order_data = array(
             'gross_amount' => $this->input->post('gross_amount_value'),
@@ -243,6 +272,7 @@ public function update($id)
 			'delivery_date' => $order_date,
 			'feed_back' => $this->input->post('feed_back'),
             'user_id' => $user_id,
+			'created_date' => $created_date,
         );
 
         // Update order data in the orders table
@@ -268,6 +298,17 @@ public function update($id)
             $count_product = 0; // or any default value you prefer
         }
 
+		date_default_timezone_set('UTC');
+
+			// Create a DateTime object for the current time
+		$current_date_time = new DateTime('now');
+			
+			// Add 8 hours to adjust to Singapore time (GMT+8)
+		$current_date_time->modify('+8 hours');
+			
+			// Format the datetime
+		$created_date = $current_date_time->format('Y-m-d H:i:s');
+
         for ($x = 0; $x < $count_product; $x++) {
             $order_item_data = array(
                 'order_id' => $id,
@@ -281,7 +322,7 @@ public function update($id)
                 'service_charge' => $this->input->post('service_charge_itemval')[$x],
                 'gst_percent' => 9, // Assuming GST percent is fixed at 9%
                 'gst_amount' => $this->input->post('gst_amount_value')[$x],
-                'created_date' => date('Y-m-d H:i:s') // Assuming you want to update creation date
+                'created_date' => $created_date, // Assuming you want to update creation date
             );
             // Insert order item data into order_items table
             $this->db->insert('order_items', $order_item_data);
@@ -486,7 +527,17 @@ public function repeat_order($id)
 		$delivery_date_formatted = date('Y-m-d h:i:s a', $delivery_date);
 
 		
+		date_default_timezone_set('UTC');
 
+		// Create a DateTime object for the current time
+		$current_date_time = new DateTime('now');
+			
+			// Add 8 hours to adjust to Singapore time (GMT+8)
+		$current_date_time->modify('+8 hours');
+			
+			// Format the datetime
+		$created_date = $current_date_time->format('Y-m-d H:i:s');
+		
 		foreach($orderss as $row){
 		$data = array(
 			'bill_no' => $bill_no,
@@ -502,6 +553,7 @@ public function repeat_order($id)
 			'gst_percent' => $row['gst_percent'],
 			'paid_status' => 2,
 			'user_id' => $user_id,
+			'created_date' => $created_date,
 		);
 	
 		
@@ -527,9 +579,17 @@ public function repeat_order($id)
 			$gst_percent = $rows['gst_percent'];
 
 
-		date_default_timezone_set('Asia/Singapore');
-		$current_date_time = new DateTime('now');
-		$created_date = $current_date_time->format('Y-m-d H:i:s');
+			date_default_timezone_set('UTC');
+
+		// Create a DateTime object for the current time
+			$current_date_time = new DateTime('now');
+				
+				// Add 8 hours to adjust to Singapore time (GMT+8)
+			$current_date_time->modify('+8 hours');
+				
+				// Format the datetime
+			$created_date = $current_date_time->format('Y-m-d H:i:s');
+
         $items = array(
             'order_id' => $order_id,
             'category' => $category,
@@ -607,7 +667,17 @@ public function admin_create()
 			$order_date = $pre_order;
 		}
 
-	
+	date_default_timezone_set('UTC');
+
+		// Create a DateTime object for the current time
+	$current_date_time = new DateTime('now');
+		
+		// Add 8 hours to adjust to Singapore time (GMT+8)
+	$current_date_time->modify('+8 hours');
+		
+		// Format the datetime
+	$created_date = $current_date_time->format('Y-m-d H:i:s');
+
 	$bill_no = $current_year_month . sprintf('%04d', $invoice_counter);
 	$do_bill_no = 'DO'.$current_year_month . sprintf('%04d', $invoice_counter);
     $data = array(
@@ -624,6 +694,7 @@ public function admin_create()
         'gst_percent' => $this->input->post('gst_value'),
         'paid_status' => 2,
         'user_id' =>	$this->input->post('user_id'),
+		'created_date' => $created_date,
     );
 
    
@@ -645,8 +716,15 @@ public function admin_create()
         $gst_amt = !empty($this->input->post('gst_amount_value')[$x]) ? $this->input->post('gst_amount_value')[$x] : null;
 		$gst_percent = 9;
 
-		date_default_timezone_set('Asia/Singapore');
+		date_default_timezone_set('UTC');
+
+		// Create a DateTime object for the current time
 		$current_date_time = new DateTime('now');
+			
+			// Add 8 hours to adjust to Singapore time (GMT+8)
+		$current_date_time->modify('+8 hours');
+			
+			// Format the datetime
 		$created_date = $current_date_time->format('Y-m-d H:i:s');
 		
 		// Add 3 days to the current date and time
