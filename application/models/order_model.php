@@ -201,10 +201,9 @@ public function getProductData($id = null)
 	//}
 }
 
-
 public function update($id)
 {
-    if($id) {
+    if ($id) {
         // Retrieve user information from session
         $user = $this->session->userdata('normal_user');
         $user_id = $user->id;
@@ -232,19 +231,19 @@ public function update($id)
             redirect('orders/update/' . $id, 'refresh');
         }
 
-
-		$product = $this->input->post('product');
-		if (is_array($product)) {
-			$count_product = count($product);
-		} else {
-			// Handle the case when $product is not an array
-			$count_product = 0; // or any default value you prefer
-		}
+        // Delete existing order items
+        $this->db->where('order_id', $id);
+        $this->db->delete('order_items');
 
         // Re-insert updated order items
-		date_default_timezone_set('Asia/Singapore');
-		$current_date_time = new DateTime('now');
-		$created_date = $current_date_time->format('Y-m-d H:i:s');
+        $product = $this->input->post('product');
+        if (is_array($product)) {
+            $count_product = count($product);
+        } else {
+            // Handle the case when $product is not an array
+            $count_product = 0; // or any default value you prefer
+        }
+
         for ($x = 0; $x < $count_product; $x++) {
             $order_item_data = array(
                 'order_id' => $id,
@@ -253,20 +252,24 @@ public function update($id)
                 'qty' => $this->input->post('qty')[$x],
                 'rate' => $this->input->post('rate_value')[$x],
                 'amount' => $this->input->post('amount_value')[$x],
-                'slice_type' => $this->input->post('sliced')[$x],
-                'seed_type' => $this->input->post('seed')[$x],
-				'service_charge' =>$this->input->post('service_charge_itemval')[$x],
-				'gst_percent' => 9,
-				'gst_amount' => $this->input->post('gst_amount_value')[$x],
-				'created_date' => $created_date
+				'slice_type' => isset($this->input->post('sliced')[$x]) ? $this->input->post('sliced')[$x] : '',
+				'seed_type' => isset($this->input->post('seed')[$x]) ? $this->input->post('seed')[$x] : '',
+                'service_charge' => $this->input->post('service_charge_itemval')[$x],
+                'gst_percent' => 9, // Assuming GST percent is fixed at 9%
+                'gst_amount' => $this->input->post('gst_amount_value')[$x],
+                'created_date' => date('Y-m-d H:i:s') // Assuming you want to update creation date
             );
             // Insert order item data into order_items table
             $this->db->insert('order_items', $order_item_data);
         }
 
-        return array('update' => true);
+		
+
+        $this->session->set_flashdata('success', 'Order Updated Successfully');
+        redirect('orders', 'refresh');
     }
 }
+
 
 	public function getOrdertotal($order_id = null)
 	{

@@ -32,8 +32,8 @@
             
             <!-- /.box-header -->
             
-            <form role="form" action="<?php base_url('orders/update') ?>" method="post" class="form-horizontal" onsubmit="confirmSubmission(event)">
-            
+            <form role="form" action="<?php echo base_url('index.php/orders/update/'.$id); ?>" method="post" class="form-horizontal" onsubmit="confirmSubmission(event)">
+
                   
                 <div class="box-body pull-right">
 
@@ -73,7 +73,7 @@
                       
                         <tr id="row_<?php echo $x; ?>">
                         <td>
-                        <select class="form-control category_name" data-row-id="row_1" id="category_1" name="category[]" onmousedown="if(this.options.length>8){this.size=8;}" onchange='this.size=0;' onblur="this.size=0;" disabled>
+                        <select class="form-control category_name" data-row-id="row_1" id="category_1" name="category[]" onmousedown="if(this.options.length>8){this.size=8;}" onchange='this.size=0;' onblur="this.size=0;">
                                   <option value="">Choose</option>
                                   <?php foreach ($category as $key => $v): ?>
                                       <option value="<?php echo $v['prod_category'] ?>" <?php if ($val['category'] == $v['prod_category']) { echo "selected='selected'"; } ?>><?php echo $v['prod_category'] ?></option>
@@ -82,7 +82,7 @@
                           </td>
                           
                           <td>
-                            <select class="form-control select_group product" data-row-id="row_<?php echo $x; ?>" id="product_<?php echo $x; ?>" name="product[]" style="width:100%;" onchange="getProductData(<?php echo $x; ?>)" required disabled>
+                            <select class="form-control select_group product" data-row-id="row_<?php echo $x; ?>" id="product_<?php echo $x; ?>" name="product[]" style="width:100%;" onchange="getProductData(<?php echo $x; ?>)" required >
                                 <option value=""></option>
                                 <?php foreach ($products as $k => $v): ?>
                                   <option value="<?php echo $val['product_id'] ?>" <?php if($val['product_id'] == $v['id']) { echo "selected='selected'"; } ?> ><?php echo $v['product_name'] ?></option>
@@ -276,7 +276,12 @@
 
   $(document).ready(function() {
 
- 
+    $('.product').each(function() {
+        var row_id = $(this).data('row-id').replace('row_', ''); // Extract row id from data attribute
+        getTotal(row_id);
+        subAmount();
+    });
+
     $(document).on('change', '.sliced', function() {
     var row = $(this).closest('tr'); // Get the closest row
     var sliceSelected = row.find('.sliced').val(); // Get the value of .sliced within the same row
@@ -361,57 +366,58 @@ $(document).on('change', '.seed', function() {
   });
 
   $('#product_info_table').on('change', '.category_name', function() {
-      var currentRow = $(this).closest('tr'); // Store the reference to 'this'
-      var categoryId = $(this).val();
-      // AJAX request to fetch products based on the selected category
-      $.ajax({
-          url: '<?php echo base_url('index.php/orders/getProductsByCategory'); ?>',
-          method: 'POST',
-          data: { category_id: categoryId },
-          dataType: 'json',
-          success: function(response) {
-              var options = '<option value=""></option>';
-              $.each(response, function(index, product) {
+    var currentRow = $(this).closest('tr'); // Store the reference to 'this'
+    var categoryId = $(this).val();
+    // AJAX request to fetch products based on the selected category
+    $.ajax({
+        url: '<?php echo base_url('index.php/orders/getProductsByCategory'); ?>',
+        method: 'POST',
+        data: { category_id: categoryId },
+        dataType: 'json',
+        success: function(response) {
+            var options = '<option value=""></option>';
+            $.each(response, function(index, product) {
               if(product.min_order>1){
               var qty_pkt = ' ('+ product.min_order + 'pcs/pkt)';
               }
               else{
                 var qty_pkt = '';
               }
-                  options += '<option value="' + product.id + '">' + product.product_name + qty_pkt + '</option>';
-              });
-              // Update the corresponding product select element using the stored reference
-              currentRow.find('.product_' + currentRow.attr('id').split('_')[1]).html(options);
-          }
-      });
-  });
+              options += '<option value="' + product.id + '">' + product.product_id + '-' + product.product_name + qty_pkt +  '</option>';
+            });
+            // Update the corresponding product select element using the stored reference
+            currentRow.find('.product_' + currentRow.attr('id').split('_')[1]).html(options);
+        }
+    });
+});
 
-  $('.category_name').on('change', function() {
-    //  alert('t');
-      var categoryId = $(this).val();
-      // AJAX request to fetch products based on the selected category
-      $.ajax({
-          url: '<?php echo base_url('index.php/orders/getProductsByCategory'); ?>',
-          method: 'POST',
-          data: { category_id: categoryId },
-          dataType: 'json',
-          success: function(response) {
-              var options = '<option value=""></option>';
-              $.each(response, function(index, product) {
+
+$('.category_name').on('change', function() {
+  //  alert('t');
+    var categoryId = $(this).val();
+    // AJAX request to fetch products based on the selected category
+    $.ajax({
+        url: '<?php echo base_url('index.php/orders/getProductsByCategory'); ?>',
+        method: 'POST',
+        data: { category_id: categoryId },
+        dataType: 'json',
+        success: function(response) {
+            var options = '<option value=""></option>';
+            $.each(response, function(index, product) {
               if(product.min_order>1){
               var qty_pkt = ' ('+ product.min_order + 'pcs/pkt)';
               }
               else{
                 var qty_pkt = '';
               }
-                  options += '<option value="' + product.id + '">' + product.product_name + qty_pkt + '</option>';
-              });
-              $('.product_1').html(options);
-          }
-      });
-  });
+              options += '<option value="' + product.id + '">' + product.product_id + '-' + product.product_name + qty_pkt + '</option>';
+            });
+            $('.product_1').html(options);
+        }
+    });
+});
 
-  $('#product_info_table').on('change', '.seed', function() {
+$('#product_info_table').on('change', '.seed', function() {
   var row = $(this).closest('tr').attr('id').split('_')[1]; // Get the row number from the closest row
         getTotal(row); // Call getTotal function with row information
         subAmount();
@@ -421,38 +427,39 @@ $('#product_info_table').on('change', '.sliced', function() {
         getTotal(row); // Call getTotal function with row information
     subAmount();
 });
-  }); // /document
+}); // /document
 
-  $(document).on('input', 'input[name^="qty"]', function() {
-      var rowId = $(this).attr('id').split('_')[1];
-      getTotal(rowId);
-  });
+$(document).on('input', 'input[name^="qty"]', function() {
+    var rowId = $(this).attr('id').split('_')[1];
+    getTotal(rowId);
+});
 
-  $('#product_info_table').on('change', 'input[name^="qty"]', function() {
-      var rowId = $(this).attr('id').split('_')[1];
-      var minOrder = parseInt($('#minn').val()); // Get the stored min_order value
 
-      // If the input value is less than the min_order value, set it to min_order
-      if ($(this).val() < minOrder) {
-        $(this).val(minOrder);
-        swal({
-            title: "Minimum Order Quantity",
-            text: "You cannot order less than the minimum quantity.",
-            icon: "warning",
-            buttons: {
-              confirm: {
-                text: "OK",
-                value: true,
-                visible: true,
-                className: "btn btn-primary",
-                closeModal: true
-              }
+$('#product_info_table').on('change', 'input[name^="qty"]', function() {
+    var rowId = $(this).attr('id').split('_')[1];
+    var minOrder = parseInt($('#minn').val()); // Get the stored min_order value
+
+    // If the input value is less than the min_order value, set it to min_order
+    if ($(this).val() < minOrder) {
+      $(this).val(minOrder);
+      swal({
+          title: "Minimum Order Quantity",
+          text: "You cannot order less than the minimum quantity.",
+          icon: "warning",
+          buttons: {
+            confirm: {
+              text: "OK",
+              value: true,
+              visible: true,
+              className: "btn btn-primary",
+              closeModal: true
             }
-          });
-      }
+          }
+        });
+    }
 
-      getTotal(rowId);
-  });
+    getTotal(rowId);
+});
 
   function removeRow(tr_id)
     {
@@ -460,20 +467,20 @@ $('#product_info_table').on('change', '.sliced', function() {
       
     }
 
-    
-  function getTotal(row = null) {
+    function getTotal(row = null) {
     if (row) {
         var service_charge = 0;
         var sliceSelected = $("#sliced_" + row).val();
-        var seedSelected = $("#seed_" + row).val();
-
-        if (sliceSelected || seedSelected) {
+        
+      //  var seedSelected = $("#seed_" + row).val();
+      //if (sliceSelected || seedSelected) {
+        if (sliceSelected) {
             service_charge = 0.5 * Number($("#qty_" + row).val());
         }
 
         var total = Number($("#rate_value_" + row).val()) * Number($("#qty_" + row).val());
         var total_amt = total + service_charge;
-        var gst = total * 9 / 100;
+        var gst = total_amt * 9 / 100;
 
         $("#amount_" + row).val(total_amt.toFixed(2));
         $("#amount_value_" + row).val(total_amt.toFixed(2));
@@ -496,107 +503,139 @@ $('#product_info_table').on('change', '.sliced', function() {
 
 
 
-    function getProductData(row_id) {
-      var product_id = $("#product_" + row_id).val();
-      // alert(product_id);
-      
-          $.ajax({
-              url: '<?php echo base_url('index.php/orders/getProductValueById'); ?>',
-              type: 'post',
-              data: {
-                  product_id: product_id
-              },
-              dataType: 'json',
-              success: function(response) {
-                  // setting the rate value into the rate input field
-                  $("#rate_" + row_id).val(response.prod_rate);
-                  $("#rate_value_" + row_id).val(response.prod_rate);
+function getProductData(row_id) {
+    var product_id = $("#product_" + row_id).val();
+    if (product_id == "") {
+        $("#rate_" + row_id).val("");
+        $("#rate_value_" + row_id).val("");
+        $("#qty_" + row_id).val("");
+        $("#amount_" + row_id).val("");
+        $("#amount_value_" + row_id).val("");
+    } else {
+        $.ajax({
+            url: '<?php echo base_url('index.php/orders/getProductValueById'); ?>',
+            type: 'post',
+            data: {
+                product_id: product_id
+            },
+            dataType: 'json',
+            success: function(response) {
+                // setting the rate value into the rate input field
+                $("#rate_" + row_id).val(response.prod_rate);
+                $("#rate_value_" + row_id).val(response.prod_rate)
 
-                  // Check if min_order is not empty
-                  if (response.min_order !== undefined && response.min_order !== null && response.min_order !== "") {
+                if (response.add_on_slice == 0) {
+                    $("#sliced_" + row_id).prop('disabled', true);
+                    $('#msg').html('Slice not available for ' + response.product_id + '-' + response.product_name);
+                } else {
+                  $("#sliced_" + row_id).prop('disabled', false);
+                }
+
+                if (response.add_on_seed == 0) {
+                  $("#seed_" + row_id).prop('disabled', true);
+                    $('#msg').html('Seed not available for ' + response.product_id + '-' + response.product_name);
+                } else {
+                  $("#seed_" + row_id).prop('disabled', false);
+                }
+
+                if (response.add_on_seed == 0 && response.add_on_slice == 0) {
+                  $('#msg').html('Slice and Seed not available for ' + response.product_id + '-' + response.product_name);
+                }
+
+                // Check if min_order is not empty
+                if (response.min_order !== undefined && response.min_order !== null && response.min_order !== "") {
                       $('#minn').val(response.min_order);
                       $("#qty_" + row_id).val(response.min_order);
+                      $("#qty_" + row_id).prop('step', response.min_order);
                       $("#qty_value_" + row_id).val(response.min_order);
+                      var total = Number(response.prod_rate) * Number(response.min_order);
                   } else {
                       $("#qty_" + row_id).val(1);
                       $("#qty_value_" + row_id).val(1);
+                      var total = Number(response.prod_rate) * 1;
                   }
 
-                  var total = Number(response.prod_rate) * 1;
+                  if(response.min_order == 0){
+                      $("#qty_" + row_id).val(1);
+                      $("#qty_value_" + row_id).val(1);
+                      var total = Number(response.prod_rate) * 1;
+                  }
+                 
+
+                  // Include delivery charge in the total amount
+                  var deliveryCharge = parseFloat($("#delivery_charge").val()) || 0;
+                  total += deliveryCharge;
+
                   total = total.toFixed(2);
                   $("#amount_" + row_id).val(total);
                   $("#amount_value_" + row_id).val(total);
 
-                  subAmount();
-                  getTotal(row_id);
-              } // /success
-          }); // /ajax function to fetch the product data 
-      
-      $("#product_" + row_id).blur();
-  }
+
+                subAmount();
+                getTotal(row_id);
+            } // /success
+        }); // /ajax function to fetch the product data 
+    }
+    $("#product_" + row_id).blur();
+}
 
 
+function subAmount() {
+    var service_charge = 0; // Initialize additional charge to 0
 
-    function subAmount() {
-      var service_charge = 0; // Initialize additional charge to 0
+    // Check if either slice or seed is selected for any row
+    var tableProductLength = $("#product_info_table tbody tr").length;
 
-      // Check if either slice or seed is selected for any row
-      var tableProductLength = $("#product_info_table tbody tr").length;
+    for (var x = 1; x <= tableProductLength; x++) {
+        var sliceSelected = $("#sliced_" + x).val();
+      //  var seedSelected = $("#seed_" + x).val();
+        var qty = $("#qty_" + x).val();
 
-      for (var x = 1; x <= tableProductLength; x++) {
-          var sliceSelected = $("#sliced_" + x).val();
-          var seedSelected = $("#seed_" + x).val();
+       // if (sliceSelected || seedSelected) {
+        if (sliceSelected) {
+            // If either slice or seed is selected for this row, add additional charge
+            service_charge += 0.5*qty;
+        }
+    }
 
-          if (sliceSelected || seedSelected) {
-              // If either slice or seed is selected for this row, add additional charge
-              service_charge += 0.5;
-          }
-      }
+    // Calculate total amount
+    var totalSubAmount = 0;
 
-      // Calculate total amount
-      var totalSubAmount = 0;
+    for (var x = 1; x <= tableProductLength; x++) {
+        totalSubAmount += Number($("#amount_" + x).val());
+    }
 
-      for (var x = 1; x <= tableProductLength; x++) {
-          totalSubAmount += Number($("#amount_" + x).val());
-      }
+    // Calculate gross amount
+    var grossAmount = totalSubAmount;
 
-      // Calculate gross amount
-      var grossAmount = totalSubAmount + service_charge;
+    $("#gross_amount").val(grossAmount.toFixed(2));
+    $("#gross_amount_value").val(grossAmount.toFixed(2));
 
-      // Update the input fields
-      $("#gross_amount").val(grossAmount.toFixed(2));
-      $("#gross_amount_value").val(grossAmount.toFixed(2));
+    
+    var discount = $("#discount").val() || 0;
+    var netAmount = grossAmount;
 
-      // Calculate GST
-      var gstRate = 9; // Assuming a GST rate of 9%
-      var gstAmount = grossAmount * gstRate / 100;
+    var deliveryCharge = netAmount < 20 ? 20.00 : 0;
 
-      // Update GST fields
-      $("#gst").val(gstAmount.toFixed(2));
-      $("#gst_rate").val(gstAmount.toFixed(2));
+    var totall = grossAmount + deliveryCharge;
+    var gstRate = 9; 
+    var gstAmount = totall * gstRate / 100;
 
-      // Calculate net amount
-      var discount = $("#discount").val() || 0;
-      var netAmount = grossAmount + gstAmount - discount;
+    $("#gst").val(gstAmount.toFixed(2));
+    $("#gst_rate").val(gstAmount.toFixed(2));
 
-      // Apply delivery charge if net amount is less than 20
-      var deliveryCharge = netAmount < 20 ? 20.00 : 0;
+    $("#delivery_charge").val(deliveryCharge);
+    $("#delivery_charge_value").val(deliveryCharge);
 
-      // Update delivery charge field
-      $("#delivery_charge").val(deliveryCharge);
-      $("#delivery_charge_value").val(deliveryCharge);
+    $("#service_charge").val(service_charge.toFixed(2));
+    $("#service_charge_value").val(service_charge.toFixed(2));
 
-      // Update service charge field
-      $("#service_charge").val(service_charge.toFixed(2));
-      $("#service_charge_value").val(service_charge.toFixed(2));
+    var finalAmount = netAmount + gstAmount  + deliveryCharge;
 
-      // Calculate net amount including all charges
-      var finalAmount = netAmount + service_charge + deliveryCharge;
+    $("#net_amount").val(finalAmount.toFixed(2));
+    $("#net_amount_value").val(finalAmount.toFixed(2));
+}
 
-      // Update net amount fields
-      $("#net_amount").val(finalAmount.toFixed(2));
-      $("#net_amount_value").val(finalAmount.toFixed(2));
-  }
 
 
 

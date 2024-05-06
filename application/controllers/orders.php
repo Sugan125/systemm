@@ -154,7 +154,7 @@ class orders extends CI_Controller {
             $loginuser = $this->session->userdata('LoginSession');
             //var_dump($loginuser);
             $this->load->view('template/sidebar.php', array('user' => $user, 'users' => $users, 'data' => $data,'loginuser' => $loginuser));
-            $this->load->view('orders/edit.php', $data);
+			$this->load->view('orders/edit.php', array_merge($data, array('id' => $id)));
             $this->load->view('template/footer.php');
         }
 	}
