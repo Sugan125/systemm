@@ -107,8 +107,22 @@ class orders extends CI_Controller {
 
         	$update = $this->order_model->update($id);
 
-		
+			$bill_no = $update['bill_no'];
+
+			$email = $update['email'];
+
+			$order_id = $update['order_id'];
+
+			
+					
+			$this->download($order_id); 
+			
+			$this->send_invoice($bill_no,$email); 
+
+
 			$this->session->set_flashdata('success', 'Order Updated Successfully');
+
+
 			redirect('orders', 'refresh');
         }
         else {
@@ -247,7 +261,12 @@ class orders extends CI_Controller {
 
 
 	// Extracting datetime and discount values
-	$order_date = ($order_total_data['date_time'] !== null) ? date('d/m/Y', $order_total_data['date_time']) : '';
+	$order_date = '';
+	if ($order_total_data['date_time'] !== null && is_numeric($order_total_data['date_time'])) {
+		// Check if $order_total_data['date_time'] is a valid timestamp
+		$order_date = date('d/m/Y', $order_total_data['date_time']);
+	}
+
 	
     $this->load->view('template/header.php', $data);
     $user = $this->session->userdata('user_register');

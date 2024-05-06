@@ -207,6 +207,28 @@ public function update($id)
         // Retrieve user information from session
         $user = $this->session->userdata('normal_user');
         $user_id = $user->id;
+		$email = $user->email;
+
+		$date_time = strtotime(date('Y-m-d h:i:s a'));
+
+	$delivery_date = strtotime('+3 days', $date_time);
+
+
+	$delivery_date_formatted = date('Y-m-d h:i:s a', $delivery_date);
+
+
+	$pre_order = $this->input->post('pre_order_date');
+
+		if($pre_order == '0000-00-00' || $pre_order == null || $pre_order == ''){
+			
+			$order_date = $delivery_date_formatted;
+
+		}
+
+		else{
+
+			$order_date = $pre_order;
+		}
 
         // Data to update in the orders table
         $order_data = array(
@@ -218,6 +240,8 @@ public function update($id)
             'gst_amt' => $this->input->post('gst_rate'),
             'gst_percent' => $this->input->post('gst_value'),
             'paid_status' => 2, // Assuming 2 indicates confirmed/paid status
+			'delivery_date' => $order_date,
+			'feed_back' => $this->input->post('feed_back'),
             'user_id' => $user_id,
         );
 
@@ -265,8 +289,11 @@ public function update($id)
 
 		
 
-        $this->session->set_flashdata('success', 'Order Updated Successfully');
-        redirect('orders', 'refresh');
+        $query = $this->db->select('bill_no')->where('user_id', $user_id)->where('id', $id)->get('orders');
+		$result = $query->row_array();
+		$bill_no = $result['bill_no'];
+	
+		return array('id' => $id, 'order_id' => $id, 'bill_no' => $bill_no, 'email' => $email);
     }
 }
 

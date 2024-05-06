@@ -91,7 +91,7 @@
                             </td>
 
                               <td>    
-                              <select class="form-control sliced" id="sliced_1" name="sliced[]" onmousedown="if(this.options.length>8){this.size=8;}" onchange='slicechange()' onblur="this.size=0;">
+                              <select class="form-control sliced" id="sliced_<?php echo $x; ?>" name="sliced[]" onmousedown="if(this.options.length>8){this.size=8;}" onchange='slicechange()' onblur="this.size=0;">
                                   <option value="">Choose</option> <!-- Add a default "Choose" option -->
                                   <option value="12mm" <?php if ($val['slice_type'] == "12mm") { echo "selected='selected'"; } ?>>12mm</option> <!-- Set selected if slice_type is 12mm -->
                                   <option value="20mm" <?php if ($val['slice_type'] == "20mm") { echo "selected='selected'"; } ?>>20mm</option> <!-- Set selected if slice_type is 20mm -->
@@ -99,7 +99,7 @@
 
                               </td>
                               <td>    
-                              <select class="form-control seed" id="seed_1" name="seed[]" onmousedown="if(this.options.length>8){this.size=8;}" onchange='seedchange()' onblur="this.size=0;">
+                              <select class="form-control seed" id="seed_<?php echo $x; ?>" name="seed[]" onmousedown="if(this.options.length>8){this.size=8;}" onchange='seedchange()' onblur="this.size=0;">
                                   <option value="">Choose</option> <!-- Add a default "Choose" option -->
                                   <option value="white" <?php if ($val['seed_type'] == "white") { echo "selected='selected'"; } ?>>White</option> <!-- Set selected if seed_type is white -->
                                   <option value="black" <?php if ($val['seed_type'] == "black") { echo "selected='selected'"; } ?>>Black</option> <!-- Set selected if seed_type is black -->
@@ -114,20 +114,20 @@
                               <input type="hidden" name="rate_value[]" id="rate_value_<?php echo $x; ?>" class="form-control" value="<?php echo $val['rate'] ?>" autocomplete="off">
                             </td>
                             <td hidden>
-                            <input type="text" name="gst_percent[]" id="gst_percent_1" class="form-control" disabled autocomplete="off">
-                            <input type="hidden" name="gst_percent_val[]" id="gst_percent_val_1" class="form-control" autocomplete="off">
+                            <input type="text" name="gst_percent[]" id="gst_percent_<?php echo $x; ?>" class="form-control" disabled autocomplete="off">
+                            <input type="hidden" name="gst_percent_val[]" id="gst_percent_val_<?php echo $x; ?>" class="form-control" autocomplete="off">
                         </td>
                         <td>
-                            <input type="text" name="service_charge_lineitem[]" id="service_charge_lineitem_1" class="form-control" disabled autocomplete="off">
-                            <input type="hidden" name="service_charge_itemval[]" id="service_charge_itemval_1" class="form-control" autocomplete="off">
+                            <input type="text" name="service_charge_lineitem[]" id="service_charge_lineitem_<?php echo $x; ?>" class="form-control" disabled autocomplete="off">
+                            <input type="hidden" name="service_charge_itemval[]" id="service_charge_itemval_<?php echo $x; ?>" class="form-control" autocomplete="off">
                         </td>
                         <td>
-                            <input type="text" name="amount[]" id="amount_1" class="form-control" disabled autocomplete="off">
-                            <input type="hidden" name="amount_value[]" id="amount_value_1" class="form-control" autocomplete="off">
+                            <input type="text" name="amount[]" id="amount_<?php echo $x; ?>" class="form-control" disabled autocomplete="off">
+                            <input type="hidden" name="amount_value[]" id="amount_value_<?php echo $x; ?>" class="form-control" autocomplete="off">
                         </td>
                         <td hidden>
-                            <input type="text" name="gst_amount[]" id="gst_amount_1" class="form-control" disabled autocomplete="off">
-                            <input type="hidden" name="gst_amount_value[]" id="gst_amount_value_1" class="form-control" autocomplete="off">
+                            <input type="text" name="gst_amount[]" id="gst_amount_<?php echo $x; ?>" class="form-control" disabled autocomplete="off">
+                            <input type="hidden" name="gst_amount_value[]" id="gst_amount_value_<?php echo $x; ?>" class="form-control" autocomplete="off">
                         </td>
                             <td><button type="button" class="btn btn-danger" onclick="removeRow('<?php echo $x; ?>')"><i class="fa fa-close"></i></button></td>
                         </tr>
@@ -138,11 +138,22 @@
                   </table>
 
                   <br /> <br/>
-
-                  <div class="col-sm-12 col-md-12 col-xs-12 pull pull-right">
-                  <div class="col-sm-6 col-md-6"></div>
-                  <div class="col-sm-6 col-md-6">
-                  <?php foreach ($order_total as $key => $order_data): ?>
+                  <span id="msg" class="msg" style="color: red;"></span>
+                  <?php foreach ($order_total as $key => $order_data):
+                    ?>
+                  <div class="col-sm-12 col-md-12 col-xs-12">
+                  <div class="form-group">
+                  <div class="col-sm-4 col-md-4">
+                  <label for="feed_back" class="control-label">Feedback</label>
+                  <textarea class="form-control" id="feed_back" name="feed_back" autocomplete="off"><?php echo $order_data['feed_back']; ?></textarea>
+                  <br>
+                  <label>Pre Order Date (If required)</label>
+                  <input type="date" name="pre_order_date" id="pre_order" class="form-control" value="<?php echo $order_data['delivery_date'] ?>"  autocomplete="off">
+                  </div>
+                  </div>
+                  <div class="col-sm-7 col-md-7 col-xs-7 pull pull-right">
+                
+                  
                     <div class="form-group" style="margin-bottom:30px;">
                       <div class="col-sm-4">
                       <label for="gross_amount" class="control-label">Total</label></div>
@@ -208,9 +219,7 @@
                 <?php endforeach; ?>
               </form>
             <!-- /.box-body -->
-          </div>
-          <!-- /.box -->
-        </div>
+          
         <!-- col-md-12 -->
       </div>
       <!-- /.row -->
@@ -222,6 +231,27 @@
   <!-- /.content-wrapper -->
 
   <script type="text/javascript">
+    var today = new Date();
+
+// Calculate the date 7 days from now
+var sevenDaysFromNow = new Date(today);
+sevenDaysFromNow.setDate(sevenDaysFromNow.getDate() + 7);
+
+// Set the minimum date for the pre-order input field
+var preOrderInput = document.getElementById('pre_order');
+preOrderInput.min = today.toISOString().split('T')[0];
+preOrderInput.max = sevenDaysFromNow.toISOString().split('T')[0];
+
+// Disable input field after the 7-day period
+preOrderInput.addEventListener('input', function() {
+    var selectedDate = new Date(preOrderInput.value);
+    if (selectedDate > sevenDaysFromNow) {
+        preOrderInput.value = ''; // Clear input if date is beyond the allowed range
+        alert('You can only select a date within the next 7 days.');
+    }
+});
+
+
     $(document).on('change', '.category_name', function() {
       var rowId = $(this).data('row-id');
       var categoryDropdown = document.getElementById('category_' + rowId);
@@ -246,7 +276,7 @@
 
       // Show SweetAlert confirmation dialog
       swal({
-          title: "You are about to confirm this order?",
+          title: "You are about to update this order?",
           text: "An invoice will be sent to your Finance department",
           icon: "warning",
           buttons: {
@@ -471,13 +501,17 @@ $('#product_info_table').on('change', 'input[name^="qty"]', function() {
     if (row) {
         var service_charge = 0;
         var sliceSelected = $("#sliced_" + row).val();
-        
+
+      //  alert(sliceSelected);
+
       //  var seedSelected = $("#seed_" + row).val();
       //if (sliceSelected || seedSelected) {
         if (sliceSelected) {
             service_charge = 0.5 * Number($("#qty_" + row).val());
         }
 
+      //  alert(service_charge);
+        
         var total = Number($("#rate_value_" + row).val()) * Number($("#qty_" + row).val());
         var total_amt = total + service_charge;
         var gst = total_amt * 9 / 100;
