@@ -1,35 +1,24 @@
 
 <head>
-  <style>
+<style>
     .msg{
       margin-left: 440px; 
     }
    /* Media query for screens smaller than 768px (typical mobile devices) */
 @media (max-width: 767px) {
-    /* Adjust the width of inputs for mobile view */
-    th,
-    td {
-        width: 100%!important; /* Set width to 100% for full width */
-        display: block; /* Display inputs and headers as block elements */
+    .table thead th {
+      white-space: nowrap;
     }
-
-    /* Optionally, adjust spacing between inputs and headers */
-    th,
-    td {
-        margin-bottom: 10px; /* Add margin for spacing */
+    .form-control {
+      white-space: nowrap;
+      width: inherit;
     }
-
-    .create_order{
-      margin-top:20px;
+    .table {
+      scrollbar-color: red orange;
+      scrollbar-width: thin;
     }
-
-    .msg{
-      margin-left: 0px; 
-    }
-}
-
-
-    </style>
+  }
+</style> 
 </head>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -83,15 +72,15 @@
                 <table class="table table-bordered table-hover table-responsive equal-width-table" id="product_info_table">
                   <thead>
                     <tr>
-                      <th style="width:15%">Category</th>
-                      <th style="width:30%">Product / Packing Size</th>
-                      <th style="width:10%">Pre-Slice</th>
-                      <th style="width:10%">Seed</th>
-                      <th style="width:10%">Qty (Pkt)</th>
-                      <th style="width:10%">Rate</th>
-                      <th style="width:5%">Service_charge</th>
-                      <th style="width:10%">Amount</th>
-                      <th style="width:10%"><button type="button" id="add_row" class="btn btn-info"><i class="fa fa-plus"></i></button></th>
+                      <th>Category</th>
+                      <th>Product / Packing Size</th>
+                      <th>Pre-Slice</th>
+                      <th>Seed</th>
+                      <th>Qty (Pkt)</th>
+                      <th>Rate</th>
+                      <th>Service_charge</th>
+                      <th>Amount</th>
+                      <th><button type="button" id="add_row" class="btn btn-info"><i class="fa fa-plus"></i></button></th>
                     </tr>
                   </thead>
 

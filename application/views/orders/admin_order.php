@@ -1,4 +1,25 @@
 
+<head>
+<style>
+    .msg{
+      margin-left: 440px; 
+    }
+   /* Media query for screens smaller than 768px (typical mobile devices) */
+@media (max-width: 767px) {
+    .table thead th {
+      white-space: nowrap;
+    }
+    .form-control {
+      white-space: nowrap;
+      width: inherit;
+    }
+    .table {
+      scrollbar-color: red orange;
+      scrollbar-width: thin;
+    }
+  }
+</style> 
+</head>
 
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -52,7 +73,7 @@
 
 
                
-                <table class="table table-bordered table-hover" id="product_info_table">
+                <table class="table table-bordered table-hover table-responsive equal-width-table" id="product_info_table">
                   <thead>
                     <tr>
                       <th style="width:15%">Category</th>
