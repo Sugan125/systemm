@@ -32,9 +32,8 @@
             
             <!-- /.box-header -->
             
-            <form role="form" id="update_orders"  action="<?php echo base_url('index.php/orders/update/'.$id); ?>" method="post" class="form-horizontal" onsubmit="confirmSubmission(event)">
-
-                  
+            <form role="form" id="update_orders" action="<?php echo base_url('index.php/orders/update/'.$id.'/'.$user_id); ?>" method="post" class="form-horizontal" onsubmit="confirmSubmission(event)">
+               <input type="hidden" name="user_id" value="<?php echo $user_id; ?>">
                 <div class="box-body pull-right">
 
                   <?php echo validation_errors(); ?>
@@ -226,7 +225,7 @@
                   ?>
 
                   <?php echo  $modal_id; ?><button type="submit" class="btn btn-success">Save Changes</button><?php echo  $end_id; ?>
-                  <a href="<?php echo base_url('index.php/orders/') ?>" class="btn btn-danger">Back</a>
+                  <a href="<?php echo base_url('index.php/orders/manage_orders') ?>" class="btn btn-danger">Back</a>
                 </div>
                 <?php endforeach; ?>
               </form>

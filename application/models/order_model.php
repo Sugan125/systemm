@@ -219,12 +219,12 @@ public function getProductData($id = null)
 	//}
 }
 
-public function update($id)
+public function update($id,$user_id)
 {
     if ($id) {
         // Retrieve user information from session
         $user = $this->session->userdata('normal_user');
-        $user_id = $user->id;
+        $user_id = $user_id;
 		$email = $user->email;
 
 		$date_time = strtotime(date('Y-m-d h:i:s a'));

@@ -103,7 +103,8 @@
                                                     href="<?php echo base_url('index.php/orders/printadmin/'.$val->id); ?>"
                                                     class="btn-sm btn btn-warning"><i
                                                         class="fas fa-print"></i></a>
-                                               
+                                                        <a href="<?php echo base_url('index.php/orders/update/'.$val->id.'/'.$val->user_id); ?>" class="btn-sm btn btn-info"><i class="fas fa-edit"></i></a>
+
                                                 <a href="<?php echo base_url('index.php/orders/deleteorder/'.$val->id); ?>"
                                                     class="btn-sm btn btn-danger delete-order">
                                                     <i class="fas fa-trash"></i>

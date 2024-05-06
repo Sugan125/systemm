@@ -95,7 +95,7 @@ class orders extends CI_Controller {
 			echo json_encode($product_data);
 		}
 	}
-    public function update($id)
+    public function update($id, $user_id)
 	{
 
 		$this->data['page_title'] = 'Update Order';
@@ -105,7 +105,7 @@ class orders extends CI_Controller {
 
         if ($this->form_validation->run() == TRUE) {
 
-        	$update = $this->order_model->update($id);
+        	$update = $this->order_model->update($id,$user_id);
 
 			$bill_no = $update['bill_no'];
 
@@ -123,15 +123,15 @@ class orders extends CI_Controller {
 			$this->session->set_flashdata('success', 'Order Updated Successfully');
 
 
-			redirect('orders', 'refresh');
+			redirect('orders/manage_orders', 'refresh');
         }
         else {
 
-        	$loginuser = $this->session->userdata('LoginSession');
+        	// $loginuser = $this->session->userdata('LoginSession');
 	
-			$data['user_id'] = $loginuser['id'];
+			// $data['user_id'] = $loginuser['id'];
 
-			$user_id = $data['user_id'];
+			// $user_id = $data['user_id'];
 
 			$orders_data = $this->order_model->getOrdersDatas($id,$user_id);
 
@@ -168,7 +168,7 @@ class orders extends CI_Controller {
             $loginuser = $this->session->userdata('LoginSession');
             //var_dump($loginuser);
             $this->load->view('template/sidebar.php', array('user' => $user, 'users' => $users, 'data' => $data,'loginuser' => $loginuser));
-			$this->load->view('orders/edit.php', array_merge($data, array('id' => $id)));
+			$this->load->view('orders/edit.php', array_merge($data, array('id' => $id,'user_id'=>$user_id)));
             $this->load->view('template/footer.php');
         }
 	}

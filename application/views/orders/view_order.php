@@ -92,7 +92,7 @@
             <td><?php echo $val->gst_amt; ?></td>
             <td><?php echo $val->net_amount; ?></td>
             <td><a target="__blank" href="<?php echo base_url('index.php/orders/printDiv/'.$val->id); ?>" class="btn-sm btn btn-warning"><i class="fas fa-print"></i></a>
-            <a href="<?php echo base_url('index.php/orders/update/'.$val->id); ?>" class="btn-sm btn btn-info"><i class="fas fa-edit"></i></a>
+            <!-- <a href="//echo base_url('index.php/orders/update/'.$val->id); ?>" class="btn-sm btn btn-info"><i class="fas fa-edit"></i></a> -->
             <?php
                     $user = $this->session->userdata('normal_user');
                     $user_id = $user->id;
