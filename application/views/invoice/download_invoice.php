@@ -98,7 +98,8 @@
       <div class="box-sizing: border-box; width: 50%; total-amount" style="padding: 20px; float: right; border: #e2e2e2 solid 1px;">
         <?php foreach($order_total as $val => $order): ?>
           <div class="box-sizing: border-box; width: 50%; total-amount" style="text-align: right;">
-            <b style="font-weight: bold;">Total: </b><?php echo isset($order['gross_amount']) ? $order['gross_amount'] : 0; ?><br>
+            <b style="font-weight: bold;">Delivery Charge: </b><?php echo isset($order['delivery_charge']) ? $order['delivery_charge'] . ".00" : "0.00"; ?><br>
+            <b style="font-weight: bold;">Total: </b><?php echo isset($order['gross_amount']) ? number_format($order['gross_amount'] + $order['delivery_charge'], 2) : "0.00"; ?><br>
             <b style="font-weight: bold;">GST: </b><?php echo isset($order['gst_amt']) ? $order['gst_amt'] : 0; ?><br>
             <!-- <b style="font-weight: bold;">Service Charge Rate: </b> <?php echo isset($order['service_charge_rate']) ? $order['service_charge_rate'] : 0; ?><br> -->
             <!-- <?php if($order['discount']>0) { ?> -->

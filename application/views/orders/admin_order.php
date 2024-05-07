@@ -264,7 +264,34 @@ preOrderInput.addEventListener('input', function() {
         alert('You can only select a date within the next 7 days.');
     }
 });
+
 function confirmSubmission(event) {
+    event.preventDefault(); // Prevent the default form submission
+
+    // Get the delivery charge value
+    var deliveryCharge = parseFloat(document.getElementById('delivery_charge').value);
+
+    // Check if the delivery charge is below 80
+    if (deliveryCharge === 20) {
+        swal({
+            title: "Confirmation",
+            text: "$20 delivery fee will be imposed.",
+            icon: "info",
+            buttons: ["Cancel", "Continue"],
+        }).then((willContinue) => {
+            if (willContinue) {
+                // Proceed with the rest of the confirmation
+                confirmOrder();
+            }
+        });
+    } else {
+        // If delivery charge is not below 80, proceed with the existing confirmation
+        confirmOrder();
+    }
+}
+
+
+function confirmOrder() {
     event.preventDefault(); // Prevent the default form submission
 
     // Find the closest form element to the clicked button
@@ -635,7 +662,7 @@ function removeRow(tr_id)
     var discount = $("#discount").val() || 0;
     var netAmount = grossAmount;
 
-    var deliveryCharge = netAmount < 20 ? 20.00 : 0;
+    var deliveryCharge = netAmount < 80 ? 20.00 : 0;
 
     var totall = grossAmount + deliveryCharge;
     var gstRate = 9; 

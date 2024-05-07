@@ -679,7 +679,7 @@ function subAmount() {
     var discount = $("#discount").val() || 0;
     var netAmount = grossAmount;
 
-    var deliveryCharge = netAmount < 20 ? 20.00 : 0;
+    var deliveryCharge = netAmount < 80 ? 20.00 : 0;
 
     var totall = grossAmount + deliveryCharge;
     var gstRate = 9; 

@@ -90,8 +90,12 @@
           ?>
   <table class="col-xs-12 total-amount" style="margin-left: auto;">
   <tr>
+    <th>Delivery Charge:</th>
+    <td><?php echo isset($order['delivery_charge']) ? $order['delivery_charge'] . ".00" : "0.00"; ?></td>
+  </tr>
+  <tr>
     <th>Total:</th>
-    <td><?php echo isset($order['gross_amount']) ? $order['gross_amount'] : 0; ?></td>
+    <td><?php echo isset($order['gross_amount']) ? number_format($order['gross_amount'] + $order['delivery_charge'], 2) : "0.00"; ?></td>
   </tr>
   <tr>
     <th>GST:</th>
