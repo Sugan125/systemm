@@ -16,7 +16,25 @@
     .table {
       scrollbar-color: red orange;
       scrollbar-width: thin;
+      overflow: auto;
     }
+    .table::-webkit-scrollbar {
+    -webkit-appearance: none;
+}
+
+.table::-webkit-scrollbar:vertical {
+    width: 11px;
+}
+
+.table::-webkit-scrollbar:horizontal {
+    height: 11px;
+}
+
+.table::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    border: 2px solid white; /* should match background, can't be transparent */
+    background-color: rgba(0, 0, 0, .5);
+}
   }
 </style> 
 </head>
@@ -228,7 +246,7 @@
               </div>
               <!-- /.box-body -->
 
-              <div class="box-footer col-sm-12 col-md-12 col-xs-12 pull pull-left" style="margin-bottom:30px;">
+              <div class="box-footer col-sm-12 col-md-12 col-xs-12 pull pull-left" style="margin-bottom:30px;padding: 50px;">
                
                <!-- <input type="hidden" name="vat_charge_rate" value="<?php //echo $company_data['vat_charge_value'] ?>" autocomplete="off"> -->
                <?php
