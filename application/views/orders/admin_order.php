@@ -35,6 +35,10 @@
     border: 2px solid white; /* should match background, can't be transparent */
     background-color: rgba(0, 0, 0, .5);
 }
+.dropdown {
+    overflow: scroll !important;
+    width: 100%;
+}
   }
 </style> 
 </head>
