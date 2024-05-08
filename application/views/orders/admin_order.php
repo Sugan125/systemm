@@ -16,7 +16,29 @@
     .table {
       scrollbar-color: red orange;
       scrollbar-width: thin;
+      overflow: auto;
     }
+    .table::-webkit-scrollbar {
+    -webkit-appearance: none;
+}
+
+.table::-webkit-scrollbar:vertical {
+    width: 11px;
+}
+
+.table::-webkit-scrollbar:horizontal {
+    height: 11px;
+}
+
+.table::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    border: 2px solid white; /* should match background, can't be transparent */
+    background-color: rgba(0, 0, 0, .5);
+}
+.dropdown {
+    overflow: scroll !important;
+    width: 100%;
+}
   }
 </style> 
 </head>
@@ -151,7 +173,7 @@
 
                 <div class="col-sm-12 col-md-12 col-xs-12 pull pull-right">
                 <div class="col-sm-6 col-md-6">
-                <div class="input-group mb-3" id="input_size" style="width: 50%!important;">
+                <div class="input-group mb-3" id="input_size">
                     <div class="input-group-prepend">
                         <span class="input-group-text">@</span>
                     </div>
@@ -224,7 +246,7 @@
               </div>
               <!-- /.box-body -->
 
-              <div class="box-footer col-sm-12 col-md-12 col-xs-12 pull pull-left" style="margin-bottom:30px;">
+              <div class="box-footer col-sm-12 col-md-12 col-xs-12 pull pull-left" style="margin-bottom:30px;padding: 50px;">
             
                 <button type="submit" class="btn btn-success">Create Order</button>
                 <a href="<?php echo base_url('index.php/orders/') ?>" class="btn btn-danger">Back</a>
