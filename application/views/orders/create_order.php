@@ -818,7 +818,7 @@ function confirmSubmission(event) {
     if (deliveryCharge === 20) {
         swal({
             title: "Confirmation",
-            text: "$20 delivery fee will be imposed.",
+            text: "Under $80 MOQ, a $20 fee will be imposed.",
             icon: "info",
             buttons: ["Cancel", "Continue"],
         }).then((willContinue) => {
