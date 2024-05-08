@@ -33,7 +33,7 @@
                                   <!-- <b>Bill ID: </b> <br> -->
               <b>Your Ref: </b> 123<br>
               <b>D/O No.: </b>  <?php echo $order_data['do_bill_no']; ?><br>
-              <b>Term: </b> C.O.D<br>
+              <b>Term: </b><?php echo $order_data['payment_terms'] ? $order_data['payment_terms'] : 'C.O.D'; ?><br>
             <?php endforeach; ?>
           </div>
         </div>
@@ -112,7 +112,9 @@
       </div>
       <div style="padding: 0;">
       
-      <p><b>Memo: Open at 1.30pm</b></p>
+      <?php foreach($order_total as $val => $order_data): ?>
+       <p><b><?php echo "Memo:".$order_data['driver_memo']; ?></b></p>
+       <?php endforeach; ?>
           <p>We appreciate your business. For guaranteed freshness, please consume within 8 hours upon recieving of baked goods.</p>
       </div> 
       <!-- <table style="width: 100%; border-collapse: collapse;">

@@ -107,6 +107,18 @@ class Logincontroller extends CI_Controller {
 					'address3_city' => $status->address3_city,
 					'address3_postcode' => $status->address3_postcode,
 
+
+					'address4' => $status->address4,
+					'address4_line2' => $status->address4_line2,
+					'address4_line3' => $status->address4_line3,
+					'address4_line4' => $status->address4_line4,
+					'address4_city' => $status->address4_city,
+					'address4_postcode' => $status->address4_postcode,
+
+					'payment_terms' => $status->payment_terms,
+					'driver_memo' => $status->driver_memo,
+					'packer_memo' => $status->packer_memo,
+
                     'contact' => $status->contact,
 					'status' => $status->status,
                     'profile_img' => $status->profile_img,

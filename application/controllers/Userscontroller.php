@@ -171,6 +171,17 @@ class Userscontroller extends CI_Controller {
        'address3_line4'=>$this->input->post('address3_line4'),
        'address3_city'=>$this->input->post('address3_city'),
        'address3_postcode'=>$this->input->post('address3_postcode'),
+       
+       'address4'=>$this->input->post('address4'),
+       'address4_line2'=>$this->input->post('address4_line2'),
+       'address4_line3'=>$this->input->post('address4_line3'),
+       'address4_line4'=>$this->input->post('address4_line4'),
+       'address4_city'=>$this->input->post('address4_city'),
+       'address4_postcode'=>$this->input->post('address4_postcode'),
+
+       'driver_memo' => $this->input->post('driver_memo'),
+       'packer_memo' => $this->input->post('packer_memo'),
+       'payment_terms'=> $this->input->post('payment_terms'),
 
        'status'=>$this->input->post('status'),
        'contact'=>$this->input->post('contact'),
@@ -236,6 +247,17 @@ class Userscontroller extends CI_Controller {
         'address3_line4'=>$this->input->post('address3_line4'),
         'address3_city'=>$this->input->post('address3_city'),
         'address3_postcode'=>$this->input->post('address3_postcode'),
+
+        'address4'=>$this->input->post('address4'),
+        'address4_line2'=>$this->input->post('address4_line2'),
+        'address4_line3'=>$this->input->post('address4_line3'),
+        'address4_line4'=>$this->input->post('address4_line4'),
+        'address4_city'=>$this->input->post('address4_city'),
+        'address4_postcode'=>$this->input->post('address4_postcode'),
+
+        'driver_memo' => $this->input->post('driver_memo'),
+        'packer_memo' => $this->input->post('packer_memo'),
+        'payment_terms'=> $this->input->post('payment_terms'),
 
         'status'=>$this->input->post('status'),
         'contact'=>$this->input->post('contact'),

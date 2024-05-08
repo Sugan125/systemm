@@ -472,7 +472,7 @@ public function update($id,$user_id)
 public function getpackingorder($schedule_date) {
 	$date = $schedule_date;
 	$formatted_schedule_date = date("d/m/y", strtotime($date));
-	$sql = "SELECT ord.*, orrr.*, uss.name, uss.company_name as company_name,uss.brand_name as brand_name,prod.product_id as prod_id,prod.product_name as product_name 
+	$sql = "SELECT ord.*, orrr.*, uss.name, uss.company_name as company_name,uss.brand_name as brand_name,uss.packer_memo,prod.product_id as prod_id,prod.product_name as product_name 
 	FROM orders ord 
 	JOIN order_items orrr ON ord.id = orrr.order_id 
 	JOIN user_register uss ON ord.user_id = uss.id 

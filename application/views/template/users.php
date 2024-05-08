@@ -58,25 +58,21 @@
         </div>
         <?php if( (isset($user->image)) || $loginuser['roles'] == 'Admin' || $loginuser['roles'] == 'Owner' || ((in_array('Admin', $loginuser['role']) && in_array('User', $loginuser['role'])))){ ?>
         <div class="col-sm-12 col-md-12 text-right">
-                            <form action="<?= base_url('index.php/Userscontroller/importfile') ?>" method="post" enctype="multipart/form-data">
-                                <label for="uploadFile" class="btn btn-primary btn-sm" style="margin-bottom: 0px;width: 45%;background: none;border: none;color: black;">
-                                    Import <input type="file" id="uploadFile" name="uploadFile">
-                                </label>
-                                <input type="submit" name="submit" class="btn btn-primary btn-sm" value="Upload" />
-                            </form>
-                        </div>
-                        <?php } ?>
+        <form action="<?= base_url('index.php/Userscontroller/importfile') ?>" method="post" enctype="multipart/form-data">
+            <label for="uploadFile" class="btn btn-primary btn-sm" style="margin-bottom: 0px;width: 45%;background: none;border: none;color: black;">
+                Import <input type="file" id="uploadFile" name="uploadFile">
+            </label>
+            <input type="submit" name="submit" class="btn btn-primary btn-sm" value="Upload" />
+        </form>
+        </div>
+      <?php } ?>
     </div>
 </div>
 
 
-        <?php if( (isset($user->image)) || $loginuser['roles'] == 'Admin' || $loginuser['roles'] == 'Owner' || ((in_array('Admin', $loginuser['role']) && in_array('User', $loginuser['role'])))){ ?>
-        <!-- /.card-header -->
-        <div class="card-body">
-       
-       
-
-
+<?php if( (isset($user->image)) || $loginuser['roles'] == 'Admin' || $loginuser['roles'] == 'Owner' || ((in_array('Admin', $loginuser['role']) && in_array('User', $loginuser['role'])))){ ?>
+<!-- /.card-header -->
+<div class="card-body">
 <table id="manageTable" class="table table-bordered table-responsive table-hover table-striped">
                            
   <thead>
@@ -89,8 +85,12 @@
       <th>Shipping Address</th>
       <th>Shipping Address2</th>
       <th>Shipping Address3</th>
+      <th>Shipping Address4</th>
       <th>Mobile Number</th>
       <th>Role</th>
+      <th>Payment Terms</th>
+      <th>Driver Memo</th>
+      <th>Packer Memo</th>
       <th>Restrict time</th>
       <th>Status</th>
       <!-- <th>File Upload</th>
@@ -102,7 +102,7 @@
 
   
     <?php foreach ($userss as $row){
-    //  print_r($row);
+   //  print_r($row);
       if($row->role == 'Owner'){ 
         $rolee = 'Manager';
       }
@@ -129,8 +129,12 @@
         <td><?= ($row->delivery_address ? $row->delivery_address . ', ' : '') . ($row->delivery_address_line2 ? $row->delivery_address_line2 . ', ' : '') . ($row->delivery_address_line3 ? $row->delivery_address_line3 . ', ' : '') . ($row->delivery_address_line4 ? $row->delivery_address_line4 . ', ' : '') . ($row->delivery_address_city ? $row->delivery_address_city . ', ' : '') . ($row->delivery_address_postcode ? $row->delivery_address_postcode : ''); ?></td>
         <td><?= ($row->address2 ? $row->address2 . ', ' : '') . ($row->address2_line2 ? $row->address2_line2 . ', ' : '') . ($row->address2_line3 ? $row->address2_line3 . ', ' : '') . ($row->address2_line4 ? $row->address2_line4 . ', ' : '') . ($row->address2_city ? $row->address2_city . ', ' : '') . ($row->address2_postcode ? $row->address2_postcode : ''); ?></td>
         <td><?= ($row->address3 ? $row->address3 . ', ' : '') . ($row->address3_line2 ? $row->address3_line2 . ', ' : '') . ($row->address3_line3 ? $row->address3_line3 . ', ' : '') . ($row->address3_line4 ? $row->address3_line4 . ', ' : '') . ($row->address3_city ? $row->address3_city . ', ' : '') . ($row->address3_postcode ? $row->address3_postcode : ''); ?></td>
+        <td><?= ($row->address4 ? $row->address4 . ', ' : '') . ($row->address4_line2 ? $row->address4_line2 . ', ' : '') . ($row->address4_line3 ? $row->address4_line3 . ', ' : '') . ($row->address4_line4 ? $row->address4_line4 . ', ' : '') . ($row->address4_city ? $row->address4_city . ', ' : '') . ($row->address4_postcode ? $row->address4_postcode : ''); ?></td>
         <td><?= $row->contact; ?></td>
         <td><?=  $rolee; ?></td>
+        <td><?=  $row->payment_terms; ?></td>
+        <td><?=  $row->driver_memo; ?></td>
+        <td><?=  $row->packer_memo; ?></td>
         <!-- Change id="restrictCheckbox" to class="restrictCheckbox" -->
         <td> <input type="checkbox" class="restrictCheckbox" data-id="<?php echo $row->id; ?>" <?php if($row->restrict_time == 1){ echo 'checked'; } ?>></td>
         <td><?= $status; ?></td>
@@ -183,7 +187,10 @@
              <th>Shipping Address</th>
              <th>Shipping Address2</th>
              <th>Shipping Address3</th>
+             <th>Shipping Address4</th>
              <th>Mobile Number</th>
+             <th>Payment Terms</th>
+             <th>Memo</th>
              <?php if ((in_array('Admin', $loginuser['role']) || $loginuser['roles'] == 'Admin') || (in_array('Edit', $loginuser['access']) == 'Edit' && in_array('User', $loginuser['role'])) ||  ($loginuser['accesss'] == 'Edit' && $loginuser['roles' == 'User']) || ((!$loginuser['accesss'] == 'Edit' && $loginuser['access'] == 'Delete'))) { ?>
              <th>Action</th>
              <?php } ?>
@@ -199,8 +206,11 @@
               <td><?= ($loginuser['delivery_address'] ? $loginuser['delivery_address'] . ', ' : '') . ($loginuser['delivery_address_line2'] ? $loginuser['delivery_address_line2'] . ', ' : '') . ($loginuser['delivery_address_line3'] ? $loginuser['delivery_address_line3'] . ', ' : '') . ($loginuser['delivery_address_line4'] ? $loginuser['delivery_address_line4'] . ', ' : '') . ($loginuser['delivery_address_city'] ? $loginuser['delivery_address_city'] . ', ' : '') . ($loginuser['delivery_address_postcode'] ? $loginuser['delivery_address_postcode'] : ''); ?></td>
               <td><?= ($loginuser['address2'] ? $loginuser['address2'] . ', ' : '') . ($loginuser['address2_line2'] ? $loginuser['address2_line2'] . ', ' : '') . ($loginuser['address2_line3'] ? $loginuser['address2_line3'] . ', ' : '') . ($loginuser['address2_line4'] ? $loginuser['address2_line4'] . ', ' : '') . ($loginuser['address2_city'] ? $loginuser['address2_city'] . ', ' : '') . ($loginuser['address2_postcode'] ? $loginuser['address2_postcode'] : ''); ?></td>
               <td><?= ($loginuser['address3'] ? $loginuser['address3'] . ', ' : '') . ($loginuser['address3_line2'] ? $loginuser['address3_line2'] . ', ' : '') . ($loginuser['address3_line3'] ? $loginuser['address3_line3'] . ', ' : '') . ($loginuser['address3_line4'] ? $loginuser['address3_line4'] . ', ' : '') . ($loginuser['address3_city'] ? $loginuser['address3_city'] . ', ' : '') . ($loginuser['address3_postcode'] ? $loginuser['address3_postcode'] : ''); ?></td>
+              <td><?= ($loginuser['address4'] ? $loginuser['address4'] . ', ' : '') . ($loginuser['address4_line2'] ? $loginuser['address4_line2'] . ', ' : '') . ($loginuser['address4_line3'] ? $loginuser['address4_line3'] . ', ' : '') . ($loginuser['address4_line4'] ? $loginuser['address4_line4'] . ', ' : '') . ($loginuser['address4_city'] ? $loginuser['address4_city'] . ', ' : '') . ($loginuser['address4_postcode'] ? $loginuser['address4_postcode'] : ''); ?></td>
               <td><?= $loginuser['contact']; ?></td>
-               <?php if ((in_array('File Upload', $loginuser['access'])) ||  ($loginuser['accesss'] == 'File Upload')) { ?>
+              <td><?= $loginuser['payment_terms']; ?></td>
+              <td><?= $loginuser['driver_memo']; ?></td>
+              <?php if ((in_array('File Upload', $loginuser['access'])) ||  ($loginuser['accesss'] == 'File Upload')) { ?>
                <td>
                <a href="<?= base_url('index.php/Userscontroller/fileupload/' . $loginuser['id']) ?>" class="btn btn-warning"><i class="fas fa-upload"></i> </a> 
                <a href="<?= base_url('index.php/Userscontroller/viewfiles/' .$loginuser['id']) ?>" class="btn btn-primary"><i class="fa fa-folder-open">View Files</i> </a>
