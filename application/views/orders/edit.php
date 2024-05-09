@@ -148,7 +148,16 @@
                   <br>
                   <label>Pre Order Date (If required)</label>
                   <input type="date" name="pre_order_date" id="pre_order" class="form-control" value="<?php echo $order_data['delivery_date'] ?>"  autocomplete="off">
-                  </div>
+                  <br>
+                  <label for="packer_memo" class="control-label">Packer Memo</label>
+                <textarea class="form-control" id="packer_memo" name="packer_memo" autocomplete="off"><?php echo $order_data['pmemo'] ?></textarea>
+               
+                <br>
+
+                <label for="driver_memo" class="control-label">Driver Memo</label>
+                <textarea class="form-control" id="driver_memo" name="driver_memo" autocomplete="off"><?php echo $order_data['memo'] ?></textarea>
+               
+                </div>
                   </div>
                   <div class="col-sm-7 col-md-7 col-xs-7 pull pull-right">
                 

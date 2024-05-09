@@ -175,6 +175,15 @@
                 <br>
                 <label>Pre Order Date (If required)</label>
                 <input type="date" name="pre_order_date" id="pre_order" class="form-control"  autocomplete="off">
+                <br>
+                <label for="packer_memo" class="control-label">Packer Memo</label>
+                <textarea class="form-control" id="packer_memo" name="packer_memo" autocomplete="off"></textarea>
+               
+                <br>
+
+                <label for="driver_memo" class="control-label">Driver Memo</label>
+                <textarea class="form-control" id="driver_memo" name="driver_memo" autocomplete="off"></textarea>
+               
                 </div>
                 </div>
 

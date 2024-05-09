@@ -138,12 +138,31 @@
                     </tbody>
                   </table>
 
-                  <br /> <br/>
+                  <?php foreach ($order_total as $key => $order_data): ?>
 
                   <div class="col-sm-12 col-md-12 col-xs-12 pull pull-right">
-                  <div class="col-sm-6 col-md-6"></div>
                   <div class="col-sm-6 col-md-6">
-                  <?php foreach ($order_total as $key => $order_data): ?>
+                  <div class="form-group">
+                
+                <label for="feed_back" class="control-label">Feedback</label>
+                <textarea class="form-control" id="feed_back" name="feed_back" autocomplete="off"><?php echo $order_data['feed_back'] ?></textarea>
+                <br>
+                <label>Pre Order Date (If required)</label>
+                <input type="date" name="pre_order_date" id="pre_order" class="form-control"  autocomplete="off">
+                <br>
+                <label for="packer_memo" class="control-label">Packer Memo</label>
+                <textarea class="form-control" id="packer_memo" name="packer_memo" autocomplete="off"><?php echo $order_data['pmemo'] ?></textarea>
+               
+                <br>
+
+                <label for="driver_memo" class="control-label">Driver Memo</label>
+                <textarea class="form-control" id="driver_memo" name="driver_memo" autocomplete="off"><?php echo $order_data['memo'] ?></textarea>
+               
+              
+                </div>
+                  </div>
+                  <div class="col-sm-6 col-md-6">
+                
                     <div class="form-group" style="margin-bottom:30px;">
                       <div class="col-sm-4">
                       <label for="gross_amount" class="control-label">Total</label></div>

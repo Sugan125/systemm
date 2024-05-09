@@ -91,12 +91,12 @@
         <label>Office Address Postcode</label>
         <input type="text" id="input_size" name="address_postcode" class="form-control" placeholder="Office Postcode">
     </div>
-    <div class="form-group">
+    <div class="form-group" hidden>
     <label for="memo" class="control-label">Driver Memo</label>
   <textarea class="form-control" id="driver_memo" name="driver_memo" autocomplete="off"></textarea>
   </div>
 
-  <div class="form-group">
+  <div class="form-group" hidden>
     <label for="memo" class="control-label">Packer Memo</label>
   <textarea class="form-control" id="packer_memo" name="packer_memo" autocomplete="off"></textarea>
   </div>

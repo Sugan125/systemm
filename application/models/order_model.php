@@ -134,6 +134,8 @@ public function getProductData($id = null)
         'gst_amt' => $this->input->post('gst_rate'),
         'gst_percent' => $this->input->post('gst_value'),
 		'feed_back' => $this->input->post('feed_back'),
+		'packer_memo' => $this->input->post('packer_memo'),
+		'driver_memo' => $this->input->post('driver_memo'),
         'paid_status' => 2,
         'user_id' => $user_id,
 		'created_date' => $created_date,
@@ -271,6 +273,8 @@ public function update($id,$user_id)
             'paid_status' => 2, // Assuming 2 indicates confirmed/paid status
 			'delivery_date' => $order_date,
 			'feed_back' => $this->input->post('feed_back'),
+			'packer_memo' => $this->input->post('packer_memo'),
+			'driver_memo' => $this->input->post('driver_memo'),
             'user_id' => $user_id,
 			'created_date' => $created_date,
         );
@@ -345,7 +349,7 @@ public function update($id,$user_id)
 			return false;
 		}
 
-		$sql = "SELECT ord.*, user.* FROM orders ord join user_register user WHERE ord.id = ? and user.id=ord.user_id";
+		$sql = "SELECT ord.*, user.*, ord.driver_memo as memo, ord.packer_memo as pmemo FROM orders ord join user_register user WHERE ord.id = ? and user.id=ord.user_id";
 		$query = $this->db->query($sql, array($order_id));
 		return $query->result_array();
 	}
@@ -455,7 +459,7 @@ public function update($id,$user_id)
 			return false;
 		}
 
-		$sql = "SELECT ord.*, user.*, user.company_name as company_name FROM orders ord join user_register user WHERE ord.id = ? and user.id=ord.user_id";
+		$sql = "SELECT ord.*, user.*,ord.driver_memo as memo ,user.company_name as company_name FROM orders ord join user_register user WHERE ord.id = ? and user.id=ord.user_id";
 		$query = $this->db->query($sql, array($order_id));
 		return $query->result_array();
 	}
@@ -472,7 +476,7 @@ public function update($id,$user_id)
 public function getpackingorder($schedule_date) {
 	$date = $schedule_date;
 	$formatted_schedule_date = date("d/m/y", strtotime($date));
-	$sql = "SELECT ord.*, orrr.*, uss.name, uss.company_name as company_name,uss.brand_name as brand_name,uss.packer_memo,prod.product_id as prod_id,prod.product_name as product_name 
+	$sql = "SELECT ord.*, orrr.*, uss.name, uss.company_name as company_name,uss.brand_name as brand_name,prod.product_id as prod_id,prod.product_name as product_name 
 	FROM orders ord 
 	JOIN order_items orrr ON ord.id = orrr.order_id 
 	JOIN user_register uss ON ord.user_id = uss.id 
@@ -523,9 +527,21 @@ public function repeat_order($id)
 
 		$delivery_date = strtotime('+3 days', $date_time);
 
-
 		$delivery_date_formatted = date('Y-m-d h:i:s a', $delivery_date);
 
+		
+		$pre_order = $this->input->post('pre_order_date');
+
+		if($pre_order == '0000-00-00' || $pre_order == null || $pre_order == ''){
+			
+			$order_date = $delivery_date_formatted;
+
+		}
+
+		else{
+
+			$order_date = $pre_order;
+		}
 		
 		date_default_timezone_set('UTC');
 
@@ -543,7 +559,7 @@ public function repeat_order($id)
 			'bill_no' => $bill_no,
 			'do_bill_no'=>$do_bill_no,
 			'date_time' => $date_time,
-			'delivery_date' => $delivery_date_formatted,
+			'delivery_date' => $order_date,
 			'gross_amount' => $row['gross_amount'],
 			'service_charge_rate' => $row['service_charge_rate'],
 			'delivery_charge' => $row['delivery_charge'],
@@ -551,6 +567,9 @@ public function repeat_order($id)
 			'discount' => $row['discount'],
 			'gst_amt' => $row['gst_amt'],
 			'gst_percent' => $row['gst_percent'],
+			'feed_back' => $row['feed_back'],
+			'driver_memo'=> $row['driver_memo'],
+			'packer_memo' => $row['packer_memo'],
 			'paid_status' => 2,
 			'user_id' => $user_id,
 			'created_date' => $created_date,
@@ -695,6 +714,8 @@ public function admin_create()
         'paid_status' => 2,
         'user_id' =>	$this->input->post('user_id'),
 		'created_date' => $created_date,
+		'driver_memo' => $this->input->post('driver_memo'),
+		'packer_memo' => $this->input->post('packer_memo'),
     );
 
    
