@@ -299,6 +299,25 @@ preOrderInput.addEventListener('input', function() {
     }
 });
 
+
+// Function to check if a given date is a Sunday
+function isSunday(date) {
+    return date.getDay() === 0; // 0 represents Sunday
+}
+
+// Disable input field after the 7-day period and disallow Sundays
+preOrderInput.addEventListener('input', function() {
+    var selectedDate = new Date(preOrderInput.value);
+    if (selectedDate > sevenDaysFromNow || isSunday(selectedDate)) {
+        preOrderInput.value = ''; // Clear input if date is beyond the allowed range or is a Sunday
+        if (selectedDate > sevenDaysFromNow) {
+            alert('You can only select a date within the next 7 days.');
+        } else {
+            alert('Sunday is not allowed for pre-order.');
+        }
+    }
+});
+
 function confirmSubmission(event) {
     event.preventDefault(); // Prevent the default form submission
 
