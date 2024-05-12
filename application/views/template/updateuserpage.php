@@ -62,6 +62,15 @@
                   <input type="email" id="input_size" name="email" class="form-control" placeholder="Enter Email" value="<?= $row->email; ?>" required>
                 </div>
 
+                <label>Sales Person</label>
+                <div class="input-group mb-3" id="input_size"> 
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">@</span>
+                    </div>
+                    <input type="text" name="sales_person" class="form-control" value="<?= $row->sales_person; ?>" placeholder="Enter Sales Person">
+                </div>
+
+
                 <div class="form-group">
                   <label>Office Address Line 1</label>
                       <input type="text"  id="input_size" name="address" class="form-control"  value="<?= $row->address; ?>" placeholder="Office Address Line 1">

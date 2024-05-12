@@ -62,6 +62,14 @@
         <input type="email" name="email" class="form-control" placeholder="Enter Email" required>
     </div>
 
+    <label>Sales Person</label>
+    <div class="input-group mb-3" id="input_size"> 
+        <div class="input-group-prepend">
+            <span class="input-group-text">@</span>
+        </div>
+        <input type="text" name="sales_person" class="form-control" placeholder="Enter Sales Person">
+    </div>
+
     <div class="form-group">
         <label>Office Address Line 1</label>
         <input type="text" id="input_size" name="address" class="form-control" placeholder="Office Address Line 1">

@@ -80,6 +80,7 @@
       <th>Name</th>
       <th>Company Name</th>
       <th>Brand Name</th>
+      <th>Sales Person Name</th>
       <th>Company Email</th>
       <th>Office Address</th>
       <th>Shipping Address</th>
@@ -124,6 +125,7 @@
         <td><?= $row->name; ?></td>
         <td><?= $row->company_name; ?></td>
         <td><?= $row->brand_name; ?></td>
+        <td><?= $row->sales_person; ?></td>
         <td><?= $row->email; ?></td>
         <td><?= ($row->address ? $row->address . ', ' : '') . ($row->address_line2 ? $row->address_line2 . ', ' : '') . ($row->address_line3 ? $row->address_line3 . ', ' : '') . ($row->address_line4 ? $row->address_line4 . ', ' : '') . ($row->address_city ? $row->address_city . ', ' : '') . ($row->address_postcode ? $row->address_postcode : ''); ?></td>
         <td><?= ($row->delivery_address ? $row->delivery_address . ', ' : '') . ($row->delivery_address_line2 ? $row->delivery_address_line2 . ', ' : '') . ($row->delivery_address_line3 ? $row->delivery_address_line3 . ', ' : '') . ($row->delivery_address_line4 ? $row->delivery_address_line4 . ', ' : '') . ($row->delivery_address_city ? $row->delivery_address_city . ', ' : '') . ($row->delivery_address_postcode ? $row->delivery_address_postcode : ''); ?></td>
