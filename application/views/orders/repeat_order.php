@@ -32,7 +32,7 @@
             
             <!-- /.box-header -->
             
-            <form role="form" action="<?php base_url('orders/repeat_order') ?>" method="post" class="form-horizontal" onsubmit="confirmSubmission(event)">
+            <form role="form" id="repeat_order"  action="<?php base_url('orders/repeat_order') ?>" method="post" class="form-horizontal" onsubmit="confirmSubmission(event)">
             
                   
                 <div class="box-body pull-right">
@@ -276,6 +276,56 @@
   <!-- /.content-wrapper -->
 
   <script type="text/javascript">
+    
+var today = new Date();
+
+// Calculate the date 3 days from now
+var threeDaysFromNow = new Date(today);
+threeDaysFromNow.setDate(today.getDate() + 3);
+
+// Set the minimum date for the pre-order input field
+var preOrderInput = document.getElementById('pre_order');
+preOrderInput.min = threeDaysFromNow.toISOString().split('T')[0];
+
+// Calculate the date 7 days from now
+var sevenDaysFromNow = new Date(today);
+sevenDaysFromNow.setDate(today.getDate() + 8);
+
+// Set the maximum date for the pre-order input field
+preOrderInput.max = sevenDaysFromNow.toISOString().split('T')[0];
+
+// Function to check if a given date is within the disabled range
+function isDisabledDate(date) {
+    return date >= today && date <= threeDaysFromNow;
+}
+
+// Disable input field for today and the next two days
+preOrderInput.addEventListener('input', function() {
+    var selectedDate = new Date(preOrderInput.value);
+    if (isDisabledDate(selectedDate)) {
+        preOrderInput.value = ''; // Clear input if date is within the disabled range
+        alert('You can only select a date beyond today and the next two days.');
+    }
+});
+
+
+// Function to check if a given date is a Sunday
+function isSunday(date) {
+    return date.getDay() === 0; // 0 represents Sunday
+}
+
+// Disable input field after the 7-day period and disallow Sundays
+preOrderInput.addEventListener('input', function() {
+    var selectedDate = new Date(preOrderInput.value);
+    if (selectedDate > sevenDaysFromNow || isSunday(selectedDate)) {
+        preOrderInput.value = ''; // Clear input if date is beyond the allowed range or is a Sunday
+        if (selectedDate > sevenDaysFromNow) {
+            alert('You can only select a date within the next 7 days.');
+        } else {
+            alert('Sunday is not allowed for pre-order.');
+        }
+    }
+});
     $(document).on('change', '.category_name', function() {
       var rowId = $(this).data('row-id');
       var categoryDropdown = document.getElementById('category_' + rowId);
@@ -324,7 +374,7 @@ function confirmOrder() {
       event.preventDefault(); // Prevent the default form submission
 
       // Find the closest form element to the clicked button
-      var form = event.target.closest('form');
+      var form = document.getElementById('repeat_order');
 
       // Show SweetAlert confirmation dialog
       swal({

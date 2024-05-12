@@ -74,7 +74,7 @@
         <div class="box" style="margin-top:20px;">
           
           <!-- /.box-header -->
-          <form role="form" action="<?php base_url('orders/admin_orders') ?>" method="post" class="form-horizontal" onsubmit="confirmSubmission(event)">
+          <form role="form" id="admin_order" action="<?php base_url('orders/admin_orders') ?>" method="post" class="form-horizontal" onsubmit="confirmSubmission(event)">
            
                 
               <div class="box-body pull-right">
@@ -281,21 +281,32 @@
 <script type="text/javascript">
 var today = new Date();
 
-// Calculate the date 7 days from now
-var sevenDaysFromNow = new Date(today);
-sevenDaysFromNow.setDate(sevenDaysFromNow.getDate() + 7);
+// Calculate the date 3 days from now
+var threeDaysFromNow = new Date(today);
+threeDaysFromNow.setDate(today.getDate() + 3);
 
 // Set the minimum date for the pre-order input field
 var preOrderInput = document.getElementById('pre_order');
-preOrderInput.min = today.toISOString().split('T')[0];
+preOrderInput.min = threeDaysFromNow.toISOString().split('T')[0];
+
+// Calculate the date 7 days from now
+var sevenDaysFromNow = new Date(today);
+sevenDaysFromNow.setDate(today.getDate() + 8);
+
+// Set the maximum date for the pre-order input field
 preOrderInput.max = sevenDaysFromNow.toISOString().split('T')[0];
 
-// Disable input field after the 7-day period
+// Function to check if a given date is within the disabled range
+function isDisabledDate(date) {
+    return date >= today && date <= threeDaysFromNow;
+}
+
+// Disable input field for today and the next two days
 preOrderInput.addEventListener('input', function() {
     var selectedDate = new Date(preOrderInput.value);
-    if (selectedDate > sevenDaysFromNow) {
-        preOrderInput.value = ''; // Clear input if date is beyond the allowed range
-        alert('You can only select a date within the next 7 days.');
+    if (isDisabledDate(selectedDate)) {
+        preOrderInput.value = ''; // Clear input if date is within the disabled range
+        alert('You can only select a date beyond today and the next two days.');
     }
 });
 
@@ -348,7 +359,7 @@ function confirmOrder() {
     event.preventDefault(); // Prevent the default form submission
 
     // Find the closest form element to the clicked button
-    var form = event.target.closest('form');
+    var form = document.getElementById('admin_order');
 
     // Show SweetAlert confirmation dialog
     swal({

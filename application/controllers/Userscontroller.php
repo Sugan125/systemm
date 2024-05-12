@@ -572,8 +572,8 @@ class Userscontroller extends CI_Controller {
                         $inserdata[$i]['delivery_address_line3'] = $value['K'];
                         $inserdata[$i]['delivery_address_line4'] = $value['L'];
 
-                        $inserdata[$i]['delivery_address_city'] = $value['N'];
-                        $inserdata[$i]['delivery_address_postcode'] = $value['M'];
+                        $inserdata[$i]['delivery_address_city'] = $value['M'];
+                        $inserdata[$i]['delivery_address_postcode'] = $value['N'];
 
                         $inserdata[$i]['address2'] = $value['O'];
                         $inserdata[$i]['address2_line2'] = $value['P'];
@@ -581,11 +581,26 @@ class Userscontroller extends CI_Controller {
                         $inserdata[$i]['address2_line3'] = $value['Q'];
                         $inserdata[$i]['address2_line4'] = $value['R'];
 
-                        $inserdata[$i]['address2_city'] = $value['S'];
-                        $inserdata[$i]['address2_postcode'] = $value['T'];
+                        $inserdata[$i]['address3'] = $value['S'];
+                        $inserdata[$i]['address3_line2'] = $value['T'];
+
+                        $inserdata[$i]['address3_line3'] = $value['U'];
+                        $inserdata[$i]['address3_line4'] = $value['V'];
+
+                        $inserdata[$i]['address4'] = $value['W'];
+                        $inserdata[$i]['address4_line2'] = $value['X'];
+
+                        $inserdata[$i]['address4_line3'] = $value['Y'];
+                        $inserdata[$i]['address4_line4'] = $value['Z'];
+
+                        $inserdata[$i]['payment_terms'] = $value['AA'];
+
+                        $inserdata[$i]['sales_person'] = $value['AB'];
+                        $inserdata[$i]['record_id'] = $value['AC'];
 
                         $inserdata[$i]['role'] = 'User';
                         $inserdata[$i]['status'] = '0';
+                        $inserdata[$i]['restrict_time'] = '1';
                         $i++;
                     }
                     $result = $this->user_model->insert_import($inserdata);
