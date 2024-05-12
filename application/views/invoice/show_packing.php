@@ -41,6 +41,7 @@
         <div class="col-md-4" style="padding-right: 0px;padding-left: 0px;">
         <?php
             date_default_timezone_set('Asia/Singapore');
+            $schedules_date = null; 
             foreach($orders as $order):
               $schedules_date = $order->delivery_date;
             endforeach;
