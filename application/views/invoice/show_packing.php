@@ -81,7 +81,7 @@
             </b></p> -->
           
         </div>
-        <?php
+        <?php 
 $current_company = null;
 foreach($orders as $order):
     if ($order->company_name != $current_company):
@@ -91,54 +91,33 @@ foreach($orders as $order):
             echo "</tbody></table>";
         }
         echo "<table border='1'>
-        <thead>
-            <tr><td colspan='3' style='height: 20px;'></td></tr>
-            <tr>
-                <th colspan='3'>{$order->company_name}<br>{$order->brand_name}</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr><td colspan='3' style='height: 20px;'></td></tr>"; // Empty row for gap
-            $current_company = $order->company_name;
-
-        foreach ($orders as $order):
-            if ($current_company != $order->company_name): // Check if a new company is encountered
-                echo "<tr><td colspan='3' style='height: 20px;'></td></tr>
-                      <tr>
-                          <th colspan='3'>{$order->company_name}<br>{$order->brand_name}</th>
-                      </tr>";
-                $current_company = $order->company_name;
-            endif;
-
-            if ($order->slice_type === NULL && $order->seed_type === NULL) {
-                $add_on = ''; // Both values are NULL, so no add-on
-            } elseif ($order->slice_type !== NULL && $order->seed_type !== NULL) {
-                $add_on = ' ('.$order->slice_type.','.$order->seed_type.' seed)'; // Both values present, separated by a comma
-            } else {
-                // Only one value is present, so check which one is not NULL
-                $add_on = ($order->slice_type !== NULL) ? ' ('.$order->slice_type.')' : ' ('.$order->seed_type.' seed)';
-            }
-
-            echo "<tr>
-                    <td style='border-right: none;'>{$order->prod_id}</td>
-                    <td style='border-left: none;border-right: none;'>{$order->product_name}{$add_on}</td>
-                    <td style='border-left:none; text-align:center'>{$order->qty} pc</td>
-                  </tr>";
-
-            // Check if packer_memo is not NULL, if so, display it next to the order
-            if($order->packer_memo != NULL){
-                echo "<tr>
-                <td style='border-right: none;'></td>
-                <td style='border-left: none;border-right: none;'>Note: {$order->packer_memo}</td>
-                <td style='border-left:none; text-align:center'></td>
-                </tr>";
-            }
-        endforeach;
-
-        // Close the last tbody
-        echo "</tbody></table>";
-    endif;
-endforeach;
+                <thead>
+                  <tr><td colspan='3' style='height: 20px;'></td></tr>
+                    <tr>
+                        <th colspan='3'>{$order->company_name}<br>{$order->brand_name}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td colspan='3' style='height: 20px;'></td></tr>"; // Empty row for gap
+                    $current_company = $order->company_name;
+                endif;
+                if ($order->slice_type === NULL && $order->seed_type === NULL) {
+                  $add_on = ''; // Both values are NULL, so no add-on
+              } elseif ($order->slice_type !== NULL && $order->seed_type !== NULL || $order->slice_type !== '' && $order->seed_type !== '') {
+                  $add_on = ' ('.$order->slice_type.','.$order->seed_type.')'; // Both values present, separated by a comma
+              } else {
+                  // Only one value is present, so check which one is not NULL
+                  $add_on = ($order->slice_type !== NULL) ? ' ('.$order->slice_type.')' : ' ('.$order->seed_type.')';
+              }
+              
+        echo "<tr>
+                <td style='border-right: none;'>{$order->prod_id}</td>
+                <td style='border-left: none;border-right: none;'>{$order->product_name}{$add_on}</td>
+                <td style='border-left:none; text-align:center'>{$order->qty} pc</td>
+              </tr>";
+endforeach; 
+// Close the last tbody
+echo "</tbody></table>";
 ?>
 
         </tbody>

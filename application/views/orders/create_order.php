@@ -165,7 +165,7 @@
                 </tbody>
                
                 </table>
-                <span id="msg" class="msg" style="color: red;"></span>
+                <!-- <span id="msg" class="msg" style="color: red;"></span> -->
 
                 <div class="col-sm-12 col-md-12 col-xs-12 pull pull-right">
                 <div class="form-group">

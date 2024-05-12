@@ -169,7 +169,7 @@
                 </tbody>
                
                 </table>
-                <span id="msg" style="margin-left: 440px; color: red;"></span>
+                <!-- <span id="msg" style="margin-left: 440px; color: red;"></span> -->
 
                 <div class="col-sm-12 col-md-12 col-xs-12 pull pull-right">
                 <div class="col-sm-6 col-md-6">
