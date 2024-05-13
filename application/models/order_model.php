@@ -337,8 +337,11 @@ public function update($id,$user_id)
         $query = $this->db->select('bill_no')->where('user_id', $user_id)->where('id', $id)->get('orders');
 		$result = $query->row_array();
 		$bill_no = $result['bill_no'];
-	
-		return array('id' => $id, 'order_id' => $id, 'bill_no' => $bill_no, 'email' => $email);
+
+		$query1 = $this->db->select('email')->where('id', $user_id)->get('user_register');
+		$result1 = $query1->row_array();
+		$user_email = $result1['email'];
+		return array('id' => $id, 'order_id' => $id, 'bill_no' => $bill_no, 'email' => $user_email);
     }
 }
 
