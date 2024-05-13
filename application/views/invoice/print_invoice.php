@@ -70,11 +70,30 @@
            </tr>
          </thead>
          <tbody>
-         <?php foreach ($data['order_data']['order_item'] as $order) : ?>
+         <?php foreach ($data['order_data']['order_item'] as $order) : 
+          ?>
         <tr class="odd text-center">
         <td><?php echo isset($order['qty']) ? $order['qty'] : ''; ?></td>
         <td><?php echo isset($order['product_id']) ? $order['product_id'] : ''; ?></td>
-        <td><?php echo isset($order['product_name']) ? $order['product_name'] : ''; ?></td>
+        <td>
+            <?php 
+                if(isset($order['product_name'])) {
+                    echo $order['product_name']; 
+                    if(isset($order['slice_type']) && $order['slice_type'] !== '' || isset($order['seed_type']) && $order['seed_type'] !== '') {
+                        echo ' (';
+                        if(isset($order['slice_type'])) {
+                            echo $order['slice_type'];
+                            if(isset($order['seed_type']) && $order['seed_type'] !== '') {
+                                echo ', ' . $order['seed_type'];
+                            }
+                        } elseif(isset($order['seed_type']) && $order['seed_type'] !== '') {
+                            echo $order['seed_type'];
+                        }
+                        echo ')';
+                    }
+                } 
+            ?>
+        </td>
         <td>$<?php echo isset($order['rate']) ? $order['rate'] : ''; ?></td>
         <td>pc</td>
         <td>$<?php echo isset($order['service_charge']) ? $order['service_charge'] : 0; ?></td>

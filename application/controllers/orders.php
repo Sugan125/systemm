@@ -532,7 +532,9 @@ public function printpacking()
 
 public function send_invoice($bill_no,$email)
 	{
-		//$toemail='suganyaulagu8@gmail.com';
+	
+
+		//$bill_no = '24059014';
 		
 		$toemail= $email;
 		//$cc_email = $email;

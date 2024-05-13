@@ -585,7 +585,7 @@ function confirmOrder() {
         var sliceSelected = $("#sliced_" + row).val();
       //  var seedSelected = $("#seed_" + row).val();
       //if (sliceSelected || seedSelected) {
-        if (sliceSelected) {
+        if (sliceSelected && sliceSelected != 'Unsliced') {
             service_charge = 0.5 * Number($("#qty_" + row).val());
         }
 
@@ -663,7 +663,7 @@ function confirmOrder() {
         var qty = $("#qty_" + x).val();
 
        // if (sliceSelected || seedSelected) {
-        if (sliceSelected) {
+        if (sliceSelected && sliceSelected != 'Unsliced') {
             // If either slice or seed is selected for this row, add additional charge
             service_charge += 0.5*qty;
         }
