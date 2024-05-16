@@ -326,6 +326,7 @@ public function update($id,$user_id)
                 'service_charge' => $this->input->post('service_charge_itemval')[$x],
                 'gst_percent' => 9, // Assuming GST percent is fixed at 9%
                 'gst_amount' => $this->input->post('gst_amount_value')[$x],
+				'delivery_date' => $order_date,
                 'created_date' => $created_date, // Assuming you want to update creation date
             );
             // Insert order item data into order_items table
