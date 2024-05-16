@@ -708,17 +708,17 @@ function removeRow(tr_id)
                 $("#rate_value_" + row_id).val(response.prod_rate)
 
                 if (response.add_on_slice == 0) {
-                    $("#sliced_" + row_id).prop('disabled', true);
+                    $("#sliced_" + row_id).prop('hidden', true);
                     $('#msg').html('Slice not available for ' + response.product_id + '-' + response.product_name);
                 } else {
-                  $("#sliced_" + row_id).prop('disabled', false);
+                  $("#sliced_" + row_id).prop('hidden', false);
                 }
 
                 if (response.add_on_seed == 0) {
-                  $("#seed_" + row_id).prop('disabled', true);
+                  $("#seed_" + row_id).prop('hidden', true);
                     $('#msg').html('Seed not available for ' + response.product_id + '-' + response.product_name);
                 } else {
-                  $("#seed_" + row_id).prop('disabled', false);
+                  $("#seed_" + row_id).prop('hidden', false);
                 }
 
                 if (response.add_on_seed == 0 && response.add_on_slice == 0) {
