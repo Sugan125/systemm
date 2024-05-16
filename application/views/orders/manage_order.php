@@ -59,10 +59,68 @@
                     <div class="d-flex justify-content-end">
             <a href="<?php echo base_url('index.php/Dashboardcontroller'); ?>" class="btn-sm btn btn-danger"><i class="fas fa-backward"></i> Back</a>
         </div>
+
+
                     <div class="box">
+
+                    <div class="col-md-12" style="margin-bottom:20px;">
                         <div class="box-header">
                             <h3 class="box-title">Manage Orders</h3>
-                        </div><br>
+                        </div>
+                    </div>
+<br>
+                    <div class="col-md-12" style="margin-bottom:20px;">
+                    <div class="col-sm-4 col-md-4">
+            <form action="<?= base_url('index.php/Orders/searchinvoice'); ?>" method="get">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Search by Invoice No. or Customer Name" name="keyword" value="<?= isset($keyword) ? $keyword : '' ?>">
+                    <div class="input-group-append">
+                        <button class="btn btn-sm" type="submit"><i class="fas fa-search"></i> Search</button>
+                    </div>
+                </div>
+
+            </form>
+            </div>
+            <?php
+// Initialize variables and ensure the correct date format
+$date = isset($date) ? date('Y-m-d', strtotime($date)) : '';
+$orderdate = isset($orderdate) ? date('Y-m-d', strtotime($orderdate)) : '';
+?>
+
+<div class="col-sm-4 col-md-4">
+    <form id="searchorderdate" action="<?= base_url('index.php/Orders/searchorderdate'); ?>" method="get">
+        <div class="col-sm-6 col-md-6">
+            <label><b>Search by Order Date</b></label>
+        </div>
+        <div class="col-sm-6 col-md-6">
+            <div class="input-group">
+                <input type="date" class="form-control orderdatepicker" placeholder="Search by Order Date" name="orderdate" value="<?= $orderdate ?>">
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="col-sm-4 col-md-4">
+    <form id="searchForm" action="<?= base_url('index.php/Orders/searchdate'); ?>" method="get">
+        <div class="col-sm-7 col-md-7">
+            <label><b>Search by Delivery Date</b></label>
+        </div>
+        <div class="col-sm-5 col-md-5" style="padding:0px;">
+            <div class="input-group">
+                <input type="date" class="form-control datepicker" placeholder="Search by Delivery Date" name="date" value="<?= $date ?>">
+            </div>
+        </div>
+    </form>
+</div>
+
+     
+
+
+ 
+                    </div>
+                        <br>
+                        
+                        <div class="col-md-12">
                         <!-- /.box-header -->
                         <div class="box-body">
                         <div class="table-wrapper">
@@ -123,6 +181,7 @@
                                 </table>
                             </div>
                         </div>
+                                </div>
                         <!-- /.box-body -->
                     </div>
                     <!-- /.box -->
@@ -130,7 +189,8 @@
                 <!-- col-md-12 -->
             </div>
             <!-- /.row -->
-            <div class="row">
+            <div class="col-md-12">
+           
     <div class="col-sm-6 d-flex justify-content-start">
         <?php $total_rowss = $total_rows; echo "Showing 1 to 10 of ".$total_rowss." entries"; ?>
     </div>
@@ -138,6 +198,7 @@
         <?php echo $this->pagination->create_links(); ?>
     </div>
 </div>
+
         </section>
         <!-- /.content -->
     </div>
@@ -170,9 +231,16 @@
         </div>
         <!-- /.modal-dialog -->
     </div>
-    <!-- /.modal -->
 
     <script type="text/javascript">
+  // Trigger form submission on date selection
+  $('.datepicker').on('change', function() {
+        $('#searchForm').submit(); // Submit the form
+    });
+
+    $('.orderdatepicker').on('change', function() {
+        $('#searchorderdate').submit(); // Submit the form
+    });
         var manageTable;
         var base_url = "<?php echo base_url(); ?>";
 
