@@ -73,11 +73,12 @@
 <?php if( (isset($user->image)) || $loginuser['roles'] == 'Admin' || $loginuser['roles'] == 'Owner' || ((in_array('Admin', $loginuser['role']) && in_array('User', $loginuser['role'])))){ ?>
 <!-- /.card-header -->
 <div class="card-body">
-<table id="manageTable" class="table table-bordered table-responsive table-hover table-striped">
+<table class="table table-bordered table-striped table-responsive equal-width-table">
                            
   <thead>
     <tr class="text-center">
       <th>Name</th>
+      <th>Record ID</th>
       <th>Company Name</th>
       <th>Brand Name</th>
       <th>Sales Person Name</th>
@@ -123,6 +124,7 @@
       ?>
       <tr class="odd text-center">
         <td><?= $row->name; ?></td>
+        <td><?= $row->record_id; ?></td>
         <td><?= $row->company_name; ?></td>
         <td><?= $row->brand_name; ?></td>
         <td><?= $row->sales_person; ?></td>

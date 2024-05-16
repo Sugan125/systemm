@@ -37,6 +37,14 @@
         <input type="text" name="name" class="form-control" placeholder="Enter Username">
     </div>
 
+    <label>Record ID (If required)</label>
+    <div class="input-group mb-3" id="input_size"> 
+        <div class="input-group-prepend">
+            <span class="input-group-text">#</span>
+        </div>
+        <input type="number" name="record_id" class="form-control" placeholder="Enter Record ID">
+    </div>
+
     <label>Company Name</label>
     <div class="input-group mb-3" id="input_size"> 
         <div class="input-group-prepend">

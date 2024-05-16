@@ -141,6 +141,7 @@ class Userscontroller extends CI_Controller {
 
        $data = array(
         'name'=>$this->input->post('name'),
+        'record_id'=>$this->input->post('record_id'),
         'company_name'=>$this->input->post('company_name'),
         'brand_name'=>$this->input->post('brand_name'),
         'sales_person'=>$this->input->post('sales_person'),
@@ -219,6 +220,7 @@ class Userscontroller extends CI_Controller {
     $data = array(
         'id'      => $id,
         'name'=>$this->input->post('name'),
+        'record_id'=>$this->input->post('record_id'),
         'company_name'=>$this->input->post('company_name'),
         'brand_name'=>$this->input->post('brand_name'),
         'sales_person'=>$this->input->post('sales_person'),
