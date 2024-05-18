@@ -267,7 +267,7 @@
               <!-- /.box-body -->
 
               <div class="box-footer col-sm-12 col-md-12 col-xs-12 pull pull-left" style="margin-bottom:30px;padding: 50px;">
-                <button type="submit" class="btn btn-success">Create Order</button>
+                <button type="submit" class="btn btn-success order_submit" id="order_submit">Create Order</button>
               <a href="<?php echo base_url('index.php/orders/') ?>" class="btn btn-danger">Back</a>
               </div>
             </form>
@@ -343,6 +343,7 @@
 });
 
 function fetchUserAddress(userId) {
+    var deliveryDateInput = document.getElementById('pre_order');
     var xhr = new XMLHttpRequest();
     xhr.open('POST', '<?php echo base_url('index.php/orders/fetch_user_address') ?>', true);
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -351,6 +352,9 @@ function fetchUserAddress(userId) {
             var response = JSON.parse(xhr.responseText);
             if (response.success && hasNonEmptyAddress(response.data)) {
                 updateModal(response.data);
+                if (!deliveryDateInput.value) {
+                        swal("Delivery Date", "Please select a delivery date before creating the order.", "warning");   
+                }
                 updateCreateOrderButton(true);
             } 
             else{
@@ -368,11 +372,11 @@ function hasNonEmptyAddress(data) {
 
 function updateModal(data) {
     var address1 = data.delivery_address + 
-        (data.address2 ? ', ' + data.address2 : '') + 
-        (data.address3 ? ', ' + data.address3 : '') + 
-        (data.address4 ? ', ' + data.address4 : '') + 
-        (data.city ? ', ' + data.city : '') + 
-        (data.postcode ? ', ' + data.postcode : '');
+        (data.delivery_address_line2 ? ', ' + data.delivery_address_line2 : '') + 
+        (data.delivery_address_line3 ? ', ' + data.delivery_address_line3 : '') + 
+        (data.delivery_address_line4 ? ', ' + data.delivery_address_line4 : '') + 
+        (data.delivery_address_city ? ', ' + data.delivery_address_city : '') + 
+        (data.delivery_address_postcode ? ', ' + data.delivery_address_postcode : '');
     var address2 = (data.address2 ? data.address2 : '') + 
         (data.address2_line2 ? ', ' + data.address2_line2 : '') + 
         (data.address2_line3 ? ', ' + data.address2_line3 : '') + 
@@ -419,9 +423,13 @@ function clearAddressFields() {
 }
 
 function updateCreateOrderButton(showModal) {
+
+   
     var createOrderButton = document.querySelector('.btn.btn-success');
     var parent = createOrderButton.parentElement;
 
+        
+  
     if (showModal) {
         if (!parent.querySelector('.galName')) {
             var modalLink = document.createElement('a');
@@ -433,6 +441,7 @@ function updateCreateOrderButton(showModal) {
         }
     } 
 }
+
 function handleNext() {
     var selectedAddress = document.querySelector('input[name="shippingAddress"]:checked');
 
