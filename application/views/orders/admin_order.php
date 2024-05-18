@@ -113,7 +113,7 @@
                   <tbody>
                     <tr id="row_1">
                         <td>    
-                        <select class="form-control category_name" data-row-id="1" id="category_1" name="category[]" onchange="categoryChange(1)">
+                        <select class="form-control category_name" data-row-id="1" id="category_1" name="category[]">
 
                                 <option value="">Choose</option>
                                 <?php foreach ($category as $key => $value): ?>
@@ -177,7 +177,7 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text">@</span>
                     </div>
-                    <select name="user_id" class="form-control" required oninvalid="this.setCustomValidity('Please select a user')">
+                    <select name="user_id" class="form-control" required>
                         <option value="">Select User Name</option>
                         <?php foreach ($userss as $row) :
                         if($row->role != 'Owner') {?>
@@ -187,8 +187,8 @@
                     </select>
                 </div>
                 <br>
-                <label>Pre Order Date (If required)</label>
-                <input type="date" name="pre_order_date" id="pre_order" class="form-control"  autocomplete="off" style="width:100%;">
+                <label>Delivery Date</label>
+                <input type="date" name="pre_order_date" id="pre_order" class="form-control"  autocomplete="off" style="width:100%;" required>
                 
                 <label for="packer_memo" class="control-label">Packer Memo</label>
                 <textarea class="form-control" id="packer_memo" name="packer_memo" autocomplete="off"></textarea>
@@ -253,15 +253,22 @@
                       <input type="hidden" class="form-control" id="net_amount_value" name="net_amount_value" autocomplete="off">
                     </div>
                   </div>
+                  
+                  <input type="hidden" name="shipping_address" id="shipping_address">
+                  <input type="hidden" name="shipping_address_line2" id="shipping_address_line2">
+                  <input type="hidden" name="shipping_address_line3" id="shipping_address_line3">
+                  <input type="hidden" name="shipping_address_line4" id="shipping_address_line4">
+                  <input type="hidden" name="shipping_address_city" id="shipping_address_city">
+                  <input type="hidden" name="shipping_address_postcode" id="shipping_address_postcode">
+            
                   </div>
                 </div>
               </div>
               <!-- /.box-body -->
 
               <div class="box-footer col-sm-12 col-md-12 col-xs-12 pull pull-left" style="margin-bottom:30px;padding: 50px;">
-            
                 <button type="submit" class="btn btn-success">Create Order</button>
-                <a href="<?php echo base_url('index.php/orders/') ?>" class="btn btn-danger">Back</a>
+              <a href="<?php echo base_url('index.php/orders/') ?>" class="btn btn-danger">Back</a>
               </div>
             </form>
           <!-- /.box-body -->
@@ -277,13 +284,189 @@
   <!-- /.content -->
 </div>
 <!-- /.content-wrapper -->
+<div class="modal fade hide modal-creator" id="myModal" style="display: none;" aria-hidden="true">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Please choose shipping address</h3>
+                <button type="button" class="close" data-dismiss="modal">×</button>
+            </div>
+            <div class="modal-body">
+                <form id="shippingAddressForm">
+                    <div class="form-group">
+                        <label for="shippingAddress1">
+                            <input type="checkbox" id="shippingAddress1" name="shippingAddress" class="shippingAddressCheckbox">
+                            <span></span>
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label for="shippingAddress2">
+                            <input type="checkbox" id="shippingAddress2" name="shippingAddress" class="shippingAddressCheckbox">
+                            <span></span>
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label for="shippingAddress3">
+                            <input type="checkbox" id="shippingAddress3" name="shippingAddress" class="shippingAddressCheckbox">
+                            <span></span>
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label for="shippingAddress4">
+                            <input type="checkbox" id="shippingAddress4" name="shippingAddress" class="shippingAddressCheckbox">
+                            <span></span>
+                        </label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="handleNext()">Next</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <script type="text/javascript">
+ document.addEventListener('DOMContentLoaded', function () {
+    document.querySelector('select[name="user_id"]').addEventListener('change', function () {
+        var userId = this.value;
+
+        if (userId) {
+            fetchUserAddress(userId);
+        } else {
+            clearAddressFields();
+            updateCreateOrderButton(false);
+        }
+    });
+});
+
+function fetchUserAddress(userId) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '<?php echo base_url('index.php/orders/fetch_user_address') ?>', true);
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.onload = function () {
+        if (xhr.status === 200) {
+            var response = JSON.parse(xhr.responseText);
+            if (response.success && hasNonEmptyAddress(response.data)) {
+                updateModal(response.data);
+                updateCreateOrderButton(true);
+            } 
+            else{
+              updateModal(response.data);
+              updateCreateOrderButton(false);
+            }
+        }
+    };
+    xhr.send('user_id=' + encodeURIComponent(userId));
+}
+
+function hasNonEmptyAddress(data) {
+    return data.address2 || data.address3 || data.address4;
+}
+
+function updateModal(data) {
+    var address1 = data.delivery_address + 
+        (data.address2 ? ', ' + data.address2 : '') + 
+        (data.address3 ? ', ' + data.address3 : '') + 
+        (data.address4 ? ', ' + data.address4 : '') + 
+        (data.city ? ', ' + data.city : '') + 
+        (data.postcode ? ', ' + data.postcode : '');
+    var address2 = (data.address2 ? data.address2 : '') + 
+        (data.address2_line2 ? ', ' + data.address2_line2 : '') + 
+        (data.address2_line3 ? ', ' + data.address2_line3 : '') + 
+        (data.address2_line4 ? ', ' + data.address2_line4 : '') + 
+        (data.address2_city ? ', ' + data.address2_city : '') + 
+        (data.address2_postcode ? ', ' + data.address2_postcode : '');
+    var address3 = (data.address3 ? data.address3 : '') + 
+        (data.address3_line2 ? ', ' + data.address3_line2 : '') + 
+        (data.address3_line3 ? ', ' + data.address3_line3 : '') + 
+        (data.address3_line4 ? ', ' + data.address3_line4 : '') + 
+        (data.address3_city ? ', ' + data.address3_city : '') + 
+        (data.address3_postcode ? ', ' + data.address3_postcode : '');
+    var address4 = (data.address4 ? data.address4 : '') + 
+        (data.address4_line2 ? ', ' + data.address4_line2 : '') + 
+        (data.address4_line3 ? ', ' + data.address4_line3 : '') + 
+        (data.address4_line4 ? ', ' + data.address4_line4 : '') + 
+        (data.address4_city ? ', ' + data.address4_city : '') + 
+        (data.address4_postcode ? ', ' + data.address4_postcode : '');
+
+    setAddressField('shippingAddress1', address1);
+    setAddressField('shippingAddress2', address2);
+    setAddressField('shippingAddress3', address3);
+    setAddressField('shippingAddress4', address4);
+}
+
+function setAddressField(elementId, address) {
+    var checkbox = document.getElementById(elementId);
+    var label = checkbox.nextElementSibling;
+
+    if (address.trim()) {
+        checkbox.style.display = 'inline';
+        label.innerText = address;
+    } else {
+        checkbox.style.display = 'none';
+        label.innerText = '';
+    }
+}
+
+function clearAddressFields() {
+    document.querySelectorAll('.shippingAddressCheckbox').forEach(function (checkbox) {
+        checkbox.style.display = 'none';
+        checkbox.nextElementSibling.innerText = '';
+    });
+}
+
+function updateCreateOrderButton(showModal) {
+    var createOrderButton = document.querySelector('.btn.btn-success');
+    var parent = createOrderButton.parentElement;
+
+    if (showModal) {
+        if (!parent.querySelector('.galName')) {
+            var modalLink = document.createElement('a');
+            modalLink.className = 'galName';
+            modalLink.href = '#myModal';
+            modalLink.setAttribute('data-toggle', 'modal');
+            parent.insertBefore(modalLink, createOrderButton);
+            modalLink.appendChild(createOrderButton);
+        }
+    } 
+}
+function handleNext() {
+    var selectedAddress = document.querySelector('input[name="shippingAddress"]:checked');
+
+    if (selectedAddress) {
+        var addressParts = selectedAddress.nextElementSibling.innerText.split(', ');
+        
+        // Log the selected address for debugging
+        console.log('Selected Address:', selectedAddress);
+        console.log('Address Parts:', addressParts);
+
+        // Populate the form fields with the address details
+        document.getElementById('shipping_address').value = addressParts[0] || '';
+        document.getElementById('shipping_address_line2').value = addressParts[1] || '';
+        document.getElementById('shipping_address_line3').value = addressParts[2] || '';
+        document.getElementById('shipping_address_line4').value = addressParts[3] || '';
+        document.getElementById('shipping_address_city').value = addressParts[4] || '';
+        document.getElementById('shipping_address_postcode').value = addressParts[5] || '';
+
+        // Hide the modal
+        $('#myModal').modal('hide');
+
+        // Show success alert and handle submission
+        swal("Address Updated!", "You can now proceed to create the order.", "success").then((value) => {
+            confirmSubmission(event);
+        });
+    } 
+}
+
+
 var today = new Date();
 
 // Calculate the date 3 days from now
 var threeDaysFromNow = new Date(today);
-threeDaysFromNow.setDate(today.getDate() + 3);
+threeDaysFromNow.setDate(today.getDate() + 1);
 
 // Set the minimum date for the pre-order input field
 var preOrderInput = document.getElementById('pre_order');
@@ -425,7 +608,7 @@ $(document).on('change', '.seed', function() {
             success: function(response) {
               var html = '<tr id="row_'+row_id+'">' +
                 '<td>'+ 
-                    '<select class="form-control select_group category_name" data-row-id="'+row_id+'" id="category_'+row_id+'" name="category[]" style="width:100%;" onchange="categoryChange('+row_id+')">'+
+                    '<select class="form-control select_group category_name" data-row-id="'+row_id+'" id="category_'+row_id+'" name="category[]" style="width:100%;" >'+
                         '<option value="">Choose</option>';
                         // Add options for categories here
                         <?php foreach ($category as $key => $value): ?>
@@ -746,6 +929,8 @@ function removeRow(tr_id)
     $("#net_amount").val(finalAmount.toFixed(2));
     $("#net_amount_value").val(finalAmount.toFixed(2));
 }
+
+
 
 
 

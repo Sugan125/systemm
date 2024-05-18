@@ -165,11 +165,20 @@ class orders extends CI_Controller {
             $this->load->view('template/header.php', $data);
             $user = $this->session->userdata('user_register');
             $users = $this->session->userdata('normal_user');
-            $loginuser = $this->session->userdata('LoginSession');
-            //var_dump($loginuser);
-            $this->load->view('template/sidebar.php', array('user' => $user, 'users' => $users, 'data' => $data,'loginuser' => $loginuser));
-			$this->load->view('orders/edit.php', array_merge($data, array('id' => $id,'user_id'=>$user_id)));
-            $this->load->view('template/footer.php');
+			$loginuser = $this->session->userdata('LoginSession');
+			$loginusers = $this->order_model->getuseraddress($user_id);
+
+			$this->load->view('template/header.php', $data);
+			$this->load->view('template/sidebar.php', [
+				'user' => $user,
+				'users' => $users,
+				'data' => $data,
+				'loginuser' => $loginuser,
+				'loginusers' => $loginusers,
+			]);
+			$this->load->view('orders/edit.php', array_merge($data, ['id' => $id, 'user_id' => $user_id]));
+			$this->load->view('template/footer.php');
+		
         }
 	}
 
@@ -703,7 +712,7 @@ The Sourdough Factory Team";
 			$this->load->view('template/header.php', $data);
 			$user = $this->session->userdata('user_register');
 			$users = $this->session->userdata('normal_user');
-			$data['userss'] = $this->user_model->get_roleuserss();
+			$data['userss'] = $this->user_model->get_activeusers();
 			$loginuser = $this->session->userdata('LoginSession');
 	
 			$this->load->view('template/sidebar.php', array('user' => $user, 'users' => $users, 'data' => $data,'loginuser' => $loginuser));
@@ -961,40 +970,6 @@ public function deleteorder($id){
 	}
 }
 
-public function update_shipping(){
-    $shipping_address = $this->input->post('shipping_address');
-    $shipping_address_line2 = $this->input->post('shipping_address_line2');
-    $shipping_address_line3 = $this->input->post('shipping_address_line3');
-    $shipping_address_line4 = $this->input->post('shipping_address_line4');
-    $shipping_address_city = $this->input->post('shipping_address_city');
-    $shipping_address_postcode = $this->input->post('shipping_address_postcode');    
-
-    $user_id = $this->input->post('user_id');
-
-    // Set shipping address fields
-    $this->db->set('shipping_address', !empty($shipping_address) ? $shipping_address : NULL);
-    $this->db->set('shipping_address_line2', !empty($shipping_address_line2) ? $shipping_address_line2 : NULL);
-    $this->db->set('shipping_address_line3', !empty($shipping_address_line3) ? $shipping_address_line3 : NULL);
-    $this->db->set('shipping_address_line4', !empty($shipping_address_line4) ? $shipping_address_line4 : NULL);
-    $this->db->set('shipping_address_city', !empty($shipping_address_city) ? $shipping_address_city : NULL);
-    $this->db->set('shipping_address_postcode', !empty($shipping_address_postcode) ? $shipping_address_postcode : NULL);
-
-    // Set the WHERE condition
-    $this->db->where('id', $user_id);
-
-    // Execute the update query
-    $result = $this->db->update('user_register');
-
-    // Check if the update was successful
-    if ($result) {
-        // Update successful
-        return true;
-    } else {
-        // Update failed
-        return false;
-    }
-}
-
 public function searchinvoice() {
 	$keyword = $this->input->get('keyword');
 	$data['title'] = 'Dashboard';
@@ -1186,6 +1161,22 @@ public function searchorderdate() {
 	$this->load->view('template/sidebar.php', array('user' => $user, 'users' => $users, 'data' => $data,'loginuser' => $loginuser));
 	$this->load->view('orders/manage_order.php', $data);
 	$this->load->view('template/footer.php');
+}
+
+public function fetch_user_address() {
+	
+	$user_id = $this->input->post('user_id');
+
+	if ($user_id) {
+		$user = $this->order_model->getuseraddress($user_id);
+		if ($user) {
+			echo json_encode(['success' => true, 'data' => $user]);
+		} else {
+			echo json_encode(['success' => false, 'message' => 'No address found.']);
+		}
+	} else {
+		echo json_encode(['success' => false, 'message' => 'Invalid user ID.']);
+	}
 }
 
 }

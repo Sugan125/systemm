@@ -212,6 +212,13 @@
                         <input type="hidden" class="form-control" id="net_amount_value"  value="<?php echo $order_data['net_amount'] ?>" name="net_amount_value" autocomplete="off">
                       </div>
                     </div>
+                    <input type="hidden" name="shipping_address" id="shipping_address">
+                  <input type="hidden" name="shipping_address_line2" id="shipping_address_line2">
+                  <input type="hidden" name="shipping_address_line3" id="shipping_address_line3">
+                  <input type="hidden" name="shipping_address_line4" id="shipping_address_line4">
+                  <input type="hidden" name="shipping_address_city" id="shipping_address_city">
+                  <input type="hidden" name="shipping_address_postcode" id="shipping_address_postcode">
+        
                     </div>
                   </div>
                 </div>
@@ -221,7 +228,7 @@
                   <input type="hidden" id="delivery_charge" name="delivery_charge" autocomplete="off">  
                   <input type="hidden" name="service_charge_rate"  autocomplete="off">
                   <a target="__blank" href="<?php echo base_url() . 'index.php/orders/printDiv/'.$order_data['id'] ?>" class="btn btn-default" >Print</a>
-                  <?php if($loginuser['address2'] != NULL || $loginuser['address3'] != NULL) {
+                  <?php if($loginusers['address2'] != NULL || $loginusers['address3'] != NULL) {
 
                   $modal_id = '<a class="galName" href="#myModal" data-toggle="modal" >';
                   $end_id = ' </a>';
@@ -263,45 +270,46 @@
                 <div class="form-group">
                 <label for="shippingAddress1">
                     <input type="checkbox" id="shippingAddress1" name="shippingAddress1" class="shippingAddressCheckbox">
-                    <?php echo !empty($loginuser['delivery_address']) ? $loginuser['delivery_address'] : ''; ?>
-                    <?php echo !empty($loginuser['delivery_address_line2']) ? ', ' . $loginuser['delivery_address_line2'] : ''; ?>
-                    <?php echo !empty($loginuser['delivery_address_line3']) ? ', ' . $loginuser['delivery_address_line3'] : ''; ?>
-                    <?php echo !empty($loginuser['delivery_address_line4']) ? ', ' . $loginuser['delivery_address_line4'] : ''; ?>
-                    <?php echo !empty($loginuser['delivery_address_city']) ? ', ' . $loginuser['delivery_address_city'] : ''; ?>
-                    <?php echo !empty($loginuser['delivery_address_postcode']) ? ', ' . $loginuser['delivery_address_postcode'] : ''; ?>
+                    <?php echo !empty($loginusers['delivery_address']) ? $loginusers['delivery_address'] : ''; ?>
+                    <?php echo !empty($loginusers['delivery_address_line2']) ? ', ' . $loginusers['delivery_address_line2'] : ''; ?>
+                    <?php echo !empty($loginusers['delivery_address_line3']) ? ', ' . $loginusers['delivery_address_line3'] : ''; ?>
+                    <?php echo !empty($loginusers['delivery_address_line4']) ? ', ' . $loginusers['delivery_address_line4'] : ''; ?>
+                    <?php echo !empty($loginusers['delivery_address_city']) ? ', ' . $loginusers['delivery_address_line4'] : ''; ?>
+                    <?php echo !empty($loginusers['delivery_address_city']) ? ', ' . $loginusers['delivery_address_city'] : ''; ?>
+                    <?php echo !empty($loginusers['delivery_address_postcode']) ? ', ' . $loginusers['delivery_address_postcode'] : ''; ?>
                 </label>
                 </div>
                 <div class="form-group">
                     <label for="shippingAddress2">
-                        <?php echo !empty($loginuser['address2']) ? '<input type="checkbox" id="shippingAddress2" name="shippingAddress2" class="shippingAddressCheckbox">' : ''; ?>
-                        <?php echo !empty($loginuser['address2']) ? $loginuser['address2'] : ''; ?>
-                        <?php echo !empty($loginuser['address2_line2']) ? ', ' . $loginuser['address2_line2'] : ''; ?>
-                        <?php echo !empty($loginuser['address2_line3']) ? ', ' . $loginuser['address2_line3'] : ''; ?>
-                        <?php echo !empty($loginuser['address2_line4']) ? ', ' . $loginuser['address2_line4'] : ''; ?>
-                        <?php echo !empty($loginuser['address2_city']) ? ', ' . $loginuser['address2_city'] : ''; ?>
-                        <?php echo !empty($loginuser['address2_postcode']) ? ', ' . $loginuser['address2_postcode'] : ''; ?>
+                        <?php echo !empty($loginusers['address2']) ? '<input type="checkbox" id="shippingAddress2" name="shippingAddress2" class="shippingAddressCheckbox">' : ''; ?>
+                        <?php echo !empty($loginusers['address2']) ? $loginusers['address2'] : ''; ?>
+                        <?php echo !empty($loginusers['address2_line2']) ? ', ' . $loginusers['address2_line2'] : ''; ?>
+                        <?php echo !empty($loginusers['address2_line3']) ? ', ' . $loginusers['address2_line3'] : ''; ?>
+                        <?php echo !empty($loginusers['address2_line4']) ? ', ' . $loginusers['address2_line4'] : ''; ?>
+                        <?php echo !empty($loginusers['address2_city']) ? ', ' . $loginusers['address2_city'] : ''; ?>
+                        <?php echo !empty($loginusers['address2_postcode']) ? ', ' . $loginusers['address2_postcode'] : ''; ?>
                     </label>
                 </div>
                 <div class="form-group">
                     <label for="shippingAddress3">
-                        <?php echo !empty($loginuser['address3']) ? '<input type="checkbox" id="shippingAddress3" name="shippingAddress3" class="shippingAddressCheckbox">' : ''; ?>
-                        <?php echo !empty($loginuser['address3']) ? $loginuser['address3'] : ''; ?>
-                        <?php echo !empty($loginuser['address3_line2']) ? ', ' . $loginuser['address3_line2'] : ''; ?>
-                        <?php echo !empty($loginuser['address3_line3']) ? ', ' . $loginuser['address3_line3'] : ''; ?>
-                        <?php echo !empty($loginuser['address3_line4']) ? ', ' . $loginuser['address3_line4'] : ''; ?>
-                        <?php echo !empty($loginuser['address3_city']) ? ', ' . $loginuser['address3_city'] : ''; ?>
-                        <?php echo !empty($loginuser['address3_postcode']) ? ', ' . $loginuser['address3_postcode'] : ''; ?>
+                        <?php echo !empty($loginusers['address3']) ? '<input type="checkbox" id="shippingAddress3" name="shippingAddress3" class="shippingAddressCheckbox">' : ''; ?>
+                        <?php echo !empty($loginusers['address3']) ? $loginusers['address3'] : ''; ?>
+                        <?php echo !empty($loginusers['address3_line2']) ? ', ' . $loginusers['address3_line2'] : ''; ?>
+                        <?php echo !empty($loginusers['address3_line3']) ? ', ' . $loginusers['address3_line3'] : ''; ?>
+                        <?php echo !empty($loginusers['address3_line4']) ? ', ' . $loginusers['address3_line4'] : ''; ?>
+                        <?php echo !empty($loginusers['address3_city']) ? ', ' . $loginusers['address3_city'] : ''; ?>
+                        <?php echo !empty($loginusers['address3_postcode']) ? ', ' . $loginusers['address3_postcode'] : ''; ?>
                     </label>
                 </div>
                 <div class="form-group">
                     <label for="shippingAddress4">
-                        <?php echo !empty($loginuser['address4']) ? '<input type="checkbox" id="shippingAddress4" name="shippingAddress4" class="shippingAddressCheckbox">' : ''; ?>
-                        <?php echo !empty($loginuser['address4']) ? $loginuser['address4'] : ''; ?>
-                        <?php echo !empty($loginuser['address4_line2']) ? ', ' . $loginuser['address4_line2'] : ''; ?>
-                        <?php echo !empty($loginuser['address4_line3']) ? ', ' . $loginuser['address4_line3'] : ''; ?>
-                        <?php echo !empty($loginuser['address4_line4']) ? ', ' . $loginuser['address4_line4'] : ''; ?>
-                        <?php echo !empty($loginuser['address4_city']) ? ', ' . $loginuser['address4_city'] : ''; ?>
-                        <?php echo !empty($loginuser['address4_postcode']) ? ', ' . $loginuser['address4_postcode'] : ''; ?>
+                        <?php echo !empty($loginusers['address4']) ? '<input type="checkbox" id="shippingAddress4" name="shippingAddress4" class="shippingAddressCheckbox">' : ''; ?>
+                        <?php echo !empty($loginusers['address4']) ? $loginusers['address4'] : ''; ?>
+                        <?php echo !empty($loginusers['address4_line2']) ? ', ' . $loginusers['address4_line2'] : ''; ?>
+                        <?php echo !empty($loginusers['address4_line3']) ? ', ' . $loginusers['address4_line3'] : ''; ?>
+                        <?php echo !empty($loginusers['address4_line4']) ? ', ' . $loginusers['address4_line4'] : ''; ?>
+                        <?php echo !empty($loginusers['address4_city']) ? ', ' . $loginusers['address4_city'] : ''; ?>
+                        <?php echo !empty($loginusers['address4_postcode']) ? ', ' . $loginusers['address4_postcode'] : ''; ?>
                     </label>
                 </div>
                 </form>
@@ -411,7 +419,7 @@ $(document).on('change', '.seed', function() {
               success: function(response) {
                 var html = '<tr id="row_'+row_id+'">' +
                   '<td>'+ 
-                      '<select class="form-control select_group category_name" data-row-id="'+row_id+'" id="category_'+row_id+'" name="category[]" style="width:100%;" onchange="categoryChange('+row_id+')">'+
+                      '<select class="form-control select_group category_name" data-row-id="'+row_id+'" id="category_'+row_id+'" name="category[]" style="width:100%;">'+
                           '<option value="">Choose</option>';
                           // Add options for categories here
                           <?php foreach ($category as $key => $value): ?>
@@ -753,71 +761,84 @@ function handleNext() {
     var shipping_address_postcode = '';
 
     if ($('#shippingAddress1').is(':checked')) {
-        shipping_address = "<?php echo $loginuser['delivery_address']; ?>";
-        shipping_address_line2 = "<?php echo !empty($loginuser['delivery_address_line2']) ? $loginuser['delivery_address_line2'] : ''; ?>";
-        shipping_address_line3 = "<?php echo !empty($loginuser['delivery_address_line3']) ? $loginuser['delivery_address_line3'] : ''; ?>";
-        shipping_address_line4 = "<?php echo !empty($loginuser['delivery_address_line4']) ? $loginuser['delivery_address_line4'] : ''; ?>";
-        shipping_address_city = "<?php echo !empty($loginuser['delivery_address_city']) ? $loginuser['delivery_address_city'] : ''; ?>";
-        shipping_address_postcode = "<?php echo !empty($loginuser['delivery_address_postcode']) ? $loginuser['delivery_address_postcode'] : ''; ?>";
+        shipping_address = "<?php echo $loginusers['delivery_address']; ?>";
+        shipping_address_line2 = "<?php echo !empty($loginusers['delivery_address_line2']) ? $loginusers['delivery_address_line2'] : ''; ?>";
+        shipping_address_line3 = "<?php echo !empty($loginusers['delivery_address_line3']) ? $loginusers['delivery_address_line3'] : ''; ?>";
+        shipping_address_line4 = "<?php echo !empty($loginusers['delivery_address_line4']) ? $loginusers['delivery_address_line4'] : ''; ?>";
+        shipping_address_city = "<?php echo !empty($loginusers['delivery_address_city']) ? $loginusers['delivery_address_city'] : ''; ?>";
+        shipping_address_postcode = "<?php echo !empty($loginusers['delivery_address_postcode']) ? $loginusers['delivery_address_postcode'] : ''; ?>";
     } else if ($('#shippingAddress2').is(':checked')) {
-        shipping_address = "<?php echo $loginuser['address2']; ?>";
-        shipping_address_line2 = "<?php echo !empty($loginuser['address2_line2']) ? $loginuser['address2_line2'] : ''; ?>";
-        shipping_address_line3 = "<?php echo !empty($loginuser['address2_line3']) ? $loginuser['address2_line3'] : ''; ?>";
-        shipping_address_line4 = "<?php echo !empty($loginuser['address2_line4']) ? $loginuser['address2_line4'] : ''; ?>";
-        shipping_address_city = "<?php echo !empty($loginuser['address2_city']) ? $loginuser['address2_city'] : ''; ?>";
-        shipping_address_postcode = "<?php echo !empty($loginuser['address2_postcode']) ? $loginuser['address2_postcode'] : ''; ?>";
+        shipping_address = "<?php echo $loginusers['address2']; ?>";
+        shipping_address_line2 = "<?php echo !empty($loginusers['address2_line2']) ? $loginusers['address2_line2'] : ''; ?>";
+        shipping_address_line3 = "<?php echo !empty($loginusers['address2_line3']) ? $loginusers['address2_line3'] : ''; ?>";
+        shipping_address_line4 = "<?php echo !empty($loginusers['address2_line4']) ? $loginusers['address2_line4'] : ''; ?>";
+        shipping_address_city = "<?php echo !empty($loginusers['address2_city']) ? $loginusers['address2_city'] : ''; ?>";
+        shipping_address_postcode = "<?php echo !empty($loginusers['address2_postcode']) ? $loginusers['address2_postcode'] : ''; ?>";
     } else if ($('#shippingAddress3').is(':checked')) {
-        shipping_address = "<?php echo $loginuser['address3']; ?>";
-        shipping_address_line2 = "<?php echo !empty($loginuser['address3_line2']) ? $loginuser['address3_line2'] : ''; ?>";
-        shipping_address_line3 = "<?php echo !empty($loginuser['address3_line3']) ? $loginuser['address3_line3'] : ''; ?>";
-        shipping_address_line4 = "<?php echo !empty($loginuser['address3_line4']) ? $loginuser['address3_line4'] : ''; ?>";
-        shipping_address_city = "<?php echo !empty($loginuser['address3_city']) ? $loginuser['address3_city'] : ''; ?>";
-        shipping_address_postcode = "<?php echo !empty($loginuser['address3_postcode']) ? $loginuser['address3_postcode'] : ''; ?>";
+        shipping_address = "<?php echo $loginusers['address3']; ?>";
+        shipping_address_line2 = "<?php echo !empty($loginusers['address3_line2']) ? $loginusers['address3_line2'] : ''; ?>";
+        shipping_address_line3 = "<?php echo !empty($loginusers['address3_line3']) ? $loginusers['address3_line3'] : ''; ?>";
+        shipping_address_line4 = "<?php echo !empty($loginusers['address3_line4']) ? $loginusers['address3_line4'] : ''; ?>";
+        shipping_address_city = "<?php echo !empty($loginusers['address3_city']) ? $loginusers['address3_city'] : ''; ?>";
+        shipping_address_postcode = "<?php echo !empty($loginusers['address3_postcode']) ? $loginusers['address3_postcode'] : ''; ?>";
     }
     else if ($('#shippingAddress4').is(':checked')) {
-        shipping_address = "<?php echo $loginuser['address4']; ?>";
-        shipping_address_line2 = "<?php echo !empty($loginuser['address4_line2']) ? $loginuser['address4_line2'] : ''; ?>";
-        shipping_address_line3 = "<?php echo !empty($loginuser['address4_line3']) ? $loginuser['address4_line3'] : ''; ?>";
-        shipping_address_line4 = "<?php echo !empty($loginuser['address4_line4']) ? $loginuser['address4_line4'] : ''; ?>";
-        shipping_address_city = "<?php echo !empty($loginuser['address4_city']) ? $loginuser['address4_city'] : ''; ?>";
-        shipping_address_postcode = "<?php echo !empty($loginuser['address4_postcode']) ? $loginuser['address4_postcode'] : ''; ?>";
+        shipping_address = "<?php echo $loginusers['address4']; ?>";
+        shipping_address_line2 = "<?php echo !empty($loginusers['address4_line2']) ? $loginusers['address4_line2'] : ''; ?>";
+        shipping_address_line3 = "<?php echo !empty($loginusers['address4_line3']) ? $loginusers['address4_line3'] : ''; ?>";
+        shipping_address_line4 = "<?php echo !empty($loginusers['address4_line4']) ? $loginusers['address4_line4'] : ''; ?>";
+        shipping_address_city = "<?php echo !empty($loginusers['address4_city']) ? $loginusers['address4_city'] : ''; ?>";
+        shipping_address_postcode = "<?php echo !empty($loginusers['address4_postcode']) ? $loginusers['address4_postcode'] : ''; ?>";
     }
-    var user_id = "<?php echo $loginuser['id']; ?>";
 
-    $.ajax({
-        type: 'POST',
-        url: '<?php echo base_url("index.php/orders/update_shipping"); ?>',
-        data: { 
-            shipping_address: shipping_address,
-            shipping_address_line2: shipping_address_line2,
-            shipping_address_line3: shipping_address_line3,
-            shipping_address_line4: shipping_address_line4,
-            shipping_address_city: shipping_address_city,
-            shipping_address_postcode: shipping_address_postcode,
-            user_id: user_id 
-        },
-        success: function(response) {
-            $('#myModal').modal('hide');
-            swal("Address Updated!", "You can now proceed to create the order.", "success").then((value) => {
-                confirmSubmission(event);
-            });
-        },
-        error: function(xhr, status, error) {
-            swal("Error", "Failed to update address. Please try again.", "error");
-        }
+   
+    $('#shipping_address').val(shipping_address);
+    $('#shipping_address_line2').val(shipping_address_line2);
+    $('#shipping_address_line3').val(shipping_address_line3);
+    $('#shipping_address_line4').val(shipping_address_line4);
+    $('#shipping_address_city').val(shipping_address_city);
+    $('#shipping_address_postcode').val(shipping_address_postcode);
+
+    $('#myModal').modal('hide');
+    swal("Address Updated!", "You can now proceed to create the order.", "success").then((value) => {
+        confirmSubmission(event);
     });
 }
-
 
 function confirmSubmission(event) {
     event.preventDefault(); // Prevent the default form submission
 
+    // Get the delivery charge value
+    var deliveryCharge = parseFloat(document.getElementById('delivery_charge').value);
+
+   // alert(deliveryCharge);
+
+    // Check if the delivery charge is 20
+    if (deliveryCharge === 20) {
+        swal({
+            title: "Confirmation",
+            text: "Under $80 MOQ, a $20 fee will be imposed.",
+            icon: "info",
+            buttons: ["Cancel", "Continue"],
+        }).then((willContinue) => {
+            if (willContinue) {
+                // Proceed with the rest of the confirmation
+                confirmOrder();
+            }
+        });
+    }  else {
+        // If delivery charge is not 20, proceed with the existing confirmation
+        confirmOrder();
+    }
+}
+
+function confirmOrder() {
     // Find the closest form element to the clicked button
     var form = document.getElementById('update_orders');
 
     // Show SweetAlert confirmation dialog
     swal({
-        title: "You are about to update this order?",
+        title: "You are about to confirm this order?",
         text: "An invoice will be sent to your Finance department",
         icon: "warning",
         buttons: {
@@ -826,7 +847,7 @@ function confirmSubmission(event) {
                 value: false,
                 visible: true,
                 className: "btn btn-default",
-                closeModal: true
+                closeModal: true // This will close the modal if cancel is clicked
             },
             confirm: {
                 text: "Create Order",

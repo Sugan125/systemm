@@ -128,6 +128,14 @@ public function getProductData($id = null)
 		'delivery_date' =>$order_date,
         'gross_amount' => $this->input->post('gross_amount_value'),
         'service_charge_rate' => $this->input->post('service_charge_value'),
+
+		'shipping_address' => $this->input->post('shipping_address'),
+		'shipping_address_line2' => $this->input->post('shipping_address_line2'),
+		'shipping_address_line3' => $this->input->post('shipping_address_line3'),
+		'shipping_address_line4' => $this->input->post('shipping_address_line4'),
+		'shipping_address_city' => $this->input->post('shipping_address_city'),
+		'shipping_address_postcode' => $this->input->post('shipping_address_postcode'),
+
         'delivery_charge' => $this->input->post('delivery_charge_value'),
         'net_amount' => $this->input->post('net_amount_value'),
         'discount' => $this->input->post('discount'),
@@ -262,6 +270,8 @@ public function update($id,$user_id)
 		$created_date = $current_date_time->format('Y-m-d H:i:s');
 
         // Data to update in the orders table
+
+		
         $order_data = array(
             'gross_amount' => $this->input->post('gross_amount_value'),
             'service_charge_rate' => $this->input->post('service_charge_value'),
@@ -275,7 +285,13 @@ public function update($id,$user_id)
 			'feed_back' => $this->input->post('feed_back'),
 			'packer_memo' => $this->input->post('packer_memo'),
 			'driver_memo' => $this->input->post('driver_memo'),
-            'user_id' => $user_id,
+			'shipping_address' => $this->input->post('shipping_address'),
+			'shipping_address_line2' => $this->input->post('shipping_address_line2'),
+			'shipping_address_line3' => $this->input->post('shipping_address_line3'),
+			'shipping_address_line4' => $this->input->post('shipping_address_line4'),
+			'shipping_address_city' => $this->input->post('shipping_address_city'),
+			'shipping_address_postcode' => $this->input->post('shipping_address_postcode'),	
+			'user_id' => $user_id,
 			'created_date' => $created_date,
         );
 
@@ -494,6 +510,15 @@ public function getpackingorder($schedule_date) {
 
 public function repeat_order($id)
 {
+
+	$shipping_address = $this->input->post('shipping_address');
+	$shipping_address_line2 = $this->input->post('shipping_address_line2');
+	$shipping_address_line3 = $this->input->post('shipping_address_line3');
+	$shipping_address_line4 = $this->input->post('shipping_address_line4');
+	$shipping_address_city = $this->input->post('shipping_address_city');
+	$shipping_address_postcode = $this->input->post('shipping_address_postcode');
+
+
     if($id) {
      
         $user = $this->session->userdata('normal_user');
@@ -574,6 +599,12 @@ public function repeat_order($id)
 			'feed_back' => $row['feed_back'],
 			'driver_memo'=> $row['driver_memo'],
 			'packer_memo' => $row['packer_memo'],
+			'shipping_address' => $shipping_address,
+			'shipping_address_line2' => $shipping_address_line2,
+			'shipping_address_line3' => $shipping_address_line3,
+			'shipping_address_line4' => $shipping_address_line4,
+			'shipping_address_city' => $shipping_address_city,
+			'shipping_address_postcode' => $shipping_address_postcode,
 			'paid_status' => 2,
 			'user_id' => $user_id,
 			'created_date' => $created_date,
@@ -631,7 +662,7 @@ public function repeat_order($id)
 			// Inserting the constructed array into the database
 			$this->db->insert('order_items', $items);
 		}
-		
+	
 		$query = $this->db->select('bill_no')->where('user_id', $user_id)->where('id', $order_id)->get('orders');
 		$result = $query->row_array();
 		$bill_no = $result['bill_no'];
@@ -648,6 +679,9 @@ public function admin_create()
 	$email = $user->email;
 
 	$user_id = $this->input->post('user_id');
+
+
+
   
 	$current_year_month = date('ym');
 
@@ -715,7 +749,13 @@ public function admin_create()
         'discount' => $this->input->post('discount'),
         'gst_amt' => $this->input->post('gst_rate'),
         'gst_percent' => $this->input->post('gst_value'),
-        'paid_status' => 2,
+		'shipping_address' => $this->input->post('shipping_address'),
+		'shipping_address_line2' => $this->input->post('shipping_address_line2'),
+		'shipping_address_line3' => $this->input->post('shipping_address_line3'),
+		'shipping_address_line4' => $this->input->post('shipping_address_line4'),
+		'shipping_address_city' => $this->input->post('shipping_address_city'),
+		'shipping_address_postcode' => $this->input->post('shipping_address_postcode'),	
+		'paid_status' => 2,
         'user_id' =>	$this->input->post('user_id'),
 		'created_date' => $created_date,
 		'driver_memo' => $this->input->post('driver_memo'),
@@ -790,11 +830,13 @@ public function admin_create()
         );
         $this->db->insert('order_items', $items);
     }
-    $query = $this->db->select('bill_no')->where('user_id', $user_id)->where('id', $order_id)->get('orders');
-    $result = $query->row_array();
-    $bill_no = $result['bill_no'];
+   
+	
+	$query1 = $this->db->select('email')->where('id', $user_id)->get('user_register');
+	$result1 = $query1->row_array();
+	$user_email = $result1['email'];
 
-    return array('id' => $order_id, 'order_id' => $order_id, 'bill_no' => $bill_no,'email' => $email);
+    return array('id' => $order_id, 'order_id' => $order_id, 'bill_no' => $bill_no,'email' => $user_email);
 	
 }
 
@@ -898,5 +940,12 @@ public function search_orderdate($keyword, $limit, $offset) {
     return $query->result();
 }
 
+public function getuseraddress($user_id){
+	$this->db->where('id', $user_id);
+    $this->db->select('*');
+    $this->db->from('user_register');
+    $query = $this->db->get();
+    return $query->row_array();
+}
 
 }

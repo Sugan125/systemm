@@ -109,7 +109,7 @@
                   <tbody>
                     <tr id="row_1">
                         <td>    
-                        <select class="form-control category_name" data-row-id="1" id="category_1" name="category[]" onchange="categoryChange(1)">
+                        <select class="form-control category_name" data-row-id="1" id="category_1" name="category[]">
 
                                 <option value="">Choose</option>
                                 <?php foreach ($category as $key => $value): ?>
@@ -252,6 +252,15 @@
                       <input type="hidden" class="form-control" id="net_amount_value" name="net_amount_value" autocomplete="off">
                     </div>
                   </div>
+
+                  <input type="hidden" name="shipping_address" id="shipping_address">
+                  <input type="hidden" name="shipping_address_line2" id="shipping_address_line2">
+                  <input type="hidden" name="shipping_address_line3" id="shipping_address_line3">
+                  <input type="hidden" name="shipping_address_line4" id="shipping_address_line4">
+                  <input type="hidden" name="shipping_address_city" id="shipping_address_city">
+                  <input type="hidden" name="shipping_address_postcode" id="shipping_address_postcode">
+            
+
                   </div>
 
                 </div>
@@ -497,7 +506,7 @@ $(document).on('change', '.seed', function() {
             success: function(response) {
               var html = '<tr id="row_'+row_id+'">' +
                 '<td>'+ 
-                    '<select class="form-control select_group category_name" data-row-id="'+row_id+'" id="category_'+row_id+'" name="category[]" style="width:100%;" onchange="categoryChange('+row_id+')">'+
+                    '<select class="form-control select_group category_name" data-row-id="'+row_id+'" id="category_'+row_id+'" name="category[]" style="width:100%;">'+
                         '<option value="">Choose</option>';
                         // Add options for categories here
                         <?php foreach ($category as $key => $value): ?>
@@ -860,29 +869,17 @@ function handleNext() {
         shipping_address_postcode = "<?php echo !empty($loginuser['address4_postcode']) ? $loginuser['address4_postcode'] : ''; ?>";
     }
 
-    var user_id = "<?php echo $loginuser['id']; ?>";
+   
+    $('#shipping_address').val(shipping_address);
+    $('#shipping_address_line2').val(shipping_address_line2);
+    $('#shipping_address_line3').val(shipping_address_line3);
+    $('#shipping_address_line4').val(shipping_address_line4);
+    $('#shipping_address_city').val(shipping_address_city);
+    $('#shipping_address_postcode').val(shipping_address_postcode);
 
-    $.ajax({
-        type: 'POST',
-        url: '<?php echo base_url("index.php/orders/update_shipping"); ?>',
-        data: { 
-            shipping_address: shipping_address,
-            shipping_address_line2: shipping_address_line2,
-            shipping_address_line3: shipping_address_line3,
-            shipping_address_line4: shipping_address_line4,
-            shipping_address_city: shipping_address_city,
-            shipping_address_postcode: shipping_address_postcode,
-            user_id: user_id 
-        },
-        success: function(response) {
-            $('#myModal').modal('hide');
-            swal("Address Updated!", "You can now proceed to create the order.", "success").then((value) => {
-                confirmSubmission(event);
-            });
-        },
-        error: function(xhr, status, error) {
-            swal("Error", "Failed to update address. Please try again.", "error");
-        }
+    $('#myModal').modal('hide');
+    swal("Address Updated!", "You can now proceed to create the order.", "success").then((value) => {
+        confirmSubmission(event);
     });
 }
 function confirmSubmission(event) {

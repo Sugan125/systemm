@@ -269,4 +269,9 @@ public function insert_import($data) {
 
 }
 
+public function get_activeusers() {
+  $this->db->where('status', 1);
+  return $this->db->get('user_register')->result();
+}
+
 }
