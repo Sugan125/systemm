@@ -87,9 +87,10 @@
                         <p class="text-light" style="font-weight: 600;">View Access</p>
                     </div>
                 </div>
-            </div></a>
+            </div>
             <!--/.col-->
             <?php
+             echo '</a>';
             } 
         }
             ?>
@@ -134,6 +135,7 @@
                         </div>
 
                     </div>
+
                     <!-- <<div class="card-footer"> 
                         <ul>
                             <li>
@@ -233,14 +235,10 @@
             </div>
 
 <?php
+  echo '</a>';
             }}
 ?>
-  <?php
-         if (isset($loginuser['roles']) && !empty($loginuser['roles'])) {
-            if ($loginuser['roles'] == 'User') {
-                echo '<a href="' . base_url('index.php/Userrolecontroller') . '">';
-            
-        ?>
+ 
 <div class="col-xl-6">
                 <div class="card">
                     <div class="card-body">
@@ -315,7 +313,8 @@
                     </div> -->
                 </div>
             </div>
-            <div class="col-xl-3 col-lg-6">
+           
+            <div class="col-xl-3 col-lg-6" hidden>
                 <div class="card">
                     <div class="card-body">
                         <div class="stat-widget-one">
@@ -339,8 +338,6 @@
                     </div>
                 </div>
             </div> -->
-            <?php
-            }}
-?>
+           
         </div>
    

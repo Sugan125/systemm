@@ -148,8 +148,8 @@
                 <label for="feed_back" class="control-label">Feedback</label>
                 <textarea class="form-control" id="feed_back" name="feed_back" autocomplete="off"><?php echo $order_data['feed_back'] ?></textarea>
                 <br>
-                <label>Pre Order Date (If required)</label>
-                <input type="date" name="pre_order_date" id="pre_order" class="form-control"  autocomplete="off">
+                <label>Delivery Date (Mandatory)</label>
+                <input type="date" name="pre_order_date" id="pre_order" class="form-control"  autocomplete="off" required>
                 <br>
                 <label for="packer_memo" class="control-label">Packer Memo</label>
                 <textarea class="form-control" id="packer_memo" name="packer_memo" autocomplete="off"><?php echo $order_data['pmemo'] ?></textarea>
