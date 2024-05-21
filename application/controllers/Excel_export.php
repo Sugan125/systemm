@@ -32,8 +32,8 @@ class Excel_export extends CI_Controller {
          "Quantity",
          "Description",
          "Price",
-         "",
-         "Service Charge",
+        //  "",
+        //  "Service Charge",
          "Inc-Tax Price",
          "- % Discount",
          "Total",
@@ -68,6 +68,10 @@ class Excel_export extends CI_Controller {
      foreach ($employee_data as $row) {
          $schedule_date = strtotime($row->created_date);
          $date = date('d-m-Y', $schedule_date);
+         
+         $rate = $row->rate;
+
+         $inc_tax = $rate * 1.09;
  
          if (is_numeric($row->delivery_date)) {
             // Assume it is a Unix timestamp
@@ -85,24 +89,10 @@ class Excel_export extends CI_Controller {
          $net_total = $row->amount + $row->gst_amount;
  
          if ($row->name != $prev_name && $prev_name != '__INITIAL_VALUE__') {
-             if ($delivery_charge_count > 0) {
-                 $object->getActiveSheet()->insertNewRowBefore($excel_row, 1);
-                 $excel_row++; // Increment the row counter
- 
-                 $average_delivery_charge = $total_delivery_charge / $delivery_charge_count;
-                 $object->getActiveSheet()->setCellValueByColumnAndRow(12, $excel_row, "Delivery charge:"); // Delivery Charge
-                 $object->getActiveSheet()->setCellValueByColumnAndRow(13, $excel_row, $average_delivery_charge); 
-                 $excel_row++; // Increment the row counter
-                 
-                 // Reset variables for the next company
-                 $total_delivery_charge = 0;
-                 $delivery_charge_count = 0;
-                 
-                 // Add an empty row
-                 $object->getActiveSheet()->insertNewRowBefore($excel_row, 1);
-                 $excel_row++; // Increment the row counter
-             }
-         }
+            // If different and not the initial value, insert a blank row
+            $excel_row++;
+        }
+
  
          // Populate Excel row with line item data
          $object->getActiveSheet()->setCellValueByColumnAndRow(0, $excel_row, $row->company_name);
@@ -116,16 +106,19 @@ class Excel_export extends CI_Controller {
          $object->getActiveSheet()->setCellValueByColumnAndRow(9, $excel_row, $row->qty);
          $object->getActiveSheet()->setCellValueByColumnAndRow(10, $excel_row, $row->product_name);
          $object->getActiveSheet()->setCellValueByColumnAndRow(11, $excel_row, $row->rate);
-         $object->getActiveSheet()->setCellValueByColumnAndRow(13, $excel_row, $row->service_charge);
-         $object->getActiveSheet()->setCellValueByColumnAndRow(14, $excel_row, $row->gst_amount);
-         $object->getActiveSheet()->setCellValueByColumnAndRow(15, $excel_row, '0');
-         $object->getActiveSheet()->setCellValueByColumnAndRow(16, $excel_row, $row->amount);
-         $object->getActiveSheet()->setCellValueByColumnAndRow(17, $excel_row, $net_total);
-         $object->getActiveSheet()->setCellValueByColumnAndRow(18, $excel_row, 'Sale;'.$row->sales_person);
-         $object->getActiveSheet()->setCellValueByColumnAndRow(22, $excel_row, $delivery_date);
-         $object->getActiveSheet()->setCellValueByColumnAndRow(23, $excel_row, 'SR9');
-         $object->getActiveSheet()->setCellValueByColumnAndRow(24, $excel_row, $row->gst_amount);
-         $object->getActiveSheet()->setCellValueByColumnAndRow(27, $excel_row, $row->record_id);
+        //  $object->getActiveSheet()->setCellValueByColumnAndRow(13, $excel_row, $row->service_charge);
+         $object->getActiveSheet()->setCellValueByColumnAndRow(12, $excel_row, $inc_tax);
+         $object->getActiveSheet()->setCellValueByColumnAndRow(13, $excel_row, '0');
+         $object->getActiveSheet()->setCellValueByColumnAndRow(14, $excel_row, $row->amount);
+         $object->getActiveSheet()->setCellValueByColumnAndRow(15, $excel_row, $net_total);
+         $object->getActiveSheet()->setCellValueByColumnAndRow(16, $excel_row, 'Sale;'.$row->sales_person);
+         $object->getActiveSheet()->setCellValueByColumnAndRow(17, $excel_row, $row->driver_memo);
+         $object->getActiveSheet()->setCellValueByColumnAndRow(19, $excel_row, $row->sales_person);
+         $object->getActiveSheet()->setCellValueByColumnAndRow(20, $excel_row, $delivery_date);
+         $object->getActiveSheet()->setCellValueByColumnAndRow(21, $excel_row, 'SR9');
+         $object->getActiveSheet()->setCellValueByColumnAndRow(22, $excel_row, $row->gst_amount);
+         $object->getActiveSheet()->setCellValueByColumnAndRow(23, $excel_row, $row->payment_terms);
+         $object->getActiveSheet()->setCellValueByColumnAndRow(25, $excel_row, $row->record_id);
  
          // Update the total delivery charge for the company
          $total_delivery_charge += $row->delivery_charge;
@@ -138,21 +131,7 @@ class Excel_export extends CI_Controller {
      }
  
      // Check for any remaining delivery charges
-     if ($delivery_charge_count > 0) {
-         $object->getActiveSheet()->insertNewRowBefore($excel_row, 1);
-         $excel_row++; // Increment the row counter
- 
-         $average_delivery_charge = $total_delivery_charge / $delivery_charge_count;
- 
-         if($average_delivery_charge > 0){
-         $object->getActiveSheet()->setCellValueByColumnAndRow(12, $excel_row, 'Delivery charge'); // Delivery Charge
-         $object->getActiveSheet()->setCellValueByColumnAndRow(13, $excel_row, $average_delivery_charge); // Delivery Charge
-         }
-         // Add an empty row
-         $object->getActiveSheet()->insertNewRowBefore($excel_row, 1);
-         $excel_row++; // Increment the row counter
-     }
- 
+  
      $object_writer = PHPExcel_IOFactory::createWriter($object, 'Excel5');
      header('Content-Type: application/vnd.ms-excel');
      header('Content-Disposition: attachment;filename="SALE-ITEM.xls"');
@@ -181,8 +160,8 @@ class Excel_export extends CI_Controller {
          "Quantity",
          "Description",
          "Price",
-         "",
-         "Service Charge",
+        //  "",
+        //  "Service Charge",
          "Inc-Tax Price",
          "- % Discount",
          "Total",
@@ -215,9 +194,15 @@ class Excel_export extends CI_Controller {
      $delivery_charge_count = 0;
  
      foreach ($employee_data as $row) {
+
+
          $schedule_date = strtotime($row->created_date);
          $date = date('d-m-Y', $schedule_date);
  
+         $rate = $row->rate;
+
+         $inc_tax = $rate * 1.09;
+         
          if (is_numeric($row->delivery_date)) {
             // Assume it is a Unix timestamp
             $delivery_date = date('d-m-Y', $row->delivery_date);
@@ -235,24 +220,10 @@ class Excel_export extends CI_Controller {
          $net_total = $row->amount + $row->gst_amount;
  
          if ($row->name != $prev_name && $prev_name != '__INITIAL_VALUE__') {
-             if ($delivery_charge_count > 0) {
-                 $object->getActiveSheet()->insertNewRowBefore($excel_row, 1);
-                 $excel_row++; // Increment the row counter
- 
-                 $average_delivery_charge = $total_delivery_charge / $delivery_charge_count;
-                 $object->getActiveSheet()->setCellValueByColumnAndRow(12, $excel_row, "Delivery charge:"); // Delivery Charge
-                 $object->getActiveSheet()->setCellValueByColumnAndRow(13, $excel_row, $average_delivery_charge); 
-                 $excel_row++; // Increment the row counter
-                 
-                 // Reset variables for the next company
-                 $total_delivery_charge = 0;
-                 $delivery_charge_count = 0;
-                 
-                 // Add an empty row
-                 $object->getActiveSheet()->insertNewRowBefore($excel_row, 1);
-                 $excel_row++; // Increment the row counter
-             }
-         }
+            // If different and not the initial value, insert a blank row
+            $excel_row++;
+        }
+
  
          // Populate Excel row with line item data
          $object->getActiveSheet()->setCellValueByColumnAndRow(0, $excel_row, $row->company_name);
@@ -266,16 +237,19 @@ class Excel_export extends CI_Controller {
          $object->getActiveSheet()->setCellValueByColumnAndRow(9, $excel_row, $row->qty);
          $object->getActiveSheet()->setCellValueByColumnAndRow(10, $excel_row, $row->product_name);
          $object->getActiveSheet()->setCellValueByColumnAndRow(11, $excel_row, $row->rate);
-         $object->getActiveSheet()->setCellValueByColumnAndRow(13, $excel_row, $row->service_charge);
-         $object->getActiveSheet()->setCellValueByColumnAndRow(14, $excel_row, $row->gst_amount);
-         $object->getActiveSheet()->setCellValueByColumnAndRow(15, $excel_row, '0');
-         $object->getActiveSheet()->setCellValueByColumnAndRow(16, $excel_row, $row->amount);
-         $object->getActiveSheet()->setCellValueByColumnAndRow(17, $excel_row, $net_total);
-         $object->getActiveSheet()->setCellValueByColumnAndRow(18, $excel_row, 'Sale;'.$row->sales_person);
-         $object->getActiveSheet()->setCellValueByColumnAndRow(22, $excel_row, $delivery_date);
-         $object->getActiveSheet()->setCellValueByColumnAndRow(23, $excel_row, 'SR9');
-         $object->getActiveSheet()->setCellValueByColumnAndRow(24, $excel_row, $row->gst_amount);
-         $object->getActiveSheet()->setCellValueByColumnAndRow(27, $excel_row, $row->record_id);
+        //  $object->getActiveSheet()->setCellValueByColumnAndRow(13, $excel_row, $row->service_charge);
+         $object->getActiveSheet()->setCellValueByColumnAndRow(12, $excel_row, $inc_tax);
+         $object->getActiveSheet()->setCellValueByColumnAndRow(13, $excel_row, '0');
+         $object->getActiveSheet()->setCellValueByColumnAndRow(14, $excel_row, $row->amount);
+         $object->getActiveSheet()->setCellValueByColumnAndRow(15, $excel_row, $net_total);
+         $object->getActiveSheet()->setCellValueByColumnAndRow(16, $excel_row, 'Sale;'.$row->sales_person);
+         $object->getActiveSheet()->setCellValueByColumnAndRow(17, $excel_row, $row->driver_memo);
+         $object->getActiveSheet()->setCellValueByColumnAndRow(19, $excel_row, $row->sales_person);
+         $object->getActiveSheet()->setCellValueByColumnAndRow(20, $excel_row, $delivery_date);
+         $object->getActiveSheet()->setCellValueByColumnAndRow(21, $excel_row, 'SR9');
+         $object->getActiveSheet()->setCellValueByColumnAndRow(22, $excel_row, $row->gst_amount);
+         $object->getActiveSheet()->setCellValueByColumnAndRow(23, $excel_row, $row->payment_terms);
+         $object->getActiveSheet()->setCellValueByColumnAndRow(25, $excel_row, $row->record_id);
  
          // Update the total delivery charge for the company
          $total_delivery_charge += $row->delivery_charge;
@@ -288,20 +262,7 @@ class Excel_export extends CI_Controller {
      }
  
      // Check for any remaining delivery charges
-     if ($delivery_charge_count > 0) {
-         $object->getActiveSheet()->insertNewRowBefore($excel_row, 1);
-         $excel_row++; // Increment the row counter
- 
-         $average_delivery_charge = $total_delivery_charge / $delivery_charge_count;
- 
-         if($average_delivery_charge > 0){
-         $object->getActiveSheet()->setCellValueByColumnAndRow(12, $excel_row, 'Delivery charge'); // Delivery Charge
-         $object->getActiveSheet()->setCellValueByColumnAndRow(13, $excel_row, $average_delivery_charge); // Delivery Charge
-         }
-         // Add an empty row
-         $object->getActiveSheet()->insertNewRowBefore($excel_row, 1);
-         $excel_row++; // Increment the row counter
-     }
+   
  
      $object_writer = PHPExcel_IOFactory::createWriter($object, 'Excel5');
      header('Content-Type: application/vnd.ms-excel');
