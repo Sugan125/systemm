@@ -849,20 +849,6 @@ public function count_search_results($keyword) {
 	return $this->db->count_all_results('orders');
 }
 
-public function search_orders($keyword, $limit, $offset) {
-    $this->db->like('bill_no', $keyword);
-    $this->db->or_like('name', $keyword);
-    $this->db->limit($limit, $offset);
-    $this->db->select('ord.*, us.name as name'); // Select fields from both tables
-
-    $this->db->from('orders ord');
-    $this->db->join('user_register us', 'us.id = ord.user_id');
-
-    $query = $this->db->get();
-	//var_dump($this->db->last_query()); // Check the generated SQL query
-    return $query->result();
-}
-
 public function getinvoice($date) {
 	
 	$sql = "SELECT bill_no FROM orders WHERE   DATE(delivery_date) = '$date'";
@@ -896,11 +882,6 @@ public function deleteorder($id){
     return ($this->db->affected_rows() > 0);
 }
 
-public function count_search_orders($keyword) {
-	$this->db->like('bill_no', $keyword);
-    return $this->db->count_all_results('orders');
-}
-
 
 public function count_search_date($keyword) {
 	$this->db->where('delivery_date', $keyword);
@@ -923,8 +904,10 @@ public function search_date($keyword, $limit, $offset) {
 
 
 public function count_search_orderdate($keyword) {
-	$this->db->where('created_date', $keyword);
+	$this->db->where('DATE(created_date)', $keyword);
     return $this->db->count_all_results('orders');
+
+	//var_dump($this->db->last_query()); // Check the generated SQL query
 }
 
 public function search_orderdate($keyword, $limit, $offset) {
@@ -947,5 +930,28 @@ public function getuseraddress($user_id){
     $query = $this->db->get();
     return $query->row_array();
 }
+
+public function count_search_orders($keyword) {
+    $this->db->from('orders ord');
+    $this->db->join('user_register us', 'us.id = ord.user_id');
+    $this->db->like('ord.bill_no', $keyword);
+    $this->db->or_like('us.name', $keyword);
+    return $this->db->count_all_results();
+}
+
+public function search_orders($keyword, $limit, $offset) {
+    $this->db->select('ord.*, us.name as name'); // Select fields from both tables
+    $this->db->from('orders ord');
+    $this->db->join('user_register us', 'us.id = ord.user_id');
+    $this->db->like('ord.bill_no', $keyword);
+    $this->db->or_like('us.name', $keyword);
+    $this->db->limit($limit, $offset);
+    
+    $query = $this->db->get();
+    // Uncomment the next line to debug the generated SQL query
+    // var_dump($this->db->last_query()); // Check the generated SQL query
+    return $query->result();
+}
+
 
 }

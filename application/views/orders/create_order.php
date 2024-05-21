@@ -422,47 +422,39 @@
 // });
 var today = new Date();
 
-// Calculate the date 3 days from now
-var threeDaysFromNow = new Date(today);
-threeDaysFromNow.setDate(today.getDate() + 3);
+// Calculate the date 2 days from now for the default value
+var defaultDate = new Date(today);
+defaultDate.setDate(today.getDate() + 3);
 
-// Set the minimum date for the pre-order input field
+// Set the default value for the pre-order input field
 var preOrderInput = document.getElementById('pre_order');
-preOrderInput.min = threeDaysFromNow.toISOString().split('T')[0];
+preOrderInput.value = defaultDate.toISOString().split('T')[0];
 
-// Calculate the date 7 days from now
-var sevenDaysFromNow = new Date(today);
-sevenDaysFromNow.setDate(today.getDate() + 8);
+// Set the minimum date for the pre-order input field (2 days from now)
+var minDate = new Date(today);
+minDate.setDate(today.getDate() + 2);
 
-// Set the maximum date for the pre-order input field
-preOrderInput.max = sevenDaysFromNow.toISOString().split('T')[0];
+// Set the maximum date for the pre-order input field (7 days from now)
+var maxDate = new Date(today);
+maxDate.setDate(today.getDate() + 7);
 
-// Function to check if a given date is within the disabled range
-function isDisabledDate(date) {
-    return date >= today && date <= threeDaysFromNow;
-}
-
-// Disable input field for today and the next two days
-preOrderInput.addEventListener('input', function() {
-    var selectedDate = new Date(preOrderInput.value);
-    if (isDisabledDate(selectedDate)) {
-        preOrderInput.value = ''; // Clear input if date is within the disabled range
-        alert('You can only select a date beyond today and the next two days.');
-    }
-});
-
+// Set the min and max attributes for the input field
+preOrderInput.min = minDate.toISOString().split('T')[0];
+preOrderInput.max = maxDate.toISOString().split('T')[0];
 
 // Function to check if a given date is a Sunday
 function isSunday(date) {
     return date.getDay() === 0; // 0 represents Sunday
 }
 
-// Disable input field after the 7-day period and disallow Sundays
+// Disable input field for invalid dates
 preOrderInput.addEventListener('input', function() {
     var selectedDate = new Date(preOrderInput.value);
-    if (selectedDate > sevenDaysFromNow || isSunday(selectedDate)) {
-        preOrderInput.value = ''; // Clear input if date is beyond the allowed range or is a Sunday
-        if (selectedDate > sevenDaysFromNow) {
+    if (selectedDate < minDate || selectedDate > maxDate || isSunday(selectedDate)) {
+        preOrderInput.value = ''; // Clear input if date is invalid
+        if (selectedDate < minDate) {
+            alert('You can only select a date starting from ' + minDate.toISOString().split('T')[0] + '.');
+        } else if (selectedDate > maxDate) {
             alert('You can only select a date within the next 7 days.');
         } else {
             alert('Sunday is not allowed for pre-order.');

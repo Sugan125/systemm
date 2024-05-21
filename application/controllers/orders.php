@@ -969,199 +969,190 @@ public function deleteorder($id){
 		return false;
 	}
 }
-
 public function searchinvoice() {
-	$keyword = $this->input->get('keyword');
-	$data['title'] = 'Dashboard';
+    $keyword = $this->input->get('keyword');
+    $data['title'] = 'Dashboard';
 
-	// Pagination Config for Search Results
-	$config['base_url'] = site_url('Orders/searchinvoice');
-	$config['total_rows'] = max($this->order_model->count_search_orders($keyword), 10);
+    // Load pagination library
+    $this->load->library('pagination');
 
-	
-	$config['per_page'] = 10;
-	$config['uri_segment'] = 3;
-	$config['use_page_numbers'] = TRUE;
+    // Pagination Config for Search Results
+    $config['base_url'] = site_url('Orders/searchinvoice');
+    $config['total_rows'] = $this->order_model->count_search_orders($keyword);
+    $config['per_page'] = 10;
+    $config['uri_segment'] = 3;
+    $config['use_page_numbers'] = TRUE;
 
-	$config['full_tag_open'] = '<ul class="pagination">';
-	$config['full_tag_close'] = '</ul>';
-	$config['first_link'] = 'First';
-	$config['last_link'] = 'Last';
-	$config['first_tag_open'] = '<li class="page-item"><span class="page-link">';
-	$config['first_tag_close'] = '</span></li>';
-	$config['prev_link'] = 'Previous';
-	$config['prev_tag_open'] = '<li class="page-item"><span class="page-link">';
-	$config['prev_tag_close'] = '</span></li>';
-	$config['next_link'] = 'Next';
-	$config['next_tag_open'] = '<li class="page-item"><span class="page-link">';
-	$config['next_tag_close'] = '</span></li>';
-	$config['last_tag_open'] = '<li class="page-item"><span class="page-link">';
-	$config['last_tag_close'] = '</span></li>';
-	$config['cur_tag_open'] = '<li class="page-item active"><span class="page-link">';
-	$config['cur_tag_close'] = '</span></li>';
-	$config['num_tag_open'] = '<li class="page-item"><span class="page-link">';
-	$config['num_tag_close'] = '</span></li>'; 
+    // Include the keyword in the query string for pagination links
+    $config['suffix'] = '?keyword=' . $keyword;
+    $config['first_url'] = $config['base_url'] . '/1' . $config['suffix'];
 
-	$page = ($this->uri->segment(3)) ? $this->uri->segment(3) : 1; // Set the default page to 1
-	$offset = ($page - 1) * $config['per_page'];
+    $config['full_tag_open'] = '<ul class="pagination">';
+    $config['full_tag_close'] = '</ul>';
+    $config['first_link'] = 'First';
+    $config['last_link'] = 'Last';
+    $config['first_tag_open'] = '<li class="page-item"><span class="page-link">';
+    $config['first_tag_close'] = '</span></li>';
+    $config['prev_link'] = 'Previous';
+    $config['prev_tag_open'] = '<li class="page-item"><span class="page-link">';
+    $config['prev_tag_close'] = '</span></li>';
+    $config['next_link'] = 'Next';
+    $config['next_tag_open'] = '<li class="page-item"><span class="page-link">';
+    $config['next_tag_close'] = '</span></li>';
+    $config['last_tag_open'] = '<li class="page-item"><span class="page-link">';
+    $config['last_tag_close'] = '</span></li>';
+    $config['cur_tag_open'] = '<li class="page-item active"><span class="page-link">';
+    $config['cur_tag_close'] = '</span></li>';
+    $config['num_tag_open'] = '<li class="page-item"><span class="page-link">';
+    $config['num_tag_close'] = '</span></li>';
 
-	$data['keyword'] = $keyword;
-	
-	
-	$this->pagination->initialize($config);
+    $page = ($this->uri->segment(3)) ? $this->uri->segment(3) : 1;
+    $offset = ($page - 1) * $config['per_page'];
 
-	$loginuser = $this->session->userdata('LoginSession');
+    $data['keyword'] = $keyword;
+    $data['config'] = $config;
+    $data['offset'] = $offset;
 
-	$data['user_id'] = $loginuser['id'];
+    $this->pagination->initialize($config);
 
-	
-	$data['orders'] = $this->order_model->search_orders($keyword, $config['per_page'], $offset);
-	$data['total_rows'] = $this->order_model->count_search_orders($keyword);
+    $loginuser = $this->session->userdata('LoginSession');
+    $data['user_id'] = $loginuser['id'];
 
+    $data['orders'] = $this->order_model->search_orders($keyword, $config['per_page'], $offset);
+    $data['total_rows'] = $this->order_model->count_search_orders($keyword);
 
-	// $data['orders'] = $this->order_model->getmanageorder();
-
-	// $data['total_rows'] = $this->order_model->count_all_orders();
-	
-	$this->load->view('template/header.php', $data);
-	$user = $this->session->userdata('user_register');
-	$users = $this->session->userdata('normal_user');
-	$loginuser = $this->session->userdata('LoginSession');
-	//var_dump($loginuser);
-	$this->load->view('template/sidebar.php', array('user' => $user, 'users' => $users, 'data' => $data,'loginuser' => $loginuser));
-	$this->load->view('orders/manage_order.php', $data);
-	$this->load->view('template/footer.php');
+    $this->load->view('template/header.php', $data);
+    $user = $this->session->userdata('user_register');
+    $users = $this->session->userdata('normal_user');
+    $loginuser = $this->session->userdata('LoginSession');
+    $this->load->view('template/sidebar.php', array('user' => $user, 'users' => $users, 'data' => $data, 'loginuser' => $loginuser));
+    $this->load->view('orders/manage_order.php', $data);
+    $this->load->view('template/footer.php');
 }
-
 
 
 public function searchdate() {
-	$keyword = $this->input->get('date');
-	$data['title'] = 'Dashboard';
+    $keyword = $this->input->get('date');
+    $data['title'] = 'Dashboard';
 
-	// Pagination Config for Search Results
-	$config['base_url'] = site_url('Orders/searchinvoice');
-	$config['total_rows'] = max($this->order_model->count_search_date($keyword), 10);
+    // Load pagination library
+    $this->load->library('pagination');
 
-	
-	$config['per_page'] = 10;
-	$config['uri_segment'] = 3;
-	$config['use_page_numbers'] = TRUE;
+    // Pagination Config for Search Results
+    $config['base_url'] = site_url('Orders/searchdate');
+    $config['total_rows'] = $this->order_model->count_search_date($keyword);
+    $config['per_page'] = 10;
+    $config['uri_segment'] = 3;
+    $config['use_page_numbers'] = TRUE;
 
-	$config['full_tag_open'] = '<ul class="pagination">';
-	$config['full_tag_close'] = '</ul>';
-	$config['first_link'] = 'First';
-	$config['last_link'] = 'Last';
-	$config['first_tag_open'] = '<li class="page-item"><span class="page-link">';
-	$config['first_tag_close'] = '</span></li>';
-	$config['prev_link'] = 'Previous';
-	$config['prev_tag_open'] = '<li class="page-item"><span class="page-link">';
-	$config['prev_tag_close'] = '</span></li>';
-	$config['next_link'] = 'Next';
-	$config['next_tag_open'] = '<li class="page-item"><span class="page-link">';
-	$config['next_tag_close'] = '</span></li>';
-	$config['last_tag_open'] = '<li class="page-item"><span class="page-link">';
-	$config['last_tag_close'] = '</span></li>';
-	$config['cur_tag_open'] = '<li class="page-item active"><span class="page-link">';
-	$config['cur_tag_close'] = '</span></li>';
-	$config['num_tag_open'] = '<li class="page-item"><span class="page-link">';
-	$config['num_tag_close'] = '</span></li>'; 
+    // Include the keyword in the query string for pagination links
+    $config['suffix'] = '?date=' . urlencode($keyword);
+    $config['first_url'] = $config['base_url'] . '/1' . $config['suffix'];
 
-	$page = ($this->uri->segment(3)) ? $this->uri->segment(3) : 1; // Set the default page to 1
-	$offset = ($page - 1) * $config['per_page'];
+    $config['full_tag_open'] = '<ul class="pagination">';
+    $config['full_tag_close'] = '</ul>';
+    $config['first_link'] = 'First';
+    $config['last_link'] = 'Last';
+    $config['first_tag_open'] = '<li class="page-item"><span class="page-link">';
+    $config['first_tag_close'] = '</span></li>';
+    $config['prev_link'] = 'Previous';
+    $config['prev_tag_open'] = '<li class="page-item"><span class="page-link">';
+    $config['prev_tag_close'] = '</span></li>';
+    $config['next_link'] = 'Next';
+    $config['next_tag_open'] = '<li class="page-item"><span class="page-link">';
+    $config['next_tag_close'] = '</span></li>';
+    $config['last_tag_open'] = '<li class="page-item"><span class="page-link">';
+    $config['last_tag_close'] = '</span></li>';
+    $config['cur_tag_open'] = '<li class="page-item active"><span class="page-link">';
+    $config['cur_tag_close'] = '</span></li>';
+    $config['num_tag_open'] = '<li class="page-item"><span class="page-link">';
+    $config['num_tag_close'] = '</span></li>';
 
-	$data['date'] = $keyword;
-	
-	
-	$this->pagination->initialize($config);
+    $page = ($this->uri->segment(3)) ? $this->uri->segment(3) : 1;
+    $offset = ($page - 1) * $config['per_page'];
 
-	$loginuser = $this->session->userdata('LoginSession');
+    $data['date'] = $keyword;
+    $data['config'] = $config;
+    $data['offset'] = $offset;
 
-	$data['user_id'] = $loginuser['id'];
+    $this->pagination->initialize($config);
 
-	
-	$data['orders'] = $this->order_model->search_date($keyword, $config['per_page'], $offset);
-	$data['total_rows'] = $this->order_model->count_search_date($keyword);
+    $loginuser = $this->session->userdata('LoginSession');
+    $data['user_id'] = $loginuser['id'];
 
+    $data['orders'] = $this->order_model->search_date($keyword, $config['per_page'], $offset);
+    $data['total_rows'] = $this->order_model->count_search_date($keyword);
 
-	// $data['orders'] = $this->order_model->getmanageorder();
-
-	// $data['total_rows'] = $this->order_model->count_all_orders();
-	
-	$this->load->view('template/header.php', $data);
-	$user = $this->session->userdata('user_register');
-	$users = $this->session->userdata('normal_user');
-	$loginuser = $this->session->userdata('LoginSession');
-	//var_dump($loginuser);
-	$this->load->view('template/sidebar.php', array('user' => $user, 'users' => $users, 'data' => $data,'loginuser' => $loginuser));
-	$this->load->view('orders/manage_order.php', $data);
-	$this->load->view('template/footer.php');
+    $this->load->view('template/header.php', $data);
+    $user = $this->session->userdata('user_register');
+    $users = $this->session->userdata('normal_user');
+    $loginuser = $this->session->userdata('LoginSession');
+    $this->load->view('template/sidebar.php', array('user' => $user, 'users' => $users, 'data' => $data, 'loginuser' => $loginuser));
+    $this->load->view('orders/manage_order.php', $data);
+    $this->load->view('template/footer.php');
 }
-
-
 
 public function searchorderdate() {
-	$keyword = $this->input->get('orderdate');
-	$data['title'] = 'Dashboard';
+    $keyword = $this->input->get('orderdate');
+    $data['title'] = 'Dashboard';
 
-	// Pagination Config for Search Results
-	$config['base_url'] = site_url('Orders/searchinvoice');
-	$config['total_rows'] = max($this->order_model->count_search_orderdate($keyword), 10);
+    // Load pagination library
+    $this->load->library('pagination');
 
-	
-	$config['per_page'] = 10;
-	$config['uri_segment'] = 3;
-	$config['use_page_numbers'] = TRUE;
+    // Pagination Config for Search Results
+    $config['base_url'] = site_url('Orders/searchorderdate');
+    $config['total_rows'] = $this->order_model->count_search_orderdate($keyword);
+    $config['per_page'] = 10;
+    $config['uri_segment'] = 3;
+    $config['use_page_numbers'] = TRUE;
 
-	$config['full_tag_open'] = '<ul class="pagination">';
-	$config['full_tag_close'] = '</ul>';
-	$config['first_link'] = 'First';
-	$config['last_link'] = 'Last';
-	$config['first_tag_open'] = '<li class="page-item"><span class="page-link">';
-	$config['first_tag_close'] = '</span></li>';
-	$config['prev_link'] = 'Previous';
-	$config['prev_tag_open'] = '<li class="page-item"><span class="page-link">';
-	$config['prev_tag_close'] = '</span></li>';
-	$config['next_link'] = 'Next';
-	$config['next_tag_open'] = '<li class="page-item"><span class="page-link">';
-	$config['next_tag_close'] = '</span></li>';
-	$config['last_tag_open'] = '<li class="page-item"><span class="page-link">';
-	$config['last_tag_close'] = '</span></li>';
-	$config['cur_tag_open'] = '<li class="page-item active"><span class="page-link">';
-	$config['cur_tag_close'] = '</span></li>';
-	$config['num_tag_open'] = '<li class="page-item"><span class="page-link">';
-	$config['num_tag_close'] = '</span></li>'; 
+    // Include the keyword in the query string for pagination links
+    $config['suffix'] = '?orderdate=' . urlencode($keyword);
+    $config['first_url'] = $config['base_url'] . '/1' . $config['suffix'];
 
-	$page = ($this->uri->segment(3)) ? $this->uri->segment(3) : 1; // Set the default page to 1
-	$offset = ($page - 1) * $config['per_page'];
+    $config['full_tag_open'] = '<ul class="pagination">';
+    $config['full_tag_close'] = '</ul>';
+    $config['first_link'] = 'First';
+    $config['last_link'] = 'Last';
+    $config['first_tag_open'] = '<li class="page-item"><span class="page-link">';
+    $config['first_tag_close'] = '</span></li>';
+    $config['prev_link'] = 'Previous';
+    $config['prev_tag_open'] = '<li class="page-item"><span class="page-link">';
+    $config['prev_tag_close'] = '</span></li>';
+    $config['next_link'] = 'Next';
+    $config['next_tag_open'] = '<li class="page-item"><span class="page-link">';
+    $config['next_tag_close'] = '</span></li>';
+    $config['last_tag_open'] = '<li class="page-item"><span class="page-link">';
+    $config['last_tag_close'] = '</span></li>';
+    $config['cur_tag_open'] = '<li class="page-item active"><span class="page-link">';
+    $config['cur_tag_close'] = '</span></li>';
+    $config['num_tag_open'] = '<li class="page-item"><span class="page-link">';
+    $config['num_tag_close'] = '</span></li>';
 
-	$data['orderdate'] = $keyword;
-	
-	
-	$this->pagination->initialize($config);
+    $page = ($this->uri->segment(3)) ? $this->uri->segment(3) : 1;
+    $offset = ($page - 1) * $config['per_page'];
 
-	$loginuser = $this->session->userdata('LoginSession');
+    $data['orderdate'] = $keyword;
+    $data['config'] = $config;
+    $data['offset'] = $offset;
 
-	$data['user_id'] = $loginuser['id'];
+    $this->pagination->initialize($config);
 
-	
-	$data['orders'] = $this->order_model->search_orderdate($keyword, $config['per_page'], $offset);
-	$data['total_rows'] = $this->order_model->count_search_orderdate($keyword);
+    $loginuser = $this->session->userdata('LoginSession');
+    $data['user_id'] = $loginuser['id'];
 
+    $data['orders'] = $this->order_model->search_orderdate($keyword, $config['per_page'], $offset);
+    $data['total_rows'] = $this->order_model->count_search_orderdate($keyword);
 
-	// $data['orders'] = $this->order_model->getmanageorder();
-
-	// $data['total_rows'] = $this->order_model->count_all_orders();
-	
-	$this->load->view('template/header.php', $data);
-	$user = $this->session->userdata('user_register');
-	$users = $this->session->userdata('normal_user');
-	$loginuser = $this->session->userdata('LoginSession');
-	//var_dump($loginuser);
-	$this->load->view('template/sidebar.php', array('user' => $user, 'users' => $users, 'data' => $data,'loginuser' => $loginuser));
-	$this->load->view('orders/manage_order.php', $data);
-	$this->load->view('template/footer.php');
+    $this->load->view('template/header.php', $data);
+    $user = $this->session->userdata('user_register');
+    $users = $this->session->userdata('normal_user');
+    $loginuser = $this->session->userdata('LoginSession');
+    $this->load->view('template/sidebar.php', array('user' => $user, 'users' => $users, 'data' => $data, 'loginuser' => $loginuser));
+    $this->load->view('orders/manage_order.php', $data);
+    $this->load->view('template/footer.php');
 }
+
 
 public function fetch_user_address() {
 	

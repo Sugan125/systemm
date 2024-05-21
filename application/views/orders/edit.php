@@ -68,7 +68,21 @@
 
                       <?php if(isset($order_data['order_item'])): ?>
                         <?php $x = 1; ?>
-                        <?php foreach ($order_data['order_item'] as $key => $val): ?>
+                        <?php foreach ($order_data['order_item'] as $key => $val): 
+                          $sql = "SELECT add_on_slice, add_on_seed FROM products WHERE id = ".$val['product_id'];
+                          $query = $this->db->query($sql);
+                          $row = $query->row_array();
+                  
+                          $seed = "";
+                          $slice = "";
+                  
+                          if($row['add_on_seed'] == 0){
+                              $seed = "hidden";
+                          }
+                          if($row['add_on_slice'] == 0){
+                              $slice = "hidden";
+                          }
+                          ?>
                       
                         <tr id="row_<?php echo $x; ?>">
                         <td>
@@ -81,16 +95,19 @@
                           </td>
                           
                           <td>
-                            <select class="form-control select_group product" data-row-id="row_<?php echo $x; ?>" id="product_<?php echo $x; ?>" name="product[]" style="width:100%;" onchange="getProductData(<?php echo $x; ?>)" required >
+                            <select class="form-control select_group product" data-row-id="row_<?php echo $x; ?>" id="product_<?php echo $x; ?>" name="product[]" style="width:100%;" required onchange="getProductData(<?php echo $x; ?>)">
                                 <option value=""></option>
                                 <?php foreach ($products as $k => $v): ?>
-                                  <option value="<?php echo $val['product_id'] ?>" <?php if($val['product_id'] == $v['id']) { echo "selected='selected'"; } ?> ><?php echo $v['product_name'] ?></option>
+                                    <option value="<?php echo $v['id'] ?>" <?php if($val['product_id'] == $v['id']) { echo "selected='selected'"; } ?>>
+                                        <?php echo $v['product_id'] . ' - ' . $v['product_name']; ?>
+                                    </option>
                                 <?php endforeach ?>
-                              </select>
-                            </td>
+                            </select>
+                        </td>
+
 
                               <td>    
-                              <select class="form-control sliced" id="sliced_<?php echo $x; ?>" name="sliced[]" onmousedown="if(this.options.length>8){this.size=8;}" onchange='slicechange()' onblur="this.size=0;">
+                              <select class="form-control sliced" <?php echo $slice; ?> id="sliced_<?php echo $x; ?>" name="sliced[]" onmousedown="if(this.options.length>8){this.size=8;}" onchange='slicechange()' onblur="this.size=0;">
                                   <option value="">Choose</option> <!-- Add a default "Choose" option -->
                                   <option value="Unsliced" <?php if ($val['slice_type'] == "Unsliced") { echo "selected='selected'"; } ?>>Unsliced</option>
                                   <option value="12mm" <?php if ($val['slice_type'] == "12mm") { echo "selected='selected'"; } ?>>12mm</option> <!-- Set selected if slice_type is 12mm -->
@@ -99,7 +116,7 @@
 
                               </td>
                               <td>    
-                                  <select class="form-control seed" id="seed_<?php echo $x; ?>" name="seed[]" onmousedown="if(this.options.length>8){this.size=8;}" onchange='seedchange()' onblur="this.size=0;">
+                                  <select class="form-control seed" <?php echo $seed; ?> id="seed_<?php echo $x; ?>" name="seed[]" onmousedown="if(this.options.length>8){this.size=8;}" onchange='seedchange()' onblur="this.size=0;">
                                       <option value="">Choose</option>
                                       <option value="Seedless" <?php if ($val['seed_type'] == "Seedless") { echo "selected='selected'"; } ?>>Seedless</option>
                                       <option value="White drizzle" <?php if ($val['seed_type'] == "White drizzle") { echo "selected='selected'"; } ?>>White drizzle</option>
@@ -361,22 +378,22 @@ preOrderInput.addEventListener('input', function() {
         }
     }
 });
-    $(document).on('change', '.category_name', function() {
-      var rowId = $(this).data('row-id');
-      var categoryDropdown = document.getElementById('category_' + rowId);
-      var sliceDropdown = document.getElementById('sliced_' + rowId);
-      var seedDropdown = document.getElementById('seed_' + rowId);
+  //   $(document).on('change', '.category_name', function() {
+  //     var rowId = $(this).data('row-id');
+  //     var categoryDropdown = document.getElementById('category_' + rowId);
+  //     var sliceDropdown = document.getElementById('sliced_' + rowId);
+  //     var seedDropdown = document.getElementById('seed_' + rowId);
 
-      if (categoryDropdown.value.toLowerCase() === 'bun') {
-          sliceDropdown.disabled = true;
+  //     if (categoryDropdown.value.toLowerCase() === 'bun') {
+  //         sliceDropdown.disabled = true;
         
-          $('#msg').html('Slicing not available for Buns');
-      } else {
-          sliceDropdown.disabled = false;
+  //         $('#msg').html('Slicing not available for Buns');
+  //     } else {
+  //         sliceDropdown.disabled = false;
       
-          $('#msg').html('');
-      }
-  });
+  //         $('#msg').html('');
+  //     }
+  // });
 
 
   $(document).ready(function() {
@@ -385,7 +402,7 @@ preOrderInput.addEventListener('input', function() {
         var row_id = $(this).data('row-id').replace('row_', ''); // Extract row id from data attribute
         getTotal(row_id);
         subAmount();
-        getProductData(row_id);
+      //  getProductData(row_id);
     });
 
     $(document).on('change', '.sliced', function() {
@@ -466,16 +483,17 @@ $(document).on('change', '.seed', function() {
               }
 
               // Trigger change event to populate products initially
-              $("#category_" + row_id).trigger("change");
+              $("#category_" + row_id).trigger("change");         
           }
       });
 
       return false;
   });
-
-  $('#product_info_table').on('change', '.category_name', function() {
+// Event delegation to handle dynamically created elements
+$('#product_info_table').on('change', '.category_name', function() {
     var currentRow = $(this).closest('tr'); // Store the reference to 'this'
     var categoryId = $(this).val();
+
     // AJAX request to fetch products based on the selected category
     $.ajax({
         url: '<?php echo base_url('index.php/orders/getProductsByCategory'); ?>',
@@ -485,16 +503,12 @@ $(document).on('change', '.seed', function() {
         success: function(response) {
             var options = '<option value=""></option>';
             $.each(response, function(index, product) {
-              if(product.min_order>1){
-              var qty_pkt = ' ('+ product.min_order + 'pcs/pkt)';
-              }
-              else{
-                var qty_pkt = '';
-              }
-              options += '<option value="' + product.id + '">' + product.product_id + '-' + product.product_name + qty_pkt +  '</option>';
+                var qty_pkt = product.min_order > 1 ? ' (' + product.min_order + 'pcs/pkt)' : '';
+                options += '<option value="' + product.id + '">' + product.product_id + '-' + product.product_name + qty_pkt + '</option>';
             });
-            // Update the corresponding product select element using the stored reference
-            currentRow.find('.product_' + currentRow.attr('id').split('_')[1]).html(options);
+
+            // Update the corresponding product select element in the same row
+            currentRow.find('.product').html(options);
         }
     });
 });
@@ -524,7 +538,6 @@ $('.category_name').on('change', function() {
         }
     });
 });
-
 $('#product_info_table').on('change', '.seed', function() {
   var row = $(this).closest('tr').attr('id').split('_')[1]; // Get the row number from the closest row
         getTotal(row); // Call getTotal function with row information
@@ -584,7 +597,7 @@ $('#product_info_table').on('change', 'input[name^="qty"]', function() {
 
       //  var seedSelected = $("#seed_" + row).val();
       //if (sliceSelected || seedSelected) {
-        if (sliceSelected) {
+        if (sliceSelected && sliceSelected != 'Unsliced') {
             service_charge = 0.5 * Number($("#qty_" + row).val());
         }
 
@@ -704,7 +717,7 @@ function subAmount() {
         var qty = $("#qty_" + x).val();
 
        // if (sliceSelected || seedSelected) {
-        if (sliceSelected) {
+        if (sliceSelected && sliceSelected != 'Unsliced') {
             // If either slice or seed is selected for this row, add additional charge
             service_charge += 0.5*qty;
         }
