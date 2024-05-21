@@ -69,7 +69,19 @@ class Excel_export extends CI_Controller {
          $schedule_date = strtotime($row->created_date);
          $date = date('d-m-Y', $schedule_date);
  
-         $delivery_date = $row->delivery_date;
+         if (is_numeric($row->delivery_date)) {
+            // Assume it is a Unix timestamp
+            $delivery_date = date('d-m-Y', $row->delivery_date);
+        } else {
+            // Assume it is a date string
+            $timestamp = strtotime($row->delivery_date);
+            if ($timestamp === false) {
+                // Handle the error if the date string is not well-formed
+                $delivery_date = 'Invalid date';
+            } else {
+                $delivery_date = date('d-m-Y', $timestamp);
+            }
+        }
          $net_total = $row->amount + $row->gst_amount;
  
          if ($row->name != $prev_name && $prev_name != '__INITIAL_VALUE__') {
@@ -206,7 +218,20 @@ class Excel_export extends CI_Controller {
          $schedule_date = strtotime($row->created_date);
          $date = date('d-m-Y', $schedule_date);
  
-         $delivery_date = $row->delivery_date;
+         if (is_numeric($row->delivery_date)) {
+            // Assume it is a Unix timestamp
+            $delivery_date = date('d-m-Y', $row->delivery_date);
+        } else {
+            // Assume it is a date string
+            $timestamp = strtotime($row->delivery_date);
+            if ($timestamp === false) {
+                // Handle the error if the date string is not well-formed
+                $delivery_date = 'Invalid date';
+            } else {
+                $delivery_date = date('d-m-Y', $timestamp);
+            }
+        }
+        
          $net_total = $row->amount + $row->gst_amount;
  
          if ($row->name != $prev_name && $prev_name != '__INITIAL_VALUE__') {

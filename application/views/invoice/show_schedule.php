@@ -41,34 +41,44 @@
 </style>
 </head>
 <body onload="window.print();">
-<div class="container" style="margin-top: 100px;">
+<div class="container" style="margin-top: 20px;">
     <div class="row">
-    <div class="col-md-12"><p style="font-weight: bold;">Production Scedule</p></div>
+    <div class="col-md-12 text-center"><p style="font-weight: bold;">Production Scedule</p></div>
         <div class="col-md-6">
             <?php
             date_default_timezone_set('Asia/Singapore');
             $schedule_date = $schedule_date; 
+            
+           
 
             $order_date = strtotime($schedule_date . ' -3 days');
 
             $formatted_date = date("d-m-Y", $order_date); // Use $order_date directly
             $day_of_week = date("l", $order_date); // Use $order_date directly
             $current_time = date("h:i A"); // Use $order_date directly
-            echo "<p>Order Date: $formatted_date $day_of_week $current_time</p>";
+           /// echo "<p>Order Date: $formatted_date $day_of_week $current_time</p>";
 
+           echo "<p><b>Order Date:</b> $formatted_date</p>";
+
+
+         
             ?>
+               <?phP
+               
+               $timestamp = strtotime($schedule_date);
+               $delivery_date = date("d-m-Y", $timestamp);
+               
+               echo "<p><b>Delivery Date:</b> $delivery_date</p>";
+
+               
+               ?>
         </div>
         <div class="col-md-6 text-right"> 
-            <!-- <p><b>Orders: $
-                <?php /*
-                $total_price = 0; 
-                foreach($orders as $val => $row):  
-                    $total_price += $row->amount; 
-                endforeach; 
-                echo $total_price; */
-                ?>
-            </b></p> -->
-            <p>Production Line (CK)</p>
+        <p><b>Production Line (CK)</b></p>
+             
+
+            
+          
         </div>
     <table border="1">
       <thead>

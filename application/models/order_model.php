@@ -484,15 +484,18 @@ public function update($id,$user_id)
 		return $query->result_array();
 	}
 
-	public function getscheduleorder($schedule_date	) {
-		$date = $schedule_date;
-		$formatted_schedule_date = date("d/m/y", strtotime($date));
-		$sql = "SELECT ordd.*,prod.product_id as product_id,prod.product_name as product_name FROM order_items ordd join products prod WHERE DATE(ordd.delivery_date) = '$schedule_date' and ordd.product_id=prod.id";
-		$query = $this->db->query($sql);
-		return $query->result(); 
+	
+public function getscheduleorder($schedule_date) {
+	$sql = "SELECT prod.product_id as product_id,prod.product_name as product_name, SUM(ordd.qty) as qty, ordd.id as id, ordd.category as category 
+			FROM order_items ordd 
+			JOIN products prod ON ordd.product_id = prod.id 
+			WHERE DATE(ordd.delivery_date) = '$schedule_date' 
+			GROUP BY prod.product_name";
 
+	$query = $this->db->query($sql);
+
+	return $query->result(); 
 }
-
 public function getpackingorder($schedule_date) {
 	$date = $schedule_date;
 	$formatted_schedule_date = date("d/m/y", strtotime($date));
