@@ -90,6 +90,7 @@ public function product_details_user() {
 
   public function get_products() {
     //     $this->db->limit($limit, $offset);
+          $this->db->where('active', 1);
          return $this->db->get('products')->result();
      }
   

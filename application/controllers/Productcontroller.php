@@ -269,9 +269,7 @@ class Productcontroller extends CI_Controller {
             $user = $this->session->userdata('user_register');
             $users = $this->session->userdata('normal_user');
             $loginuser = $this->session->userdata('LoginSession');
-            $data['products'] = $this->product_model->product_details_user();
-
-            //var_dump($loginuser);
+            $data['products'] = $this->product_model->get_products();
             $this->load->view('template/sidebar.php', array('user' => $user, 'users' => $users, 'data' => $data,'loginuser' => $loginuser));
             $this->load->view('user_prod/user_products.php',$data);
             $this->load->view('template/footer.php');
