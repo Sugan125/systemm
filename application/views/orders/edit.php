@@ -173,7 +173,9 @@
 
                 <label for="driver_memo" class="control-label">Driver Memo</label>
                 <textarea class="form-control" id="driver_memo" name="driver_memo" autocomplete="off"><?php echo $order_data['memo'] ?></textarea>
-               
+               <br>
+               <label for="po_ref" class="control-label">PO ref</label>
+                <input type="text" class="form-control" id="po_ref" name="po_ref"  value="<?php echo $order_data['po_ref'] ?>" autocomplete="off">
                 </div>
                   </div>
                   <div class="col-sm-7 col-md-7 col-xs-7 pull pull-right">

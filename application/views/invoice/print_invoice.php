@@ -18,12 +18,19 @@
       </div>
         <div class="col-sm-5 col-xs-12" style="padding: 0px;float: right;">
           <div class="row invoice-info" style="margin: 0px; display: grid;float: right;">
-        <?php foreach($order_total as $val => $order_data): ?>
+        <?php foreach($order_total as $val => $order_data):
+            if($order_data['po_ref']){
+                $po_ref = $order_data['po_ref'];
+            }
+            else{
+              $po_ref = 'Nil';
+            }
+          ?>
                     <div class="invoice-col" style="margin: 0px;">
                     <b>Invoice No: </b> <?php echo $order_data['bill_no']; ?><br>
                     <b style="font-weight: bold;">Date and Time: </b> <?php echo empty($order_data['created_date']) ? $order_date : $order_data['created_date']; ?><br>
                     <!-- <b>Bill ID: </b> <br> -->
-                    <b>Your Ref: </b> 123<br>
+                    <b>PO Ref: </b> <?php echo $po_ref; ?><br>
                     <b>D/O No.: </b>  <?php echo $order_data['do_bill_no']; ?><br>
                     <b>Term: </b><?php echo $order_data['payment_terms'] ? $order_data['payment_terms'] : 'C.O.D'; ?><br>
                     </div>

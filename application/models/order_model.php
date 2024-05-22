@@ -144,6 +144,7 @@ public function getProductData($id = null)
 		'feed_back' => $this->input->post('feed_back'),
 		'packer_memo' => $this->input->post('packer_memo'),
 		'driver_memo' => $this->input->post('driver_memo'),
+		'po_ref' => $this->input->post('po_ref'),
         'paid_status' => 2,
         'user_id' => $user_id,
 		'created_date' => $created_date,
@@ -285,6 +286,7 @@ public function update($id,$user_id)
 			'feed_back' => $this->input->post('feed_back'),
 			'packer_memo' => $this->input->post('packer_memo'),
 			'driver_memo' => $this->input->post('driver_memo'),
+			'po_ref' => $this->input->post('po_ref'),
 			'shipping_address' => $this->input->post('shipping_address'),
 			'shipping_address_line2' => $this->input->post('shipping_address_line2'),
 			'shipping_address_line3' => $this->input->post('shipping_address_line3'),
@@ -369,7 +371,7 @@ public function update($id,$user_id)
 			return false;
 		}
 
-		$sql = "SELECT ord.*, user.*, ord.driver_memo as memo, ord.packer_memo as pmemo FROM orders ord join user_register user WHERE ord.id = ? and user.id=ord.user_id";
+		$sql = "SELECT ord.*, user.*, ord.driver_memo as memo, ord.packer_memo as pmemo ,  ord.po_ref as po_ref FROM orders ord join user_register user WHERE ord.id = ? and user.id=ord.user_id";
 		$query = $this->db->query($sql, array($order_id));
 		return $query->result_array();
 	}
@@ -599,9 +601,10 @@ public function repeat_order($id)
 			'discount' => $row['discount'],
 			'gst_amt' => $row['gst_amt'],
 			'gst_percent' => $row['gst_percent'],
-			'feed_back' => $row['feed_back'],
-			'driver_memo'=> $row['driver_memo'],
-			'packer_memo' => $row['packer_memo'],
+			'feed_back' => $this->input->post('feed_back'),
+			'driver_memo'=> $this->input->post('driver_memo'),
+			'packer_memo' => $this->input->post('packer_memo'),
+			'po_ref' => $this->input->post('po_ref'),
 			'shipping_address' => $shipping_address,
 			'shipping_address_line2' => $shipping_address_line2,
 			'shipping_address_line3' => $shipping_address_line3,
@@ -763,6 +766,7 @@ public function admin_create()
 		'created_date' => $created_date,
 		'driver_memo' => $this->input->post('driver_memo'),
 		'packer_memo' => $this->input->post('packer_memo'),
+		'po_ref' => $this->input->post('po_ref'),
     );
 
    

@@ -27,11 +27,18 @@
             <b>SFA License No.: </b> PL18J0136<br>
           </div>
           <div style="box-sizing: border-box; float: right; width: 50%; text-align: right;">
-            <?php foreach($order_total as $val => $order_data): ?>  
+            <?php foreach($order_total as $val => $order_data): 
+              if($order_data['po_ref']){
+                $po_ref = $order_data['po_ref'];
+            }
+            else{
+              $po_ref = 'Nil';
+            }
+              ?>  
               <b style="font-weight: bold;">Invoice No: </b> <?php echo $order_data['bill_no']; ?><br>
               <b style="font-weight: bold;">Date and Time: </b> <?php echo empty($order_data['created_date']) ? $order_date : $order_data['created_date']; ?><br>
                                   <!-- <b>Bill ID: </b> <br> -->
-              <b>Your Ref: </b> 123<br>
+              <b>Po Ref: </b> <?php echo $po_ref; ?><br>
               <b>D/O No.: </b>  <?php echo $order_data['do_bill_no']; ?><br>
               <b>Term: </b><?php echo $order_data['payment_terms'] ? $order_data['payment_terms'] : 'C.O.D'; ?><br>
             <?php endforeach; ?>

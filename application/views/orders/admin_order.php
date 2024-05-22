@@ -197,7 +197,10 @@
 
                 <label for="driver_memo" class="control-label">Driver Memo</label>
                 <textarea class="form-control" id="driver_memo" name="driver_memo" autocomplete="off"></textarea>
-               
+                
+                <br>
+                <label for="po_ref" class="control-label">PO ref</label>
+                <input type="text" class="form-control" id="po_ref" name="po_ref"  autocomplete="off">
               
               </div>
 
