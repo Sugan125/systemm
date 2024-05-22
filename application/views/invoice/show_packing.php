@@ -84,9 +84,9 @@
         $current_order = null;
         foreach($orders as $order): 
           if (!empty($order->shipping_address) || !empty($order->shipping_address_line2) || !empty($order->shipping_address_line3) || !empty($order->shipping_address_line4) || !empty($order->shipping_address_city) || !empty($order->shipping_address_postcode)) {
-            $shipping = "Ship To: ".$order->shipping_address .' '. $order->shipping_address_line2 .' '. $order->shipping_address_line3 .' '. $order->shipping_address_line4 .' '. $order->shipping_address_city .' '. $order->shipping_address_postcode; 
+            $shipping = $order->shipping_address .' '. $order->shipping_address_line2 .' '. $order->shipping_address_line3 .' '. $order->shipping_address_line4 .' '. $order->shipping_address_city .' '. $order->shipping_address_postcode; 
         } else {
-            $shipping = '';
+            $shipping = $order->delivery_address .' '. $order->delivery_address_line2 .' '. $order->delivery_address_line3 .' '. $order->delivery_address_line4 .' '. $order->delivery_address_city .' '. $order->delivery_address_postcode;
         }
             if ($order->company_name != $current_company):
                 if ($current_company !== null) {
@@ -106,7 +106,7 @@
                         <thead>
                             <tr><td colspan='3' style='height: 20px;'></td></tr>
                             <tr>
-                                <th colspan='3'>{$order->company_name}<br>Brand : {$order->brand_name}<br>{$shipping}</th>
+                                <th colspan='3'>{$order->company_name}<br>Brand : {$order->brand_name}<br>Ship To : {$shipping}</th>
                             </tr>
                         </thead>
                         <tbody>
