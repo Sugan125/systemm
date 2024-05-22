@@ -426,74 +426,62 @@ $(document).on('change', '.seed', function() {
    
 });
 
-      $("#add_row").unbind('click').bind('click', function() {
-          var table = $("#product_info_table");
-          var count_table_tbody_tr = $("#product_info_table tbody tr").length;
-          var row_id = count_table_tbody_tr + 1;
+$("#add_row").unbind('click').bind('click', function() {
+    var table = $("#product_info_table");
+    var count_table_tbody_tr = $("#product_info_table tbody tr").length;
+    var row_id = count_table_tbody_tr + 1;
 
-          $.ajax({
-              url: '<?php echo base_url('index.php/orders/getTableProductRow'); ?>',
-              type: 'post',
-              dataType: 'json',
-              success: function(response) {
-                var html = '<tr id="row_'+row_id+'">' +
-                  '<td>'+ 
-                      '<select class="form-control select_group category_name" data-row-id="'+row_id+'" id="category_'+row_id+'" name="category[]" style="width:100%;">'+
-                          '<option value="">Choose</option>';
-                          // Add options for categories here
-                          <?php foreach ($category as $key => $value): ?>
-                              html += '<option value="<?php echo $value['prod_category'] ?>"><?php echo $value['prod_category'] ?></option>';  
-                          <?php endforeach ?>
-                      html += '</select>'+
-                  '</td>'+
-                  '<td>'+ 
-                      '<select class="form-control select_group product_'+row_id+'" data-row-id="'+row_id+'" id="product_'+row_id+'" name="product[]" style="width:100%;"  required onchange="getProductData('+row_id+')">'+
-                        
-                      '</select>'+
-                  '</td>'+ 
-                  '<td>'+ 
-                      '<select class="form-control select_group sliced" data-row-id="'+row_id+'" id="sliced_'+row_id+'" name="sliced[]" style="width:100%;" onchange="slicechange(this)">'+
-                          '<option value="">Choose</option>'+
-                          '<option value="Unsliced">Unsliced</option>'+
-                          '<option value="12mm">12mm</option>'+
-                          '<option value="20mm">20mm</option>'+
-                      '</select>'+
-                  '</td>'+
-                  '<td>'+ 
-                    '<select class="form-control select_group seed" data-row-id="'+row_id+'" id="seed_'+row_id+'" name="seed[]" style="width:100%;" onchange="seedchange(this)">'+
-                        '<option value="">Choose</option>'+
-                        '<option value="Seedless">Seedless</option>'+
-                        '<option value="White drizzle">White drizzle</option>'+
-                        '<option value="Black drizzle">Black drizzle</option>'+
-                        '<option value="White black mix">White black mix</option>'+
-                    '</select>'+
-                '</td>'+
-                  '<td><input type="hidden" name="minn" id="minn" class="form-control" autocomplete="off"><input type="number" name="qty[]" id="qty_'+row_id+'" class="form-control" onkeyup="getTotal('+row_id+')"></td>'+
-                  '<td><input type="text" name="rate[]" id="rate_'+row_id+'" class="form-control" disabled><input type="hidden" name="rate_value[]" id="rate_value_'+row_id+'" class="form-control"></td>'+
-                  '<td hidden><input type="text" name="gst_percent[]" id="gst_percent_'+row_id+'" class="form-control" disabled><input type="hidden" name="gst_percent_val[]" id="gst_percent_val_'+row_id+'" class="form-control"></td>'+
-                '<td><input type="text" name="service_charge_lineitem[]" id="service_charge_lineitem_'+row_id+'" class="form-control" disabled><input type="hidden" name="service_charge_itemval[]" id="service_charge_itemval_'+row_id+'" class="form-control"></td>'+
-                '<td><input type="text" name="amount[]" id="amount_'+row_id+'" class="form-control" disabled><input type="hidden" name="amount_value[]" id="amount_value_'+row_id+'" class="form-control"></td>'+
-                '<td hidden><input type="text" name="gst_amount[]" id="gst_amount_'+row_id+'" class="form-control" disabled><input type="hidden" name="gst_amount_value[]" id="gst_amount_value_'+row_id+'" class="form-control"></td>'+
-             '<td><button type="button" class="btn btn-danger" onclick="removeRow(\''+row_id+'\')"><i class="fa fa-close"></i></button></td>'+
-              '</tr>';
+    var html = '<tr id="row_'+row_id+'">' +
+        '<td>'+ 
+            '<select class="form-control category_name" data-row-id="'+row_id+'" id="category_'+row_id+'" name="category[]" style="width:100%;">'+
+                '<option value="">Choose</option>';
+                // Add options for categories here
+                <?php foreach ($category as $key => $value): ?>
+                    html += '<option value="<?php echo $value['prod_category'] ?>"><?php echo $value['prod_category'] ?></option>';  
+                <?php endforeach ?>
+            html += '</select>'+
+        '</td>'+
+        '<td>'+ 
+            '<select class="form-control select_group product" data-row-id="'+row_id+'" id="product_'+row_id+'" name="product[]" style="width:100%;" required onchange="getProductData('+row_id+')">'+
+            '</select>'+
+        '</td>'+ 
+        '<td>'+ 
+            '<select class="form-control select_group sliced" data-row-id="'+row_id+'" id="sliced_'+row_id+'" name="sliced[]" style="width:100%;" onchange="slicechange(this)">'+
+                '<option value="">Choose</option>'+
+                '<option value="Unsliced">Unsliced</option>'+
+                '<option value="12mm">12mm</option>'+
+                '<option value="20mm">20mm</option>'+
+            '</select>'+
+        '</td>'+
+        '<td>'+ 
+            '<select class="form-control select_group seed" data-row-id="'+row_id+'" id="seed_'+row_id+'" name="seed[]" style="width:100%;" onchange="seedchange(this)">'+
+                '<option value="">Choose</option>'+
+                '<option value="Seedless">Seedless</option>'+
+                '<option value="White drizzle">White drizzle</option>'+
+                '<option value="Black drizzle">Black drizzle</option>'+
+                '<option value="White black mix">White black mix</option>'+
+            '</select>'+
+        '</td>'+
+        '<td><input type="hidden" name="minn" id="minn" class="form-control" autocomplete="off"><input type="number" name="qty[]" id="qty_'+row_id+'" class="form-control" onkeyup="getTotal('+row_id+')"></td>'+
+        '<td><input type="text" name="rate[]" id="rate_'+row_id+'" class="form-control" disabled><input type="hidden" name="rate_value[]" id="rate_value_'+row_id+'" class="form-control"></td>'+
+        '<td hidden><input type="text" name="gst_percent[]" id="gst_percent_'+row_id+'" class="form-control" disabled><input type="hidden" name="gst_percent_val[]" id="gst_percent_val_'+row_id+'" class="form-control"></td>'+
+        '<td><input type="text" name="service_charge_lineitem[]" id="service_charge_lineitem_'+row_id+'" class="form-control" disabled><input type="hidden" name="service_charge_itemval[]" id="service_charge_itemval_'+row_id+'" class="form-control"></td>'+
+        '<td><input type="text" name="amount[]" id="amount_'+row_id+'" class="form-control" disabled><input type="hidden" name="amount_value[]" id="amount_value_'+row_id+'" class="form-control"></td>'+
+        '<td hidden><input type="text" name="gst_amount[]" id="gst_amount_'+row_id+'" class="form-control" disabled><input type="hidden" name="gst_amount_value[]" id="gst_amount_value_'+row_id+'" class="form-control"></td>'+
+        '<td><button type="button" class="btn btn-danger" onclick="removeRow(\''+row_id+'\')"><i class="fa fa-close"></i></button></td>'+
+    '</tr>';
 
-              if(count_table_tbody_tr >= 1) {
-                  $("#product_info_table tbody tr:last").after(html);  
-              }
-              else {
-                  $("#product_info_table tbody").html(html);
-              }
+    if(count_table_tbody_tr >= 1) {
+        $("#product_info_table tbody tr:last").after(html);  
+    }
+    else {
+        $("#product_info_table tbody").html(html);
+    }
+});
 
-              // Trigger change event to populate products initially
-              $("#category_" + row_id).trigger("change");         
-          }
-      });
-
-      return false;
-  });
 // Event delegation to handle dynamically created elements
 $('#product_info_table').on('change', '.category_name', function() {
-    var currentRow = $(this).closest('tr'); // Store the reference to 'this'
+    var currentRow = $(this).closest('tr');
     var categoryId = $(this).val();
 
     // AJAX request to fetch products based on the selected category
@@ -516,30 +504,6 @@ $('#product_info_table').on('change', '.category_name', function() {
 });
 
 
-$('.category_name').on('change', function() {
-  //  alert('t');
-    var categoryId = $(this).val();
-    // AJAX request to fetch products based on the selected category
-    $.ajax({
-        url: '<?php echo base_url('index.php/orders/getProductsByCategory'); ?>',
-        method: 'POST',
-        data: { category_id: categoryId },
-        dataType: 'json',
-        success: function(response) {
-            var options = '<option value=""></option>';
-            $.each(response, function(index, product) {
-              if(product.min_order>1){
-              var qty_pkt = ' ('+ product.min_order + 'pcs/pkt)';
-              }
-              else{
-                var qty_pkt = '';
-              }
-              options += '<option value="' + product.id + '">' + product.product_id + '-' + product.product_name + qty_pkt + '</option>';
-            });
-            $('.product_1').html(options);
-        }
-    });
-});
 $('#product_info_table').on('change', '.seed', function() {
   var row = $(this).closest('tr').attr('id').split('_')[1]; // Get the row number from the closest row
         getTotal(row); // Call getTotal function with row information
