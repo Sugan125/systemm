@@ -193,7 +193,7 @@ class Productcontroller extends CI_Controller {
     public function deleteproduct($id){
 
         $data = array(
-            'id'=>$id, 'deleted'=>'1',
+            'id'=>$id, 
      );
  
  

@@ -28,8 +28,8 @@ public function product_details_user() {
       public function delete_data($data,$table){
       
         $this->db->where('id',$data['id']);
-        $this->db->update($table,$data);
-        
+        $this->db->delete($table);
+
   
       }
 

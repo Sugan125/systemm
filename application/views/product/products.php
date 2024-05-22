@@ -150,7 +150,7 @@
         <td>$<?= $row->prod_rate; ?></td>   
         <td>
           <a href="<?= base_url('index.php/productcontroller/updateproduct/' . $row->id) ?>" class="btn  btn-sm"><i class="fas fa-edit"></i> </a>
-          <a href="<?= base_url('index.php/productcontroller/deleteproduct/' . $row->id) ?>" class="btn btn-sm" onclick='return confirm("Are you sure to delete this user?");'><i class="fas fa-trash"></i></a>
+          <a href="<?= base_url('index.php/productcontroller/deleteproduct/' . $row->id) ?>" class="btn btn-sm" onclick='return confirm("Are you sure to delete this product?");'><i class="fas fa-trash"></i></a>
         </td>    
       </tr>
      
