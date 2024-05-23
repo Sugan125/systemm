@@ -486,7 +486,7 @@ preOrderInput.min = threeDaysFromNow.toISOString().split('T')[0];
 
 // Calculate the date 7 days from now
 var sevenDaysFromNow = new Date(today);
-sevenDaysFromNow.setDate(today.getDate() + 8);
+sevenDaysFromNow.setDate(today.getDate() + 9);
 
 // Set the maximum date for the pre-order input field
 preOrderInput.max = sevenDaysFromNow.toISOString().split('T')[0];
@@ -519,7 +519,7 @@ preOrderInput.addEventListener('input', function() {
         if (selectedDate > sevenDaysFromNow) {
             alert('You can only select a date within the next 7 days.');
         } else {
-            alert('Sunday is not allowed for pre-order.');
+            alert('No delivery on Sunday.');
         }
     }
 });

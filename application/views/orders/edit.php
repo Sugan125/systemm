@@ -346,7 +346,7 @@
 
 // Calculate the date 7 days from now
 var sevenDaysFromNow = new Date(today);
-sevenDaysFromNow.setDate(sevenDaysFromNow.getDate() + 7);
+sevenDaysFromNow.setDate(sevenDaysFromNow.getDate() + 9);
 
 // Set the minimum date for the pre-order input field
 var preOrderInput = document.getElementById('pre_order');
@@ -376,7 +376,7 @@ preOrderInput.addEventListener('input', function() {
         if (selectedDate > sevenDaysFromNow) {
             alert('You can only select a date within the next 7 days.');
         } else {
-            alert('Sunday is not allowed for pre-order.');
+            alert('No delivery on Sunday.');
         }
     }
 });
