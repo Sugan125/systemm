@@ -269,19 +269,21 @@
                   
                     ?>
                     <?php echo $text; ?>
-                    <?php if($loginuser['address2'] != NULL || $loginuser['address3'] != NULL) {
-
-                    $modal_id = '<a class="galName" href="#myModal" data-toggle="modal" >';
-                    $end_id = ' </a>';
-
-                    } 
-                    else{
-                    $modal_id = '';
-                    $end_id = '';
-                    }
+                    <?php
+                      if ($loginuser['address2'] != NULL || $loginuser['address3'] != NULL) {
+                        $modal_id = '<a class="galName" href="#" onclick="openModal()">'; // Change href to "#" and onclick to call openModal()
+                        $end_id = '</a>';
+                        $btn = "button";
+                      } else {
+                        $modal_id = '';
+                        $end_id = '';
+                        $btn = "submit";
+                      }
                     ?>
 
-<?php echo  $modal_id; ?><button type="submit" class="btn btn-success" <?php echo $btn; ?>>Repeat Order</button> <?php echo  $end_id; ?>
+                    <?php echo $modal_id; ?>
+                    <button type="<?php echo $btn; ?>" class="btn btn-success create_order" <?php echo $btn; ?>>Create Order</button>
+                    <?php echo $end_id; ?> 
                   <a href="<?php echo base_url('index.php/orders/') ?>" class="btn btn-danger">Back</a>
                 </div>
                 <?php endforeach; ?>
@@ -300,7 +302,7 @@
   </div>
   <!-- /.content-wrapper -->
 
-  <div class="modal fade hide modal-creator" id="myModal" style="display: none;" aria-hidden="true">
+  <div id="myModal" class="modal fade" role="dialog">
     <div class="modal-dialog modal-md"> <!-- Changed modal-dialog size to modal-sm for a smaller modal -->
         <div class="modal-content">
             <div class="modal-header">
@@ -409,6 +411,15 @@ preOrderInput.addEventListener('input', function() {
     }
 });
 
+
+function openModal() {
+    var deliveryDateInput = document.getElementById('pre_order');
+    if (!deliveryDateInput.value) {
+      swal("Delivery Date", "Please select a delivery date before creating the order.", "warning");
+    } else {
+      $('#myModal').modal('show');
+    }
+  }
 
 
   function confirmSubmission(event) {

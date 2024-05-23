@@ -109,6 +109,12 @@ public function getProductData($id = null)
 
 		$order_date = $pre_order;
 	}
+
+	if (date('w', strtotime($order_date)) == 0) {
+		// Adjust order_date to the following Monday
+		$order_date = date('Y-m-d', strtotime($order_date . ' +1 day'));
+	}
+	
 	
 	date_default_timezone_set('UTC');
 
@@ -203,6 +209,10 @@ public function getProductData($id = null)
 			$order_date = $pre_order;
 		}
 
+		if (date('w', strtotime($order_date)) == 0) {
+			// Adjust order_date to the following Monday
+			$order_date = date('Y-m-d', strtotime($order_date . ' +1 day'));
+		}
 
         $items = array(
             'order_id' => $order_id,
@@ -257,6 +267,11 @@ public function update($id,$user_id)
 		else{
 
 			$order_date = $pre_order;
+		}
+
+		if (date('w', strtotime($order_date)) == 0) {
+			// Adjust order_date to the following Monday
+			$order_date = date('Y-m-d', strtotime($order_date . ' +1 day'));
 		}
 
 		date_default_timezone_set('UTC');
@@ -577,6 +592,11 @@ public function repeat_order($id)
 			$order_date = $pre_order;
 		}
 		
+		if (date('w', strtotime($order_date)) == 0) {
+			// Adjust order_date to the following Monday
+			$order_date = date('Y-m-d', strtotime($order_date . ' +1 day'));
+		}
+
 		date_default_timezone_set('UTC');
 
 		// Create a DateTime object for the current time
@@ -663,7 +683,7 @@ public function repeat_order($id)
 			'gst_percent' => $gst_percent,
 			'gst_amount' => $gst_amt,
 			'created_date' => $created_date,
-			'delivery_date' => $delivery_date_formatted,
+			'delivery_date' => $order_date,
         );
 			// Inserting the constructed array into the database
 			$this->db->insert('order_items', $items);
@@ -728,6 +748,11 @@ public function admin_create()
 		else{
 
 			$order_date = $pre_order;
+		}
+
+		if (date('w', strtotime($order_date)) == 0) {
+			// Adjust order_date to the following Monday
+			$order_date = date('Y-m-d', strtotime($order_date . ' +1 day'));
 		}
 
 	date_default_timezone_set('UTC');
@@ -819,7 +844,11 @@ public function admin_create()
 			$order_date = $pre_order;
 		}
 
-		
+		if (date('w', strtotime($order_date)) == 0) {
+		// Adjust order_date to the following Monday
+		$order_date = date('Y-m-d', strtotime($order_date . ' +1 day'));
+	}
+
         $items = array(
             'order_id' => $order_id,
             'category' => $category,
