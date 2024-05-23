@@ -148,7 +148,7 @@
                 <label for="feed_back" class="control-label">Feedback</label>
                 <textarea class="form-control" id="feed_back" name="feed_back" autocomplete="off"><?php echo $order_data['feed_back'] ?></textarea>
                 <br>
-                <label>Delivery Date (Mandatory)</label>
+               <label>Delivery Date (Mandatory)</label>
                 <input type="date" name="pre_order_date" id="pre_order" class="form-control"  autocomplete="off" required>
                 <br>
                 <label for="packer_memo" class="control-label">Packer Memo</label>
@@ -158,10 +158,12 @@
 
                 <label for="driver_memo" class="control-label">Driver Memo</label>
                 <textarea class="form-control" id="driver_memo" name="driver_memo" autocomplete="off"><?php echo $order_data['memo'] ?></textarea>
-               
+
+                <br>
+
                 <label for="po_ref" class="control-label">PO ref</label>
                 <input type="text" class="form-control" id="po_ref" name="po_ref"  value="<?php echo $order_data['po_ref'] ?>" autocomplete="off">
-              
+             
               
                 </div>
                   </div>
@@ -364,8 +366,7 @@
 </div><!-- /myModal -->
 
   <script type="text/javascript">
-
-
+ 
 var today = new Date();
 
 // Calculate the date 3 days from now for the default value
@@ -408,24 +409,6 @@ preOrderInput.addEventListener('input', function() {
     }
 });
 
-
-
-    $(document).on('change', '.category_name', function() {
-      var rowId = $(this).data('row-id');
-      var categoryDropdown = document.getElementById('category_' + rowId);
-      var sliceDropdown = document.getElementById('sliced_' + rowId);
-      var seedDropdown = document.getElementById('seed_' + rowId);
-
-      if (categoryDropdown.value.toLowerCase() === 'bun') {
-          sliceDropdown.disabled = true;
-        
-          $('#msg').html('Slicing not available for Buns');
-      } else {
-          sliceDropdown.disabled = false;
-      
-          $('#msg').html('');
-      }
-  });
 
 
   function confirmSubmission(event) {
@@ -490,152 +473,124 @@ function confirmOrder() {
   }
 
 
+
   $(document).ready(function() {
 
-    $('.product').each(function() {
-        var row_id = $(this).data('row-id').replace('row_', ''); // Extract row id from data attribute
-        getTotal(row_id);
-        subAmount();
-        getProductData(row_id);
-    });
+$('.product').each(function() {
+    var row_id = $(this).data('row-id').replace('row_', ''); // Extract row id from data attribute
+    getTotal(row_id);
+    subAmount();
+  //  getProductData(row_id);
+});
+
+$(document).on('change', '.sliced', function() {
+var row = $(this).closest('tr'); // Get the closest row
+var sliceSelected = row.find('.sliced').val(); // Get the value of .sliced within the same row
+var seedSelected = row.find('.seed').val(); // Get the value of .seed within the same row
+subAmount();
+var rows = $(this).closest('tr').attr('id').split('_')[1]; // Get the row number from the closest row
+    getTotal(rows); // Call getTotal function with row information
+});
+
+$(document).on('change', '.seed', function() {
+var row = $(this).closest('tr'); // Get the closest row
+var sliceSelected = row.find('.sliced').val(); // Get the value of .sliced within the same row
+var seedSelected = row.find('.seed').val(); // Get the value of .seed within the same row
+subAmount();
+var rows= $(this).closest('tr').attr('id').split('_')[1]; // Get the row number from the closest row
+    getTotal(rows); // Call getTotal function with row information
+
+});
+
+$("#add_row").unbind('click').bind('click', function() {
+var table = $("#product_info_table");
+var count_table_tbody_tr = $("#product_info_table tbody tr").length;
+var row_id = count_table_tbody_tr + 1;
+
+var html = '<tr id="row_'+row_id+'">' +
+    '<td>'+ 
+        '<select class="form-control category_name" data-row-id="'+row_id+'" id="category_'+row_id+'" name="category[]" style="width:100%;">'+
+            '<option value="">Choose</option>';
+            // Add options for categories here
+            <?php foreach ($category as $key => $value): ?>
+                html += '<option value="<?php echo $value['prod_category'] ?>"><?php echo $value['prod_category'] ?></option>';  
+            <?php endforeach ?>
+        html += '</select>'+
+    '</td>'+
+    '<td>'+ 
+        '<select class="form-control select_group product" data-row-id="'+row_id+'" id="product_'+row_id+'" name="product[]" style="width:100%;" required onchange="getProductData('+row_id+')">'+
+        '</select>'+
+    '</td>'+ 
+    '<td>'+ 
+        '<select class="form-control select_group sliced" data-row-id="'+row_id+'" id="sliced_'+row_id+'" name="sliced[]" style="width:100%;" onchange="slicechange(this)">'+
+            '<option value="">Choose</option>'+
+            '<option value="Unsliced">Unsliced</option>'+
+            '<option value="12mm">12mm</option>'+
+            '<option value="20mm">20mm</option>'+
+        '</select>'+
+    '</td>'+
+    '<td>'+ 
+        '<select class="form-control select_group seed" data-row-id="'+row_id+'" id="seed_'+row_id+'" name="seed[]" style="width:100%;" onchange="seedchange(this)">'+
+            '<option value="">Choose</option>'+
+            '<option value="Seedless">Seedless</option>'+
+            '<option value="White drizzle">White drizzle</option>'+
+            '<option value="Black drizzle">Black drizzle</option>'+
+            '<option value="White black mix">White black mix</option>'+
+        '</select>'+
+    '</td>'+
+    '<td><input type="hidden" name="minn" id="minn" class="form-control" autocomplete="off"><input type="number" name="qty[]" id="qty_'+row_id+'" class="form-control" onkeyup="getTotal('+row_id+')"></td>'+
+    '<td><input type="text" name="rate[]" id="rate_'+row_id+'" class="form-control" disabled><input type="hidden" name="rate_value[]" id="rate_value_'+row_id+'" class="form-control"></td>'+
+    '<td hidden><input type="text" name="gst_percent[]" id="gst_percent_'+row_id+'" class="form-control" disabled><input type="hidden" name="gst_percent_val[]" id="gst_percent_val_'+row_id+'" class="form-control"></td>'+
+    '<td><input type="text" name="service_charge_lineitem[]" id="service_charge_lineitem_'+row_id+'" class="form-control" disabled><input type="hidden" name="service_charge_itemval[]" id="service_charge_itemval_'+row_id+'" class="form-control"></td>'+
+    '<td><input type="text" name="amount[]" id="amount_'+row_id+'" class="form-control" disabled><input type="hidden" name="amount_value[]" id="amount_value_'+row_id+'" class="form-control"></td>'+
+    '<td hidden><input type="text" name="gst_amount[]" id="gst_amount_'+row_id+'" class="form-control" disabled><input type="hidden" name="gst_amount_value[]" id="gst_amount_value_'+row_id+'" class="form-control"></td>'+
+    '<td><button type="button" class="btn btn-danger" onclick="removeRow(\''+row_id+'\')"><i class="fa fa-close"></i></button></td>'+
+'</tr>';
+
+if(count_table_tbody_tr >= 1) {
+    $("#product_info_table tbody tr:last").after(html);  
+}
+else {
+    $("#product_info_table tbody").html(html);
+}
+});
+
+// Event delegation to handle dynamically created elements
+$('#product_info_table').on('change', '.category_name', function() {
+var currentRow = $(this).closest('tr');
+var categoryId = $(this).val();
+
+// AJAX request to fetch products based on the selected category
+$.ajax({
+    url: '<?php echo base_url('index.php/orders/getProductsByCategory'); ?>',
+    method: 'POST',
+    data: { category_id: categoryId },
+    dataType: 'json',
+    success: function(response) {
+        var options = '<option value=""></option>';
+        $.each(response, function(index, product) {
+            var qty_pkt = product.min_order > 1 ? ' (' + product.min_order + 'pcs/pkt)' : '';
+            options += '<option value="' + product.id + '">' + product.product_id + '-' + product.product_name + qty_pkt + '</option>';
+        });
+
+        // Update the corresponding product select element in the same row
+        currentRow.find('.product').html(options);
+    }
+});
+});
 
 
-
-    $(document).on('change', '.sliced', function() {
-      var row = $(this).closest('tr'); // Get the closest row
-      var sliceSelected = row.find('.sliced').val(); // Get the value of .sliced within the same row
-      var seedSelected = row.find('.seed').val(); // Get the value of .seed within the same row
-      subAmount();
-  });
-
-  $(document).on('change', '.seed', function() {
-      var row = $(this).closest('tr'); // Get the closest row
-      var sliceSelected = row.find('.sliced').val(); // Get the value of .sliced within the same row
-      var seedSelected = row.find('.seed').val(); // Get the value of .seed within the same row
-      subAmount();
-  });
-
-      $("#add_row").unbind('click').bind('click', function() {
-          var table = $("#product_info_table");
-          var count_table_tbody_tr = $("#product_info_table tbody tr").length;
-          var row_id = count_table_tbody_tr + 1;
-
-          $.ajax({
-              url: '<?php echo base_url('index.php/orders/getTableProductRow'); ?>',
-              type: 'post',
-              dataType: 'json',
-              success: function(response) {
-                var html = '<tr id="row_'+row_id+'">' +
-                  '<td>'+ 
-                      '<select class="form-control select_group category_name" data-row-id="'+row_id+'" id="category_'+row_id+'" name="category[]" style="width:100%;">'+
-                          '<option value="">Choose</option>';
-                          // Add options for categories here
-                          <?php foreach ($category as $key => $value): ?>
-                              html += '<option value="<?php echo $value['prod_category'] ?>"><?php echo $value['prod_category'] ?></option>';  
-                          <?php endforeach ?>
-                      html += '</select>'+
-                  '</td>'+
-                  '<td>'+ 
-                      '<select class="form-control select_group product_'+row_id+'" data-row-id="'+row_id+'" id="product_'+row_id+'" name="product[]" style="width:100%;"  required onchange="getProductData('+row_id+')">'+
-                        
-                      '</select>'+
-                  '</td>'+ 
-                '<td>'+ 
-                      '<select class="form-control select_group sliced" data-row-id="'+row_id+'" id="sliced_'+row_id+'" name="sliced[]" style="width:100%;" onchange="slicechange(this)">'+
-                          '<option value="">Choose</option>'+
-                          '<option value="Unsliced">Unsliced</option>'+
-                          '<option value="12mm">12mm</option>'+
-                          '<option value="20mm">20mm</option>'+
-                      '</select>'+
-                  '</td>'+
-                  '<td>'+ 
-                    '<select class="form-control select_group seed" data-row-id="'+row_id+'" id="seed_'+row_id+'" name="seed[]" style="width:100%;" onchange="seedchange(this)">'+
-                        '<option value="">Choose</option>'+
-                        '<option value="Seedless">Seedless</option>'+
-                        '<option value="White drizzle">White drizzle</option>'+
-                        '<option value="Black drizzle">Black drizzle</option>'+
-                        '<option value="White black mix">White black mix</option>'+
-                    '</select>'+
-                '</td>'+
-                  '<td><input type="hidden" name="minn" id="minn" class="form-control" autocomplete="off"><input type="number" name="qty[]" id="qty_'+row_id+'" class="form-control" onkeyup="getTotal('+row_id+')"></td>'+
-                  '<td><input type="text" name="rate[]" id="rate_'+row_id+'" class="form-control" disabled><input type="hidden" name="rate_value[]" id="rate_value_'+row_id+'" class="form-control"></td>'+
-                  '<td><input type="text" name="amount[]" id="amount_'+row_id+'" class="form-control" disabled><input type="hidden" name="amount_value[]" id="amount_value_'+row_id+'" class="form-control"></td>'+
-                  '<td><button type="button" class="btn btn-danger" onclick="removeRow(\''+row_id+'\')"><i class="fa fa-close"></i></button></td>'+
-              '</tr>';
-
-              if(count_table_tbody_tr >= 1) {
-                  $("#product_info_table tbody tr:last").after(html);  
-              }
-              else {
-                  $("#product_info_table tbody").html(html);
-              }
-
-              // Trigger change event to populate products initially
-              $("#category_" + row_id).trigger("change");
-          }
-      });
-
-      return false;
-  });
-
-  $('#product_info_table').on('change', '.category_name', function() {
-      var currentRow = $(this).closest('tr'); // Store the reference to 'this'
-      var categoryId = $(this).val();
-      // AJAX request to fetch products based on the selected category
-      $.ajax({
-          url: '<?php echo base_url('index.php/orders/getProductsByCategory'); ?>',
-          method: 'POST',
-          data: { category_id: categoryId },
-          dataType: 'json',
-          success: function(response) {
-              var options = '<option value=""></option>';
-              $.each(response, function(index, product) {
-              if(product.min_order>1){
-              var qty_pkt = ' ('+ product.min_order + 'pcs/pkt)';
-              }
-              else{
-                var qty_pkt = '';
-              }
-                  options += '<option value="' + product.id + '">' + product.product_name + qty_pkt + '</option>';
-              });
-              // Update the corresponding product select element using the stored reference
-              currentRow.find('.product_' + currentRow.attr('id').split('_')[1]).html(options);
-          }
-      });
-  });
-
-  $('.category_name').on('change', function() {
-    //  alert('t');
-      var categoryId = $(this).val();
-      // AJAX request to fetch products based on the selected category
-      $.ajax({
-          url: '<?php echo base_url('index.php/orders/getProductsByCategory'); ?>',
-          method: 'POST',
-          data: { category_id: categoryId },
-          dataType: 'json',
-          success: function(response) {
-              var options = '<option value=""></option>';
-              $.each(response, function(index, product) {
-              if(product.min_order>1){
-              var qty_pkt = ' ('+ product.min_order + 'pcs/pkt)';
-              }
-              else{
-                var qty_pkt = '';
-              }
-                  options += '<option value="' + product.id + '">' + product.product_name + qty_pkt + '</option>';
-              });
-              $('.product_1').html(options);
-          }
-      });
-  });
-
-  $('#product_info_table').on('change', '.seed', function() {
-          subAmount();
-      });
-  $('#product_info_table').on('change', '.sliced', function() {
-      subAmount();
-  });
-  }); // /document
+$('#product_info_table').on('change', '.seed', function() {
+var row = $(this).closest('tr').attr('id').split('_')[1]; // Get the row number from the closest row
+    getTotal(row); // Call getTotal function with row information
+    subAmount();
+});
+$('#product_info_table').on('change', '.sliced', function() {
+var row = $(this).closest('tr').attr('id').split('_')[1]; // Get the row number from the closest row
+    getTotal(row); // Call getTotal function with row information
+subAmount();
+});
+}); // /document
 
   $(document).on('input', 'input[name^="qty"]', function() {
       var rowId = $(this).attr('id').split('_')[1];
