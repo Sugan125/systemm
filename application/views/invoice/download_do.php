@@ -30,11 +30,19 @@
             <b>SFA License No.: </b> PL18J0136<br>
           </div>
           <div style="box-sizing: border-box; float: right; width: 50%; text-align: right;">
-            <?php foreach($order_total as $val => $order_data): ?>  
+            <?php foreach($order_total as $val => $order_data):
+              
+              if($order_data['po_ref']){
+                $po_ref = $order_data['po_ref'];
+            }
+            else{
+              $po_ref = 'Nil';
+            }
+            ?>  
               <b style="font-weight: bold;">Invoice No: </b> <?php echo $order_data['bill_no']; ?><br>
               <b style="font-weight: bold;">Date and Time: </b> <?php echo empty($order_data['created_date']) ? $order_date : $order_data['created_date']; ?><br>
                                   <!-- <b>Bill ID: </b> <br> -->
-              <b>Your Ref: </b> 123<br>
+              <b>PO Ref: </b> <?php echo $po_ref; ?><br>
               <b>D/O No.: </b>  <?php echo $order_data['do_bill_no']; ?><br>
               <b>Term: </b> C.O.D<br>
             <?php endforeach; ?>
@@ -54,7 +62,11 @@
           </div>
           <div style="box-sizing: border-box; float: right; width: 50%; text-align: right; ">
             <b>Ship To:</b>  <?php
-            $address = $order_data['delivery_address'] .' '. $order_data['delivery_address_line2'] .' '. $order_data['delivery_address_city'] .' '. $order_data['delivery_address_postcode'];
+             if (!empty($order_data['shipping_address']) || !empty($order_data['shipping_address_line2']) || !empty($order_data['shipping_address_line3']) || !empty($order_data['shipping_address_line4']) || !empty($order_data['shipping_address_city']) || !empty($order_data['shipping_address_postcode'])) {
+              $address = $order_data['shipping_address'] .' '. $order_data['shipping_address_line2'] .' '. $order_data['shipping_address_line3'] .' '. $order_data['shipping_address_line4'] .' '. $order_data['shipping_address_city'] .' '. $order_data['shipping_address_postcode']; 
+           } else {
+               $address = $order_data['delivery_address'] .' '. $order_data['delivery_address_line2'] .' '. $order_data['delivery_address_line3'] .' '. $order_data['delivery_address_line4'] .' '. $order_data['delivery_address_city'] .' '. $order_data['delivery_address_postcode'];
+           }
             $max_length = 45; 
             $address_lines = wordwrap($address, $max_length, "<br>", true);
             echo $address_lines;

@@ -425,15 +425,12 @@
 //         $('#msg').html('');
 //     }
 // });
+
 var today = new Date();
 
-// Calculate the date 2 days from now for the default value
+// Calculate the date 3 days from now for the default value
 var defaultDate = new Date(today);
 defaultDate.setDate(today.getDate() + 3);
-
-// Set the default value for the pre-order input field
-var preOrderInput = document.getElementById('pre_order');
-preOrderInput.value = defaultDate.toISOString().split('T')[0];
 
 // Set the minimum date for the pre-order input field (2 days from now)
 var minDate = new Date(today);
@@ -444,6 +441,7 @@ var maxDate = new Date(today);
 maxDate.setDate(today.getDate() + 7);
 
 // Set the min and max attributes for the input field
+var preOrderInput = document.getElementById('pre_order');
 preOrderInput.min = minDate.toISOString().split('T')[0];
 preOrderInput.max = maxDate.toISOString().split('T')[0];
 
@@ -452,13 +450,18 @@ function isSunday(date) {
     return date.getDay() === 0; // 0 represents Sunday
 }
 
+// Set the default value for the pre-order input field if it's not a Sunday
+if (!isSunday(defaultDate)) {
+    preOrderInput.value = defaultDate.toISOString().split('T')[0];
+}
+
 // Disable input field for invalid dates
 preOrderInput.addEventListener('input', function() {
     var selectedDate = new Date(preOrderInput.value);
     if (selectedDate < minDate || selectedDate > maxDate || isSunday(selectedDate)) {
         preOrderInput.value = ''; // Clear input if date is invalid
         if (selectedDate < minDate) {
-            alert('You can only select a date starting from ' + minDate.toISOString().split('T')[0] + '.');
+            alert('You can only select before 3 days of delivery');
         } else if (selectedDate > maxDate) {
             alert('You can only select a date within the next 7 days.');
         } else {
@@ -466,6 +469,7 @@ preOrderInput.addEventListener('input', function() {
         }
     }
 });
+
 
 $(document).ready(function() {
   $('.shippingAddressCheckbox').change(function() {
