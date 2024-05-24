@@ -375,15 +375,16 @@ if (!isSunday(defaultDate)) {
 // Disable input field for invalid dates
 preOrderInput.addEventListener('input', function() {
     var selectedDate = new Date(preOrderInput.value);
-    if (selectedDate < minDate || selectedDate > maxDate || isSunday(selectedDate)) {
+    if (selectedDate > maxDate || isSunday(selectedDate)) {
         preOrderInput.value = ''; // Clear input if date is invalid
-        if (selectedDate < minDate || selectedDate > maxDate) {
+        if (selectedDate > maxDate) {
             alert('You can only select a date within the next 7 days.');
         } else if (isSunday(selectedDate)) {
             alert('No delivery on Sunday.');
         }
     }
 });
+
 
   //   $(document).on('change', '.category_name', function() {
   //     var rowId = $(this).data('row-id');
