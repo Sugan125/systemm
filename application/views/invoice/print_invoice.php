@@ -124,7 +124,7 @@
     <td><?php echo isset($order['gross_amount']) ? number_format($order['gross_amount'] + $order['delivery_charge'], 2) : "0.00"; ?></td>
   </tr>
   <tr>
-    <th>GST:</th>
+    <th>GST@9%:</th>
     <td><?php echo isset($order['gst_amt']) ? $order['gst_amt'] : 0; ?></td>
   </tr>
   <tr>

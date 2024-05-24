@@ -174,7 +174,7 @@
                 <textarea class="form-control" id="feed_back" name="feed_back" autocomplete="off"></textarea>
                 <br>
                 <label>Delivery Date (Mandatory)</label>
-                <input type="date" name="pre_order_date" id="pre_order" class="form-control"  autocomplete="off" required>
+                <input type="date" name="pre_order_date" id="pre_order" class="form-control"  autocomplete="off" >
                 <br>
                 <label for="packer_memo" class="control-label">Packer Memo</label>
                 <textarea class="form-control" id="packer_memo" name="packer_memo" autocomplete="off"></textarea>
@@ -426,7 +426,6 @@
 //         $('#msg').html('');
 //     }
 // });
-
 var today = new Date();
 
 // Calculate the date 3 days from now for the default value
@@ -461,10 +460,10 @@ preOrderInput.addEventListener('input', function() {
     var selectedDate = new Date(preOrderInput.value);
     if (selectedDate < minDate || selectedDate > maxDate || isSunday(selectedDate)) {
         preOrderInput.value = ''; // Clear input if date is invalid
-        if (selectedDate > maxDate) {
+        if (selectedDate < minDate || selectedDate > maxDate) {
             alert('You can only select a date within the next 7 days.');
-        } else {
-            alert('No delivery on Sunday.');
+        } else if (isSunday(selectedDate)) {
+            alert('No delivery on Sunday.');
         }
     }
 });

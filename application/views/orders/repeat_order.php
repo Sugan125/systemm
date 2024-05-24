@@ -368,8 +368,7 @@
 </div><!-- /myModal -->
 
   <script type="text/javascript">
- 
-var today = new Date();
+  var today = new Date();
 
 // Calculate the date 3 days from now for the default value
 var defaultDate = new Date(today);
@@ -403,10 +402,10 @@ preOrderInput.addEventListener('input', function() {
     var selectedDate = new Date(preOrderInput.value);
     if (selectedDate < minDate || selectedDate > maxDate || isSunday(selectedDate)) {
         preOrderInput.value = ''; // Clear input if date is invalid
-        if (selectedDate > maxDate) {
+        if (selectedDate < minDate || selectedDate > maxDate) {
             alert('You can only select a date within the next 7 days.');
-        } else {
-            alert('No delivery on Sunday.');
+        } else if (isSunday(selectedDate)) {
+            alert('No delivery on Sunday.');
         }
     }
 });
