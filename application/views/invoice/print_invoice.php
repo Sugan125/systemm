@@ -78,7 +78,19 @@
          </thead>
          <tbody>
          <?php foreach ($data['order_data']['order_item'] as $order) : 
+            $slice = $order['slice_type'];
+            $qty = $order['slice_type'];
+            $service_charge = $order['service_charge'];
+           
+
+            if($service_charge > 0){
+            $ammount = $order['amount'] - $service_charge;
+            }
+            else{
+              $ammount = $order['amount'];
+            }
           ?>
+         
         <tr class="odd text-center">
         <td><?php echo isset($order['qty']) ? $order['qty'] : ''; ?></td>
         <td><?php echo isset($order['product_id']) ? $order['product_id'] : ''; ?></td>
@@ -104,9 +116,60 @@
         <td>$<?php echo isset($order['rate']) ? $order['rate'] : ''; ?></td>
         <td>pc</td>
         <td>$<?php echo isset($order['service_charge']) ? $order['service_charge'] : 0; ?></td>
-        <td>$<?php echo isset($order['amount']) ? $order['amount'] : ''; ?></td>
+        <td>$<?php echo isset($order['amount']) ? $ammount : ''; ?></td>
     </tr>
+
+    <?php
+         if($slice == '12mm'){
+        ?>
+           <tr class="odd text-center">
+        <td><?php echo isset($order['qty']) ? $order['qty'] : ''; ?></td>
+        <td><?php echo  'SL012'; ?></td>
+        <td><?php echo 'Slice 12mm Service Charge'; ?></td>
+        <td>$<?php echo '0.50'; ?></td>
+        <td>pc</td>
+        <td>$<?php echo $service_charge; ?></td>
+        <td>$<?php echo $service_charge; ?></td>
+    </tr>
+        <?php
+         }
+         ?>
+           <?php
+         if($slice == '20mm'){
+        ?>
+           <tr class="odd text-center">
+        <td><?php echo isset($order['qty']) ? $order['qty'] : ''; ?></td>
+        <td><?php echo  'SL020'; ?></td>
+        <td><?php echo 'Slice 20mm Service Charge'; ?></td>
+        <td>$<?php echo '0.50'; ?></td>
+        <td>pc</td>
+        <td>$<?php echo $service_charge; ?></td>
+        <td>$<?php echo $service_charge; ?></td>
+    </tr>
+        <?php
+         }
+         ?>
 <?php endforeach; ?>
+
+<?php
+foreach($order_total as $val => $order):
+$delivery_charge = $order['delivery_charge'];
+if($delivery_charge > 0){
+
+  ?>
+      <tr class="odd text-center">
+        <td><?php echo '1'; ?></td>
+        <td><?php echo  'DS020'; ?></td>
+        <td><?php echo 'Delivery Service'; ?></td>
+        <td>$<?php echo '20.00'; ?></td>
+        <td>pc</td>
+        <td>$<?php echo '20.00';?></td>
+        <td>$<?php echo '20.00'; ?></td>
+    </tr>
+  <?php
+}
+endforeach;
+?>
 
          </tbody>
        </table>
@@ -115,10 +178,10 @@
         <?php foreach($order_total as $val => $order):
           ?>
   <table class="col-xs-12 total-amount" style="margin-left: auto;">
-  <tr>
+  <!-- <tr>
     <th>Delivery Charge:</th>
-    <td><?php echo isset($order['delivery_charge']) ? $order['delivery_charge'] . ".00" : "0.00"; ?></td>
-  </tr>
+    <td>< //echo isset($order['delivery_charge']) ? $order['delivery_charge'] . ".00" : "0.00"; ?></td>
+  </tr> -->
   <tr>
     <th>Total:</th>
     <td><?php echo isset($order['gross_amount']) ? number_format($order['gross_amount'] + $order['delivery_charge'], 2) : "0.00"; ?></td>
@@ -135,24 +198,6 @@
 <?php endforeach; ?>
       </div>
         </div> 
-        <!-- <table class="table table-bordered table-striped table-responsive equal-width-table" style="display: inline-table;">
-         <thead>
-           <tr class="text-center">
-             <th>RECEIVED BY</th>
-             <th>FOR Sourdough Factory LLP</th>
-                                     </tr>
-         </thead>
-         <tbody>
-             <tr class="odd text-center">
-               <td> </td>
-               <td> </td>
-             </tr>
-             <tr class="odd text-center">
-               <td> </td>
-               <td> </td>
-             </tr>
-         </tbody>
-       </table> -->
        <div class="col-sm-7 col-xs-12" style="padding: 0px;">
        <?php foreach($order_total as $val => $order_data): ?>
        <p><b><?php echo "Memo:".$order_data['memo']; ?></b></p>

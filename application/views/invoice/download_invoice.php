@@ -77,53 +77,101 @@
         
       </div>
       <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
-        <thead>
-          <tr style="background-color: #f5f5f5;">
-            <th style="padding: 10px; border: 1px solid #ccc;">Qty</th>
-            <th style="padding: 10px; border: 1px solid #ccc;">Item No</th>
-            <th style="padding: 10px; border: 1px solid #ccc;">Description</th>
-            <th style="padding: 10px; border: 1px solid #ccc;">Price</th>
-            <th style="padding: 10px; border: 1px solid #ccc;">UOM</th>
-            <th style="padding: 10px; border: 1px solid #ccc;">Service Charge</th>
-            <th style="padding: 10px; border: 1px solid #ccc;">Amount (S$)</th>
-          </tr>
-        </thead>
-        <tbody>
-          <?php foreach ($data['order_data']['order_item'] as $order) : ?>
-          <tr>
-            <td style="padding: 10px; border: 1px solid #ccc; text-align:center;"><?php echo isset($order['qty']) ? $order['qty'] : ''; ?></td>
-            <td style="padding: 10px; border: 1px solid #ccc; text-align:center;"><?php echo isset($order['product_id']) ? $order['product_id'] : ''; ?></td>
-            <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">
-            <?php 
-                if(isset($order['product_name'])) {
-                    echo $order['product_name']; 
-                    if(isset($order['slice_type']) && $order['slice_type'] !== '' || isset($order['seed_type']) && $order['seed_type'] !== '') {
-                        echo ' (';
-                        if(isset($order['slice_type'])) {
-                            echo $order['slice_type'];
-                            if(isset($order['seed_type']) && $order['seed_type'] !== '') {
-                                echo ', ' . $order['seed_type'];
-                            }
-                        } elseif(isset($order['seed_type']) && $order['seed_type'] !== '') {
-                            echo $order['seed_type'];
-                        }
-                        echo ')';
-                    }
-                } 
-            ?>
-        </td>
-            <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">$<?php echo isset($order['rate']) ? $order['rate'] : ''; ?></td>
-            <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">pc</td>
-            <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">$<?php echo isset($order['service_charge']) ? $order['service_charge'] : 0; ?></td>
-            <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">$<?php echo isset($order['amount']) ? $order['amount'] : ''; ?></td>
-          </tr>
-          <?php endforeach; ?>
-        </tbody>
-      </table>
+  <thead>
+    <tr style="background-color: #f5f5f5;">
+      <th style="padding: 10px; border: 1px solid #ccc;">Qty</th>
+      <th style="padding: 10px; border: 1px solid #ccc;">Item No</th>
+      <th style="padding: 10px; border: 1px solid #ccc;">Description</th>
+      <th style="padding: 10px; border: 1px solid #ccc;">Price</th>
+      <th style="padding: 10px; border: 1px solid #ccc;">UOM</th>
+      <th style="padding: 10px; border: 1px solid #ccc;">Service Charge</th>
+      <th style="padding: 10px; border: 1px solid #ccc;">Amount (S$)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <?php foreach ($data['order_data']['order_item'] as $order) : 
+      $slice = $order['slice_type'];
+      $qty = $order['slice_type'];
+      $service_charge = $order['service_charge'];
+      
+      if($service_charge > 0){
+        $ammount = $order['amount'] - $service_charge;
+      } else {
+        $ammount = $order['amount'];
+      }
+    ?>
+    <tr>
+      <td style="padding: 10px; border: 1px solid #ccc; text-align:center;"><?php echo isset($order['qty']) ? $order['qty'] : ''; ?></td>
+      <td style="padding: 10px; border: 1px solid #ccc; text-align:center;"><?php echo isset($order['product_id']) ? $order['product_id'] : ''; ?></td>
+      <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">
+        <?php 
+          if(isset($order['product_name'])) {
+            echo $order['product_name']; 
+            if((isset($order['slice_type']) && $order['slice_type'] !== '') || (isset($order['seed_type']) && $order['seed_type'] !== '')) {
+              echo ' (';
+              if(isset($order['slice_type'])) {
+                echo $order['slice_type'];
+                if(isset($order['seed_type']) && $order['seed_type'] !== '') {
+                  echo ', ' . $order['seed_type'];
+                }
+              } elseif(isset($order['seed_type']) && $order['seed_type'] !== '') {
+                echo $order['seed_type'];
+              }
+              echo ')';
+            }
+          } 
+        ?>
+      </td>
+      <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">$<?php echo isset($order['rate']) ? $order['rate'] : ''; ?></td>
+      <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">pc</td>
+      <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">$<?php echo isset($order['service_charge']) ? $order['service_charge'] : 0; ?></td>
+      <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">$<?php echo isset($order['amount']) ? $ammount : ''; ?></td>
+    </tr>
+    <?php if($slice == '12mm'): ?>
+    <tr class="odd text-center">
+      <td style="padding: 10px; border: 1px solid #ccc; text-align:center;"><?php echo isset($order['qty']) ? $order['qty'] : ''; ?></td>
+      <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">SL012</td>
+      <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">Slice 12mm Service Charge</td>
+      <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">$0.50</td>
+      <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">pc</td>
+      <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">$<?php echo $service_charge; ?></td>
+      <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">$<?php echo $service_charge; ?></td>
+    </tr>
+    <?php elseif($slice == '20mm'): ?>
+    <tr class="odd text-center">
+      <td style="padding: 10px; border: 1px solid #ccc; text-align:center;"><?php echo isset($order['qty']) ? $order['qty'] : ''; ?></td>
+      <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">SL020</td>
+      <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">Slice 20mm Service Charge</td>
+      <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">$0.50</td>
+      <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">pc</td>
+      <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">$<?php echo $service_charge; ?></td>
+      <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">$<?php echo $service_charge; ?></td>
+    </tr>
+    <?php endif; ?>
+    <?php endforeach; ?>
+    
+    <?php foreach($order_total as $val => $order): 
+      $delivery_charge = $order['delivery_charge'];
+      if($delivery_charge > 0):
+    ?>
+    <tr class="odd text-center">
+      <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">1</td>
+      <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">DS020</td>
+      <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">Delivery Service</td>
+      <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">$20.00</td>
+      <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">pc</td>
+      <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">$20.00</td>
+      <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">$20.00</td>
+    </tr>
+    <?php endif; endforeach; ?>
+  </tbody>
+</table>
+
+
       <div class="box-sizing: border-box; width: 50%; total-amount" style="padding: 20px; float: right; border: #e2e2e2 solid 1px;">
         <?php foreach($order_total as $val => $order): ?>
           <div class="box-sizing: border-box; width: 50%; total-amount" style="text-align: right;">
-            <b style="font-weight: bold;">Delivery Charge: </b><?php echo isset($order['delivery_charge']) ? $order['delivery_charge'] . ".00" : "0.00"; ?><br>
+            <!-- <b style="font-weight: bold;">Delivery Charge: </b><// echo isset($order['delivery_charge']) ? $order['delivery_charge'] . ".00" : "0.00"; ?><br> -->
             <b style="font-weight: bold;">Total: </b><?php echo isset($order['gross_amount']) ? number_format($order['gross_amount'] + $order['delivery_charge'], 2) : "0.00"; ?><br>
             <b style="font-weight: bold;">GST@9%: </b><?php echo isset($order['gst_amt']) ? $order['gst_amt'] : 0; ?><br>
             <!-- <b style="font-weight: bold;">Service Charge Rate: </b> <?php echo isset($order['service_charge_rate']) ? $order['service_charge_rate'] : 0; ?><br> -->
