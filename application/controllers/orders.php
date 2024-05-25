@@ -1,6 +1,8 @@
 <?php
 use Dompdf\Dompdf;
+include APPPATH . 'third_party/tcpdf/PDFMerger.php';
 
+use PDFMerger\PDFMerger;
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class orders extends CI_Controller {
@@ -539,6 +541,7 @@ public function printpacking()
 		$this->load->view('template/footer.php');
 }
 
+
 public function send_invoice($bill_no,$email)
 	{
 	
@@ -837,6 +840,7 @@ public function print_do()
 
 public function donwloadinvoice()
 {
+
     $data['print'] = 'print';
 
     $invoice_date = $this->input->post('invoice_date');
@@ -865,8 +869,19 @@ public function donwloadinvoice()
         }
     }
 
+    // Combine PDFs into a single PDF
+    $combined_pdf_path = FCPATH . 'files/' . 'combined_invoices_' . $invoice_date . '.pdf';
+
+    $pdf = new PDFMerger;
+
+    foreach ($file_paths as $file_path) {
+        $pdf->addPDF($file_path, 'all');
+    }
+
+    $pdf->merge('file', $combined_pdf_path);
+
     // Set the filename for the ZIP archive
-    $zip_filename = 'invoices_' . $invoice_date . '.zip';
+    $zip_filename = 'combinedinvoices_' . $invoice_date . '.zip';
 
     // Set the appropriate headers for ZIP download
     header('Content-Type: application/zip');
@@ -875,11 +890,8 @@ public function donwloadinvoice()
     // Create a new ZIP archive
     $zip = new ZipArchive;
     if ($zip->open($zip_filename, ZipArchive::CREATE) === TRUE) {
-        // Add files to the ZIP archive
-        foreach ($file_paths as $file_path) {
-            $file_name_in_zip = basename($file_path);
-            $zip->addFile($file_path, $file_name_in_zip);
-        }
+        // Add the combined PDF to the ZIP archive
+        $zip->addFile($combined_pdf_path, basename($combined_pdf_path));
 
         // Close the ZIP archive
         $zip->close();
@@ -889,6 +901,9 @@ public function donwloadinvoice()
 
         // Remove the temporary ZIP file
         unlink($zip_filename);
+
+        // Remove the combined PDF file
+        unlink($combined_pdf_path);
     } else {
         // Handle the case where ZIP archive creation fails
         echo "Failed to create ZIP archive";
@@ -1154,6 +1169,7 @@ public function searchorderdate() {
 }
 
 
+
 public function fetch_user_address() {
 	
 	$user_id = $this->input->post('user_id');
@@ -1170,4 +1186,134 @@ public function fetch_user_address() {
 	}
 }
 
+public function downloadseparate()
+{
+    $data['print'] = 'print';
+
+    $invoice_date = $this->input->post('invoicee_date');
+
+    $loginuser = $this->session->userdata('LoginSession');
+
+    $data['user_id'] = $loginuser['id'];
+
+    $user_id = $data['user_id'];
+
+    $orders_data = $this->order_model->getinvoice($invoice_date);
+
+    // Initialize an array to store file paths
+    $file_paths = array();
+
+    foreach ($orders_data as $row) {
+        $filename = 'invoice_' . $row->bill_no . '.pdf';
+        $filepath = FCPATH . 'files/' . $filename;
+
+        if (file_exists($filepath)) {
+            // Add file path to the array
+            $file_paths[] = $filepath;
+        } else {
+            // Handle the case where the file doesn't exist
+            echo "File not found for bill number: " . $row->bill_no;
+        }
+    }
+
+    // Set the filename for the ZIP archive
+    $zip_filename = 'invoices_' . $invoice_date . '.zip';
+
+    // Set the appropriate headers for ZIP download
+    header('Content-Type: application/zip');
+    header('Content-Disposition: attachment; filename="' . $zip_filename . '"');
+
+    // Create a new ZIP archive
+    $zip = new ZipArchive;
+    if ($zip->open($zip_filename, ZipArchive::CREATE) === TRUE) {
+        // Add files to the ZIP archive
+        foreach ($file_paths as $file_path) {
+            $file_name_in_zip = basename($file_path);
+            $zip->addFile($file_path, $file_name_in_zip);
+        }
+
+        // Close the ZIP archive
+        $zip->close();
+
+        // Output the ZIP archive
+        readfile($zip_filename);
+
+        // Remove the temporary ZIP file
+        unlink($zip_filename);
+    } else {
+        // Handle the case where ZIP archive creation fails
+        echo "Failed to create ZIP archive";
+    }
+}
+
+public function downloadcombined()
+{
+    $data['print'] = 'print';
+
+    $invoice_date = $this->input->post('invoicee_date');
+
+    $loginuser = $this->session->userdata('LoginSession');
+
+    $data['user_id'] = $loginuser['id'];
+
+    $user_id = $data['user_id'];
+
+    $orders_data = $this->order_model->getdo($invoice_date);
+
+    // Initialize an array to store file paths
+    $file_paths = array();
+
+    foreach ($orders_data as $row) {
+        $filename = $row->do_bill_no . '.pdf';
+        $filepath = FCPATH . 'files/DO/' . $filename;
+
+        if (file_exists($filepath)) {
+            // Add file path to the array
+            $file_paths[] = $filepath;
+        } else {
+            // Handle the case where the file doesn't exist
+            echo "File not found for bill number: " . $row->do_bill_no;
+        }
+    }
+
+    // Use the helper function to merge PDFs and create a ZIP file
+    $combined_pdf_path = FCPATH . 'files/DO' . 'combined_dos_' . $invoice_date . '.pdf';
+
+    $pdf = new PDFMerger;
+
+    foreach ($file_paths as $file_path) {
+        $pdf->addPDF($file_path, 'all');
+    }
+
+    $pdf->merge('file', $combined_pdf_path);
+
+    // Set the filename for the ZIP archive
+    $zip_filename = 'CombinedDOs_' . $invoice_date . '.zip';
+
+    // Set the appropriate headers for ZIP download
+    header('Content-Type: application/zip');
+    header('Content-Disposition: attachment; filename="' . $zip_filename . '"');
+
+    // Create a new ZIP archive
+    $zip = new ZipArchive;
+    if ($zip->open($zip_filename, ZipArchive::CREATE) === TRUE) {
+        // Add the combined PDF to the ZIP archive
+        $zip->addFile($combined_pdf_path, basename($combined_pdf_path));
+
+        // Close the ZIP archive
+        $zip->close();
+
+        // Output the ZIP archive
+        readfile($zip_filename);
+
+        // Remove the temporary ZIP file
+        unlink($zip_filename);
+
+        // Remove the combined PDF file
+        unlink($combined_pdf_path);
+    } else {
+        // Handle the case where ZIP archive creation fails
+        echo "Failed to create ZIP archive";
+    }
+}
 }

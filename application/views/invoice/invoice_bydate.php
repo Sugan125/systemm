@@ -30,7 +30,7 @@
                     </div>
                     <div class="box">
                         <div class="box-header">
-                            <h3 class="box-title">Download invoice by date</h3>
+                            <h3 class="box-title">Download invoice by date(Combined Invoice)</h3>
                         </div><br>
                         <div class="box-body" style="text-align: center;">
                         <form action="<?php echo base_url('index.php/orders/donwloadinvoice/'); ?>" method="post" target="_blank" style="display: inline-block;">
@@ -38,9 +38,24 @@
                                 <label for="schedule_date"><b>Select Date:</b></label>
                                 <input type="date" style="width: 100%;" id="invoice_date" name="invoice_date" class="form-control" required>
                             </div><br>
-                            <button type="submit" class="btn btn-danger"><i class="fas fa-print"></i> <b>DOWNLOAD INVOICE</b></button>
+                            <button type="submit" class="btn btn-danger"><i class="fas fa-print"></i> <b>DOWNLOAD COMBINED INVOICE</b></button>
                         </form>
 
+                        </div>    
+        <br><br><br>
+                        <div class="box">
+                        <div class="box-header">
+                            <h3 class="box-title">Download invoice by date(Separate Invoice)</h3>
+                        </div><br>
+                        <div class="box-body" style="text-align: center;">
+                        <form action="<?php echo base_url('index.php/orders/downloadseparate/'); ?>" method="post" target="_blank" style="display: inline-block;">
+                            <div class="form-group"   >
+                                <label for="schedule_date"><b>Select Date:</b></label>
+                                <input type="date" style="width: 100%;" id="invoicee_date" name="invoicee_date" class="form-control" required>
+                            </div><br>
+                            <button type="submit" class="btn btn-danger"><i class="fas fa-print"></i> <b>DOWNLOAD SEPARATED INVOICE</b></button>
+                        </form>
+                            
                         </div>    
                     </div>
 
@@ -62,6 +77,8 @@
     
     // Set the value of the date input field to today's date
     document.getElementById("invoice_date").value = today;
+
+    document.getElementById("invoicee_date").value = today;
 </script>
 </body>
 
