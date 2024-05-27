@@ -72,7 +72,7 @@
              <th>Description</th>
              <th>Price</th>
              <th>UOM</th>
-             <th>Service Charge</th>
+             <!-- <th>Service Charge</th> -->
              <th>Amount (S$)</th>
            </tr>
          </thead>
@@ -115,7 +115,7 @@
         </td>
         <td>$<?php echo isset($order['rate']) ? $order['rate'] : ''; ?></td>
         <td>pc</td>
-        <td>$<?php echo isset($order['service_charge']) ? $order['service_charge'] : 0; ?></td>
+        <!-- <td>$<php //echo isset($order['service_charge']) ? $order['service_charge'] : 0; ?></td> -->
         <td>$<?php echo isset($order['amount']) ? $ammount : ''; ?></td>
     </tr>
 
@@ -128,7 +128,6 @@
         <td><?php echo 'Slice 12mm Service Charge'; ?></td>
         <td>$<?php echo '0.50'; ?></td>
         <td>pc</td>
-        <td>$<?php echo $service_charge; ?></td>
         <td>$<?php echo $service_charge; ?></td>
     </tr>
         <?php
@@ -143,7 +142,6 @@
         <td><?php echo 'Slice 20mm Service Charge'; ?></td>
         <td>$<?php echo '0.50'; ?></td>
         <td>pc</td>
-        <td>$<?php echo $service_charge; ?></td>
         <td>$<?php echo $service_charge; ?></td>
     </tr>
         <?php
@@ -163,7 +161,6 @@ if($delivery_charge > 0){
         <td><?php echo 'Delivery Service'; ?></td>
         <td>$<?php echo '20.00'; ?></td>
         <td>pc</td>
-        <td>$<?php echo '20.00';?></td>
         <td>$<?php echo '20.00'; ?></td>
     </tr>
   <?php

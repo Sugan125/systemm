@@ -44,7 +44,7 @@
                                   <!-- <b>Bill ID: </b> <br> -->
               <b>PO Ref: </b> <?php echo $po_ref; ?><br>
               <b>D/O No.: </b>  <?php echo $order_data['do_bill_no']; ?><br>
-              <b>Term: </b> C.O.D<br>
+              <b>Term: </b><?php echo $order_data['payment_terms'] ? $order_data['payment_terms'] : 'C.O.D'; ?><br>
             <?php endforeach; ?>
           </div>
         </div>
@@ -119,7 +119,9 @@
 
       <div style="padding: 0;">
       
-      <p><b>Remarks Open at 12pm</b></p>
+      <?php foreach($order_total as $val => $order_data): ?>
+       <p><b><?php echo "Memo:".$order_data['memo']; ?></b></p>
+       <?php endforeach; ?>
           <p>We appreciate your business.</p>
           <p> For guaranteed freshness, please consume within 8 hours upon recieving of baked goods.</p>
       </div> 

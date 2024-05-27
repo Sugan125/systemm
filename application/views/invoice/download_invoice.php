@@ -84,7 +84,7 @@
       <th style="padding: 10px; border: 1px solid #ccc;">Description</th>
       <th style="padding: 10px; border: 1px solid #ccc;">Price</th>
       <th style="padding: 10px; border: 1px solid #ccc;">UOM</th>
-      <th style="padding: 10px; border: 1px solid #ccc;">Service Charge</th>
+      <!-- <th style="padding: 10px; border: 1px solid #ccc;">Service Charge</th> -->
       <th style="padding: 10px; border: 1px solid #ccc;">Amount (S$)</th>
     </tr>
   </thead>
@@ -124,7 +124,7 @@
       </td>
       <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">$<?php echo isset($order['rate']) ? $order['rate'] : ''; ?></td>
       <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">pc</td>
-      <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">$<?php echo isset($order['service_charge']) ? $order['service_charge'] : 0; ?></td>
+      <!-- <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">$<php// echo isset($order['service_charge']) ? $order['service_charge'] : 0; ?></td> -->
       <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">$<?php echo isset($order['amount']) ? $ammount : ''; ?></td>
     </tr>
     <?php if($slice == '12mm'): ?>
@@ -134,7 +134,7 @@
       <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">Slice 12mm Service Charge</td>
       <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">$0.50</td>
       <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">pc</td>
-      <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">$<?php echo $service_charge; ?></td>
+      <!-- <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">$<//php echo $service_charge; ?></td> -->
       <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">$<?php echo $service_charge; ?></td>
     </tr>
     <?php elseif($slice == '20mm'): ?>
@@ -144,7 +144,7 @@
       <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">Slice 20mm Service Charge</td>
       <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">$0.50</td>
       <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">pc</td>
-      <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">$<?php echo $service_charge; ?></td>
+      <!-- <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">$<php echo $service_charge; ?></td> -->
       <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">$<?php echo $service_charge; ?></td>
     </tr>
     <?php endif; ?>
@@ -160,7 +160,7 @@
       <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">Delivery Service</td>
       <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">$20.00</td>
       <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">pc</td>
-      <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">$20.00</td>
+      <!-- <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">$20.00</td> -->
       <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">$20.00</td>
     </tr>
     <?php endif; endforeach; ?>
