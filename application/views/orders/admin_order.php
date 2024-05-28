@@ -236,6 +236,7 @@
                     <div class="col-sm-8">
                       <input type="text" class="form-control" id="delivery_charge" name="delivery_charge" disabled  autocomplete="off">
                       <input type="hidden" class="form-control" id="delivery_charge_value" name="delivery_charge_value" autocomplete="off">
+                      <input type="checkbox" id="self_pickup" value="1" name="self_pickup" disabled  autocomplete="off">  Self Pick-Up
                     </div>
                   </div><br>
                   <div class="form-group" style="margin-bottom:30px;">
@@ -347,22 +348,24 @@
 
 function fetchUserAddress(userId) {
     var deliveryDateInput = document.getElementById('pre_order');
+    var self_pickup = document.getElementById('self_pickup');
+    
     var xhr = new XMLHttpRequest();
     xhr.open('POST', '<?php echo base_url('index.php/orders/fetch_user_address') ?>', true);
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     xhr.onload = function () {
         if (xhr.status === 200) {
             var response = JSON.parse(xhr.responseText);
-            if (response.success && hasNonEmptyAddress(response.data)) {
+            if (response.success && hasNonEmptyAddress(response.data) && !self_pickup.checked) {
                 updateModal(response.data);
                 if (!deliveryDateInput.value) {
-                        swal("Delivery Date", "Please select a delivery date before creating the order.", "warning");   
+                    swal("Delivery Date", "Please select a delivery date before creating the order.", "warning");
+                } else {
+                    updateCreateOrderButton(true);
                 }
-                updateCreateOrderButton(true);
-            } 
-            else{
-              updateModal(response.data);
-              updateCreateOrderButton(false);
+            } else {
+                updateModal(response.data);
+                updateCreateOrderButton(false);
             }
         }
     };
@@ -428,21 +431,21 @@ function clearAddressFields() {
 function updateCreateOrderButton(showModal) {
 
    
-    var createOrderButton = document.querySelector('.btn.btn-success');
-    var parent = createOrderButton.parentElement;
+var createOrderButton = document.querySelector('.btn.btn-success');
+var parent = createOrderButton.parentElement;
 
-        
-  
-    if (showModal) {
-        if (!parent.querySelector('.galName')) {
-            var modalLink = document.createElement('a');
-            modalLink.className = 'galName';
-            modalLink.href = '#myModal';
-            modalLink.setAttribute('data-toggle', 'modal');
-            parent.insertBefore(modalLink, createOrderButton);
-            modalLink.appendChild(createOrderButton);
-        }
-    } 
+    
+
+if (showModal) {
+    if (!parent.querySelector('.galName')) {
+        var modalLink = document.createElement('a');
+        modalLink.className = 'galName';
+        modalLink.href = '#myModal';
+        modalLink.setAttribute('data-toggle', 'modal');
+        parent.insertBefore(modalLink, createOrderButton);
+        modalLink.appendChild(createOrderButton);
+    }
+} 
 }
 
 function handleNext() {
@@ -578,8 +581,29 @@ function confirmOrder() {
     });
 }
 
+var userInteracted = false;  
 
 $(document).ready(function() {
+
+
+    $("#self_pickup").change(function() {
+            if ($(this).is(":checked")) {
+                $("#delivery_charge").prop("disabled", false); // Enable the delivery charge input
+               
+            } else {
+                $("#delivery_charge").prop("disabled", true);  // Disable the delivery charge input
+                
+            }
+          
+        });
+
+
+        $("#delivery_charge").keyup(function() {
+
+        userInteracted = true;
+        // Call subAmount function whenever delivery charge is updated
+        subAmount();
+    });
 
   $(document).on('change', '.sliced', function() {
     var row = $(this).closest('tr'); // Get the closest row
@@ -879,9 +903,9 @@ function removeRow(tr_id)
 
 
 
-  function subAmount() {
+function subAmount() {
     var service_charge = 0; // Initialize additional charge to 0
-
+    var deliveryCharge;
     // Check if either slice or seed is selected for any row
     var tableProductLength = $("#product_info_table tbody tr").length;
 
@@ -914,7 +938,22 @@ function removeRow(tr_id)
     var discount = $("#discount").val() || 0;
     var netAmount = grossAmount;
 
-    var deliveryCharge = netAmount < 80 ? 20.00 : 0;
+
+    if (netAmount > 50 && netAmount < 80) {
+        $("#self_pickup").prop("disabled", false); // Enable the element
+    } else {
+        $("#self_pickup").prop("disabled", true);  // Disable the element
+    }
+
+    if (userInteracted) {
+        // If user has interacted with the delivery charge input, use the user-entered value
+        deliveryCharge = parseFloat($("#delivery_charge").val()) || 0;
+    } else {
+        // Otherwise, use the default value based on netAmount
+        deliveryCharge = netAmount < 80 ? 20.00 : 0;
+    }
+
+ 
 
     var totall = grossAmount + deliveryCharge;
     var gstRate = 9; 

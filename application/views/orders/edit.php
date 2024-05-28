@@ -156,6 +156,7 @@
                   <br /> <br/>
                   <!-- <span id="msg" class="msg" style="color: red;"></span> -->
                   <?php foreach ($order_total as $key => $order_data):
+                  
                     ?>
                   <div class="col-sm-12 col-md-12 col-xs-12">
                   <div class="form-group">
@@ -212,6 +213,8 @@
                       <div class="col-sm-8">
                         <input type="text" class="form-control" id="delivery_charge" value="<?php echo $order_data['delivery_charge'] ?>" name="delivery_charge" disabled  autocomplete="off">
                         <input type="hidden" class="form-control" id="delivery_charge_value" value="<?php echo $order_data['delivery_charge'] ?>" name="delivery_charge_value" autocomplete="off">
+                        <input type="hidden" class="form-control" id="delivery_charge_valuee" value="<?php echo $order_data['delivery_charge'] ?>" name="delivery_charge_valuee" autocomplete="off">
+                        <input type="checkbox" id="self_pickup" value="1" name="self_pickup" disabled  autocomplete="off">  Self Pick-Up
                       </div>
                     </div><br>
                     <div class="form-group" style="margin-bottom:30px;">
@@ -403,8 +406,26 @@ preOrderInput.addEventListener('input', function() {
   //     }
   // });
 
+  var userInteracted = false;  
 
   $(document).ready(function() {
+
+    $("#self_pickup").change(function() {
+            if ($(this).is(":checked")) {
+                $("#delivery_charge").prop("disabled", false); // Enable the delivery charge input
+            } else {
+                $("#delivery_charge").prop("disabled", true);  // Disable the delivery charge input
+            }
+        });
+
+        $("#delivery_charge").keyup(function() {
+
+        userInteracted = true;
+       
+       
+        // Call subAmount function whenever delivery charge is updated
+        subAmount();
+        });
 
     $('.product').each(function() {
         var row_id = $(this).data('row-id').replace('row_', ''); // Extract row id from data attribute
@@ -677,12 +698,13 @@ function getProductData(row_id) {
 }
 
 
+
 function subAmount() {
     var service_charge = 0; // Initialize additional charge to 0
-
+    var deliveryCharge;
     // Check if either slice or seed is selected for any row
     var tableProductLength = $("#product_info_table tbody tr").length;
-
+    
     for (var x = 1; x <= tableProductLength; x++) {
         var sliceSelected = $("#sliced_" + x).val();
       //  var seedSelected = $("#seed_" + x).val();
@@ -712,7 +734,23 @@ function subAmount() {
     var discount = $("#discount").val() || 0;
     var netAmount = grossAmount;
 
-    var deliveryCharge = netAmount < 80 ? 20.00 : 0;
+
+    if (netAmount > 50 && netAmount < 80) {
+        $("#self_pickup").prop("disabled", false); // Enable the element
+    } else {
+        $("#self_pickup").prop("disabled", true);  // Disable the element
+    }
+   
+  
+    if (userInteracted) {
+      
+        // If user has interacted with the delivery charge input, use the user-entered value
+        deliveryCharge = parseFloat($("#delivery_charge").val()) || 0;
+    } else {
+        // Otherwise, use the default value based on netAmount
+        deliveryCharge = parseFloat($("#delivery_charge_valuee").val());
+    }
+    
 
     var totall = grossAmount + deliveryCharge;
     var gstRate = 9; 
@@ -732,7 +770,6 @@ function subAmount() {
     $("#net_amount").val(finalAmount.toFixed(2));
     $("#net_amount_value").val(finalAmount.toFixed(2));
 }
-
 
 
 
