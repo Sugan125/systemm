@@ -116,16 +116,18 @@ class Excel_export extends CI_Controller {
        $ser_gst = $service_charge * 0.09;
        
 
-       $aver_service_charge = $service_charge_tax + $ser_gst;
+       $qty = $row->qty;
+        
+       $aver_service_charge = $service_charge_tax * $qty;
 
        if($service_charge > 0){
            $amount = $row->amount - $service_charge; 
-           $net_total = $amount + $row->gst_amount;
+           $net_total = $inc_tax * $row->qty;
            $gst_amt = $row->gst_amount - $ser_gst;
        }
        else{
            $amount = $row->amount;
-           $net_total = $row->amount + $row->gst_amount;
+           $net_total = $inc_tax * $row->qty;
            $gst_amt = $row->gst_amount;
        }
 
@@ -296,7 +298,7 @@ class Excel_export extends CI_Controller {
        $excel_row++; // Increment the row counter
 
        
-       $service_charge_tax = $service_charge * 1.09;
+       $service_charge_tax = 0.50 * 1.09;
 
        $ser_gst = $service_charge * 0.09;
        
@@ -447,24 +449,28 @@ class Excel_export extends CI_Controller {
 
         $service_charge = $row->service_charge;
 
+
+
         $ser_inc_tax = $service_charge * 1.09;
 
 
-        $service_charge_tax = $service_charge * 1.09;
+        $service_charge_tax = 0.50 * 1.09;
 
         $ser_gst = $service_charge * 0.09;
         
+        $qty = $row->qty;
 
-        $aver_service_charge = $service_charge_tax + $ser_gst;
+        $aver_service_charge = $service_charge_tax * $qty;
 
         if($service_charge > 0){
             $amount = $row->amount - $service_charge; 
-            $net_total = $amount + $row->gst_amount;
+            $net_total = $inc_tax * $row->qty;
             $gst_amt = $row->gst_amount - $ser_gst;
         }
+
         else{
             $amount = $row->amount;
-            $net_total = $row->amount + $row->gst_amount;
+            $net_total = $inc_tax * $row->qty;
             $gst_amt = $row->gst_amount;
         }
 
