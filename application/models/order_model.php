@@ -970,7 +970,7 @@ public function count_search_orderdate($keyword) {
 }
 
 public function search_orderdate($keyword, $limit, $offset) {
-	$this->db->where('DATE(created_date)', $keyword);
+	$this->db->where('DATE(ord.created_date)', $keyword);
     $this->db->limit($limit, $offset);
     $this->db->select('ord.*, us.name as name'); // Select fields from both tables
 
