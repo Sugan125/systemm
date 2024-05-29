@@ -172,6 +172,8 @@ public function getProductData($id = null)
         'paid_status' => 2,
         'user_id' => $user_id,
 		'created_date' => $created_date,
+		'created_by' => $this->input->post('created_by'),
+		
     );
 
 
@@ -327,7 +329,8 @@ public function update($id,$user_id)
 			'shipping_address_city' => $this->input->post('shipping_address_city'),
 			'shipping_address_postcode' => $this->input->post('shipping_address_postcode'),	
 			'user_id' => $user_id,
-			'created_date' => $created_date,
+			'updated_date' => $created_date,
+			'updated_by'=> $this->input->post('updated_by'),
         );
 
         // Update order data in the orders table
@@ -652,6 +655,7 @@ public function repeat_order($id)
 			'paid_status' => 2,
 			'user_id' => $user_id,
 			'created_date' => $created_date,
+			'created_by' => $this->input->post('created_by'),
 		);
 	
 		
@@ -810,6 +814,7 @@ public function admin_create()
 		'driver_memo' => $this->input->post('driver_memo'),
 		'packer_memo' => $this->input->post('packer_memo'),
 		'po_ref' => $this->input->post('po_ref'),
+		'created_by' => $this->input->post('created_by'),
     );
 
    

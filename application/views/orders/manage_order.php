@@ -136,6 +136,8 @@ $orderdate = isset($orderdate) ? date('Y-m-d', strtotime($orderdate)) : '';
                                             <th>Delivery Charge</th>
                                             <th>GST</th>
                                             <th>Net Amount</th>
+                                            <th>Created By</th>
+                                            <th>Updated By</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -156,6 +158,8 @@ $orderdate = isset($orderdate) ? date('Y-m-d', strtotime($orderdate)) : '';
                                             <td><?php echo $val->delivery_charge; ?></td>
                                             <td><?php echo $val->gst_amt; ?></td>
                                             <td><?php echo $val->net_amount; ?></td>
+                                            <td><?php echo $val->created_by; ?></td>
+                                            <td><?php echo $val->updated_by; ?></td>
                                             <td>
                                                 <a target="__blank"
                                                     href="<?php echo base_url('index.php/orders/printadmin/'.$val->id); ?>"
@@ -174,7 +178,7 @@ $orderdate = isset($orderdate) ? date('Y-m-d', strtotime($orderdate)) : '';
                                         </tr>
                                         <?php endforeach; } 
                                     else{
-                                        echo '<tr><td colspan="10" class="text-center">No orders found for this user</td></tr>';
+                                        echo '<tr><td colspan="12" class="text-center">No orders found for this user</td></tr>';
                                     }
                                     ?>
                                     </tbody>

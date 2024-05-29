@@ -264,7 +264,8 @@
                   <input type="hidden" name="shipping_address_line4" id="shipping_address_line4">
                   <input type="hidden" name="shipping_address_city" id="shipping_address_city">
                   <input type="hidden" name="shipping_address_postcode" id="shipping_address_postcode">
-            
+                  <input type="hidden" name="created_by" id="created_by" value="<?php echo $loginuser['name']; ?>">
+                  
                   </div>
                 </div>
               </div>

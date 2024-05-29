@@ -240,7 +240,7 @@
                   <input type="hidden" name="shipping_address_line4" id="shipping_address_line4">
                   <input type="hidden" name="shipping_address_city" id="shipping_address_city">
                   <input type="hidden" name="shipping_address_postcode" id="shipping_address_postcode">
-        
+                  <input type="hidden" name="updated_by" id="updated_by" value="<?php echo $loginuser['name']; ?>">
                     </div>
                   </div>
                 </div>
@@ -349,8 +349,7 @@
 var today = new Date();
 
 // Calculate the date 3 days from now for the default value
-var defaultDate = new Date(today);
-defaultDate.setDate(today.getDate() + 1);
+
 
 // Set the minimum date for the pre-order input field (2 days from now)
 var minDate = new Date(today);

@@ -265,7 +265,8 @@
                   <input type="hidden" name="shipping_address_city" id="shipping_address_city">
                   <input type="hidden" name="shipping_address_postcode" id="shipping_address_postcode">
             
-
+                  <input type="hidden" name="created_by" id="created_by" value="<?php echo $loginuser['name']; ?>">
+                  
                   </div>
 
                 </div>
@@ -397,6 +398,7 @@
                         <?php echo !empty($loginuser['address4_postcode']) ? ', ' . $loginuser['address4_postcode'] : ''; ?>
                     </label>
                 </div>
+               
                 </form>
             </div><!-- /modal-body -->
             <div class="modal-footer">
