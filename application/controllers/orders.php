@@ -83,6 +83,13 @@ class orders extends CI_Controller {
         echo json_encode($products);
     }
 
+
+    public function getProductsByCategoryadmin() {
+        $categoryId = $this->input->post('category_id');
+        $products = $this->order_model->getProductsByCategoryadmin($categoryId);
+        echo json_encode($products);
+    }
+
     public function getTableProductRow()
 	{
 		$products = $this->order_model->getActiveProductData();
@@ -710,7 +717,7 @@ The Sourdough Factory Team";
 
 		else {
 			$data['products'] = $this->order_model->getActiveProductData();
-			$data['category'] = $this->order_model->getActivecatergoryData();
+			$data['category'] = $this->order_model->getActivecatergoryDataadmin();
 
 			$this->load->view('template/header.php', $data);
 			$user = $this->session->userdata('user_register');

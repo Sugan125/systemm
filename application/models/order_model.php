@@ -8,15 +8,33 @@ class order_model extends CI_Model {
             return $query->result_array();
    }
    public function getActivecatergoryData(){
-            $sql = "SELECT prod_category FROM products WHERE active = 1 GROUP BY prod_category ASC";
+            $sql = "SELECT prod_category FROM products WHERE active = 1 and prod_category != 'Frozen Dough' GROUP BY prod_category ASC";
             $query = $this->db->query($sql, array(1));
             return $query->result_array();
    }
-   public function getProductsByCategory($categoryId) {
+
+   public function getActivecatergoryDataadmin(){
+	$sql = "SELECT prod_category FROM products WHERE active = 1 GROUP BY prod_category ASC";
+	$query = $this->db->query($sql, array(1));
+	return $query->result_array();
+}
+
+   public function getProductsByCategoryadmin($categoryId) {
     $sql = "SELECT * FROM products WHERE active = 1 AND prod_category = ? ORDER BY product_id,product_name";
     $query = $this->db->query($sql, array($categoryId));
     return $query->result_array();
 }
+
+public function getProductsByCategory($categoryId) {
+    $sql = "SELECT * FROM products 
+            WHERE active = 1 
+            AND prod_category = ? 
+            AND prod_category != 'Frozen Dough' 
+            ORDER BY product_id, product_name";
+    $query = $this->db->query($sql, array($categoryId));
+    return $query->result_array();
+}
+
 
 public function getProductData($id = null)
 	{
