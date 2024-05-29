@@ -155,6 +155,8 @@
                   </div>
                 </div>
 
+                <input type="hidden" id="created_by" name="created_by" value="<?php echo $loginuser['name']; ?>">
+
                
 
                 <div class="card-footer">

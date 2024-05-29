@@ -13,7 +13,7 @@ class Dashboardcontroller extends CI_Controller{
         $data['title'] = 'Dashboard';
         $this->load->view('template/header.php',$data);
         
-        $query =  $this->db->query("SELECT COUNT(id) as count,MONTH(created_by) as month FROM user_register GROUP BY MONTH(created_by)"); 
+        $query =  $this->db->query("SELECT COUNT(id) as count,MONTH(created_date) as month FROM user_register GROUP BY MONTH(created_date)"); 
         
         $record = $query->result();
 
@@ -38,6 +38,10 @@ class Dashboardcontroller extends CI_Controller{
 
            $month = $row->month;
 
+           if (is_null($month)) {
+            $month = date('m'); // 'm' returns the current month as a two-digit number
+        }
+        
            if($month == 01){
             $month_name = 'Jan';
            }

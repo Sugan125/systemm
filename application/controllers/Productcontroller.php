@@ -163,6 +163,17 @@ class Productcontroller extends CI_Controller {
             
             $image_path = ''; 
         }
+
+        date_default_timezone_set('UTC');
+
+		// Create a DateTime object for the current time
+		$current_date_time = new DateTime('now');
+			
+			// Add 8 hours to adjust to Singapore time (GMT+8)
+		$current_date_time->modify('+8 hours');
+			
+			// Format the datetime
+		$created_date = $current_date_time->format('Y-m-d H:i:s');
     
         $data = array(
             'product_id' => $this->input->post('product_id'),
@@ -176,6 +187,8 @@ class Productcontroller extends CI_Controller {
             'prod_img' => $image_path, // Image path
             'prod_rate' => $this->input->post('prod_rate'),
             'deleted'=> '0',
+            'created_by' => $this->input->post('created_by'),
+            'created_date' => $created_date,            
         );
         
         
@@ -241,6 +254,19 @@ class Productcontroller extends CI_Controller {
             
             $image_path = ''; 
         }
+
+        date_default_timezone_set('UTC');
+
+		// Create a DateTime object for the current time
+		$current_date_time = new DateTime('now');
+			
+			// Add 8 hours to adjust to Singapore time (GMT+8)
+		$current_date_time->modify('+8 hours');
+			
+			// Format the datetime
+		$updated_date = $current_date_time->format('Y-m-d H:i:s');
+
+
         $data = array(
             'id'      => $id,
             'product_id' => $this->input->post('product_id'),
@@ -254,6 +280,8 @@ class Productcontroller extends CI_Controller {
             'prod_img' => $image_path, // Image path
             'prod_rate' => $this->input->post('prod_rate'),
             'deleted'=> '0',
+            'updated_by' =>  $this->input->post('updated_by'),
+            'updated_date' => $updated_date,
         );
        
          $this->product_model->update_datas($data,'products');

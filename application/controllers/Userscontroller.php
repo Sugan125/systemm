@@ -139,6 +139,17 @@ class Userscontroller extends CI_Controller {
 
     public function adduser(){
 
+        date_default_timezone_set('UTC');
+
+		// Create a DateTime object for the current time
+		$current_date_time = new DateTime('now');
+			
+			// Add 8 hours to adjust to Singapore time (GMT+8)
+		$current_date_time->modify('+8 hours');
+			
+			// Format the datetime
+		$created_date = $current_date_time->format('Y-m-d H:i:s');
+
        $data = array(
         'name'=>$this->input->post('name'),
         'record_id'=>$this->input->post('record_id'),
@@ -188,7 +199,10 @@ class Userscontroller extends CI_Controller {
        'status'=>$this->input->post('status'),
        'contact'=>$this->input->post('contact'),
        'password'=>$this->input->post('password'),
-       'role' => implode(',', $this->input->post('role'))
+       'role' => implode(',', $this->input->post('role')),
+
+       'created_by' => $this->input->post('created_by'),
+       'created_date' => $created_date,
     );
 
     $status = $this->user_model->is_email_exists($data['email']);
@@ -216,6 +230,18 @@ class Userscontroller extends CI_Controller {
     if (!is_array($role)) {
         $role = explode(',', $role);
     }
+
+
+    date_default_timezone_set('UTC');
+
+		// Create a DateTime object for the current time
+		$current_date_time = new DateTime('now');
+			
+			// Add 8 hours to adjust to Singapore time (GMT+8)
+		$current_date_time->modify('+8 hours');
+			
+			// Format the datetime
+		$created_date = $current_date_time->format('Y-m-d H:i:s');
 
     $data = array(
         'id'      => $id,
@@ -266,7 +292,9 @@ class Userscontroller extends CI_Controller {
         'status'=>$this->input->post('status'),
         'contact'=>$this->input->post('contact'),
         'password'=>$this->input->post('password'),
-        'role' => implode(',', $this->input->post('role'))
+        'role' => implode(',', $this->input->post('role')),
+        'updated_by' => $this->input->post('updated_by'),
+        'updated_date'=> created_date,
     );
  
      $this->user_model->update_datas($data,'user_register');

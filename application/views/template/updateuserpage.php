@@ -37,6 +37,9 @@
                   <input type="text"  id="input_size" name="name" class="form-control" placeholder="Enter Username" value="<?= $row->name; ?>">
                 </div>
 
+                <input type="hidden" id="updated_by" name="updated_by" value="<?php echo $loginuser['name']; ?>">
+
+
                 <label>Record ID(If required)</label>
                   <div class="input-group mb-3" id="input_size" >
                   <div class="input-group-prepend">

@@ -156,7 +156,8 @@
                   </div>
                 </div>
 
-               
+                <input type="hidden" id="updated_by" name="updated_by" value="<?php echo $loginuser['name']; ?>">
+
 
                 <div class="card-footer">
                 <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i>Submit</button>

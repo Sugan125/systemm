@@ -28,6 +28,7 @@
     <div class="card-body">
         <div class="row">
             <!-- First Column -->
+
 <div class="col-md-6">
     <label>User Name</label>
     <div class="input-group mb-3" id="input_size"> 
@@ -36,6 +37,9 @@
         </div>
         <input type="text" name="name" class="form-control" placeholder="Enter Username">
     </div>
+
+    <input type="hidden" id="created_by" name="created_by" value="<?php echo $loginuser['name']; ?>">
+
 
     <label>Record ID (If required)</label>
     <div class="input-group mb-3" id="input_size"> 

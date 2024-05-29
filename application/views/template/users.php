@@ -95,6 +95,8 @@
       <th>Packer Memo</th>
       <th>Restrict time</th>
       <th>Status</th>
+      <th>Created By</th>
+      <th>Updated By</th>
       <!-- <th>File Upload</th>
       <th>View Files</th> -->
       <th>Action</th>
@@ -142,6 +144,8 @@
         <!-- Change id="restrictCheckbox" to class="restrictCheckbox" -->
         <td> <input type="checkbox" class="restrictCheckbox" data-id="<?php echo $row->id; ?>" <?php if($row->restrict_time == 1){ echo 'checked'; } ?>></td>
         <td><?= $status; ?></td>
+        <td><?=  $row->created_by; ?></td>
+        <td><?=  $row->updated_by; ?></td>
         <!-- <td>
         <a href="//base_url('index.php/Userscontroller/fileupload/' . $row->id) ?>" class="btn btn-sm"><i class="fas fa-upload"></i> </a>
         </td>
