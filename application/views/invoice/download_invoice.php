@@ -13,7 +13,7 @@
             $image_data = file_get_contents($image_path);
             $base64_image = base64_encode($image_data);
             ?>
-            <img src="data:image/jpeg;base64,<?php echo $base64_image; ?>" height="70" width="auto" style="margin-bottom: 20px;">
+            <img src="data:image/jpeg;base64,<?php echo $base64_image; ?>" height="70" width="auto" style="margin-bottom: 0px;">
           </h2>
         </div> 
         <div style="box-sizing: border-box; width: 100%;">
@@ -35,6 +35,7 @@
               $po_ref = 'Nil';
             }
               ?>  
+              <b style="font-size:30px;font-family: Arial;">Tax Invoice </b> <br>
               <b style="font-weight: bold;">Invoice No: </b> <?php echo $order_data['bill_no']; ?><br>
               <b style="font-weight: bold;">Date and Time: </b> <?php echo empty($order_data['created_date']) ? $order_date : $order_data['created_date']; ?><br>
                                   <!-- <b>Bill ID: </b> <br> -->

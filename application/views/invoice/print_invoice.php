@@ -27,6 +27,7 @@
             }
           ?>
                     <div class="invoice-col" style="margin: 0px;">
+                    <b style="font-size:30px;font-family: Arial;">Tax Invoice </b> <br>
                     <b>Invoice No: </b> <?php echo $order_data['bill_no']; ?><br>
                     <b style="font-weight: bold;">Date and Time: </b> <?php echo empty($order_data['created_date']) ? $order_date : $order_data['created_date']; ?><br>
                     <!-- <b>Bill ID: </b> <br> -->
