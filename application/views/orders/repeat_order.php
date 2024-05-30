@@ -1,5 +1,7 @@
 
-
+<head>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/pikaday/css/pikaday.css">
+</head>
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -149,7 +151,7 @@
                 <textarea class="form-control" id="feed_back" name="feed_back" autocomplete="off"><?php echo $order_data['feed_back'] ?></textarea>
                 <br>
                <label>Delivery Date (Mandatory)</label>
-                <input type="date" name="pre_order_date" id="pre_order" class="form-control"  autocomplete="off" required>
+               <input type="text" name="pre_order_date" id="pre_order" class="form-control"  autocomplete="off" required>
                 <br>
                 <label for="packer_memo" class="control-label">Packer Memo</label>
                 <textarea class="form-control" id="packer_memo" name="packer_memo" autocomplete="off"><?php echo $order_data['pmemo'] ?></textarea>
@@ -367,49 +369,55 @@
         </div><!-- /modal-content -->
     </div><!-- /modal-dialog -->
 </div><!-- /myModal -->
-
-  <script type="text/javascript">
-  var today = new Date();
+<script src="https://cdn.jsdelivr.net/npm/pikaday/pikaday.js"></script>
+<script type="text/javascript">
+ var today = new Date();
 
 // Calculate the date 3 days from now for the default value
 var defaultDate = new Date(today);
 defaultDate.setDate(today.getDate() + 3);
 
-// Set the minimum date for the pre-order input field (2 days from now)
+// Set the minimum date for the pre-order input field (3 days from now)
 var minDate = new Date(today);
 minDate.setDate(today.getDate() + 3);
 
-// Set the maximum date for the pre-order input field (7 days from now)
+// Set the maximum date for the pre-order input field (10 days from now)
 var maxDate = new Date(today);
-maxDate.setDate(today.getDate() + 9);
-
-// Set the min and max attributes for the input field
-var preOrderInput = document.getElementById('pre_order');
-preOrderInput.min = minDate.toISOString().split('T')[0];
-preOrderInput.max = maxDate.toISOString().split('T')[0];
+maxDate.setDate(today.getDate() + 10);
 
 // Function to check if a given date is a Sunday
 function isSunday(date) {
     return date.getDay() === 0; // 0 represents Sunday
 }
 
-// Set the default value for the pre-order input field if it's not a Sunday
-if (!isSunday(defaultDate)) {
-    preOrderInput.value = defaultDate.toISOString().split('T')[0];
-}
-
-// Disable input field for invalid dates
-preOrderInput.addEventListener('input', function() {
-    var selectedDate = new Date(preOrderInput.value);
-    if (selectedDate > maxDate || isSunday(selectedDate)) {
-        preOrderInput.value = ''; // Clear input if date is invalid
-        if (selectedDate > maxDate) {
-            alert('You can only select a date within the next 7 days.');
-        } else if (isSunday(selectedDate)) {
+var picker = new Pikaday({
+    field: document.getElementById('pre_order'),
+    minDate: minDate,
+    maxDate: maxDate,
+    defaultDate: !isSunday(defaultDate) ? defaultDate : null,
+    setDefaultDate: true,
+    format: 'YYYY-MM-DD',
+    onSelect: function(date) {
+        // Validate the selected date
+        if (isSunday(date)) {
             alert('No delivery on Sunday.');
+            picker.setDate(null); // Clear the invalid date
+        } else if (date < minDate || date > maxDate) {
+            alert('You can only select a date within the next 7 days.');
+            picker.setDate(null); // Clear the invalid date
+        } else {
+            document.getElementById('pre_order').value = moment(date).format('YYYY-MM-DD');
         }
     }
 });
+
+// Ensure the default date is not set if it's a Sunday
+if (isSunday(defaultDate)) {
+    picker.setDate(null);
+} else {
+    document.getElementById('pre_order').value = moment(defaultDate).format('YYYY-MM-DD');
+}
+
 
 
 
