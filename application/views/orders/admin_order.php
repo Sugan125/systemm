@@ -349,24 +349,22 @@
 
 function fetchUserAddress(userId) {
     var deliveryDateInput = document.getElementById('pre_order');
-    var self_pickup = document.getElementById('self_pickup');
-    
     var xhr = new XMLHttpRequest();
     xhr.open('POST', '<?php echo base_url('index.php/orders/fetch_user_address') ?>', true);
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     xhr.onload = function () {
         if (xhr.status === 200) {
             var response = JSON.parse(xhr.responseText);
-            if (response.success && hasNonEmptyAddress(response.data) && !self_pickup.checked) {
+            if (response.success && hasNonEmptyAddress(response.data)) {
                 updateModal(response.data);
                 if (!deliveryDateInput.value) {
-                    swal("Delivery Date", "Please select a delivery date before creating the order.", "warning");
-                } else {
-                    updateCreateOrderButton(true);
+                        swal("Delivery Date", "Please select a delivery date before creating the order.", "warning");   
                 }
-            } else {
-                updateModal(response.data);
-                updateCreateOrderButton(false);
+                updateCreateOrderButton(true);
+            } 
+            else{
+              updateModal(response.data);
+              updateCreateOrderButton(false);
             }
         }
     };
