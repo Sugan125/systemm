@@ -19,6 +19,12 @@ class order_model extends CI_Model {
 	return $query->result_array();
 }
 
+public function getcategoryfrozen(){
+	$sql = "SELECT prod_category FROM products WHERE active = 1 and prod_category = 'Frozen Dough'  GROUP BY prod_category ASC";
+	$query = $this->db->query($sql, array(1));
+	return $query->result_array();
+}
+
    public function getProductsByCategoryadmin($categoryId) {
     $sql = "SELECT * FROM products WHERE active = 1 AND prod_category = ? ORDER BY product_id,product_name";
     $query = $this->db->query($sql, array($categoryId));

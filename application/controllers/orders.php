@@ -76,6 +76,42 @@ class orders extends CI_Controller {
 			}
 		}
 
+        public function createfrozen() {
+			$data['title'] = 'Orders';
+		
+			$this->form_validation->set_rules('product[]', 'Product name', 'trim|required');
+		
+			if ($this->form_validation->run() == TRUE) {
+				$order_id = $this->order_model->create();
+				$bill_no = $order_id['bill_no'];
+				$email = $order_id['email'];
+
+					$order_id = $order_id['order_id'];
+					
+					$this->download($order_id); 
+					$this->send_invoice($bill_no,$email); 
+					//exit;
+					$this->session->set_flashdata('success', 'Order Placed');
+        			redirect('orders', 'refresh');
+					
+					
+				
+			} 
+
+			else {
+				$data['products'] = $this->order_model->getActiveProductData();
+				$data['category'] = $this->order_model->getcategoryfrozen();
+
+				$this->load->view('template/header.php', $data);
+				$user = $this->session->userdata('user_register');
+				$users = $this->session->userdata('normal_user');
+				$loginuser = $this->session->userdata('LoginSession');
+		
+				$this->load->view('template/sidebar.php', array('user' => $user, 'users' => $users, 'data' => $data,'loginuser' => $loginuser));
+				$this->load->view('orders/createfrozen.php', $data);
+				$this->load->view('template/footer.php');
+			}
+		}
 	
     public function getProductsByCategory() {
         $categoryId = $this->input->post('category_id');

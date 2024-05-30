@@ -178,6 +178,38 @@
         </li>
         <?php endif; ?>
         <?php endif; ?>
+        
+        <?php if (isset($loginuser['roles']) && !empty($loginuser['roles'])): ?>
+    <?php 
+    // Ensure $loginuser['roles'] is an array
+    $roles = is_array($loginuser['roles']) ? $loginuser['roles'] : explode(',', $loginuser['roles']);
+    $access = is_array($loginuser['access']) ? $loginuser['access'] : explode(',', $loginuser['access']);
+    
+    // Check if the user has both 'Owner' and 'User' roles
+    if (in_array('Owner', $roles) && in_array('User', $roles)): 
+    ?>
+        <li class="nav-item">
+            <a href="#" class="nav-link toggle-orders">
+                <i class="menu-icon fa fa-clipboard"></i>
+                <span>Frozen Orders</span>
+                <span class="pull-right-container">
+                    <i class="fa fa-angle-down pull-right" style="line-height: 2.1;"></i>
+                </span>
+            </a>
+            <ul class="treeview-menu" style="display: none;">
+            <?php 
+            // Check if the user has 'Create Order' access and either 'Admin' role or 'Owner' role
+            if ((in_array('Create Order', $access) && in_array('Admin', $roles)) || in_array('Owner', $roles)): 
+            ?>
+                <li class="nav-item"><a href="<?php echo base_url('index.php/orders/createfrozen') ?>" class="nav-link"><i class="fa fa-edit"></i> Create Orders</a></li>
+            <?php endif; ?>   
+               
+            </ul>
+        </li>
+    <?php endif; ?>
+<?php endif; ?>
+
+
 
 
         <?php if ((isset($user->image)) || 
