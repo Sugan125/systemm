@@ -88,7 +88,14 @@ public function getProductData($id = null)
 
 	//else{
     //$bill_no = 'CDSTRO-' . strtoupper(substr(md5(uniqid(mt_rand(), true)), 0, 4));
+	date_default_timezone_set('Asia/Singapore'); // Set timezone to Singapore
+
+	// Prevent caching
+	header("Cache-Control: no-cache, no-store, must-revalidate");
+	header("Pragma: no-cache");
+	header("Expires: 0");
 	$current_year_month = date('ym');
+
 
 	$sql = "SELECT bill_no FROM orders WHERE LENGTH(bill_no) = 8 ORDER BY bill_no DESC LIMIT 1;";
 	$query = $this->db->query($sql);
@@ -572,6 +579,12 @@ public function repeat_order($id)
         $user_id = $user->id;
 		$email = $user->email;
 
+		date_default_timezone_set('Asia/Singapore'); // Set timezone to Singapore
+
+		// Prevent caching
+		header("Cache-Control: no-cache, no-store, must-revalidate");
+		header("Pragma: no-cache");
+		header("Expires: 0");
 		$current_year_month = date('ym');
 
 		$sql = "SELECT bill_no FROM orders WHERE LENGTH(bill_no) = 8 ORDER BY bill_no DESC LIMIT 1;";
@@ -733,10 +746,13 @@ public function admin_create()
 	$email = $user->email;
 
 	$user_id = $this->input->post('user_id');
-
-
-
   
+	date_default_timezone_set('Asia/Singapore'); // Set timezone to Singapore
+
+	// Prevent caching
+	header("Cache-Control: no-cache, no-store, must-revalidate");
+	header("Pragma: no-cache");
+	header("Expires: 0");
 	$current_year_month = date('ym');
 
 	$sql = "SELECT bill_no FROM orders WHERE LENGTH(bill_no) = 8 ORDER BY bill_no DESC LIMIT 1;";
