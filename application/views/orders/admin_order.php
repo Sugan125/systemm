@@ -738,7 +738,7 @@ $('.category_name').on('change', function() {
     var categoryId = $(this).val();
     // AJAX request to fetch products based on the selected category
     $.ajax({
-        url: '<?php echo base_url('index.php/orders/getProductsByCategory'); ?>',
+        url: '<?php echo base_url('index.php/orders/getProductsByCategoryadmin'); ?>',
         method: 'POST',
         data: { category_id: categoryId },
         dataType: 'json',

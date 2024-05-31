@@ -203,7 +203,7 @@ class orders extends CI_Controller {
 			$order_total_data = $data['order_total'][0];
 
 			$data['products'] = $this->order_model->getActiveProductData();
-            $data['category'] = $this->order_model->getActivecatergoryData();
+            $data['category'] = $this->order_model->getActivecatergoryDataadmin();
 
 
 

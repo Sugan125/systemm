@@ -520,7 +520,7 @@ $('#product_info_table').on('change', '.category_name', function() {
 
     // AJAX request to fetch products based on the selected category
     $.ajax({
-        url: '<?php echo base_url('index.php/orders/getProductsByCategory'); ?>',
+        url: '<?php echo base_url('index.php/orders/getProductsByCategoryadmin'); ?>',
         method: 'POST',
         data: { category_id: categoryId },
         dataType: 'json',
