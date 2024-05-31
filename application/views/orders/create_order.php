@@ -1,6 +1,5 @@
 
 <head>
-<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/pikaday/css/pikaday.css">
 <style>
     .msg{
       margin-left: 440px; 
@@ -411,55 +410,63 @@
     </div><!-- /modal-dialog -->
 </div><!-- /myModal -->
 
-<script src="https://cdn.jsdelivr.net/npm/pikaday/pikaday.js"></script>
+<script src="<?= base_url();?>public/plugins/pikaday/pikaday.js"></script>
+<script src="<?= base_url();?>public/plugins/pikaday/moment.min.js"></script>
 <script type="text/javascript">
  var today = new Date();
 
-// Calculate the date 3 days from now for the default value
-var defaultDate = new Date(today);
-defaultDate.setDate(today.getDate() + 3);
+    // Calculate the date 3 days from now for the default value
+    var defaultDate = new Date(today);
+    defaultDate.setDate(today.getDate() + 3);
 
-// Set the minimum date for the pre-order input field (3 days from now)
-var minDate = new Date(today);
-minDate.setDate(today.getDate() + 3);
+    // Set the minimum date for the pre-order input field (3 days from now)
+    var minDate = new Date(today);
+    minDate.setDate(today.getDate() + 3);
 
-// Set the maximum date for the pre-order input field (10 days from now)
-var maxDate = new Date(today);
-maxDate.setDate(today.getDate() + 10);
+    // Set the maximum date for the pre-order input field (10 days from now)
+    var maxDate = new Date(today);
+    maxDate.setDate(today.getDate() + 10);
 
-// Function to check if a given date is a Sunday
-function isSunday(date) {
-    return date.getDay() === 0; // 0 represents Sunday
-}
-
-var picker = new Pikaday({
-    field: document.getElementById('pre_order'),
-    minDate: minDate,
-    maxDate: maxDate,
-    defaultDate: !isSunday(defaultDate) ? defaultDate : null,
-    setDefaultDate: true,
-    format: 'YYYY-MM-DD',
-    onSelect: function(date) {
-        // Validate the selected date
-        if (isSunday(date)) {
-            alert('No delivery on Sunday.');
-            picker.setDate(null); // Clear the invalid date
-        } else if (date < minDate || date > maxDate) {
-            alert('You can only select a date within the next 7 days.');
-            picker.setDate(null); // Clear the invalid date
-        } else {
-            document.getElementById('pre_order').value = moment(date).format('YYYY-MM-DD');
-        }
+    // Function to check if a given date is a Sunday
+    function isSunday(date) {
+        return date.getDay() === 0; // 0 represents Sunday
     }
-});
 
-// Ensure the default date is not set if it's a Sunday
-if (isSunday(defaultDate)) {
-    picker.setDate(null);
-} else {
-    document.getElementById('pre_order').value = moment(defaultDate).format('YYYY-MM-DD');
-}
+    var picker = new Pikaday({
+        field: document.getElementById('pre_order'),
+        minDate: minDate,
+        maxDate: maxDate,
+        defaultDate: !isSunday(defaultDate) ? defaultDate : null,
+        setDefaultDate: true,
+        format: 'YYYY-MM-DD',
+        toString(date, format) {
+            // Convert the date to the format YYYY-MM-DD
+            return moment(date).format('YYYY-MM-DD');
+        },
+        parse(dateString, format) {
+            // Parse the date from the format YYYY-MM-DD
+            return moment(dateString, 'YYYY-MM-DD').toDate();
+        },
+        onSelect: function(date) {
+            // Validate the selected date
+            if (isSunday(date)) {
+                alert('No delivery on Sunday.');
+                picker.setDate(null); // Clear the invalid date
+            } else if (date < minDate || date > maxDate) {
+                alert('You can only select a date within the next 7 days.');
+                picker.setDate(null); // Clear the invalid date
+            } else {
+                document.getElementById('pre_order').value = moment(date).format('YYYY-MM-DD');
+            }
+        }
+    });
 
+    // Ensure the default date is not set if it's a Sunday
+    if (isSunday(defaultDate)) {
+        picker.setDate(null);
+    } else {
+        document.getElementById('pre_order').value = moment(defaultDate).format('YYYY-MM-DD');
+    }
 
 function openModal() {
     var deliveryDateInput = document.getElementById('pre_order');

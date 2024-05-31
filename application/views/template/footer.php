@@ -86,6 +86,9 @@
     <script src="<?= base_url();?>vendors/jqvmap/dist/jquery.vmap.min.js"></script>
     <script src="<?= base_url();?>vendors/jqvmap/examples/js/jquery.vmap.sampledata.js"></script>
     <script src="<?= base_url();?>vendors/jqvmap/dist/maps/jquery.vmap.world.js"></script>
+    <script src="<?= base_url();?>public/plugins/pikaday/pikaday.js"></script>
+    <script src="<?= base_url();?>public/plugins/pikaday/moment.min.js"></script>
+   
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script>
         (function($) {

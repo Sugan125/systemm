@@ -24,6 +24,7 @@
     <link rel="stylesheet" href="<?= base_url();?>vendors/selectFX/css/cs-skin-elastic.css">
     <link rel="stylesheet" href="<?= base_url();?>vendors/jqvmap/dist/jqvmap.min.css">
     <link rel="stylesheet" href="<?= base_url();?>assets/css/style.css">
+    <link rel="stylesheet" type="text/css" href="<?= base_url();?>public/plugins/pikaday/pikaday.css">
     
     <!-- <link rel="stylesheet" href="<?= base_url();?>assets/custom/style.css"> -->
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800' rel='stylesheet' type='text/css'>
