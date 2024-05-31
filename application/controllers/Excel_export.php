@@ -68,20 +68,17 @@ class Excel_export extends CI_Controller {
 
    // Initialize variables to hold company details for delivery charge row
    $company_name = '';
-   $delivery_address = '';
-   $delivery_address_line2 = '';
-   $delivery_address_line3 = '';
-   $delivery_address_line4 = '';
+   $shipp_address = '';
+   $shipp_address_line2 = '';
+   $shipp_address_line3 = '';
+   $shipp_address_line4 = '';
+   $bill_no = '';
    $date = '';
    $sales_person = '';
    $payment_terms = '';
    $record_id = '';
 
    foreach ($employee_data as $row) {
-
-//    echo '<pre>';
-
-//       print_r($row);
        
        $schedule_date = strtotime($row->created_date);
        $date = date('d-m-Y', $schedule_date);
@@ -120,6 +117,12 @@ class Excel_export extends CI_Controller {
         
        $aver_service_charge = $service_charge_tax * $qty;
 
+
+       $ship_address = $row->shipping_address ? $row->shipping_address : $row->delivery_address;
+       $ship_address_line2 = $row->shipping_address_line2 ? $row->shipping_address_line2 : $row->delivery_address_line2;
+       $ship_address_line3 = $row->shipping_address_line3 ? $row->shipping_address_line3 : $row->delivery_address_line3;
+       $ship_address_line4 = $row->shipping_address_line4 ? $row->shipping_address_line4 : $row->delivery_address_line4;
+
        if($service_charge > 0){
            $amount = $row->amount - $service_charge; 
            $net_total = $inc_tax * $row->qty;
@@ -146,11 +149,11 @@ class Excel_export extends CI_Controller {
                
                if ($average_delivery_charge > 0) {
                    $object->getActiveSheet()->setCellValueByColumnAndRow(0, $excel_row, $company_name);
-                   $object->getActiveSheet()->setCellValueByColumnAndRow(1, $excel_row, $delivery_address);
-                   $object->getActiveSheet()->setCellValueByColumnAndRow(2, $excel_row, $delivery_address_line2);
-                   $object->getActiveSheet()->setCellValueByColumnAndRow(3, $excel_row, $delivery_address_line3);
-                   $object->getActiveSheet()->setCellValueByColumnAndRow(4, $excel_row, $delivery_address_line4);
-                   $object->getActiveSheet()->setCellValueByColumnAndRow(5, $excel_row, $row->bill_no);
+                   $object->getActiveSheet()->setCellValueByColumnAndRow(1, $excel_row, $shipp_address);
+                   $object->getActiveSheet()->setCellValueByColumnAndRow(2, $excel_row, $shipp_address_line2);
+                   $object->getActiveSheet()->setCellValueByColumnAndRow(3, $excel_row, $shipp_address_line3);
+                   $object->getActiveSheet()->setCellValueByColumnAndRow(4, $excel_row, $shipp_address_line4);
+                   $object->getActiveSheet()->setCellValueByColumnAndRow(5, $excel_row, $bill_no);
                    $object->getActiveSheet()->setCellValueByColumnAndRow(6, $excel_row, $date);
                    $object->getActiveSheet()->setCellValueByColumnAndRow(8, $excel_row, 'DS020');
                    $object->getActiveSheet()->setCellValueByColumnAndRow(9, $excel_row, 1);
@@ -185,10 +188,10 @@ class Excel_export extends CI_Controller {
 
        // Populate Excel row with line item data
        $object->getActiveSheet()->setCellValueByColumnAndRow(0, $excel_row, $row->company_name);
-       $object->getActiveSheet()->setCellValueByColumnAndRow(1, $excel_row, $row->delivery_address);
-       $object->getActiveSheet()->setCellValueByColumnAndRow(2, $excel_row, $row->delivery_address_line2);
-       $object->getActiveSheet()->setCellValueByColumnAndRow(3, $excel_row, $row->delivery_address_line3);
-       $object->getActiveSheet()->setCellValueByColumnAndRow(4, $excel_row, $row->delivery_address_line4);
+       $object->getActiveSheet()->setCellValueByColumnAndRow(1, $excel_row, $ship_address);
+       $object->getActiveSheet()->setCellValueByColumnAndRow(2, $excel_row, $ship_address_line2);
+       $object->getActiveSheet()->setCellValueByColumnAndRow(3, $excel_row, $ship_address_line3);
+       $object->getActiveSheet()->setCellValueByColumnAndRow(4, $excel_row, $ship_address_line4);
        $object->getActiveSheet()->setCellValueByColumnAndRow(5, $excel_row, $row->bill_no);
        $object->getActiveSheet()->setCellValueByColumnAndRow(6, $excel_row, $date);
        $object->getActiveSheet()->setCellValueByColumnAndRow(8, $excel_row, $row->prod_id);
@@ -214,10 +217,10 @@ class Excel_export extends CI_Controller {
            $excel_row++;
 
        $object->getActiveSheet()->setCellValueByColumnAndRow(0, $excel_row, $row->company_name);
-       $object->getActiveSheet()->setCellValueByColumnAndRow(1, $excel_row, $row->delivery_address);
-       $object->getActiveSheet()->setCellValueByColumnAndRow(2, $excel_row, $row->delivery_address_line2);
-       $object->getActiveSheet()->setCellValueByColumnAndRow(3, $excel_row, $row->delivery_address_line3);
-       $object->getActiveSheet()->setCellValueByColumnAndRow(4, $excel_row, $row->delivery_address_line4);
+       $object->getActiveSheet()->setCellValueByColumnAndRow(1, $excel_row, $ship_address);
+       $object->getActiveSheet()->setCellValueByColumnAndRow(2, $excel_row, $ship_address_line2);
+       $object->getActiveSheet()->setCellValueByColumnAndRow(3, $excel_row, $ship_address_line3);
+       $object->getActiveSheet()->setCellValueByColumnAndRow(4, $excel_row, $ship_address_line4);
        $object->getActiveSheet()->setCellValueByColumnAndRow(5, $excel_row, $row->bill_no);
        $object->getActiveSheet()->setCellValueByColumnAndRow(6, $excel_row, $date);
        $object->getActiveSheet()->setCellValueByColumnAndRow(8, $excel_row, 'SL012');
@@ -243,10 +246,10 @@ class Excel_export extends CI_Controller {
            $excel_row++;
 
        $object->getActiveSheet()->setCellValueByColumnAndRow(0, $excel_row, $row->company_name);
-       $object->getActiveSheet()->setCellValueByColumnAndRow(1, $excel_row, $row->delivery_address);
-       $object->getActiveSheet()->setCellValueByColumnAndRow(2, $excel_row, $row->delivery_address_line2);
-       $object->getActiveSheet()->setCellValueByColumnAndRow(3, $excel_row, $row->delivery_address_line3);
-       $object->getActiveSheet()->setCellValueByColumnAndRow(4, $excel_row, $row->delivery_address_line4);
+       $object->getActiveSheet()->setCellValueByColumnAndRow(1, $excel_row, $ship_address);
+       $object->getActiveSheet()->setCellValueByColumnAndRow(2, $excel_row, $ship_address_line2);
+       $object->getActiveSheet()->setCellValueByColumnAndRow(3, $excel_row, $ship_address_line3);
+       $object->getActiveSheet()->setCellValueByColumnAndRow(4, $excel_row, $ship_address_line4);
        $object->getActiveSheet()->setCellValueByColumnAndRow(5, $excel_row, $row->bill_no);
        $object->getActiveSheet()->setCellValueByColumnAndRow(6, $excel_row, $date);
        $object->getActiveSheet()->setCellValueByColumnAndRow(8, $excel_row, 'SL020');
@@ -277,12 +280,13 @@ class Excel_export extends CI_Controller {
        // Store company details for the delivery charge row
        $service_charge = $row->service_charge;
        $company_name = $row->company_name;
-       $delivery_address = $row->delivery_address;
-       $delivery_address_line2 = $row->delivery_address_line2;
-       $delivery_address_line3 = $row->delivery_address_line3;
-       $delivery_address_line4 = $row->delivery_address_line4;
+       $shipp_address = $row->shipping_address ? $row->shipping_address : $row->delivery_address;
+       $shipp_address_line2 = $row->shipping_address_line2 ? $row->shipping_address_line2 : $row->delivery_address_line2;
+       $shipp_address_line3 = $row->shipping_address_line3 ? $row->shipping_address_line3 : $row->delivery_address_line3;
+       $shipp_address_line4 = $row->shipping_address_line4 ? $row->shipping_address_line4 : $row->delivery_address_line4;
        $sales_person = $row->sales_person;
        $driver_memo = $row->driver_memo;
+       $bill_no = $row->bill_no;
        $payment_terms = $row->payment_terms;
        $record_id = $row->record_id;
 
@@ -314,10 +318,10 @@ class Excel_export extends CI_Controller {
 
        if ($average_delivery_charge > 0) {
            $object->getActiveSheet()->setCellValueByColumnAndRow(0, $excel_row, $company_name);
-           $object->getActiveSheet()->setCellValueByColumnAndRow(1, $excel_row, $delivery_address);
-           $object->getActiveSheet()->setCellValueByColumnAndRow(2, $excel_row, $delivery_address_line2);
-           $object->getActiveSheet()->setCellValueByColumnAndRow(3, $excel_row, $delivery_address_line3);
-           $object->getActiveSheet()->setCellValueByColumnAndRow(4, $excel_row, $delivery_address_line4);
+           $object->getActiveSheet()->setCellValueByColumnAndRow(1, $excel_row, $shipp_address);
+           $object->getActiveSheet()->setCellValueByColumnAndRow(2, $excel_row, $shipp_address_line2);
+           $object->getActiveSheet()->setCellValueByColumnAndRow(3, $excel_row, $shipp_address_line3);
+           $object->getActiveSheet()->setCellValueByColumnAndRow(4, $excel_row, $shipp_address_line4);
            $object->getActiveSheet()->setCellValueByColumnAndRow(5, $excel_row, $row->bill_no);
            $object->getActiveSheet()->setCellValueByColumnAndRow(6, $excel_row, $date);
            $object->getActiveSheet()->setCellValueByColumnAndRow(8, $excel_row, 'DS020');
@@ -409,10 +413,11 @@ class Excel_export extends CI_Controller {
 
     // Initialize variables to hold company details for delivery charge row
     $company_name = '';
-    $delivery_address = '';
-    $delivery_address_line2 = '';
-    $delivery_address_line3 = '';
-    $delivery_address_line4 = '';
+    $shipp_address = '';
+    $shipp_address_line2 = '';
+    $shipp_address_line3 = '';
+    $shipp_address_line4 = '';
+    $bill_no = '';
     $date = '';
     $sales_person = '';
     $payment_terms = '';
@@ -462,6 +467,12 @@ class Excel_export extends CI_Controller {
 
         $aver_service_charge = $service_charge_tax * $qty;
 
+        $ship_address = $row->shipping_address ? $row->shipping_address : $row->delivery_address;
+        $ship_address_line2 = $row->shipping_address_line2 ? $row->shipping_address_line2 : $row->delivery_address_line2;
+        $ship_address_line3 = $row->shipping_address_line3 ? $row->shipping_address_line3 : $row->delivery_address_line3;
+        $ship_address_line4 = $row->shipping_address_line4 ? $row->shipping_address_line4 : $row->delivery_address_line4;
+
+        
         if($service_charge > 0){
             $amount = $row->amount - $service_charge; 
             $net_total = $inc_tax * $row->qty;
@@ -489,11 +500,11 @@ class Excel_export extends CI_Controller {
                 
                 if ($average_delivery_charge > 0) {
                     $object->getActiveSheet()->setCellValueByColumnAndRow(0, $excel_row, $company_name);
-                    $object->getActiveSheet()->setCellValueByColumnAndRow(1, $excel_row, $delivery_address);
-                    $object->getActiveSheet()->setCellValueByColumnAndRow(2, $excel_row, $delivery_address_line2);
-                    $object->getActiveSheet()->setCellValueByColumnAndRow(3, $excel_row, $delivery_address_line3);
-                    $object->getActiveSheet()->setCellValueByColumnAndRow(4, $excel_row, $delivery_address_line4);
-                    $object->getActiveSheet()->setCellValueByColumnAndRow(5, $excel_row, $row->bill_no);
+                    $object->getActiveSheet()->setCellValueByColumnAndRow(1, $excel_row, $shipp_address);
+                    $object->getActiveSheet()->setCellValueByColumnAndRow(2, $excel_row, $shipp_address_line2);
+                    $object->getActiveSheet()->setCellValueByColumnAndRow(3, $excel_row, $shipp_address_line3);
+                    $object->getActiveSheet()->setCellValueByColumnAndRow(4, $excel_row, $shipp_address_line4);
+                    $object->getActiveSheet()->setCellValueByColumnAndRow(5, $excel_row, $bill_no);
                     $object->getActiveSheet()->setCellValueByColumnAndRow(6, $excel_row, $date);
                     $object->getActiveSheet()->setCellValueByColumnAndRow(8, $excel_row, 'DS020');
                     $object->getActiveSheet()->setCellValueByColumnAndRow(9, $excel_row, 1);
@@ -528,10 +539,10 @@ class Excel_export extends CI_Controller {
 
         // Populate Excel row with line item data
         $object->getActiveSheet()->setCellValueByColumnAndRow(0, $excel_row, $row->company_name);
-        $object->getActiveSheet()->setCellValueByColumnAndRow(1, $excel_row, $row->delivery_address);
-        $object->getActiveSheet()->setCellValueByColumnAndRow(2, $excel_row, $row->delivery_address_line2);
-        $object->getActiveSheet()->setCellValueByColumnAndRow(3, $excel_row, $row->delivery_address_line3);
-        $object->getActiveSheet()->setCellValueByColumnAndRow(4, $excel_row, $row->delivery_address_line4);
+        $object->getActiveSheet()->setCellValueByColumnAndRow(1, $excel_row, $ship_address);
+        $object->getActiveSheet()->setCellValueByColumnAndRow(2, $excel_row, $ship_address_line2);
+        $object->getActiveSheet()->setCellValueByColumnAndRow(3, $excel_row, $ship_address_line3);
+        $object->getActiveSheet()->setCellValueByColumnAndRow(4, $excel_row, $ship_address_line4);
         $object->getActiveSheet()->setCellValueByColumnAndRow(5, $excel_row, $row->bill_no);
         $object->getActiveSheet()->setCellValueByColumnAndRow(6, $excel_row, $date);
         $object->getActiveSheet()->setCellValueByColumnAndRow(8, $excel_row, $row->prod_id);
@@ -557,10 +568,10 @@ class Excel_export extends CI_Controller {
             $excel_row++;
 
         $object->getActiveSheet()->setCellValueByColumnAndRow(0, $excel_row, $row->company_name);
-        $object->getActiveSheet()->setCellValueByColumnAndRow(1, $excel_row, $row->delivery_address);
-        $object->getActiveSheet()->setCellValueByColumnAndRow(2, $excel_row, $row->delivery_address_line2);
-        $object->getActiveSheet()->setCellValueByColumnAndRow(3, $excel_row, $row->delivery_address_line3);
-        $object->getActiveSheet()->setCellValueByColumnAndRow(4, $excel_row, $row->delivery_address_line4);
+        $object->getActiveSheet()->setCellValueByColumnAndRow(1, $excel_row, $ship_address);
+        $object->getActiveSheet()->setCellValueByColumnAndRow(2, $excel_row, $ship_address_line2);
+        $object->getActiveSheet()->setCellValueByColumnAndRow(3, $excel_row, $ship_address_line3);
+        $object->getActiveSheet()->setCellValueByColumnAndRow(4, $excel_row, $ship_address_line4);
         $object->getActiveSheet()->setCellValueByColumnAndRow(5, $excel_row, $row->bill_no);
         $object->getActiveSheet()->setCellValueByColumnAndRow(6, $excel_row, $date);
         $object->getActiveSheet()->setCellValueByColumnAndRow(8, $excel_row, 'SL012');
@@ -586,10 +597,10 @@ class Excel_export extends CI_Controller {
             $excel_row++;
 
         $object->getActiveSheet()->setCellValueByColumnAndRow(0, $excel_row, $row->company_name);
-        $object->getActiveSheet()->setCellValueByColumnAndRow(1, $excel_row, $row->delivery_address);
-        $object->getActiveSheet()->setCellValueByColumnAndRow(2, $excel_row, $row->delivery_address_line2);
-        $object->getActiveSheet()->setCellValueByColumnAndRow(3, $excel_row, $row->delivery_address_line3);
-        $object->getActiveSheet()->setCellValueByColumnAndRow(4, $excel_row, $row->delivery_address_line4);
+        $object->getActiveSheet()->setCellValueByColumnAndRow(1, $excel_row, $ship_address);
+        $object->getActiveSheet()->setCellValueByColumnAndRow(2, $excel_row, $ship_address_line2);
+        $object->getActiveSheet()->setCellValueByColumnAndRow(3, $excel_row, $ship_address_line3);
+        $object->getActiveSheet()->setCellValueByColumnAndRow(4, $excel_row, $ship_address_line4);
         $object->getActiveSheet()->setCellValueByColumnAndRow(5, $excel_row, $row->bill_no);
         $object->getActiveSheet()->setCellValueByColumnAndRow(6, $excel_row, $date);
         $object->getActiveSheet()->setCellValueByColumnAndRow(8, $excel_row, 'SL020');
@@ -620,10 +631,11 @@ class Excel_export extends CI_Controller {
         // Store company details for the delivery charge row
         $service_charge = $row->service_charge;
         $company_name = $row->company_name;
-        $delivery_address = $row->delivery_address;
-        $delivery_address_line2 = $row->delivery_address_line2;
-        $delivery_address_line3 = $row->delivery_address_line3;
-        $delivery_address_line4 = $row->delivery_address_line4;
+        $shipp_address = $row->shipping_address ? $row->shipping_address : $row->delivery_address;
+        $shipp_address_line2 = $row->shipping_address_line2 ? $row->shipping_address_line2 : $row->delivery_address_line2;
+        $shipp_address_line3 = $row->shipping_address_line3 ? $row->shipping_address_line3 : $row->delivery_address_line3;
+        $shipp_address_line4 = $row->shipping_address_line4 ? $row->shipping_address_line4 : $row->delivery_address_line4;
+        $bill_no = $row->bill_no;
         $sales_person = $row->sales_person;
         $driver_memo = $row->driver_memo;
         $payment_terms = $row->payment_terms;
@@ -657,10 +669,10 @@ class Excel_export extends CI_Controller {
 
         if ($average_delivery_charge > 0) {
             $object->getActiveSheet()->setCellValueByColumnAndRow(0, $excel_row, $company_name);
-            $object->getActiveSheet()->setCellValueByColumnAndRow(1, $excel_row, $delivery_address);
-            $object->getActiveSheet()->setCellValueByColumnAndRow(2, $excel_row, $delivery_address_line2);
-            $object->getActiveSheet()->setCellValueByColumnAndRow(3, $excel_row, $delivery_address_line3);
-            $object->getActiveSheet()->setCellValueByColumnAndRow(4, $excel_row, $delivery_address_line4);
+            $object->getActiveSheet()->setCellValueByColumnAndRow(1, $excel_row, $shipp_address);
+            $object->getActiveSheet()->setCellValueByColumnAndRow(2, $excel_row, $shipp_address_line2);
+            $object->getActiveSheet()->setCellValueByColumnAndRow(3, $excel_row, $shipp_address_line3);
+            $object->getActiveSheet()->setCellValueByColumnAndRow(4, $excel_row, $shipp_address_line4);
             $object->getActiveSheet()->setCellValueByColumnAndRow(5, $excel_row, $row->bill_no);
             $object->getActiveSheet()->setCellValueByColumnAndRow(6, $excel_row, $date);
             $object->getActiveSheet()->setCellValueByColumnAndRow(8, $excel_row, 'DS020');
@@ -755,11 +767,12 @@ function actiondaterange()
 
     // Initialize variables to hold company details for delivery charge row
     $company_name = '';
-    $delivery_address = '';
-    $delivery_address_line2 = '';
-    $delivery_address_line3 = '';
-    $delivery_address_line4 = '';
+    $shipp_address = '';
+    $shipp_address_line2 = '';
+    $shipp_address_line3 = '';
+    $shipp_address_line4 = '';
     $date = '';
+    $bill_no = '';
     $sales_person = '';
     $payment_terms = '';
     $record_id = '';
@@ -805,6 +818,12 @@ function actiondaterange()
 
         $aver_service_charge = $service_charge_tax * $qty;
 
+        $ship_address = $row->shipping_address ? $row->shipping_address : $row->delivery_address;
+       $ship_address_line2 = $row->shipping_address_line2 ? $row->shipping_address_line2 : $row->delivery_address_line2;
+       $ship_address_line3 = $row->shipping_address_line3 ? $row->shipping_address_line3 : $row->delivery_address_line3;
+       $ship_address_line4 = $row->shipping_address_line4 ? $row->shipping_address_line4 : $row->delivery_address_line4;
+
+
         if($service_charge > 0){
             $amount = $row->amount - $service_charge; 
             $net_total = $inc_tax * $row->qty;
@@ -832,11 +851,11 @@ function actiondaterange()
                 
                 if ($average_delivery_charge > 0) {
                     $object->getActiveSheet()->setCellValueByColumnAndRow(0, $excel_row, $company_name);
-                    $object->getActiveSheet()->setCellValueByColumnAndRow(1, $excel_row, $delivery_address);
-                    $object->getActiveSheet()->setCellValueByColumnAndRow(2, $excel_row, $delivery_address_line2);
-                    $object->getActiveSheet()->setCellValueByColumnAndRow(3, $excel_row, $delivery_address_line3);
-                    $object->getActiveSheet()->setCellValueByColumnAndRow(4, $excel_row, $delivery_address_line4);
-                    $object->getActiveSheet()->setCellValueByColumnAndRow(5, $excel_row, $row->bill_no);
+                    $object->getActiveSheet()->setCellValueByColumnAndRow(1, $excel_row, $shipp_address);
+                    $object->getActiveSheet()->setCellValueByColumnAndRow(2, $excel_row, $shipp_address_line2);
+                    $object->getActiveSheet()->setCellValueByColumnAndRow(3, $excel_row, $shipp_address_line3);
+                    $object->getActiveSheet()->setCellValueByColumnAndRow(4, $excel_row, $shipp_address_line4);
+                    $object->getActiveSheet()->setCellValueByColumnAndRow(5, $excel_row, $bill_no);
                     $object->getActiveSheet()->setCellValueByColumnAndRow(6, $excel_row, $date);
                     $object->getActiveSheet()->setCellValueByColumnAndRow(8, $excel_row, 'DS020');
                     $object->getActiveSheet()->setCellValueByColumnAndRow(9, $excel_row, 1);
@@ -871,10 +890,10 @@ function actiondaterange()
 
         // Populate Excel row with line item data
         $object->getActiveSheet()->setCellValueByColumnAndRow(0, $excel_row, $row->company_name);
-        $object->getActiveSheet()->setCellValueByColumnAndRow(1, $excel_row, $row->delivery_address);
-        $object->getActiveSheet()->setCellValueByColumnAndRow(2, $excel_row, $row->delivery_address_line2);
-        $object->getActiveSheet()->setCellValueByColumnAndRow(3, $excel_row, $row->delivery_address_line3);
-        $object->getActiveSheet()->setCellValueByColumnAndRow(4, $excel_row, $row->delivery_address_line4);
+        $object->getActiveSheet()->setCellValueByColumnAndRow(1, $excel_row, $ship_address);
+        $object->getActiveSheet()->setCellValueByColumnAndRow(2, $excel_row, $ship_address_line2);
+        $object->getActiveSheet()->setCellValueByColumnAndRow(3, $excel_row, $ship_address_line3);
+        $object->getActiveSheet()->setCellValueByColumnAndRow(4, $excel_row, $ship_address_line4);
         $object->getActiveSheet()->setCellValueByColumnAndRow(5, $excel_row, $row->bill_no);
         $object->getActiveSheet()->setCellValueByColumnAndRow(6, $excel_row, $date);
         $object->getActiveSheet()->setCellValueByColumnAndRow(8, $excel_row, $row->prod_id);
@@ -900,10 +919,10 @@ function actiondaterange()
             $excel_row++;
 
         $object->getActiveSheet()->setCellValueByColumnAndRow(0, $excel_row, $row->company_name);
-        $object->getActiveSheet()->setCellValueByColumnAndRow(1, $excel_row, $row->delivery_address);
-        $object->getActiveSheet()->setCellValueByColumnAndRow(2, $excel_row, $row->delivery_address_line2);
-        $object->getActiveSheet()->setCellValueByColumnAndRow(3, $excel_row, $row->delivery_address_line3);
-        $object->getActiveSheet()->setCellValueByColumnAndRow(4, $excel_row, $row->delivery_address_line4);
+        $object->getActiveSheet()->setCellValueByColumnAndRow(1, $excel_row, $ship_address);
+        $object->getActiveSheet()->setCellValueByColumnAndRow(2, $excel_row, $ship_address_line2);
+        $object->getActiveSheet()->setCellValueByColumnAndRow(3, $excel_row, $ship_address_line3);
+        $object->getActiveSheet()->setCellValueByColumnAndRow(4, $excel_row, $ship_address_line4);
         $object->getActiveSheet()->setCellValueByColumnAndRow(5, $excel_row, $row->bill_no);
         $object->getActiveSheet()->setCellValueByColumnAndRow(6, $excel_row, $date);
         $object->getActiveSheet()->setCellValueByColumnAndRow(8, $excel_row, 'SL012');
@@ -929,10 +948,10 @@ function actiondaterange()
             $excel_row++;
 
         $object->getActiveSheet()->setCellValueByColumnAndRow(0, $excel_row, $row->company_name);
-        $object->getActiveSheet()->setCellValueByColumnAndRow(1, $excel_row, $row->delivery_address);
-        $object->getActiveSheet()->setCellValueByColumnAndRow(2, $excel_row, $row->delivery_address_line2);
-        $object->getActiveSheet()->setCellValueByColumnAndRow(3, $excel_row, $row->delivery_address_line3);
-        $object->getActiveSheet()->setCellValueByColumnAndRow(4, $excel_row, $row->delivery_address_line4);
+        $object->getActiveSheet()->setCellValueByColumnAndRow(1, $excel_row, $ship_address);
+        $object->getActiveSheet()->setCellValueByColumnAndRow(2, $excel_row, $ship_address_line2);
+        $object->getActiveSheet()->setCellValueByColumnAndRow(3, $excel_row, $ship_address_line3);
+        $object->getActiveSheet()->setCellValueByColumnAndRow(4, $excel_row, $ship_address_line4);
         $object->getActiveSheet()->setCellValueByColumnAndRow(5, $excel_row, $row->bill_no);
         $object->getActiveSheet()->setCellValueByColumnAndRow(6, $excel_row, $date);
         $object->getActiveSheet()->setCellValueByColumnAndRow(8, $excel_row, 'SL020');
@@ -963,11 +982,12 @@ function actiondaterange()
         // Store company details for the delivery charge row
         $service_charge = $row->service_charge;
         $company_name = $row->company_name;
-        $delivery_address = $row->delivery_address;
-        $delivery_address_line2 = $row->delivery_address_line2;
-        $delivery_address_line3 = $row->delivery_address_line3;
-        $delivery_address_line4 = $row->delivery_address_line4;
+        $shipp_address = $row->shipping_address ? $row->shipping_address : $row->delivery_address;
+        $shipp_address_line2 = $row->shipping_address_line2 ? $row->shipping_address_line2 : $row->delivery_address_line2;
+        $shipp_address_line3 = $row->shipping_address_line3 ? $row->shipping_address_line3 : $row->delivery_address_line3;
+        $shipp_address_line4 = $row->shipping_address_line4 ? $row->shipping_address_line4 : $row->delivery_address_line4; 
         $sales_person = $row->sales_person;
+        $bill_no = $row->bill_no;
         $driver_memo = $row->driver_memo;
         $payment_terms = $row->payment_terms;
         $record_id = $row->record_id;
@@ -1000,10 +1020,10 @@ function actiondaterange()
 
         if ($average_delivery_charge > 0) {
             $object->getActiveSheet()->setCellValueByColumnAndRow(0, $excel_row, $company_name);
-            $object->getActiveSheet()->setCellValueByColumnAndRow(1, $excel_row, $delivery_address);
-            $object->getActiveSheet()->setCellValueByColumnAndRow(2, $excel_row, $delivery_address_line2);
-            $object->getActiveSheet()->setCellValueByColumnAndRow(3, $excel_row, $delivery_address_line3);
-            $object->getActiveSheet()->setCellValueByColumnAndRow(4, $excel_row, $delivery_address_line4);
+            $object->getActiveSheet()->setCellValueByColumnAndRow(1, $excel_row, $shipp_address);
+            $object->getActiveSheet()->setCellValueByColumnAndRow(2, $excel_row, $shipp_address_line2);
+            $object->getActiveSheet()->setCellValueByColumnAndRow(3, $excel_row, $shipp_address_line3);
+            $object->getActiveSheet()->setCellValueByColumnAndRow(4, $excel_row, $shipp_address_line4);
             $object->getActiveSheet()->setCellValueByColumnAndRow(5, $excel_row, $row->bill_no);
             $object->getActiveSheet()->setCellValueByColumnAndRow(6, $excel_row, $date);
             $object->getActiveSheet()->setCellValueByColumnAndRow(8, $excel_row, 'DS020');
