@@ -67,7 +67,8 @@
         <thead>
             <tr>
                 <th>Invoice no</th>
-                <th>Date Time</th>
+                <th>Order Date</th>
+                <th>Delivery Date</th>
                 <th>Gross Amount</th>
                 <th>Slicing Service</th>
                 <th>Delivery Charge</th>
@@ -83,7 +84,8 @@
     foreach ($orders as $key => $val): ?>
         <tr>
             <td><?php echo $val->bill_no; ?></td>
-            <td><?php echo empty($val->created_date) ? date('Y-m-d', $val->date_time) : $val->created_date; ?></td>
+            <td><?php echo $val->created_date; ?></td>
+            <td><?php echo $val->delivery_date; ?></td>
             <td><?php echo $val->gross_amount; ?></td>
             <td><?php if( $val->service_charge_rate == NULL){
               echo "No service charge";
