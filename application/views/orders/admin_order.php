@@ -187,7 +187,7 @@
                     </select>
                 </div>
                 <br>
-                <label>Delivery Date</label>
+                <label>Delivery Date (Mandatory)</label>
                 <input type="text" name="pre_order_date" id="pre_order" class="form-control"  autocomplete="off" style="width:100%;" required>
                 
                 <label for="packer_memo" class="control-label">Packer Memo</label>
@@ -265,7 +265,6 @@
                   <input type="hidden" name="shipping_address_city" id="shipping_address_city">
                   <input type="hidden" name="shipping_address_postcode" id="shipping_address_postcode">
                   <input type="hidden" name="created_by" id="created_by" value="<?php echo $loginuser['name']; ?>">
-                  
                   </div>
                 </div>
               </div>
@@ -331,10 +330,9 @@
         </div>
     </div>
 </div>
-
-
 <script src="<?= base_url();?>public/plugins/pikaday/pikaday.js"></script>
 <script src="<?= base_url();?>public/plugins/pikaday/moment.min.js"></script>
+
 <script type="text/javascript">
  document.addEventListener('DOMContentLoaded', function () {
     document.querySelector('select[name="user_id"]').addEventListener('change', function () {
@@ -348,6 +346,7 @@
         }
     });
 });
+
 
 function fetchUserAddress(userId) {
     var deliveryDateInput = document.getElementById('pre_order');
@@ -372,7 +371,6 @@ function fetchUserAddress(userId) {
     };
     xhr.send('user_id=' + encodeURIComponent(userId));
 }
-
 function hasNonEmptyAddress(data) {
     return data.address2 || data.address3 || data.address4;
 }
@@ -477,62 +475,53 @@ function handleNext() {
     } 
 }
 
-
  var today = new Date();
 
-    // Calculate the date 3 days from now for the default value
-    var defaultDate = new Date(today);
-    defaultDate.setDate(today.getDate() + 3);
+// Calculate the date 3 days from now for the default value
+var defaultDate = new Date(today);
+defaultDate.setDate(today.getDate() + 3);
 
-    // Set the minimum date for the pre-order input field (3 days from now)
-    var minDate = new Date(today);
-    minDate.setDate(today.getDate() + 1);
+// Set the minimum date for the pre-order input field (tomorrow)
+var minDate = new Date(today);
+minDate.setDate(today.getDate() + 0);
 
-    // Set the maximum date for the pre-order input field (10 days from now)
-    var maxDate = new Date(today);
-    maxDate.setDate(today.getDate() + 10);
+// Set the maximum date for the pre-order input field (10 days from now)
+var maxDate = new Date(today);
+maxDate.setDate(today.getDate() + 10);
 
-    // Function to check if a given date is a Sunday
-    function isSunday(date) {
-        return date.getDay() === 0; // 0 represents Sunday
-    }
+// Function to check if a given date is a Sunday (now unused)
+function isSunday(date) {
+    return date.getDay() === 0; // 0 represents Sunday
+}
 
-    var picker = new Pikaday({
-        field: document.getElementById('pre_order'),
-        minDate: minDate,
-        maxDate: maxDate,
-        defaultDate: !isSunday(defaultDate) ? defaultDate : null,
-        setDefaultDate: true,
-        format: 'YYYY-MM-DD',
-        toString(date, format) {
-            // Convert the date to the format YYYY-MM-DD
-            return moment(date).format('YYYY-MM-DD');
-        },
-        parse(dateString, format) {
-            // Parse the date from the format YYYY-MM-DD
-            return moment(dateString, 'YYYY-MM-DD').toDate();
-        },
-        onSelect: function(date) {
-            // Validate the selected date
-            if (isSunday(date)) {
-                alert('No delivery on Sunday.');
-                picker.setDate(null); // Clear the invalid date
-            } else if (date < minDate || date > maxDate) {
-                alert('You can only select a date within the next 7 days.');
-                picker.setDate(null); // Clear the invalid date
-            } else {
-                document.getElementById('pre_order').value = moment(date).format('YYYY-MM-DD');
-            }
+var picker = new Pikaday({
+    field: document.getElementById('pre_order'),
+    minDate: minDate,
+    maxDate: maxDate,
+    defaultDate: defaultDate,
+    setDefaultDate: true,
+    format: 'YYYY-MM-DD',
+    toString(date, format) {
+        // Convert the date to the format YYYY-MM-DD
+        return moment(date).format('YYYY-MM-DD');
+    },
+    parse(dateString, format) {
+        // Parse the date from the format YYYY-MM-DD
+        return moment(dateString, 'YYYY-MM-DD').toDate();
+    },
+    onSelect: function(date) {
+        // Validate the selected date
+        if (date < minDate || date > maxDate) {
+            alert('You can only select a date within the next 10 days.');
+            picker.setDate(null); // Clear the invalid date
+        } else {
+            document.getElementById('pre_order').value = moment(date).format('YYYY-MM-DD');
         }
-    });
-
-    // Ensure the default date is not set if it's a Sunday
-    if (isSunday(defaultDate)) {
-        picker.setDate(null);
-    } else {
-        document.getElementById('pre_order').value = moment(defaultDate).format('YYYY-MM-DD');
     }
+});
 
+// Ensure the default date is set correctly
+document.getElementById('pre_order').value = moment(defaultDate).format('YYYY-MM-DD');
 
 
 function confirmSubmission(event) {
@@ -769,6 +758,40 @@ $('#product_info_table').on('change', '.sliced', function() {
     subAmount();
 });
 }); // /document
+
+
+$(document).on('keyup', 'input[name="qty[]"]', function() {
+    var row_id = $(this).attr('id').split('_')[1];
+    var min_order = parseFloat($("#minn").val()) || 1;
+    var qty = parseFloat($(this).val());
+
+    if (isNaN(qty) || qty < min_order) {
+        qty = min_order;
+       
+    } else if (qty % min_order !== 0) {
+        qty = Math.floor(qty / min_order) * min_order;
+        $(this).val(qty);
+        swal({
+          title: "Minimum Order Quantity",
+          text: 'Quantity must be a multiple of the minimum order value (' + min_order + ').',
+          icon: "warning",
+          buttons: {
+            confirm: {
+              text: "OK",
+              value: true,
+              visible: true,
+              className: "btn btn-primary",
+              closeModal: true
+            }
+          }
+        });
+    } else {
+        $('#msg').html('');
+    }
+
+    subAmount();
+    getTotal(row_id);
+});
 
 $(document).on('input', 'input[name^="qty"]', function() {
     var rowId = $(this).attr('id').split('_')[1];

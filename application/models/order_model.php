@@ -302,10 +302,10 @@ public function update($id,$user_id)
 			$order_date = $pre_order;
 		}
 
-		if (date('w', strtotime($order_date)) == 0) {
-			// Adjust order_date to the following Monday
-			$order_date = date('Y-m-d', strtotime($order_date . ' +1 day'));
-		}
+		// if (date('w', strtotime($order_date)) == 0) {
+		// 	// Adjust order_date to the following Monday
+		// 	$order_date = date('Y-m-d', strtotime($order_date . ' +1 day'));
+		// }
 
 		date_default_timezone_set('UTC');
 
@@ -846,10 +846,20 @@ public function admin_create()
   
     $count_product = count($this->input->post('product'));
     for ($x = 0; $x < $count_product; $x++) {
+
+		$rate_value = $this->input->post('rate_value')[$x];
+		$sample = !empty($this->input->post('sample')[$x]) ? $this->input->post('sample')[$x] : null;
+		if ($rate_value !== null) {
+			$rate = $rate_value;
+		} else {
+			$rate = 0; 
+		}
+
         $category = !empty($this->input->post('category')[$x]) ? $this->input->post('category')[$x] : null;
         $product_id = !empty($this->input->post('product')[$x]) ? $this->input->post('product')[$x] : null;
         $qty = !empty($this->input->post('qty')[$x]) ? $this->input->post('qty')[$x] : null;
-        $rate = !empty($this->input->post('rate_value')[$x]) ? $this->input->post('rate_value')[$x] : null;
+        $rate = $rate;
+		$sample = $sample;
         $amount = !empty($this->input->post('amount_value')[$x]) ? $this->input->post('amount_value')[$x] : null;
         $slice_type = !empty($this->input->post('sliced')[$x]) ? $this->input->post('sliced')[$x] : null;
         $seed_type = !empty($this->input->post('seed')[$x]) ? $this->input->post('seed')[$x] : null;
@@ -908,6 +918,7 @@ public function admin_create()
 			'gst_amount' => $gst_amt,
 			'created_date' => $created_date,
 			'delivery_date' => $order_date,
+			'sample' => $sample,
         );
         $this->db->insert('order_items', $items);
     }

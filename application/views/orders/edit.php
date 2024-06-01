@@ -345,7 +345,8 @@
     </div><!-- /modal-dialog -->
 </div><!-- /myModal -->
   <script type="text/javascript">   
-var today = new Date();
+   
+   var today = new Date();
 
 // Calculate the date 1 day from now for the default value
 var defaultDate = new Date(today);
@@ -359,16 +360,6 @@ minDate.setDate(today.getDate() + 1);
 var maxDate = new Date(today);
 maxDate.setDate(today.getDate() + 9);
 
-// Function to check if a given date is a Sunday
-function isSunday(date) {
-    return date.getDay() === 0; // 0 represents Sunday
-}
-
-// Adjust defaultDate if it falls on a Sunday or is out of range
-while (isSunday(defaultDate) || defaultDate < minDate || defaultDate > maxDate) {
-    defaultDate.setDate(defaultDate.getDate() + 1);
-}
-
 // Set the min and max attributes for the input field
 var preOrderInput = document.getElementById('pre_order');
 preOrderInput.min = minDate.toISOString().split('T')[0];
@@ -377,7 +368,7 @@ preOrderInput.max = maxDate.toISOString().split('T')[0];
 // Check if the value from PHP is valid
 var phpValue = preOrderInput.value;
 var phpDate = new Date(phpValue);
-if (phpValue && !isNaN(phpDate) && phpDate >= minDate && phpDate <= maxDate && !isSunday(phpDate)) {
+if (phpValue && !isNaN(phpDate) && phpDate >= minDate && phpDate <= maxDate) {
     preOrderInput.value = phpValue;
 } else {
     preOrderInput.value = defaultDate.toISOString().split('T')[0];
@@ -386,13 +377,9 @@ if (phpValue && !isNaN(phpDate) && phpDate >= minDate && phpDate <= maxDate && !
 // Disable input field for invalid dates
 preOrderInput.addEventListener('input', function() {
     var selectedDate = new Date(preOrderInput.value);
-    if (selectedDate > maxDate || isSunday(selectedDate)) {
+    if (isNaN(selectedDate) || selectedDate > maxDate) {
         preOrderInput.value = ''; // Clear input if date is invalid
-        if (selectedDate > maxDate) {
-            alert('You can only select a date within the next 7 days.');
-        } else if (isSunday(selectedDate)) {
-            alert('No delivery on Sunday.');
-        }
+        alert('Please select a valid date within the allowed range.');
     }
 });
 

@@ -90,6 +90,13 @@
             else{
               $ammount = $order['amount'];
             }
+
+            // if($order['sample'] == 1){
+            //   $samplee = '   (Sample)';
+            // }
+            // else{
+            //   $samplee = '';
+            // }
           ?>
          
         <tr class="odd text-center">
@@ -98,7 +105,8 @@
         <td>
             <?php 
                 if(isset($order['product_name'])) {
-                    echo $order['product_name']; 
+                   // echo $order['product_name']. $samplee; 
+                   echo $order['product_name'];
                     if(isset($order['slice_type']) && $order['slice_type'] !== '' || isset($order['seed_type']) && $order['seed_type'] !== '') {
                         echo ' (';
                         if(isset($order['slice_type'])) {
