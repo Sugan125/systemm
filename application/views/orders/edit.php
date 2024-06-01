@@ -555,6 +555,38 @@ $(document).on('input', 'input[name^="qty"]', function() {
     getTotal(rowId);
 });
 
+$(document).on('keyup', 'input[name="qty[]"]', function() {
+    var row_id = $(this).attr('id').split('_')[1];
+    var min_order = parseFloat($("#minn").val()) || 1;
+    var qty = parseFloat($(this).val());
+
+    if (isNaN(qty) || qty < min_order) {
+        qty = min_order;
+       
+    } else if (qty % min_order !== 0) {
+        qty = Math.floor(qty / min_order) * min_order;
+        $(this).val(qty);
+        swal({
+          title: "Minimum Order Quantity",
+          text: 'Quantity must be a multiple of the minimum order value (' + min_order + ').',
+          icon: "warning",
+          buttons: {
+            confirm: {
+              text: "OK",
+              value: true,
+              visible: true,
+              className: "btn btn-primary",
+              closeModal: true
+            }
+          }
+        });
+    } else {
+        $('#msg').html('');
+    }
+
+    subAmount();
+    getTotal(row_id);
+});
 
 $('#product_info_table').on('change', 'input[name^="qty"]', function() {
     var rowId = $(this).attr('id').split('_')[1];
@@ -585,7 +617,7 @@ $('#product_info_table').on('change', 'input[name^="qty"]', function() {
   function removeRow(tr_id)
     {
       $("#product_info_table tbody tr#row_"+tr_id).remove();
-      
+      subAmount();
     }
 
     function getTotal(row = null) {
