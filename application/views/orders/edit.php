@@ -93,7 +93,7 @@
                           ?>
                       
                         <tr id="row_<?php echo $x; ?>">
-                        <td><input type="checkbox" id="sample_1" name="sample[]" value="1" <?php echo $checked; ?> style="width: 42px;height: 20px;margin-top: 6px;" onchange="handleSampleChange(1)"></td>
+                        <td><input type="checkbox" id="sample_<?php echo $x; ?>" name="sample[]" value="1" <?php echo $checked; ?> style="width: 42px;height: 20px;margin-top: 6px;" onchange="handleSampleChange(1)"></td>
                         <td>
                         <select class="form-control category_name" data-row-id="row_1" id="category_1" name="category[]" onmousedown="if(this.options.length>8){this.size=8;}" onchange='this.size=0;' onblur="this.size=0;">
                                   <option value="">Choose</option>
