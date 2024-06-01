@@ -76,7 +76,7 @@
 
         <div style="padding: 20px 0; text-align: left;">
           <b style="font-weight: bold;">Salesman:</b> Henri<br>
-          <b style="font-weight: bold;">Delivery Date: </b><b>Delivery Date: </b><?php echo date('d/m/Y', strtotime($order_data['delivery_date'])); ?>
+          <b style="font-weight: bold;">Delivery Date: </b><?php echo date('d/m/Y', strtotime($order_data['delivery_date'])); ?>
         </div> 
         
       </div>
@@ -90,7 +90,14 @@
           </tr>
         </thead>
         <tbody>
-          <?php foreach ($data['order_data']['order_item'] as $order) : ?>
+          <?php foreach ($data['order_data']['order_item'] as $order) : 
+            
+            if($order['sample'] == 1){
+              $samplee = '   (Sample)';
+            }
+             else{
+               $samplee = '';
+             }?>
           <tr>
            
             <td style="padding: 10px; border: 1px solid #ccc; text-align:center;"><?php echo isset($order['product_id']) ? $order['product_id'] : ''; ?></td>
@@ -109,6 +116,7 @@
                         }
                         echo ')';
                     }
+                    echo $samplee;
                 } 
             ?></td>
             <td style="padding: 10px; border: 1px solid #ccc; text-align:center;"><?php echo isset($order['qty']) ? $order['qty'] : ''; ?></td>

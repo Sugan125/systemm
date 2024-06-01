@@ -100,6 +100,13 @@
       } else {
         $ammount = $order['amount'];
       }
+
+      if($order['sample'] == 1){
+        $samplee = '   (Sample)';
+      }
+       else{
+         $samplee = '';
+       }
     ?>
     <tr>
       <td style="padding: 10px; border: 1px solid #ccc; text-align:center;"><?php echo isset($order['qty']) ? $order['qty'] : ''; ?></td>
@@ -120,6 +127,7 @@
               }
               echo ')';
             }
+            echo $samplee;
           } 
         ?>
       </td>
@@ -132,7 +140,7 @@
     <tr class="odd text-center">
       <td style="padding: 10px; border: 1px solid #ccc; text-align:center;"><?php echo isset($order['qty']) ? $order['qty'] : ''; ?></td>
       <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">SL012</td>
-      <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">Slice 12mm Service Charge</td>
+      <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">Slice 12mm Service Charge <?php echo $samplee; ?></td>
       <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">$0.50</td>
       <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">pc</td>
       <!-- <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">$<//php echo $service_charge; ?></td> -->
@@ -142,7 +150,7 @@
     <tr class="odd text-center">
       <td style="padding: 10px; border: 1px solid #ccc; text-align:center;"><?php echo isset($order['qty']) ? $order['qty'] : ''; ?></td>
       <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">SL020</td>
-      <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">Slice 20mm Service Charge</td>
+      <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">Slice 20mm Service Charge <?php echo $samplee; ?></td>
       <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">$0.50</td>
       <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">pc</td>
       <!-- <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">$<php echo $service_charge; ?></td> -->

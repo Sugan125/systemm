@@ -380,13 +380,31 @@ public function update($id,$user_id)
 			// Format the datetime
 		$created_date = $current_date_time->format('Y-m-d H:i:s');
 
+		
+
+     
         for ($x = 0; $x < $count_product; $x++) {
+			$rate_value = $this->input->post('rate_value')[$x];
+		
+			if ($rate_value !== null) {
+				$rate = $rate_value;
+			} else {
+				$rate = 0; 
+			}
+
+			if($rate == 0){
+				$sample = 1;
+			}
+			else{
+				$sample = 0;
+			}
             $order_item_data = array(
                 'order_id' => $id,
                 'category' => $this->input->post('category')[$x],
                 'product_id' => $this->input->post('product')[$x],
                 'qty' => $this->input->post('qty')[$x],
-                'rate' => $this->input->post('rate_value')[$x],
+                'rate' => $rate,
+				'sample' => $sample,
                 'amount' => $this->input->post('amount_value')[$x],
 				'slice_type' => isset($this->input->post('sliced')[$x]) ? $this->input->post('sliced')[$x] : '',
 				'seed_type' => isset($this->input->post('seed')[$x]) ? $this->input->post('seed')[$x] : '',
@@ -848,11 +866,18 @@ public function admin_create()
     for ($x = 0; $x < $count_product; $x++) {
 
 		$rate_value = $this->input->post('rate_value')[$x];
-		$sample = !empty($this->input->post('sample')[$x]) ? $this->input->post('sample')[$x] : null;
+		
 		if ($rate_value !== null) {
 			$rate = $rate_value;
 		} else {
 			$rate = 0; 
+		}
+
+		if($rate == 0){
+			$sample = 1;
+		}
+		else{
+			$sample = 0;
 		}
 
         $category = !empty($this->input->post('category')[$x]) ? $this->input->post('category')[$x] : null;

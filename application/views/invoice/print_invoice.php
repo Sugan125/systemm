@@ -91,12 +91,12 @@
               $ammount = $order['amount'];
             }
 
-            // if($order['sample'] == 1){
-            //   $samplee = '   (Sample)';
-            // }
-            // else{
-            //   $samplee = '';
-            // }
+           if($order['sample'] == 1){
+            $samplee = '   (Sample)';
+          }
+           else{
+             $samplee = '';
+           }
           ?>
          
         <tr class="odd text-center">
@@ -105,8 +105,7 @@
         <td>
             <?php 
                 if(isset($order['product_name'])) {
-                   // echo $order['product_name']. $samplee; 
-                   echo $order['product_name'];
+                    echo $order['product_name']; 
                     if(isset($order['slice_type']) && $order['slice_type'] !== '' || isset($order['seed_type']) && $order['seed_type'] !== '') {
                         echo ' (';
                         if(isset($order['slice_type'])) {
@@ -119,6 +118,7 @@
                         }
                         echo ')';
                     }
+                    echo $samplee;
                 } 
             ?>
         </td>
@@ -134,7 +134,7 @@
            <tr class="odd text-center">
         <td><?php echo isset($order['qty']) ? $order['qty'] : ''; ?></td>
         <td><?php echo  'SL012'; ?></td>
-        <td><?php echo 'Slice 12mm Service Charge'; ?></td>
+        <td><?php echo 'Slice 12mm Service Charge'.$samplee; ?></td>
         <td>$<?php echo '0.50'; ?></td>
         <td>pc</td>
         <td>$<?php echo $service_charge; ?></td>
@@ -148,7 +148,7 @@
            <tr class="odd text-center">
         <td><?php echo isset($order['qty']) ? $order['qty'] : ''; ?></td>
         <td><?php echo  'SL020'; ?></td>
-        <td><?php echo 'Slice 20mm Service Charge'; ?></td>
+        <td><?php echo 'Slice 20mm Service Charge'.$samplee; ?></td>
         <td>$<?php echo '0.50'; ?></td>
         <td>pc</td>
         <td>$<?php echo $service_charge; ?></td>

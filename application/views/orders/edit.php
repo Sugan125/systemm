@@ -52,6 +52,7 @@
                   <table class="table table-bordered table-hover" id="product_info_table">
                     <thead>
                       <tr>
+                        <th>Sample</th>
                         <th style="width:15%">Category</th>
                         <th style="width:30%">Product / Packing Size</th>
                         <th style="width:10%">Pre-Slice</th>
@@ -82,9 +83,17 @@
                           if($row['add_on_slice'] == 0){
                               $slice = "hidden";
                           }
+
+                          if($val['sample'] == 1){
+                            $checked = 'checked';
+                          }
+                          else{
+                            $checked = '';
+                          }
                           ?>
                       
                         <tr id="row_<?php echo $x; ?>">
+                        <td><input type="checkbox" id="sample_1" name="sample[]" value="1" <?php echo $checked; ?> style="width: 42px;height: 20px;margin-top: 6px;" onchange="handleSampleChange(1)"></td>
                         <td>
                         <select class="form-control category_name" data-row-id="row_1" id="category_1" name="category[]" onmousedown="if(this.options.length>8){this.size=8;}" onchange='this.size=0;' onblur="this.size=0;">
                                   <option value="">Choose</option>
@@ -453,6 +462,7 @@ $("#add_row").unbind('click').bind('click', function() {
     var row_id = count_table_tbody_tr + 1;
 
     var html = '<tr id="row_'+row_id+'">' +
+    '<td><input type="checkbox" id="sample_'+row_id+'" name="sample[]" value="1" style="width: 42px;height: 20px;margin-top: 6px;" onchange="handleSampleChange('+row_id+')"></td>'+
         '<td>'+ 
             '<select class="form-control category_name" data-row-id="'+row_id+'" id="category_'+row_id+'" name="category[]" style="width:100%;">'+
                 '<option value="">Choose</option>';
@@ -543,44 +553,54 @@ $(document).on('input', 'input[name^="qty"]', function() {
 });
 
 $(document).on('keyup', 'input[name="qty[]"]', function() {
-    var row_id = $(this).attr('id').split('_')[1];
-    var min_order = parseFloat($("#minn").val()) || 1;
-    var qty = parseFloat($(this).val());
+        var row_id = $(this).attr('id').split('_')[1];
+        var min_order = parseFloat($("#minn").val()) || 1;
+        var qty = parseFloat($(this).val());
 
-    if (isNaN(qty) || qty < min_order) {
-        qty = min_order;
-       
-    } else if (qty % min_order !== 0) {
-        qty = Math.floor(qty / min_order) * min_order;
-        $(this).val(qty);
-        swal({
-          title: "Minimum Order Quantity",
-          text: 'Quantity must be a multiple of the minimum order value (' + min_order + ').',
-          icon: "warning",
-          buttons: {
-            confirm: {
-              text: "OK",
-              value: true,
-              visible: true,
-              className: "btn btn-primary",
-              closeModal: true
-            }
-          }
-        });
-    } else {
-        $('#msg').html('');
-    }
+        // Sample selection check
+        if ($('#sample_'+row_id).is(':checked')) {
+            $(this).val($(this).val());
+        }
 
-    subAmount();
-    getTotal(row_id);
-});
+        else if (isNaN(qty) || qty < min_order) {
+            qty = min_order;
+            $(this).val(qty);
+        } else if (qty % min_order !== 0) {
+            qty = Math.floor(qty / min_order) * min_order;
+            $(this).val(qty);
+            swal({
+                title: "Minimum Order Quantity",
+                text: 'Quantity must be a multiple of the minimum order value (' + min_order + ').',
+                icon: "warning",
+                buttons: {
+                    confirm: {
+                        text: "OK",
+                        value: true,
+                        visible: true,
+                        className: "btn btn-primary",
+                        closeModal: true
+                    }
+                }
+            });
+        } else {
+            $('#msg').html('');
+        }
+
+        subAmount();
+        getTotal(row_id);
+    });
+
 
 $('#product_info_table').on('change', 'input[name^="qty"]', function() {
     var rowId = $(this).attr('id').split('_')[1];
     var minOrder = parseInt($('#minn').val()); // Get the stored min_order value
 
+    if ($('#sample_'+rowId).is(':checked')) {
+        $(this).val($(this).val());
+        }
+
     // If the input value is less than the min_order value, set it to min_order
-    if ($(this).val() < minOrder) {
+    else  if ($(this).val() < minOrder) {
       $(this).val(minOrder);
       swal({
           title: "Minimum Order Quantity",
@@ -612,15 +632,13 @@ $('#product_info_table').on('change', 'input[name^="qty"]', function() {
         var service_charge = 0;
         var sliceSelected = $("#sliced_" + row).val();
 
-      //  alert(sliceSelected);
-
-      //  var seedSelected = $("#seed_" + row).val();
-      //if (sliceSelected || seedSelected) {
-        if (sliceSelected && sliceSelected != 'Unsliced') {
-            service_charge = 0.5 * Number($("#qty_" + row).val());
+        if (!$("#sample_" + row).is(":checked")) {
+            if (sliceSelected && sliceSelected != 'Unsliced') {
+                service_charge = 0.5 * Number($("#qty_" + row).val());
+            }
         }
 
-      //  alert(service_charge);
+
         
         var total = Number($("#rate_value_" + row).val()) * Number($("#qty_" + row).val());
         var total_amt = total + service_charge;
@@ -646,7 +664,6 @@ $('#product_info_table').on('change', 'input[name^="qty"]', function() {
 
 
 
-
 function getProductData(row_id) {
     var product_id = $("#product_" + row_id).val();
     if (product_id == "") {
@@ -659,124 +676,129 @@ function getProductData(row_id) {
         $.ajax({
             url: '<?php echo base_url('index.php/orders/getProductValueById'); ?>',
             type: 'post',
-            data: {
-                product_id: product_id
-            },
+            data: { product_id: product_id },
             dataType: 'json',
             success: function(response) {
-                // setting the rate value into the rate input field
-                $("#rate_" + row_id).val(response.prod_rate);
-                $("#rate_value_" + row_id).val(response.prod_rate)
+                if ($("#sample_" + row_id).is(":checked")) {
+                    $("#rate_" + row_id).val(0);
+                    $("#rate_value_" + row_id).val(0);
+                    $("#service_charge_lineitem_" + row_id).val(0);
+                    $("#service_charge_itemval_" + row_id).val(0);
 
-                if (response.add_on_slice == 0) {
-                    $("#sliced_" + row_id).prop('hidden', true);
-                    $('#msg').html('Slice not available for ' + response.product_id + '-' + response.product_name);
+                    if (response.add_on_slice == 0) {
+                        $("#sliced_" + row_id).prop('hidden', true);
+                        $('#msg').html('Slice not available for ' + response.product_id + '-' + response.product_name);
+                    } else {
+                        $("#sliced_" + row_id).prop('hidden', false);
+                    }
+
+                    if (response.add_on_seed == 0) {
+                        $("#seed_" + row_id).prop('hidden', true);
+                        $('#msg').html('Seed not available for ' + response.product_id + '-' + response.product_name);
+                    } else {
+                        $("#seed_" + row_id).prop('hidden', false);
+                    }
+
+                    if (response.add_on_seed == 0 && response.add_on_slice == 0) {
+                        $('#msg').html('Slice and Seed not available for ' + response.product_id + '-' + response.product_name);
+                    }
+
+                    $("#qty_" + row_id).prop('step', 1);
+
                 } else {
-                  $("#sliced_" + row_id).prop('hidden', false);
+                    $("#rate_" + row_id).val(response.prod_rate);
+                    $("#rate_value_" + row_id).val(response.prod_rate);
+
+                    if (response.add_on_slice == 0) {
+                        $("#sliced_" + row_id).prop('hidden', true);
+                        $('#msg').html('Slice not available for ' + response.product_id + '-' + response.product_name);
+                    } else {
+                        $("#sliced_" + row_id).prop('hidden', false);
+                    }
+
+                    if (response.add_on_seed == 0) {
+                        $("#seed_" + row_id).prop('hidden', true);
+                        $('#msg').html('Seed not available for ' + response.product_id + '-' + response.product_name);
+                    } else {
+                        $("#seed_" + row_id).prop('hidden', false);
+                    }
+
+                    if (response.add_on_seed == 0 && response.add_on_slice == 0) {
+                        $('#msg').html('Slice and Seed not available for ' + response.product_id + '-' + response.product_name);
+                    }
+
+                    if (response.min_order !== undefined && response.min_order !== null && response.min_order !== "") {
+                        $('#minn').val(response.min_order);
+                        $("#qty_" + row_id).val(response.min_order);
+                        $("#qty_" + row_id).prop('step', response.min_order);
+                        $("#qty_value_" + row_id).val(response.min_order);
+                        var total = Number(response.prod_rate) * Number(response.min_order);
+                    } else {
+                        $("#qty_" + row_id).val(1);
+                        $("#qty_value_" + row_id).val(1);
+                        var total = Number(response.prod_rate) * 1;
+                    }
+
+                    if (response.min_order == 0) {
+                        $("#qty_" + row_id).val(1);
+                        $("#qty_value_" + row_id).val(1);
+                        var total = Number(response.prod_rate) * 1;
+                    }
+
+                    var deliveryCharge = parseFloat($("#delivery_charge").val()) || 0;
+                    total += deliveryCharge;
+                    total = total.toFixed(2);
+                    $("#amount_" + row_id).val(total);
+                    $("#amount_value_" + row_id).val(total);
                 }
-
-                if (response.add_on_seed == 0) {
-                  $("#seed_" + row_id).prop('hidden', true);
-                    $('#msg').html('Seed not available for ' + response.product_id + '-' + response.product_name);
-                } else {
-                  $("#seed_" + row_id).prop('hidden', false);
-                }
-
-                if (response.add_on_seed == 0 && response.add_on_slice == 0) {
-                  $('#msg').html('Slice and Seed not available for ' + response.product_id + '-' + response.product_name);
-                }
-
-                // Check if min_order is not empty
-                if (response.min_order !== undefined && response.min_order !== null && response.min_order !== "") {
-                      $('#minn').val(response.min_order);
-                      $("#qty_" + row_id).val(response.min_order);
-                      $("#qty_" + row_id).prop('step', response.min_order);
-                      $("#qty_value_" + row_id).val(response.min_order);
-                      var total = Number(response.prod_rate) * Number(response.min_order);
-                  } else {
-                      $("#qty_" + row_id).val(1);
-                      $("#qty_value_" + row_id).val(1);
-                      var total = Number(response.prod_rate) * 1;
-                  }
-
-                  if(response.min_order == 0){
-                      $("#qty_" + row_id).val(1);
-                      $("#qty_value_" + row_id).val(1);
-                      var total = Number(response.prod_rate) * 1;
-                  }
-                 
-
-                  // Include delivery charge in the total amount
-                  var deliveryCharge = parseFloat($("#delivery_charge").val()) || 0;
-                  total += deliveryCharge;
-
-                  total = total.toFixed(2);
-                  $("#amount_" + row_id).val(total);
-                  $("#amount_value_" + row_id).val(total);
-
-
                 subAmount();
                 getTotal(row_id);
-            } // /success
-        }); // /ajax function to fetch the product data 
+            }
+        });
     }
     $("#product_" + row_id).blur();
 }
 
 
-
 function subAmount() {
-    var service_charge = 0; // Initialize additional charge to 0
+    var service_charge = 0; 
     var deliveryCharge;
-    // Check if either slice or seed is selected for any row
     var tableProductLength = $("#product_info_table tbody tr").length;
-    
+
     for (var x = 1; x <= tableProductLength; x++) {
         var sliceSelected = $("#sliced_" + x).val();
-      //  var seedSelected = $("#seed_" + x).val();
         var qty = $("#qty_" + x).val();
 
-       // if (sliceSelected || seedSelected) {
-        if (sliceSelected && sliceSelected != 'Unsliced') {
-            // If either slice or seed is selected for this row, add additional charge
-            service_charge += 0.5*qty;
+        if (!$("#sample_" + x).is(":checked")) {
+            if (sliceSelected && sliceSelected != 'Unsliced') {
+                service_charge += 0.5 * qty;
+            }
         }
     }
 
-    // Calculate total amount
     var totalSubAmount = 0;
-
     for (var x = 1; x <= tableProductLength; x++) {
         totalSubAmount += Number($("#amount_" + x).val());
     }
 
-    // Calculate gross amount
     var grossAmount = totalSubAmount;
-
     $("#gross_amount").val(grossAmount.toFixed(2));
     $("#gross_amount_value").val(grossAmount.toFixed(2));
 
-    
     var discount = $("#discount").val() || 0;
     var netAmount = grossAmount;
 
-
     if (netAmount > 50 && netAmount < 80) {
-        $("#self_pickup").prop("disabled", false); // Enable the element
+        $("#self_pickup").prop("disabled", false);
     } else {
-        $("#self_pickup").prop("disabled", true);  // Disable the element
+        $("#self_pickup").prop("disabled", true);
     }
-   
-  
+
     if (userInteracted) {
-      
-        // If user has interacted with the delivery charge input, use the user-entered value
         deliveryCharge = parseFloat($("#delivery_charge").val()) || 0;
     } else {
-        // Otherwise, use the default value based on netAmount
-        deliveryCharge = parseFloat($("#delivery_charge_valuee").val());
+        deliveryCharge = netAmount < 80 ? 20.00 : 0;
     }
-    
 
     var totall = grossAmount + deliveryCharge;
     var gstRate = 9; 
@@ -791,12 +813,24 @@ function subAmount() {
     $("#service_charge").val(service_charge.toFixed(2));
     $("#service_charge_value").val(service_charge.toFixed(2));
 
-    var finalAmount = netAmount + gstAmount  + deliveryCharge;
+    var finalAmount = netAmount + gstAmount + deliveryCharge;
 
     $("#net_amount").val(finalAmount.toFixed(2));
     $("#net_amount_value").val(finalAmount.toFixed(2));
 }
 
+function handleSampleChange(row_id) {
+    if ($("#sample_" + row_id).is(":checked")) {
+        $("#rate_" + row_id).val(0);
+        $("#rate_value_" + row_id).val(0);
+        $("#service_charge_lineitem_" + row_id).val(0);
+        $("#service_charge_itemval_" + row_id).val(0);
+    } else {
+        // Recalculate the product data if needed when sample is unchecked
+        getProductData(row_id);
+    }
+    getTotal(row_id);
+}
 
 
 function handleNext() {
