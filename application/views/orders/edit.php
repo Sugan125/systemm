@@ -564,7 +564,7 @@ $(document).on('keyup', 'input[name="qty[]"]', function() {
 
         else if (isNaN(qty) || qty < min_order) {
             qty = min_order;
-            $(this).val(qty);
+        
         } else if (qty % min_order !== 0) {
             qty = Math.floor(qty / min_order) * min_order;
             $(this).val(qty);
