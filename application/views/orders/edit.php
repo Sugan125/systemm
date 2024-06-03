@@ -413,6 +413,26 @@ preOrderInput.addEventListener('input', function() {
 
   $(document).ready(function() {
 
+    function checkSampleChecked() {
+        var sampleChecked = false;
+        $('input[name="sample[]"]').each(function() {
+            if ($(this).is(':checked')) {
+                sampleChecked = true;
+                return false; // Exit the loop
+
+            }
+        });
+        if (sampleChecked) {
+            $('#delivery_charge').prop('disabled', false);
+            $('#delivery_charge').val(0);
+        } else {
+            $('#delivery_charge').prop('disabled', true);
+        }
+    }
+
+    // Call the function on page load
+    checkSampleChecked();
+
     $("#self_pickup").change(function() {
             if ($(this).is(":checked")) {
                 $("#delivery_charge").prop("disabled", false); // Enable the delivery charge input
@@ -825,9 +845,11 @@ function handleSampleChange(row_id) {
         $("#rate_value_" + row_id).val(0);
         $("#service_charge_lineitem_" + row_id).val(0);
         $("#service_charge_itemval_" + row_id).val(0);
+        $("#delivery_charge").prop("disabled", false);
     } else {
         // Recalculate the product data if needed when sample is unchecked
         getProductData(row_id);
+        
     }
     getTotal(row_id);
 }

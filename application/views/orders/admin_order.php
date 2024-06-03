@@ -1039,6 +1039,7 @@ function handleSampleChange(row_id) {
         $("#rate_value_" + row_id).val(0);
         $("#service_charge_lineitem_" + row_id).val(0);
         $("#service_charge_itemval_" + row_id).val(0);
+        $("#delivery_charge").prop("disabled", false);
     } else {
         // Recalculate the product data if needed when sample is unchecked
         getProductData(row_id);
