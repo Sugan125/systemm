@@ -202,7 +202,7 @@ class Userscontroller extends CI_Controller {
        'role' => implode(',', $this->input->post('role')),
 
        'created_by' => $this->input->post('created_by'),
-       'created_date' => $created_date,
+       'created_datee' => $created_date,
     );
 
     $status = $this->user_model->is_email_exists($data['email']);

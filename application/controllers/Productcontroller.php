@@ -188,7 +188,7 @@ class Productcontroller extends CI_Controller {
             'prod_rate' => $this->input->post('prod_rate'),
             'deleted'=> '0',
             'created_by' => $this->input->post('created_by'),
-            'created_date' => $created_date,            
+            'created_datee' => $created_date,            
         );
         
         
