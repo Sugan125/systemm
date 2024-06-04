@@ -7,20 +7,14 @@ class order_model extends CI_Model {
             $query = $this->db->query($sql, array(1));
             return $query->result_array();
    }
-   public function getActivecatergoryData(){
-            $sql = "SELECT prod_category FROM products WHERE active = 1 and prod_category != 'Frozen Dough' GROUP BY prod_category ASC";
-            $query = $this->db->query($sql, array(1));
-            return $query->result_array();
+  public function getActivecatergoryData(){
+            $sql = "SELECT prod_category FROM products WHERE active = 1 AND prod_category != 'Frozen Dough' GROUP BY prod_category ORDER BY prod_category ASC";
+    $query = $this->db->query($sql);
+    return $query->result_array();
    }
 
    public function getActivecatergoryDataadmin(){
-	$sql = "SELECT prod_category FROM products WHERE active = 1 GROUP BY prod_category ASC";
-	$query = $this->db->query($sql, array(1));
-	return $query->result_array();
-}
-
-public function getcategoryfrozen(){
-	$sql = "SELECT prod_category FROM products WHERE active = 1 and prod_category = 'Frozen Dough'  GROUP BY prod_category ASC";
+	$sql = "SELECT prod_category FROM products WHERE active = 1 GROUP BY prod_category ORDER BY prod_category ASC";
 	$query = $this->db->query($sql, array(1));
 	return $query->result_array();
 }
@@ -40,8 +34,6 @@ public function getProductsByCategory($categoryId) {
     $query = $this->db->query($sql, array($categoryId));
     return $query->result_array();
 }
-
-
 public function getProductData($id = null)
 	{
 	
@@ -96,7 +88,6 @@ public function getProductData($id = null)
 	header("Expires: 0");
 	$current_year_month = date('ym');
 
-
 	$sql = "SELECT bill_no FROM orders WHERE LENGTH(bill_no) = 8 ORDER BY bill_no DESC LIMIT 1;";
 	$query = $this->db->query($sql);
 	
@@ -140,13 +131,12 @@ public function getProductData($id = null)
 
 		$order_date = $pre_order;
 	}
-
+	
 	if (date('w', strtotime($order_date)) == 0) {
 		// Adjust order_date to the following Monday
 		$order_date = date('Y-m-d', strtotime($order_date . ' +1 day'));
 	}
-	
-	
+
 	date_default_timezone_set('UTC');
 
 	// Create a DateTime object for the current time
@@ -186,7 +176,6 @@ public function getProductData($id = null)
         'user_id' => $user_id,
 		'created_date' => $created_date,
 		'created_by' => $this->input->post('created_by'),
-		
     );
 
 
@@ -243,9 +232,9 @@ public function getProductData($id = null)
 		}
 
 		if (date('w', strtotime($order_date)) == 0) {
-			// Adjust order_date to the following Monday
-			$order_date = date('Y-m-d', strtotime($order_date . ' +1 day'));
-		}
+		// Adjust order_date to the following Monday
+		$order_date = date('Y-m-d', strtotime($order_date . ' +1 day'));
+			}
 
         $items = array(
             'order_id' => $order_id,
@@ -302,10 +291,10 @@ public function update($id,$user_id)
 			$order_date = $pre_order;
 		}
 
-		// if (date('w', strtotime($order_date)) == 0) {
-		// 	// Adjust order_date to the following Monday
-		// 	$order_date = date('Y-m-d', strtotime($order_date . ' +1 day'));
-		// }
+	// 	if (date('w', strtotime($order_date)) == 0) {
+	// 	// Adjust order_date to the following Monday
+	// 	$order_date = date('Y-m-d', strtotime($order_date . ' +1 day'));
+	// }
 
 		date_default_timezone_set('UTC');
 
@@ -344,6 +333,7 @@ public function update($id,$user_id)
 			'user_id' => $user_id,
 			'updated_date' => $created_date,
 			'updated_by'=> $this->input->post('updated_by'),
+
         );
 
         // Update order data in the orders table
@@ -380,18 +370,13 @@ public function update($id,$user_id)
 			// Format the datetime
 		$created_date = $current_date_time->format('Y-m-d H:i:s');
 
-		
-
-     
         for ($x = 0; $x < $count_product; $x++) {
 			$rate_value = $this->input->post('rate_value')[$x];
-		
 			if ($rate_value !== null) {
 				$rate = $rate_value;
 			} else {
 				$rate = 0; 
 			}
-
 			if($rate == 0){
 				$sample = 1;
 			}
@@ -412,7 +397,6 @@ public function update($id,$user_id)
                 'gst_percent' => 9, // Assuming GST percent is fixed at 9%
                 'gst_amount' => $this->input->post('gst_amount_value')[$x],
 				'delivery_date' => $order_date,
-                
             );
             // Insert order item data into order_items table
             $this->db->insert('order_items', $order_item_data);
@@ -438,7 +422,7 @@ public function update($id,$user_id)
 			return false;
 		}
 
-		$sql = "SELECT ord.*, user.*, ord.driver_memo as memo, ord.packer_memo as pmemo ,  ord.po_ref as po_ref FROM orders ord join user_register user WHERE ord.id = ? and user.id=ord.user_id";
+		$sql = "SELECT ord.*, user.*, ord.driver_memo as memo, ord.packer_memo as pmemo,  ord.po_ref as po_ref,ord.created_date as created_date FROM orders ord join user_register user WHERE ord.id = ? and user.id=ord.user_id";
 		$query = $this->db->query($sql, array($order_id));
 		return $query->result_array();
 	}
@@ -553,7 +537,6 @@ public function update($id,$user_id)
 		return $query->result_array();
 	}
 
-	
 public function getscheduleorder($schedule_date) {
 	$sql = "SELECT prod.product_id as product_id,prod.product_name as product_name, SUM(ordd.qty) as qty, ordd.id as id, ordd.category as category 
 			FROM order_items ordd 
@@ -565,6 +548,7 @@ public function getscheduleorder($schedule_date) {
 
 	return $query->result(); 
 }
+
 public function getpackingorder($schedule_date) {
 	$date = $schedule_date;
 	$formatted_schedule_date = date("d/m/y", strtotime($date));
@@ -651,8 +635,8 @@ public function repeat_order($id)
 		}
 		
 		if (date('w', strtotime($order_date)) == 0) {
-			// Adjust order_date to the following Monday
-			$order_date = date('Y-m-d', strtotime($order_date . ' +1 day'));
+		// Adjust order_date to the following Monday
+		$order_date = date('Y-m-d', strtotime($order_date . ' +1 day'));
 		}
 
 		date_default_timezone_set('UTC');
@@ -764,7 +748,7 @@ public function admin_create()
 	$email = $user->email;
 
 	$user_id = $this->input->post('user_id');
-  
+
 	date_default_timezone_set('Asia/Singapore'); // Set timezone to Singapore
 
 	// Prevent caching
@@ -812,10 +796,11 @@ public function admin_create()
 			$order_date = $pre_order;
 		}
 
-		if (date('w', strtotime($order_date)) == 0) {
-			// Adjust order_date to the following Monday
-			$order_date = date('Y-m-d', strtotime($order_date . ' +1 day'));
-		}
+	// 	if (date('w', strtotime($order_date)) == 0) {
+	// 	// Adjust order_date to the following Monday
+	// 	$order_date = date('Y-m-d', strtotime($order_date . ' +1 day'));
+	// }
+
 
 	date_default_timezone_set('UTC');
 
@@ -864,22 +849,18 @@ public function admin_create()
   
     $count_product = count($this->input->post('product'));
     for ($x = 0; $x < $count_product; $x++) {
-
 		$rate_value = $this->input->post('rate_value')[$x];
-		
 		if ($rate_value !== null) {
 			$rate = $rate_value;
 		} else {
 			$rate = 0; 
 		}
-
 		if($rate == 0){
 			$sample = 1;
 		}
 		else{
 			$sample = 0;
 		}
-
         $category = !empty($this->input->post('category')[$x]) ? $this->input->post('category')[$x] : null;
         $product_id = !empty($this->input->post('product')[$x]) ? $this->input->post('product')[$x] : null;
         $qty = !empty($this->input->post('qty')[$x]) ? $this->input->post('qty')[$x] : null;
@@ -927,7 +908,7 @@ public function admin_create()
 		if (date('w', strtotime($order_date)) == 0) {
 		// Adjust order_date to the following Monday
 		$order_date = date('Y-m-d', strtotime($order_date . ' +1 day'));
-	}
+		}
 
         $items = array(
             'order_id' => $order_id,
@@ -935,6 +916,7 @@ public function admin_create()
             'product_id' => $product_id,
             'qty' => $qty,
             'rate' => $rate,
+			'sample' => $sample,
             'amount' => $amount,
             'slice_type' => $slice_type,
             'seed_type' => $seed_type,
@@ -943,7 +925,6 @@ public function admin_create()
 			'gst_amount' => $gst_amt,
 			'created_date' => $created_date,
 			'delivery_date' => $order_date,
-			'sample' => $sample,
         );
         $this->db->insert('order_items', $items);
     }
@@ -965,6 +946,7 @@ public function count_search_results($keyword) {
 	$this->db->like('bill_no', $keyword);
 	return $this->db->count_all_results('orders');
 }
+
 
 public function getinvoice($date) {
 	
@@ -1023,8 +1005,6 @@ public function search_date($keyword, $limit, $offset) {
 public function count_search_orderdate($keyword) {
 	$this->db->where('DATE(created_date)', $keyword);
     return $this->db->count_all_results('orders');
-
-	//var_dump($this->db->last_query()); // Check the generated SQL query
 }
 
 public function search_orderdate($keyword, $limit, $offset) {
@@ -1069,6 +1049,13 @@ public function search_orders($keyword, $limit, $offset) {
     // var_dump($this->db->last_query()); // Check the generated SQL query
     return $query->result();
 }
+
+public function getcategoryfrozen(){
+	$sql = "SELECT prod_category FROM products WHERE active = 1 and prod_category = 'Frozen Dough'  GROUP BY prod_category ORDER BY prod_category ASC";
+	$query = $this->db->query($sql, array(1));
+	return $query->result_array();
+}
+
 
 
 }
