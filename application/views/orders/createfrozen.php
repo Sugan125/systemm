@@ -462,7 +462,7 @@ if (!isSunday(defaultDate)) {
 // Disable input field for invalid dates
 preOrderInput.addEventListener('input', function() {
     var selectedDate = new Date(preOrderInput.value);
-    if (selectedDate > maxDate || selectedDate < minDate || isSunday(selectedDate)) {
+    if (selectedDate > maxDate || isSunday(selectedDate)) {
         preOrderInput.value = ''; // Clear input if date is invalid
         if (selectedDate > maxDate) {
             alert('You can only select a date within the next 7 days.');
@@ -827,6 +827,8 @@ function removeRow(tr_id)
     var totall = grossAmount + deliveryCharge;
     var gstRate = 9; 
     var gstAmount = totall * gstRate / 100;
+
+    gstAmount = parseFloat(gstAmount.toFixed(2)); // Ensure gstAmount is a number with two decimal places
 
     $("#gst").val(gstAmount.toFixed(2));
     $("#gst_rate").val(gstAmount.toFixed(2));

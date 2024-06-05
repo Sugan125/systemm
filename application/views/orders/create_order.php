@@ -452,7 +452,7 @@
             if (isSunday(date)) {
                 alert('No delivery on Sunday.');
                 picker.setDate(null); // Clear the invalid date
-            } else if (date < minDate || date > maxDate) {
+            } else if ( date > maxDate) {
                 alert('You can only select a date within the next 7 days.');
                 picker.setDate(null); // Clear the invalid date
             } else {
@@ -853,6 +853,7 @@ $(document).on('keyup', 'input[name="qty[]"]', function() {
     var totall = grossAmount + deliveryCharge;
     var gstRate = 9; 
     var gstAmount = totall * gstRate / 100;
+    gstAmount = parseFloat(gstAmount.toFixed(2)); // Ensure gstAmount is a number with two decimal places
 
     $("#gst").val(gstAmount.toFixed(2));
     $("#gst_rate").val(gstAmount.toFixed(2));
