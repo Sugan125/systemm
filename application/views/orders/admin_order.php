@@ -139,6 +139,7 @@
                                 <option value="">Choose</option>
                                 <option value="Seedless">Seedless</option>
                                 <option value="White drizzle">White drizzle</option>
+                                <option value="White full seed">White full seed</option>  
                                 <option value="Black drizzle">Black drizzle</option>  
                                 <option value="White black mix">White black mix</option>                               
                             </select>
@@ -669,6 +670,7 @@ $("#add_row").unbind('click').bind('click', function() {
                     '<option value="">Choose</option>'+
                     '<option value="Seedless">Seedless</option>'+
                     '<option value="White drizzle">White drizzle</option>'+
+                    '<option value="White full seed">White full seed</option>'+
                     '<option value="Black drizzle">Black drizzle</option>'+
                     '<option value="White black mix">White black mix</option>'+
                 '</select>'+

@@ -104,6 +104,7 @@
                                       <option value="">Choose</option>
                                       <option value="Seedless" <?php if ($val['seed_type'] == "Seedless") { echo "selected='selected'"; } ?>>Seedless</option>
                                       <option value="White drizzle" <?php if ($val['seed_type'] == "White drizzle") { echo "selected='selected'"; } ?>>White drizzle</option>
+                                      <option value="White full seed" <?php if ($val['seed_type'] == "White full seed") { echo "selected='selected'"; } ?>>White full seed</option>
                                       <option value="Black drizzle" <?php if ($val['seed_type'] == "Black drizzle") { echo "selected='selected'"; } ?>>Black drizzle</option>  
                                       <option value="White black mix" <?php if ($val['seed_type'] == "White black mix") { echo "selected='selected'"; } ?>>White black mix</option>   
                                   </select>
@@ -561,6 +562,7 @@ var html = '<tr id="row_'+row_id+'">' +
             '<option value="">Choose</option>'+
             '<option value="Seedless">Seedless</option>'+
             '<option value="White drizzle">White drizzle</option>'+
+            '<option value="White full seed">White full seed</option>'+
             '<option value="Black drizzle">Black drizzle</option>'+
             '<option value="White black mix">White black mix</option>'+
         '</select>'+
