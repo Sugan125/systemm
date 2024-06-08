@@ -676,7 +676,7 @@ The Sourdough Factory Team";
 			$orders_data = $this->order_model->getOrdersDatas($id,$user_id);
 
 			foreach ($orders_data as $order) {
-				$orders_item = $this->order_model->getOrdersItemDatas($id);
+				$orders_item = $this->order_model->getOrdersItemDatasedit($id);
 			}
 			
 			

@@ -84,8 +84,15 @@
                           <td>
                             <select class="form-control select_group product" data-row-id="row_<?php echo $x; ?>" id="product_<?php echo $x; ?>" name="product[]" style="width:100%;" onchange="getProductData(<?php echo $x; ?>)" required disabled>
                                 <option value=""></option>
-                                <?php foreach ($products as $k => $v): ?>
-                                  <option value="<?php echo $val['product_id'] ?>" <?php if($val['product_id'] == $v['id']) { echo "selected='selected'"; } ?> ><?php echo $v['product_name'] ?></option>
+                                <?php foreach ($products as $k => $v):
+                                  if ($v['min_order'] > 1) {
+                                    $qty_pkt = ' (' . $v['min_order'] . ' pcs/pkt)';
+                                    } else {
+                                        $qty_pkt = '';
+                                    }
+                                  ?>
+                                  <option value="<?php echo $val['product_id'] ?>" <?php if($val['product_id'] == $v['id']) { echo "selected='selected'"; } ?> >
+                                  <?php echo $v['product_id'] . ' - ' . $v['product_name'] .$qty_pkt; ?></option>
                                 <?php endforeach ?>
                               </select>
                             </td>
