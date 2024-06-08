@@ -237,14 +237,8 @@
 <!--- REPORTS ADMIN MENU START  -->
 
 
-        <?php if ((isset($user->image)) || 
-        isset($loginuser['roles']) &&
-        !empty($loginuser['roles']) &&
-        (
-            ($loginuser['roles'] == 'Admin' || $loginuser['roles'] == 'Owner') ||
-            (strpos($loginuser['roles'], 'Admin') !== false && strpos($loginuser['roles'], 'User') !== false)
-        )
-    ): ?>
+    <?php if ((in_array('Packing List', $access) && (in_array('Admin', $roles) || in_array('Owner', $roles))) || (in_array('Production List', $access) && (in_array('Admin', $roles) || in_array('Owner', $roles)))){ ?>
+     
 
     <li class="nav-item">
         <a href="#" class="nav-link toggle-orders">
@@ -255,11 +249,17 @@
             </span>
         </a>
         <ul class="treeview-menu" style="display: none;">
+        <?php if (in_array('Packing List', $access) && (in_array('Admin', $roles) || in_array('Owner', $roles))){ ?>
+            
             <li class="nav-item"><a href="<?php echo base_url('index.php/orders/printpacking/'); ?>" class="nav-link"><i class="fas fa-print"></i>  Packing List</a></li>
+         
+            <?php } if (in_array('Production List', $access) && (in_array('Admin', $roles) || in_array('Owner', $roles))){ ?>
+            
             <li class="nav-item"><a href="<?php echo base_url('index.php/orders/printschedule/'); ?>"  class="nav-link"><i class="fas fa-print"></i>  Production List</a></li>
+                <?php } ?>
         </ul>
     </li>
-    <?php endif; ?>
+    <?php } ?>
 
 
     <?php if ((in_array('Export Sales', $access) && (in_array('Admin', $roles) || in_array('Owner', $roles))) || (in_array('Print Invoice', $access) && (in_array('Admin', $roles) || in_array('Owner', $roles)))|| (in_array('Print DO', $access) && (in_array('Admin', $roles) || in_array('Owner', $roles)))){ ?>

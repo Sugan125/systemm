@@ -117,7 +117,7 @@
                                 <label><b>MENU ACCESS</b></label>
                                 <div class="form-check-group">
                                     <?php
-                                    $accesses = array("Dashboard","Create User", "Manage User", "Set Access", "Manage Access", "Create Products","Manage Products","Create Order","Manage Orders","Export Sales","Print Invoice","Print DO");
+                                    $accesses = array("Dashboard","Create User", "Manage User", "Set Access", "Manage Access", "Create Products","Manage Products","Create Order","Manage Orders","Packing List","Production List","Export Sales","Print Invoice","Print DO");
                                     $selectedAccesses = explode(',', $row->access);
 
                                     foreach ($accesses as $access) {

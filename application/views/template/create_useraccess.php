@@ -139,6 +139,14 @@
                                         <label class="form-check-label" for="manageOrdersCheck">Manage Orders</label>
                                     </div>
                                     <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="checkbox" name="access[]" value="Packing List" id="printInvoiceCheck">
+                                        <label class="form-check-label" for="printInvoiceCheck">Packing List</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="checkbox" name="access[]" value="Production List" id="printInvoiceCheck">
+                                        <label class="form-check-label" for="printInvoiceCheck">Production List</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
                                         <input class="form-check-input" type="checkbox" name="access[]" value="Export Sales" id="printInvoiceCheck">
                                         <label class="form-check-label" for="printInvoiceCheck">Export Sales</label>
                                     </div>
