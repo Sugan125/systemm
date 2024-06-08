@@ -218,8 +218,10 @@ public function get_roleuserss() {
 }
 
 public function get_roleuser_access($user_id) {
- // $this->db->where('id !=', $user_id);
-  return $this->db->get('user_register')->result();
+  //$this->db->where('id !=', $user_id); // Optionally exclude the user with the given ID
+  $this->db->where('role !=', 'User'); // Exclude users with the role 'User'
+  $this->db->where_not_in('name', array('KV Baker', 'FES Baker')); // Exclude specific users by name
+  return $this->db->get('user_register')->result(); // Retrieve the filtered user data
 }
 
 

@@ -13,13 +13,19 @@
         <div class="content mt-3">
             <?php
         $loginuser = $this->session->userdata('LoginSession');
+
+        $roles = is_array($loginuser['roles']) ? $loginuser['roles'] : explode(',', $loginuser['roles']);
+        $access = is_array($loginuser['access']) ? $loginuser['access'] : explode(',', $loginuser['access']);    
+        
+        
+    
         if (isset($loginuser['roles']) && !empty($loginuser['roles'])) {
-            if ($loginuser['roles'] == 'Admin' || $loginuser['roles'] == 'Owner') {
+            if (in_array('Dashboard', $access) && (in_array('Admin', $roles) || in_array('Owner', $roles))){ 
                 echo '<a href="' . base_url('index.php/orders/manage_orders') . '">';
             } elseif ($loginuser['roles'] == 'User') {
                 echo '<a href="' . base_url('index.php/orders') . '">';
             } else {
-                echo '<a href="' . base_url('index.php/orders') . '">';
+                echo '<a href="">';
             }
         }
         ?>
@@ -37,15 +43,15 @@
             <!--/.col-->
            <?php
         $loginuser = $this->session->userdata('LoginSession');
-        if (isset($loginuser['roles']) && !empty($loginuser['roles'])) {
-            if ($loginuser['roles'] == 'Admin' || $loginuser['roles'] == 'Owner') {
+       
+         if (in_array('Dashboard', $access) && (in_array('Admin', $roles) || in_array('Owner', $roles))){ 
                 echo '<a href="' . base_url('index.php/Productcontroller') . '">';
             } elseif ($loginuser['roles'] == 'User') {
                 echo '<a href="' . base_url('index.php/Productcontroller/userproduct') . '">';
             } else {
-                echo '<a href="' . base_url('index.php/Productcontroller/userproduct') . '">';
+                echo '<a href="">';
             }
-        }
+        
         ?>
             <div class="col-sm-6 col-lg-3">
                 <div class="card text-white bg-flat-color-5">
@@ -56,30 +62,32 @@
                 </div>
             </div></a>
             <!--/.col-->
-            <a href="<?php echo base_url('index.php/Userscontroller') ?>">
+           
             <div class="col-sm-6 col-lg-3">
-                <div class="card text-white bg-flat-color-3">
-                    <div class="card-body pb-0">
-                        <p class="text-light" style="font-weight: 600;">
+            <div class="card text-white bg-flat-color-3">
+                <div class="card-body pb-0">
+                    <p class="text-light" style="font-weight: 600;">
                         <?php if ($loginuser['roles'] == 'User') { ?>
-                        View My Details</p>
-                        <?php } 
-                        else{
-                        ?>
-                         View Customer Details</p>
-                        <?php
-                        }
-                        ?>
-                    </div>
+                            <a href="<?php echo base_url('index.php/Userscontroller') ?>">
+                                View My Details
+                            </a>
+                        <?php } else { ?>
+                            View Customer Details
+                        <?php } ?>
+                    </p>
                 </div>
-            </div></a>
+            </div>
+        </div>
+
             <!--/.col-->
            <?php
-        $loginuser = $this->session->userdata('LoginSession');
-        if (isset($loginuser['roles']) && !empty($loginuser['roles'])) {
-            if ($loginuser['roles'] == 'Admin' || $loginuser['roles'] == 'Owner') {
+       
+       if (in_array('Dashboard', $access) && (in_array('Admin', $roles) || in_array('Owner', $roles))){ 
                 echo '<a href="' . base_url('index.php/Userrolecontroller') . '">';
-            
+       }
+       else {
+        echo '<a href="">';
+    }
         ?>
             <div class="col-sm-6 col-lg-3">
                 <div class="card text-white bg-flat-color-4">
@@ -91,14 +99,14 @@
             <!--/.col-->
             <?php
              echo '</a>';
-            } 
-        }
+            
+        
             ?>
 
 
         <?php
-         if (isset($loginuser['roles']) && !empty($loginuser['roles'])) {
-            if ($loginuser['roles'] == 'Admin' || $loginuser['roles'] == 'Owner') {
+        
+        if (in_array('Dashboard', $access) && (in_array('Admin', $roles) || in_array('Owner', $roles))){ 
                 echo '<a href="' . base_url('index.php/Userrolecontroller') . '">';
             
         ?>
@@ -236,7 +244,7 @@
 
 <?php
   echo '</a>';
-            }}
+  } 
 ?>
  
 <div class="col-xl-6">
@@ -327,6 +335,7 @@
                     </div>
                 </div>
             </div>
+       
 
             <!-- <div class="col-xl-6">
                 <div class="card">
@@ -340,4 +349,5 @@
             </div> -->
            
         </div>
+        
    

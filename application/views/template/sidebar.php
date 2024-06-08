@@ -8,50 +8,72 @@
                 <a class="navbar-brand" href="./"><img src="https://sourdoughfactory.com.sg/wp-content/uploads/2021/06/400x100px.png" alt="logo"></a>
             </div>
             <div id="main-menu" class="main-menu collapse navbar-collapse">
+                <?php
+                 $roles = is_array($loginuser['roles']) ? $loginuser['roles'] : explode(',', $loginuser['roles']);
+                 $access = is_array($loginuser['access']) ? $loginuser['access'] : explode(',', $loginuser['access']);             
+                ?>
                 <ul class="nav navbar-nav">
-                
+                <?php if ((in_array('Dashboard', $access) && (in_array('Admin', $roles) || in_array('Owner', $roles))) && !in_array('User', $roles)){ ?>
+                <li class="nav-item">
+                    <a href="<?= base_url('index.php/Dashboardcontroller/index'); ?>" class="nav-link <?php if($this->uri->segment(1) == 'dashboard') echo 'active' ?>"> 
+                        <i class="menu-icon fas fa-tachometer-alt"></i> Dashboard
+                    </a>
+                </li>
+            <?php } ?>
+
+            <?php if(isset($loginuser['roles']) && !empty($loginuser['roles'])): ?>
+                <?php if(in_array($loginuser['roles'], ['User']) || (strpos($loginuser['roles'], 'User') !== false)): ?>
                     <li class="nav-item">
-                
-                    <a href="<?= base_url('index.php/Dashboardcontroller/index');?>" class="nav-link <?php if($this->uri->segment(1)== 'dashboard') echo 'active' ?>"> <i class="menu-icon fas fa-tachometer-alt"></i>Dashboard </a>
+                    <a href="<?= base_url('index.php/Dashboardcontroller/index'); ?>" class="nav-link <?php if($this->uri->segment(1) == 'dashboard') echo 'active' ?>"> 
+                        <i class="menu-icon fas fa-tachometer-alt"></i> Dashboard
+                    </a>
+                </li>
+                    <?php endif; endif; ?>
+
+
+        <!--  START OF ADMIN MENU -->
+
+        <?php if ((in_array('Create User', $access) && (in_array('Admin', $roles) || in_array('Owner', $roles))) || (in_array('Manage User', $access) && (in_array('Admin', $roles) || in_array('Owner', $roles)))){ ?>
+                <li class="nav-item">
+                        <a href="#" class="nav-link toggle-orders">
+                            <i class="menu-icon fa fa-user-circle"></i>
+                            <span>Users</span>
+                            <span class="pull-right-container">
+                                <i class="fa fa-angle-down pull-right" style="line-height: 2.1;"></i>
+                            </span>
+                        </a>
+                        <ul class="treeview-menu" style="display: none;">
+                            <?php if (in_array('Create User', $access) && (in_array('Admin', $roles) || in_array('Owner', $roles))){ ?>
+                                <li class="nav-item "><a href="<?php echo base_url('index.php/Userscontroller/create') ?>" class="nav-link"><i class="fa fa-edit"></i>  Create Users</a></li>
+                            <?php } ?>
+                            <?php if (in_array('Manage User', $access) && (in_array('Admin', $roles) || in_array('Owner', $roles))){ ?>
+                                <li class="nav-item"><a href="<?php echo base_url('index.php/Userscontroller') ?>" class="nav-link"><i class="fa fa-th-large"></i>  Manage Users</a></li>
+                            <?php } ?>
+                        </ul>
                     </li>
-              <?php if(isset($loginuser['roles']) && !empty($loginuser['roles']) == 'Admin' || isset($loginuser['roles']) && !empty($loginuser['roles']) == 'Owner' || isset($loginuser['roles']) && !empty($loginuser['roles']) == 'Users' || (isset($user->image)) ){ ?>
-              
+        <?php } ?>
 
-        <li class="nav-item">
-            <a href="#" class="nav-link toggle-orders">
-                <i class="menu-icon fa fa-user-circle"></i>
-                <span>Users</span>
-                <span class="pull-right-container">
-                    <i class="fa fa-angle-down pull-right" style="line-height: 2.1;"></i>
-                </span>
-            </a>
-            <ul class="treeview-menu" style="display: none;">
-            <?php if ((isset($user->image)) || 
-                    isset($loginuser['roles']) &&
-                    !empty($loginuser['roles']) &&
-                    (
-                        ($loginuser['roles'] == 'Admin' || $loginuser['roles'] == 'Owner') ||
-                        (strpos($loginuser['roles'], 'Admin') !== false && strpos($loginuser['roles'], 'User') !== false)
-                    )
-                ): ?>
-                <li class="nav-item "><a href="<?php echo base_url('index.php/Userscontroller/create') ?>" class="nav-link"><i class="fa fa-edit"></i>  Create Users</a></li>
-                 <?php endif; ?>
-               
-                <li class="nav-item"><a href="<?php echo base_url('index.php/Userscontroller') ?>" class="nav-link"><i class="fa fa-th-large"></i>  Manage Users</a></li>
-            </ul>
-        </li>
+        <?php if(isset($loginuser['roles']) && !empty($loginuser['roles'])): ?>
+                <?php if(in_array($loginuser['roles'], ['User']) || (strpos($loginuser['roles'], 'User') !== false)): ?>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link toggle-orders">
+                            <i class="menu-icon fa fa-user-circle"></i>
+                            <span>Users</span>
+                            <span class="pull-right-container">
+                                <i class="fa fa-angle-down pull-right" style="line-height: 2.1;"></i>
+                            </span>
+                        </a>
+                        <ul class="treeview-menu" style="display: none;">
+                           
+                                <li class="nav-item"><a href="<?php echo base_url('index.php/Userscontroller') ?>" class="nav-link"><i class="fa fa-th-large"></i>  Manage Users</a></li>
+                           
+                        </ul>
+                    </li>
+                    <?php endif; endif; ?>
 
-              <?php }?>
-            
        
-       <?php if ((isset($user->image)) || 
-        isset($loginuser['roles']) &&
-        !empty($loginuser['roles']) &&
-        (
-            ($loginuser['roles'] == 'Admin' || $loginuser['roles'] == 'Owner') ||
-            (strpos($loginuser['roles'], 'Admin') !== false && strpos($loginuser['roles'], 'User') !== false)
-        )
-    ): ?>
+        <?php if ((in_array('Set Access', $access) && (in_array('Admin', $roles) || in_array('Owner', $roles))) || (in_array('Manage Access', $access) && (in_array('Admin', $roles) || in_array('Owner', $roles)))){ ?>
+                  
         <li class="nav-item">
         <a href="#" class="nav-link toggle-orders">
                 <i class="menu-icon fa fa-user-circle"></i>
@@ -61,22 +83,20 @@
                 </span>
             </a>
             <ul class="treeview-menu" style="display: none;">
+                <?php if (in_array('Set Access', $access) && (in_array('Admin', $roles) || in_array('Owner', $roles))){ ?>
                 <li class="nav-item"><a href="<?php echo base_url('index.php/Userrolecontroller/createaccess') ?>" class="nav-link" <?php if($this->uri->segment(1) == 'Userrolecontroller/createaccess') echo 'active' ?>><i class="fa fa-user-circle"></i>  Set Access</a></li>
+                <?php } ?>
+                <?php if (in_array('Manage Access', $access) && (in_array('Admin', $roles) || in_array('Owner', $roles))){ ?>
                 <li class="nav-item"><a href="<?php echo base_url('index.php/Userrolecontroller') ?>" <?php if($this->uri->segment(1) == 'Userrolecontroller') echo 'active' ?> class="nav-link"><i class="fa fa-user-circle"></i>  Manage Access</a></li>
-            
+                <?php } ?>
             </ul>
-        <!-- <a href=" //base_url('index.php/Userrolecontroller');?>" class="nav-link // if($this->uri->segment(1) == 'Userrolecontroller') echo 'active' ?>"> <i class="menu-icon fa fa-user-circle"></i>Access </a> -->
-        </li>
-    <?php endif; ?>
+       </li>
 
-    <?php if ((isset($user->image)) || 
-        isset($loginuser['roles']) &&
-        !empty($loginuser['roles']) &&
-        (
-            ($loginuser['roles'] == 'Admin' || $loginuser['roles'] == 'Owner') ||
-            (strpos($loginuser['roles'], 'Admin') !== false && strpos($loginuser['roles'], 'User') !== false)
-        )
-    ): ?>
+       <?php } ?>
+ 
+
+       <?php if ((in_array('Create Products', $access) && (in_array('Admin', $roles) || in_array('Owner', $roles))) || (in_array('Manage Products', $access) && (in_array('Admin', $roles) || in_array('Owner', $roles)))){ ?>
+        
 
         <li class="nav-item">
             <a href="#" class="nav-link toggle-orders">
@@ -87,21 +107,22 @@
                 </span>
             </a>
             <ul class="treeview-menu" style="display: none;">
+                <?php if (in_array('Create Products', $access) && (in_array('Admin', $roles) || in_array('Owner', $roles))){ ?>
                 <li class="nav-item"><a href="<?php echo base_url('index.php/Productcontroller/create') ?>" <?php if($this->uri->segment(1) == 'Productcontroller/create') echo 'active' ?> class="nav-link"><i class="fa fa-edit"></i>  Create Products</a></li>
+                <?php } ?>
+                <?php if (in_array('Manage Products', $access) && (in_array('Admin', $roles) || in_array('Owner', $roles))){ ?>
                 <li class="nav-item"><a href="<?php echo base_url('index.php/Productcontroller') ?>" <?php if($this->uri->segment(1) == 'Productcontroller') echo 'active' ?> class="nav-link"><i class="fa fa-th-large"></i>  Manage Products</a></li>
-            
+                <?php } ?>
             </ul>
         </li>
 
-<!--       
+        <?php } ?>
 
-        <li class="nav-item">
-                
-        <a href="<//base_url('index.php/Productcontroller');?>" class="nav-link //if($this->uri->segment(1) == 'Productcontroller') echo 'active' ?>"> <i class="menu-icon fa fa-shopping-cart"></i>Products </a>
-                      </li> -->
-    <?php endif; ?>
+    <!--  END OF ADMIN MENU -->
 
-                <?php if(isset($loginuser['roles']) && !empty($loginuser['roles'])): ?>
+        <!--  START  OF CUSTOMER MENU -->
+
+    <?php if(isset($loginuser['roles']) && !empty($loginuser['roles'])): ?>
     <?php if(in_array($loginuser['roles'], ['User', 'Owner']) || (strpos($loginuser['roles'], 'User') !== false)): ?>
         <li class="nav-item">
             <a href="<?= base_url('index.php/Productcontroller/userproduct');?>" class="nav-link <?php if($this->uri->segment(1) == 'Productcontroller/userproduct') echo 'active' ?>">
@@ -157,11 +178,12 @@
         <?php endif; ?>
         <?php endif; ?>
 
+  <!--  END  OF CUSTOMER MENU -->
 
-        
-<?php if(isset($loginuser['roles']) && !empty($loginuser['roles'])): ?>
-    <?php if(in_array($loginuser['roles'], ['Admin','Owner']) || (strpos($loginuser['roles'], 'Admin') !== false)): ?>
-        <li class="nav-item">
+      <!--  START  OF ADMIN ORDER MENU --> 
+      <?php if ((in_array('Create Order', $access) && (in_array('Admin', $roles) || in_array('Owner', $roles))) || (in_array('Manage Orders', $access) && (in_array('Admin', $roles) || in_array('Owner', $roles)))){ ?>
+           
+     <li class="nav-item">
             <a href="#" class="nav-link toggle-orders">
                 <i class="menu-icon fa fa-clipboard"></i>
                 <span>Orders</span>
@@ -170,14 +192,16 @@
                 </span>
             </a>
             <ul class="treeview-menu" style="display: none;">
-            <?php if ((in_array('Create Order', $loginuser['access']) == 'Create Order' && in_array('Admin', $loginuser['role'])) || in_array($loginuser['roles'], ['Owner']) ) { ?>
+            <?php if (in_array('Create Order', $access) && (in_array('Admin', $roles) || in_array('Owner', $roles))){ ?>
             <li class="nav-item"><a href="<?php echo base_url('index.php/orders/admin_orders') ?>" class="nav-link"><i class="fa fa-edit"></i>  Create Orders</a></li>
             <?php } ?>   
+            <?php if (in_array('Manage Orders', $access) && (in_array('Admin', $roles) || in_array('Owner', $roles))){ ?>
             <li class="nav-item"><a href="<?php echo base_url('index.php/orders/manage_orders') ?>" class="nav-link"><i class="fa fa-th-large"></i>  Manage Orders</a></li>
-            </ul>
+            <?php } ?>  
+        </ul>
         </li>
-        <?php endif; ?>
-        <?php endif; ?>
+    <?php } ?>
+         <!--  END  OF ADMIN ORDER MENU -->    
         
         <?php if (isset($loginuser['roles']) && !empty($loginuser['roles'])): ?>
     <?php 
@@ -210,6 +234,7 @@
 <?php endif; ?>
 
 
+<!--- REPORTS ADMIN MENU START  -->
 
 
         <?php if ((isset($user->image)) || 
@@ -234,6 +259,11 @@
             <li class="nav-item"><a href="<?php echo base_url('index.php/orders/printschedule/'); ?>"  class="nav-link"><i class="fas fa-print"></i>  Production List</a></li>
         </ul>
     </li>
+    <?php endif; ?>
+
+
+    <?php if ((in_array('Export Sales', $access) && (in_array('Admin', $roles) || in_array('Owner', $roles))) || (in_array('Print Invoice', $access) && (in_array('Admin', $roles) || in_array('Owner', $roles)))|| (in_array('Print DO', $access) && (in_array('Admin', $roles) || in_array('Owner', $roles)))){ ?>
+    
 
     <li class="nav-item">
         <a href="#" class="nav-link toggle-orders">
@@ -244,20 +274,27 @@
             </span>
         </a>
         <ul class="treeview-menu" style="display: none;">
+        <?php if (in_array('Export Sales', $access) && (in_array('Admin', $roles) || in_array('Owner', $roles))){ ?>
         <li class="nav-item"><a href="<?php echo base_url('index.php/orders/export_sales/'); ?>"  class="nav-link"><i class="fas fa-print"></i>  Export Sales</a></li>
+        <?php } if (in_array('Print Invoice', $access) && (in_array('Admin', $roles) || in_array('Owner', $roles))){ ?>
         <li class="nav-item"><a href="<?php echo base_url('index.php/orders/print_invoice_bydate/'); ?>"  class="nav-link"><i class="fas fa-print"></i>  Print Invoice</a></li>
+        <?php } if (in_array('Print DO', $access) && (in_array('Admin', $roles) || in_array('Owner', $roles))){ ?>
         <li class="nav-item"><a href="<?php echo base_url('index.php/orders/print_do/'); ?>"  class="nav-link"><i class="fas fa-print"></i>  Print DO</a></li>
-        </ul>
+        <?php } ?>
+    </ul>
     </li>
 
+    <?php } ?>
 
+
+<!--- REPORTS ADMIN MENU END  -->
 <!--       
 
         <li class="nav-item">
                 
         <a href="<//base_url('index.php/Productcontroller');?>" class="nav-link //if($this->uri->segment(1) == 'Productcontroller') echo 'active' ?>"> <i class="menu-icon fa fa-shopping-cart"></i>Products </a>
                       </li> -->
-    <?php endif; ?>
+ 
 
             </ul>
         </div>

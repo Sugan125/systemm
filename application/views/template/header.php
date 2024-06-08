@@ -25,6 +25,8 @@
     <link rel="stylesheet" href="<?= base_url();?>vendors/jqvmap/dist/jqvmap.min.css">
     <link rel="stylesheet" href="<?= base_url();?>assets/css/style.css">
     <link rel="stylesheet" type="text/css" href="<?= base_url();?>public/plugins/pikaday/pikaday.css">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
     
     <!-- <link rel="stylesheet" href="<?= base_url();?>assets/custom/style.css"> -->
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800' rel='stylesheet' type='text/css'>
