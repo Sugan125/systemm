@@ -713,6 +713,7 @@ function getProductData(row_id) {
                 $("#rate_value_" + row_id).val(response.prod_rate)
 
                 if (response.add_on_slice == 0) {
+                  $("#sliced_" + row_id).val("");
                     $("#sliced_" + row_id).prop('hidden', true);
                     $('#msg').html('Slice not available for ' + response.product_id + '-' + response.product_name);
                 } else {
@@ -720,6 +721,7 @@ function getProductData(row_id) {
                 }
 
                 if (response.add_on_seed == 0) {
+                  $("#seed_" + row_id).val("");
                   $("#seed_" + row_id).prop('hidden', true);
                     $('#msg').html('Seed not available for ' + response.product_id + '-' + response.product_name);
                 } else {

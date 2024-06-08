@@ -106,9 +106,15 @@
                           <td>
                             <select class="form-control select_group product" data-row-id="row_<?php echo $x; ?>" id="product_<?php echo $x; ?>" name="product[]" style="width:100%;" required onchange="getProductData(<?php echo $x; ?>)">
                                 <option value=""></option>
-                                <?php foreach ($products as $k => $v): ?>
+                                <?php foreach ($products as $k => $v): 
+                                   if ($v['min_order'] > 1) {
+                                    $qty_pkt = ' (' . $v['min_order'] . ' pcs/pkt)';
+                                    } else {
+                                        $qty_pkt = '';
+                                    }
+                                    ?>
                                     <option value="<?php echo $v['id'] ?>" <?php if($val['product_id'] == $v['id']) { echo "selected='selected'"; } ?>>
-                                        <?php echo $v['product_id'] . ' - ' . $v['product_name']; ?>
+                                        <?php echo $v['product_id'] . ' - ' . $v['product_name'] .$qty_pkt; ?>
                                     </option>
                                 <?php endforeach ?>
                             </select>
@@ -413,6 +419,7 @@ preOrderInput.addEventListener('input', function() {
   var userInteracted = false;  
 
   $(document).ready(function() {
+    setInitialSteps();
 
     function checkSampleChecked() {
         var sampleChecked = false;
@@ -455,7 +462,7 @@ preOrderInput.addEventListener('input', function() {
         var row_id = $(this).data('row-id').replace('row_', ''); // Extract row id from data attribute
         getTotal(row_id);
         subAmount();
-      //  getProductData(row_id);
+       //    getProductData(row_id);
     });
 
     $(document).on('change', '.sliced', function() {
@@ -643,6 +650,27 @@ $('#product_info_table').on('change', 'input[name^="qty"]', function() {
     getTotal(rowId);
 });
 
+
+function setInitialSteps() {
+    $("#product_info_table tbody tr").each(function() {
+        var row_id = $(this).attr('id').split('_')[1];
+        var product_id = $("#product_" + row_id).val();
+        
+        if (product_id) {
+            $.ajax({
+                url: '<?php echo base_url('index.php/orders/getProductValueById'); ?>',
+                type: 'post',
+                data: { product_id: product_id },
+                dataType: 'json',
+                success: function(response) {
+                    var stepValue = response.min_order !== undefined && response.min_order !== null && response.min_order !== "" ? response.min_order : 1;
+                    $("#qty_" + row_id).prop('step', stepValue);
+                }
+            });
+        }
+    });
+}
+
   function removeRow(tr_id)
     {
       $("#product_info_table tbody tr#row_"+tr_id).remove();
@@ -708,6 +736,7 @@ function getProductData(row_id) {
                     $("#service_charge_itemval_" + row_id).val(0);
 
                     if (response.add_on_slice == 0) {
+                        $("#sliced_" + row_id).val("");
                         $("#sliced_" + row_id).prop('hidden', true);
                         $('#msg').html('Slice not available for ' + response.product_id + '-' + response.product_name);
                     } else {
@@ -715,6 +744,7 @@ function getProductData(row_id) {
                     }
 
                     if (response.add_on_seed == 0) {
+                        $("#seed_" + row_id).val("");
                         $("#seed_" + row_id).prop('hidden', true);
                         $('#msg').html('Seed not available for ' + response.product_id + '-' + response.product_name);
                     } else {
@@ -732,6 +762,7 @@ function getProductData(row_id) {
                     $("#rate_value_" + row_id).val(response.prod_rate);
 
                     if (response.add_on_slice == 0) {
+                        $("#sliced_" + row_id).val("");
                         $("#sliced_" + row_id).prop('hidden', true);
                         $('#msg').html('Slice not available for ' + response.product_id + '-' + response.product_name);
                     } else {
@@ -739,6 +770,7 @@ function getProductData(row_id) {
                     }
 
                     if (response.add_on_seed == 0) {
+                        $("#seed_" + row_id).val("");
                         $("#seed_" + row_id).prop('hidden', true);
                         $('#msg').html('Seed not available for ' + response.product_id + '-' + response.product_name);
                     } else {
