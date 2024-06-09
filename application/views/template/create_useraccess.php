@@ -173,14 +173,11 @@
 </div>
 
 <!-- Include jQuery -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
     $(document).ready(function() {
-        $('#userSelect').select2({
-            placeholder: "Select User Name",
-            allowClear: true
-        });
+     
 
         $('#userSelect').change(function() {
             var selectedRole = $(this).find(':selected').data('role');

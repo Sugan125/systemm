@@ -88,7 +88,6 @@
     <script src="<?= base_url();?>vendors/jqvmap/dist/maps/jquery.vmap.world.js"></script>
     <script src="<?= base_url();?>public/plugins/pikaday/pikaday.js"></script>
     <script src="<?= base_url();?>public/plugins/pikaday/moment.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
 <!-- Include Select2 JS -->
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
