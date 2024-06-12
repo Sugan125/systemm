@@ -52,11 +52,18 @@
                
                 <?php foreach ($userss as $row){ 
                     if ($row->access != '' && $row->role != ''){ 
+
+                        if($row->role == 'Owner'){
+                            $rolee = 'Manager';
+                        }
+                        else{
+                            $rolee = $row->role;
+                        }
                         
                         ?>
                     <tr class="odd text-center">
                         <td><?= $row->name; ?></td>
-                        <td><?= $row->role; ?></td>
+                        <td><?= $rolee; ?></td>
                         <td width=55%><?= $row->access; ?></td>
                          <td>
                             <a href="<?= base_url('index.php/Userrolecontroller/updateaccess/' . $row->id) ?>" class="btn btn-sm"><i class="fas fa-edit"></i> </a>
