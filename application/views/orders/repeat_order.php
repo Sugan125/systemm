@@ -828,8 +828,14 @@ function getProductData(row_id) {
     var totall = grossAmount + deliveryCharge;
     var gstRate = 9; 
     var gstAmount = totall * gstRate / 100;
+    gstAmount = parseFloat(gstAmount.toFixed(3)); // Ensure gstAmount is a number with three decimal places
 
-    gstAmount = parseFloat(gstAmount.toFixed(2)); // Ensure gstAmount is a number with two decimal places
+    // Round up if the third decimal place is 5 or greater
+    if (gstAmount * 1000 % 10 >= 5) {
+        gstAmount = Math.ceil(gstAmount * 100) / 100; // Round up to two decimal places
+    } else {
+        gstAmount = Math.floor(gstAmount * 100) / 100; // Round down to two decimal places
+    }
 
     $("#gst").val(gstAmount.toFixed(2));
     $("#gst_rate").val(gstAmount.toFixed(2));
