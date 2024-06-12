@@ -838,11 +838,23 @@ $('#product_info_table').on('change', 'input[name^="qty"]', function() {
     getTotal(rowId);
 });
 
-function removeRow(tr_id)
-  {
-    $("#product_info_table tbody tr#row_"+tr_id).remove();
-    subAmount();
-  }
+function removeRow(tr_id) {
+    $("#product_info_table tbody tr#row_" + tr_id).remove();
+    // Update row IDs for subsequent rows
+    $("#product_info_table tbody tr").each(function(index) {
+        $(this).attr('id', 'row_' + (index + 1));
+        // Update row IDs for inputs within this row
+        $(this).find('select, input').each(function() {
+            var currentId = $(this).attr('id');
+            if (currentId) {
+                var newRowId = currentId.replace(/\d+$/, index + 1);
+                $(this).attr('id', newRowId);
+                $(this).attr('data-row-id', index + 1); // Update data-row-id attribute if needed
+            }
+        });
+    });
+    subAmount(); // Recalculate total amounts after row removal
+}
 
   function getTotal(row = null) {
     if (row) {
