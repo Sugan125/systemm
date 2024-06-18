@@ -245,6 +245,7 @@
     const yearData = <?php echo json_encode($data['year_data']); ?>;
 
     let chart; // Declare the chart variable globally
+    let charts; // Declare the chart variable globally
 
     function prepareChartData(data, type) {
         let labels = [];
@@ -288,6 +289,11 @@
         chart.destroy();
     }
 
+    if (charts) {
+        charts.destroy();
+    }
+
+
     chart = new Chart(ctx, {
         type: 'line',
         data: {
@@ -329,7 +335,7 @@
         }
     });
 
-    chart = new Chart(orderCtx, {
+    charts = new Chart(orderCtx, {
         type: 'line',
         data: {
             labels: labels,
