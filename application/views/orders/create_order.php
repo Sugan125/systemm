@@ -957,14 +957,14 @@ function confirmSubmission(event) {
     // Check if the delivery charge is 20
     if (deliveryCharge === 20) {
         swal({
-            title: "Confirmation",
-            text: "Under $80 MOQ, a $20 fee will be imposed.",
+            title: "Warning",
+            text: "Under $80 MOQ, a $20 fee will be imposed. Please add more items to avoid delivery charges.",
             icon: "info",
-            buttons: ["Cancel", "Continue"],
+            buttons:"Ok",
         }).then((willContinue) => {
             if (willContinue) {
                 // Proceed with the rest of the confirmation
-                confirmOrder();
+                //confirmOrder();
             }
         });
     }  else {

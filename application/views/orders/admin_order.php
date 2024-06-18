@@ -337,18 +337,24 @@
 <script src="<?= base_url();?>public/plugins/pikaday/moment.min.js"></script>
 
 <script type="text/javascript">
- document.addEventListener('DOMContentLoaded', function () {
-    document.querySelector('select[name="user_id"]').addEventListener('change', function () {
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelector('select[name="user_id"]').addEventListener('change', function () {
         var userId = this.value;
+
+      //  alert(userId);
 
         if (userId) {
             fetchUserAddress(userId);
+            // Check if the selected user ID is 2402 or 2403
+            if (userId == 2402 || userId == 2403) {
+                document.getElementById('self_pickup').disabled = false;
+            } 
         } else {
             clearAddressFields();
             updateCreateOrderButton(false);
         }
     });
-});
+    });
 
 
 function fetchUserAddress(userId) {
@@ -594,13 +600,15 @@ $(document).ready(function() {
 
 
     $("#self_pickup").change(function() {
-            if ($(this).is(":checked")) {
-                $("#delivery_charge").prop("disabled", false); // Enable the delivery charge input
-               
-            } else {
-                $("#delivery_charge").prop("disabled", true);  // Disable the delivery charge input
-                
+        if ($(this).is(":checked")) {
+            $("#delivery_charge").prop("disabled", false); // Enable the delivery charge input
+        } else {
+            // Check again if the user ID is 2402 or 2403 to decide whether to disable the input
+            var userId = $('select[name="user_id"]').val();
+            if (userId != 2402 && userId != 2403) {
+                $("#delivery_charge").prop("disabled", true); // Disable the delivery charge input
             }
+        }
           
         });
 
