@@ -131,7 +131,7 @@
        <p><b><?php echo "Memo:".$order_data['memo']; ?></b></p>
        <?php endforeach; ?>
           <p>We appreciate your business.</p>
-          <p> For guaranteed freshness, please consume within 8 hours upon recieving of baked goods.</p>
+          <p> For guaranteed freshness, please consume within 8 hours upon receiving of baked goods.</p>
       </div> 
     
       <div style="box-sizing: border-box;width: 100%;padding-bottom: 10px;">

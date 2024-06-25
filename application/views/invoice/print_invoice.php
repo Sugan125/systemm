@@ -208,7 +208,7 @@ endforeach;
        <?php foreach($order_total as $val => $order_data): ?>
        <p><b><?php echo "Memo:".$order_data['memo']; ?></b></p>
        <?php endforeach; ?>
-          <p>We appreciate your business. For guaranteed freshness, please consume within 8 hours upon recieving of baked goods.</p>
+          <p>We appreciate your business. For guaranteed freshness, please consume within 8 hours upon receiving of baked goods.</p>
        </div>
        <div class="col-sm-12 col-xs-12" style="padding: 0px;">
        <p> </p>

@@ -36,8 +36,19 @@ class Dashboardcontroller extends CI_Controller{
         ");
         $data['year_data'] = $query_year->result();
 
-     
-        $query5 = $this->db->query("SELECT COUNT(bill_no) as count FROM orders WHERE DATE(created_date) = CURDATE()"); 
+        date_default_timezone_set('UTC');
+
+        // Create a DateTime object for the current time
+        $current_date_time = new DateTime('now');
+        
+        // Add 8 hours to adjust to Singapore time (GMT+8)
+        $current_date_time->modify('+8 hours');
+        
+        // Format the datetime
+        $created_date = $current_date_time->format('Y-m-d');
+
+        $query5 = $this->db->query("SELECT COUNT(bill_no) as count FROM orders WHERE DATE(created_date) = '$created_date'");
+  
 
         $record5 = $query5->result();
     
@@ -45,7 +56,7 @@ class Dashboardcontroller extends CI_Controller{
             $data['today_orders'] =  $row5->count;
         }
 
-        $query6= $this->db->query("SELECT sum(net_amount) as total_amt FROM orders WHERE DATE(delivery_date) = CURDATE()"); 
+        $query6= $this->db->query("SELECT sum(net_amount) as total_amt FROM orders WHERE DATE(delivery_date) ='$created_date'"); 
 
         $record6 = $query6->result();
     

@@ -115,9 +115,9 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="stat-widget-one">
-                            <div class="stat-icon dib"><i class="ti-money text-success border-success"></i></div>
+                            <div class="stat-icon dib"><i class="ti-money text-primary border-primary"></i></div>
                             <div class="stat-content dib">
-                            <div class="stat-text">Today sales total</div>
+                            <div class="stat-text">Today delivery sales total</div>
                             <div class="stat-digit">
                                 <?php echo '$' . number_format($total_amt_sales, 3); ?>
                             </div>
@@ -133,7 +133,7 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="stat-widget-one">
-                            <div class="stat-icon dib"><i class="ti-check text-primary border-primary" style="color: #f86c6b !important; border-color: #f86c6b !important;"></i></div>
+                            <div class="stat-icon dib"><i class="ti-check text-success border-success"></i></div>
                             <div class="stat-content dib">
                                 <div class="stat-text">Today Orders</div>
                                 <div class="stat-digit"><?php
@@ -149,7 +149,7 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="stat-widget-one">
-                            <div class="stat-icon dib"><i class="ti-user text-primary border-primary"></i></div>
+                            <div class="stat-icon dib"><i class="ti-shopping-cart text-warning border-warning"></i></div>
                             <div class="stat-content dib">
                                 <div class="stat-text">Total active products</div>
                                 <div class="stat-digit"><?php
@@ -165,7 +165,7 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="stat-widget-one">
-                            <div class="stat-icon dib"><i class="ti-user text-primary border-primary"></i></div>
+                            <div class="stat-icon dib"><i class="ti-user text-danger border-danger"></i></div>
                             <div class="stat-content dib">
                                 <div class="stat-text">Total active customers</div>
                                 <div class="stat-digit"><?php
