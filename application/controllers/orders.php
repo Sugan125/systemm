@@ -1359,4 +1359,66 @@ public function downloadcombined()
         echo "Failed to create ZIP archive";
     }
 }
+
+public function send_invoices_for_today()
+{
+    $today = date('Y-m-d');
+
+    // Fetch orders with today's delivery date
+    $this->db->select('orders.bill_no, user_register.email');
+    $this->db->from('orders');
+    $this->db->join('user_register', 'orders.user_id = user_register.id');
+    $this->db->where('orders.delivery_date', $today);
+    $query = $this->db->get();
+    $orders = $query->result();
+
+   // echo $this->db->last_query();
+   // exit;
+
+    // Email configuration
+    $config['protocol']  = 'smtp';
+    $config['smtp_host'] = 'ssl://smtp.gmail.com';
+    $config['smtp_port'] = '465';
+    $config['smtp_timeout'] = '7';
+    $config['smtp_user']  = 'mailto:suganyaulagu8@gmail.com';
+    $config['smtp_pass'] = 'qqcb mupl eyeb azdo';
+    $config['charset'] = 'utf-8';
+    $config['newline']  = "\r\n";
+    $config['mailtype'] = 'text'; 
+    $config['validation'] = TRUE;
+    $this->email->initialize($config);
+    $from_email = 'suganyaulagu8@gmail.com';
+
+    foreach ($orders as $order) {
+        $bill_no = $order->bill_no;
+        $toemail = $order->email;
+
+        $subject = "Invoice Attached , Invoice No:  $bill_no";
+        
+        date_default_timezone_set('Asia/Singapore');
+        $current_date_time = date('Y-m-d H:i:s');
+
+        $msg = "Hi, Please find the attached invoice for your review and processing: Invoice No:  $bill_no, Date:  $current_date_time
+
+Best regards,
+The Sourdough Factory Team";
+
+        $this->email->from($from_email, 'Sourdough Factory');
+        $this->email->to($toemail);
+        $this->email->subject($subject);
+        $this->email->message($msg);
+        
+        $file_path = 'C:\xampp\htdocs\systemm\files\invoice_' . $bill_no . '.pdf';
+        $this->email->attach($file_path);
+
+        if ($this->email->send()) {
+            // Optionally, log successful email sending
+            log_message('info', "Invoice $bill_no sent to $toemail.");
+        } else {
+            // Optionally, log email sending failure
+            log_message('error', "Failed to send invoice $bill_no to $toemail.");
+        }
+    }
+}
+
 }
