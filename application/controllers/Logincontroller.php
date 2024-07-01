@@ -132,7 +132,7 @@ class Logincontroller extends CI_Controller {
 			//	print_r($userData);
                 $this->session->set_userdata('LoginSession', $userData);
 
-                if ($user = $this->user_model->getNormalUser($status->name)) {
+                if ($user = $this->user_model->getNormalUser($status->name,$status->id)) {
 
 					//echo '<pre>';
 					//print_r($user);

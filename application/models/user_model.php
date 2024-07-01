@@ -166,8 +166,8 @@ function checkUser($name,$password)
   return $this->db->where('email',$email)->get('google_users')->row();
 }
 
-public function getNormalUser($name){
-  return $this->db->where('name',$name)->get('user_register')->row();
+public function getNormalUser($name,$id){
+  return $this->db->where('name',$name)->where('id',$id)->get('user_register')->row();
 }
 
 public function getusername($id){
