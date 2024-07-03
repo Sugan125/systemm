@@ -1359,9 +1359,10 @@ public function downloadcombined()
         echo "Failed to create ZIP archive";
     }
 }
-
 public function send_invoices_for_today()
 {
+    date_default_timezone_set('Asia/Singapore'); // Set timezone to Singapore
+
     $today = date('Y-m-d');
 
     // Fetch orders with today's delivery date
@@ -1372,52 +1373,67 @@ public function send_invoices_for_today()
     $query = $this->db->get();
     $orders = $query->result();
 
-   // echo $this->db->last_query();
-   // exit;
-
     // Email configuration
     $config['protocol']  = 'smtp';
-    $config['smtp_host'] = 'ssl://smtp.gmail.com';
+    $config['smtp_host'] = 'ssl://mail.sourdoughfactory.com.sg';
     $config['smtp_port'] = '465';
-    $config['smtp_timeout'] = '7';
-    $config['smtp_user']  = 'mailto:suganyaulagu8@gmail.com';
-    $config['smtp_pass'] = 'qqcb mupl eyeb azdo';
+    $config['smtp_timeout'] = '180';
+    $config['smtp_user']  = 'finance@sourdoughfactory.com.sg';
+    $config['smtp_pass'] = 'achr3420';
     $config['charset'] = 'utf-8';
     $config['newline']  = "\r\n";
-    $config['mailtype'] = 'text'; 
+    $config['mailtype'] = 'text'; // or html
     $config['validation'] = TRUE;
-    $this->email->initialize($config);
-    $from_email = 'suganyaulagu8@gmail.com';
+
+    $this->load->library('email', $config); // Load email library with configuration
+
+    $from_email = 'finance@sourdoughfactory.com.sg'; // Set from email
 
     foreach ($orders as $order) {
         $bill_no = $order->bill_no;
         $toemail = $order->email;
 
-        $subject = "Invoice Attached , Invoice No:  $bill_no";
-        
+        // Initialize email configuration for each iteration
+        $this->email->initialize($config);
+
+        $subject = "Invoice Attached, Invoice No: $bill_no";
+
         date_default_timezone_set('Asia/Singapore');
         $current_date_time = date('Y-m-d H:i:s');
 
-        $msg = "Hi, Please find the attached invoice for your review and processing: Invoice No:  $bill_no, Date:  $current_date_time
-
-Best regards,
-The Sourdough Factory Team";
+        $msg = "Hi,\n\nPlease find the attached invoice for your review and processing:\nInvoice No: $bill_no\nDate: $current_date_time\n\nBest regards,\nThe Sourdough Factory Team";
 
         $this->email->from($from_email, 'Sourdough Factory');
         $this->email->to($toemail);
         $this->email->subject($subject);
         $this->email->message($msg);
-        
-        $file_path = 'C:\xampp\htdocs\systemm\files\invoice_' . $bill_no . '.pdf';
+
+        // Attach invoice PDF file
+        $file_path = FCPATH . 'files/invoice_' . $bill_no . '.pdf';
         $this->email->attach($file_path);
 
-        if ($this->email->send()) {
-            // Optionally, log successful email sending
-            log_message('info', "Invoice $bill_no sent to $toemail.");
-        } else {
-            // Optionally, log email sending failure
-            log_message('error', "Failed to send invoice $bill_no to $toemail.");
+        // Attempt to send the email with retry mechanism
+        $max_retries = 3; // Maximum number of retries
+        $retry_delay = 30; // Delay in seconds before retrying
+
+        $retry_count = 0;
+        while ($retry_count < $max_retries) {
+            if ($this->email->send()) {
+                // Log successful email sending
+                log_message('info', "Invoice $bill_no sent to $toemail.");
+                break; // Exit loop on successful send
+            } else {
+                // Log email sending failure with error message
+                log_message('error', "Failed to send invoice $bill_no to $toemail: " . $this->email->print_debugger());
+
+                // Increment retry count and wait before retrying
+                $retry_count++;
+                sleep($retry_delay);
+            }
         }
+
+        // Clear attachments and reset for the next iteration
+        $this->email->clear(TRUE);
     }
 }
 
