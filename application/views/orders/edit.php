@@ -368,23 +368,19 @@
 var defaultDate = new Date(today);
 defaultDate.setDate(today.getDate() + 1);
 
-// Set the minimum date for the pre-order input field (1 day from now)
-var minDate = new Date(today);
-minDate.setDate(today.getDate() + 1);
+// Set the minimum date for the pre-order input field (no limit)
+var minDate = null;
 
-// Set the maximum date for the pre-order input field (9 days from now)
-var maxDate = new Date(today);
-maxDate.setDate(today.getDate() + 9);
+// Set the maximum date for the pre-order input field (no limit)
+var maxDate = null;
 
-// Set the min and max attributes for the input field
+// Set the default value for the input field
 var preOrderInput = document.getElementById('pre_order');
-preOrderInput.min = minDate.toISOString().split('T')[0];
-preOrderInput.max = maxDate.toISOString().split('T')[0];
 
 // Check if the value from PHP is valid
 var phpValue = preOrderInput.value;
 var phpDate = new Date(phpValue);
-if (phpValue && !isNaN(phpDate) && phpDate >= minDate && phpDate <= maxDate) {
+if (phpValue && !isNaN(phpDate)) {
     preOrderInput.value = phpValue;
 } else {
     preOrderInput.value = defaultDate.toISOString().split('T')[0];
@@ -393,11 +389,12 @@ if (phpValue && !isNaN(phpDate) && phpDate >= minDate && phpDate <= maxDate) {
 // Disable input field for invalid dates
 preOrderInput.addEventListener('input', function() {
     var selectedDate = new Date(preOrderInput.value);
-    if (isNaN(selectedDate) || selectedDate > maxDate) {
+    if (isNaN(selectedDate)) {
         preOrderInput.value = ''; // Clear input if date is invalid
-        alert('Please select a valid date within the allowed range.');
+        alert('Please select a valid date.');
     }
 });
+
 
   //   $(document).on('change', '.category_name', function() {
   //     var rowId = $(this).data('row-id');

@@ -61,6 +61,7 @@ class Excel_export extends CI_Controller {
 
    $excel_row = 2;
    $prev_name = '__INITIAL_VALUE__'; // Initialize with a unique value
+   $prev_bill_no = '__INITIAL_VALUE__'; // Initialize with a unique value
    $prev_delivery_date = '__INITIAL_DATE__'; // Initialize with a unique date
 
    // Initialize variables for calculating average delivery charge
@@ -135,7 +136,7 @@ class Excel_export extends CI_Controller {
            $gst_amt = $row->gst_amount;
        }
 
-       if (($row->name != $prev_name && $prev_name != '__INITIAL_VALUE__') || ($row->name == $prev_name && $delivery_date != $prev_delivery_date)) {
+       if (($row->name != $prev_name && $prev_name != '__INITIAL_VALUE__') || ($row->name == $prev_name && $delivery_date != $prev_delivery_date) || ($row->bill_no != $prev_bill_no && $prev_bill_no != '__INITIAL_VALUE__')) {
            if ($delivery_charge_count > 0) {
                $object->getActiveSheet()->insertNewRowBefore($excel_row, 1);
                $excel_row++; // Increment the row counter
@@ -292,6 +293,7 @@ class Excel_export extends CI_Controller {
        $record_id = $row->record_id;
 
        $prev_name = $row->name;
+       $prev_bill_no = $row->bill_no;
        $prev_delivery_date = $delivery_date;
 
        // Increment the Excel row counter
@@ -408,6 +410,7 @@ class Excel_export extends CI_Controller {
 
     $excel_row = 2;
     $prev_name = '__INITIAL_VALUE__'; // Initialize with a unique value
+    $prev_bill_no = '__INITIAL_VALUE__'; // Initialize with a unique value
     $prev_delivery_date = '__INITIAL_DATE__'; // Initialize with a unique date
     
     // Initialize variables for calculating average delivery charge
@@ -488,7 +491,7 @@ class Excel_export extends CI_Controller {
             $gst_amt = $row->gst_amount;
         }
 
-        if (($row->name != $prev_name && $prev_name != '__INITIAL_VALUE__') || ($row->name == $prev_name && $delivery_date != $prev_delivery_date)) {
+        if (($row->name != $prev_name && $prev_name != '__INITIAL_VALUE__') || ($row->name == $prev_name && $delivery_date != $prev_delivery_date ) || ($row->bill_no != $prev_bill_no && $prev_bill_no != '__INITIAL_VALUE__')){
             if ($delivery_charge_count > 0) {
                 $object->getActiveSheet()->insertNewRowBefore($excel_row, 1);
                 $excel_row++; // Increment the row counter
@@ -645,6 +648,7 @@ class Excel_export extends CI_Controller {
         $record_id = $row->record_id;
 
         $prev_name = $row->name;
+        $prev_bill_no = $row->bill_no;
         $prev_delivery_date = $delivery_date;
 
         // Increment the Excel row counter
@@ -764,6 +768,7 @@ function actiondaterange()
 
     $excel_row = 2;
     $prev_name = '__INITIAL_VALUE__'; // Initialize with a unique value
+    $prev_bill_no = '__INITIAL_VALUE__'; // Initialize with a unique value
     $prev_delivery_date = '__INITIAL_DATE__'; // Initialize with a unique date
 
     // Initialize variables for calculating average delivery charge
@@ -841,7 +846,7 @@ function actiondaterange()
             $gst_amt = $row->gst_amount;
         }
 
-        if (($row->name != $prev_name && $prev_name != '__INITIAL_VALUE__') || ($row->name == $prev_name && $delivery_date != $prev_delivery_date)) {
+        if (($row->name != $prev_name && $prev_name != '__INITIAL_VALUE__') || ($row->name == $prev_name && $delivery_date != $prev_delivery_date)  || ($row->bill_no != $prev_bill_no && $prev_bill_no != '__INITIAL_VALUE__')) {
             if ($delivery_charge_count > 0) {
                 $object->getActiveSheet()->insertNewRowBefore($excel_row, 1);
                 $excel_row++; // Increment the row counter
@@ -998,6 +1003,7 @@ function actiondaterange()
         $record_id = $row->record_id;
 
         $prev_name = $row->name;
+        $prev_bill_no = $row->bill_no;
         $prev_delivery_date = $delivery_date;
 
         // Increment the Excel row counter

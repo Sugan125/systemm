@@ -1366,6 +1366,8 @@ public function downloadcombined()
 }
 public function send_invoices_for_today()
 {
+    date_default_timezone_set('Asia/Singapore'); // Set timezone to Singapore
+
     $today = date('Y-m-d');
 
     // Fetch orders with today's delivery date
@@ -1379,12 +1381,14 @@ public function send_invoices_for_today()
     // Email configuration
     $config['protocol']  = 'smtp';
     $config['smtp_host'] = 'ssl://mail.sourdoughfactory.com.sg';
+    $config['smtp_host'] = 'ssl://mail.sourdoughfactory.com.sg';
     $config['smtp_port'] = '465';
     $config['smtp_timeout'] = '7';
     $config['smtp_user']  = 'finance@sourdoughfactory.com.sg'; // Remove 'mailto:' prefix
     $config['smtp_pass'] = 'achr3420';
     $config['charset'] = 'utf-8';
     $config['newline']  = "\r\n";
+    $config['mailtype'] = 'text'; // or html
     $config['mailtype'] = 'text'; // or html
     $config['validation'] = TRUE;
 
@@ -1401,22 +1405,23 @@ public function send_invoices_for_today()
 
         $this->email->initialize($config);
 
-        $subject = "Invoice Attached , Invoice No:  $bill_no";
-        
+        // Initialize email configuration for each iteration
+        $this->email->initialize($config);
+
+        $subject = "Invoice Attached, Invoice No: $bill_no";
+
         date_default_timezone_set('Asia/Singapore');
         $current_date_time = date('Y-m-d H:i:s');
 
-        $msg = "Hi, Please find the attached invoice for your review and processing: Invoice No:  $bill_no, Date:  $current_date_time
-
-Best regards,
-The Sourdough Factory Team";
+        $msg = "Hi,\n\nPlease find the attached invoice for your review and processing:\nInvoice No: $bill_no\nDate: $current_date_time\n\nBest regards,\nThe Sourdough Factory Team";
 
         $this->email->from($from_email, 'Sourdough Factory');
         $this->email->to($toemail);
         $this->email->subject($subject);
         $this->email->message($msg);
-        
-        $file_path = 'C:\xampp\htdocs\systemm\files\invoice_' . $bill_no . '.pdf';
+
+        // Attach invoice PDF file
+        $file_path = FCPATH . 'files/invoice_' . $bill_no . '.pdf';
         $this->email->attach($file_path);
 
         if ($this->email->send()) {
