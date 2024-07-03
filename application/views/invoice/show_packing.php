@@ -142,9 +142,16 @@
             $add_on = ($order->slice_type !== NULL && $order->slice_type !== '') ? ' ('.$order->slice_type.')' : ' ('.$order->seed_type.')';
         }
 
+        if($order->sample == 0 || $order->sample == NULL){
+          $sample = "";
+        }
+        else{
+          $sample = "(Sample ".$order->sample.")";
+        }
+
         echo "<tr>
                 <td class='col-1' style='border-right: none;'>{$order->prod_id}</td>
-                <td class='col-2' style='border-left: none; border-right: none;'>{$order->product_name}{$add_on}</td>
+                <td class='col-2' style='border-left: none; border-right: none;'>{$order->product_name}{$add_on} {$sample}</td>
                 <td class='col-3' style='border-left: none; text-align: right;'>{$order->qty} pc</td>
               </tr>";
     endforeach;

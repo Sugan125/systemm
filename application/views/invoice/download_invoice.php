@@ -37,7 +37,8 @@
               ?>  
               <b style="font-size:30px;font-family: Arial;">Tax Invoice </b> <br>
               <b style="font-weight: bold;">Invoice No: </b> <?php echo $order_data['bill_no']; ?><br>
-              <b style="font-weight: bold;">Date and Time: </b> <?php echo empty($order_data['created_date']) ? $order_date : $order_data['created_date']; ?><br>
+              <b style="font-weight: bold;">Invoice Date: </b> <?php echo date('Y-m-d', strtotime($order_data['delivery_date'])); ?><br>
+              <b style="font-weight: bold;">Order Date and Time: </b> <?php echo empty($order_data['created_date']) ? $order_date : $order_data['created_date']; ?><br>
                                   <!-- <b>Bill ID: </b> <br> -->
               <b>Po Ref: </b> <?php echo $po_ref; ?><br>
               <b>D/O No.: </b>  <?php echo $order_data['do_bill_no']; ?><br>
@@ -231,7 +232,20 @@
         <p><img src="data:image/jpeg;base64,<?php echo $base64_image; ?>" height="100" width="auto" style="float: right;"></p><br><br><br><br>
         <p><span style="float: right;">Paynow: T12LL1071J</span></p>
       </div>
-      <div style="padding-bottom: 50px;"></div> 
+      <br><br><br><br><br><br>
+      <div style="box-sizing: border-box;width: 100%;padding-bottom: 10px;">
+      <p> </p>
+      </div>
+      <div style="box-sizing: border-box; float: left; width: 50%; text-align: left;">
+    <p>Goods received in Good Order and Condition</p><br><br><br><br>
+    <hr style="border: 1px solid black; margin: 15px 0;">
+    <p>Company Stamp and Signature</p>
+</div>
+<div style="box-sizing: border-box; float: right; width: 50%; text-align: right;">
+    <p>For Sourdough Factory LLP</p>
+</div>
+<div style="clear: both; padding-bottom: 50px;"></div>
+
     </section>
   </div>
 </body>
