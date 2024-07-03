@@ -585,27 +585,33 @@ public function printpacking()
 }
 
 
+
 public function send_invoice($bill_no,$email)
 	{
-	
+	//$toemail = 'henry@breadhearth.com';
+	//$toemail = 'suganyaulagu8@gmail.com';
 
-		//$bill_no = '24059014';
-		
-		$toemail= $email;
-		//$cc_email = $email;
-		
-		$config['protocol']  = 'smtp';
-		$config['smtp_host'] = 'ssl://smtp.gmail.com';
-		$config['smtp_port'] = '465';
-		$config['smtp_timeout'] = '7';
-		$config['smtp_user']  = 'mailto:suganyaulagu8@gmail.com';
-		$config['smtp_pass'] = 'qqcb mupl eyeb azdo';
-		$config['charset'] = 'utf-8';
-		$config['newline']  = "\r\n";
-		$config['mailtype'] = 'text'; 
-		$config['validation'] = TRUE;
-		$this->email->initialize($config);
-		$from_email = 'suganyaulagu8@gmail.com';
+	//$toemail= 'finance@sourdoughfactory.com.sg';
+	//$cc_email = $email;
+
+	$email = urldecode($email);
+
+	$toemail= $email;
+
+    $config['protocol']  = 'smtp';
+    $config['smtp_host'] = 'ssl://mail.sourdoughfactory.com.sg';
+    $config['smtp_port'] = '465';
+    $config['smtp_timeout'] = '7';
+    $config['smtp_user']  = 'finance@sourdoughfactory.com.sg'; // Remove 'mailto:' prefix
+    $config['smtp_pass'] = 'achr3420';
+    $config['charset'] = 'utf-8';
+    $config['newline']  = "\r\n";
+    $config['mailtype'] = 'text'; // or html
+    $config['validation'] = TRUE;
+
+    $this->load->library('email', $config); // Load email library with configuration
+
+    $from_email = 'finance@sourdoughfactory.com.sg'; // Set from email
 		
 	
 		$this->email->initialize($config);
@@ -630,15 +636,14 @@ The Sourdough Factory Team";
 						//$this->email->cc($cc_email); 
 						$this->email->subject($subject);
 						$this->email->message($msg);
-					
-					//	$filepdath = FCPATH . 'files/' . $filename;
+
+						$filepdath = FCPATH . 'files/invoice_' . $bill_no . '.pdf';
 						$file_path = 'C:\xampp\htdocs\systemm\files\invoice_' . $bill_no . '.pdf';
-						$this->email->attach($file_path);
+						$this->email->attach($filepdath);
 						$this->email->send();
 
 
 	}
-
 
 	public function repeat_order($id)
 	{
@@ -1359,7 +1364,6 @@ public function downloadcombined()
         echo "Failed to create ZIP archive";
     }
 }
-
 public function send_invoices_for_today()
 {
     $today = date('Y-m-d');
@@ -1372,26 +1376,30 @@ public function send_invoices_for_today()
     $query = $this->db->get();
     $orders = $query->result();
 
-   // echo $this->db->last_query();
-   // exit;
-
     // Email configuration
     $config['protocol']  = 'smtp';
-    $config['smtp_host'] = 'ssl://smtp.gmail.com';
+    $config['smtp_host'] = 'ssl://mail.sourdoughfactory.com.sg';
     $config['smtp_port'] = '465';
     $config['smtp_timeout'] = '7';
-    $config['smtp_user']  = 'mailto:suganyaulagu8@gmail.com';
-    $config['smtp_pass'] = 'qqcb mupl eyeb azdo';
+    $config['smtp_user']  = 'finance@sourdoughfactory.com.sg'; // Remove 'mailto:' prefix
+    $config['smtp_pass'] = 'achr3420';
     $config['charset'] = 'utf-8';
     $config['newline']  = "\r\n";
-    $config['mailtype'] = 'text'; 
+    $config['mailtype'] = 'text'; // or html
     $config['validation'] = TRUE;
-    $this->email->initialize($config);
-    $from_email = 'suganyaulagu8@gmail.com';
+
+    $this->load->library('email', $config); // Load email library with configuration
+
+    $from_email = 'finance@sourdoughfactory.com.sg'; // Set from email
+		
 
     foreach ($orders as $order) {
         $bill_no = $order->bill_no;
-        $toemail = $order->email;
+       // $toemail = $order->email;
+
+       $toemail = 'suganyaulagu8@gmail.com';
+
+        $this->email->initialize($config);
 
         $subject = "Invoice Attached , Invoice No:  $bill_no";
         
@@ -1418,7 +1426,11 @@ The Sourdough Factory Team";
             // Optionally, log email sending failure
             log_message('error', "Failed to send invoice $bill_no to $toemail.");
         }
+
+        // Clear attachments for the next iteration
+        $this->email->clear(TRUE);
     }
 }
+
 
 }
