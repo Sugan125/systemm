@@ -85,18 +85,20 @@
        if (in_array('Dashboard', $access) && (in_array('Admin', $roles) || in_array('Owner', $roles))){ 
                
         ?>
-            <form method="post" action="<?php echo base_url(); ?>index.php/Dashboardcontroller/action">
+           
+
+            <a href="<?php echo base_url('index.php/Excel_export/sales_summary') ?>">
    <div class="col-sm-6 col-lg-3">
     <div class="card text-white bg-flat-color-4">
         <div class="card-body pb-0" style="padding:0px!important;">
        
         
-                <button type="submit" name="export" class="btn btn-block btn-danger" style="padding:17px; text-align:left;"><b>Sales Item Summary <?php echo strtoupper(date('F')); ?></b></button>
+                <button type="submit" name="export" class="btn btn-block btn-danger" style="padding:17px; text-align:left;"><b>Sales Item Summary </b></button>
         
         </div>
     </div>
 </div>
-</form>
+       </a>
 
 
             <!--/.col-->

@@ -108,6 +108,16 @@ class Dashboardcontroller extends CI_Controller{
     
     function action()
 {
+
+      // Get the selected month from the form
+    $selected_month = $this->input->post('sales_month'); // format: YYYY-MM
+
+      // Calculate first and last day of the selected month
+    $first_day_of_month = date('Y-m-01', strtotime($selected_month));
+    $last_day_of_month = date('Y-m-t', strtotime($selected_month));
+
+    $formatted_month = date('F_Y', strtotime($selected_month)); // Format to "Month_Year"
+
     $this->load->model("excel_export_model");
     $this->load->library("excel");
     $object = new PHPExcel();
@@ -266,7 +276,8 @@ class Dashboardcontroller extends CI_Controller{
     $excel_row++;
 
     // Fetch data from model
-    $employee_data = $this->excel_export_model->fetch_data_itemsed();
+    $employee_data = $this->excel_export_model->fetch_data_itemsed($first_day_of_month, $last_day_of_month);
+
 
     // Group data by product ID and product name
     $grouped_data = [];
@@ -363,8 +374,11 @@ class Dashboardcontroller extends CI_Controller{
      
          $object_writer = PHPExcel_IOFactory::createWriter($object, 'Excel5');
          header('Content-Type: application/vnd.ms-excel');
-         header('Content-Disposition: attachment;filename="SALE-ITEM.xls"');
+         header('Content-Disposition: attachment;filename="Sales_summary_' . $formatted_month . '.xls"');
+         header('Cache-Control: max-age=0');
          $object_writer->save('php://output');
+
+         
      }
      
      
