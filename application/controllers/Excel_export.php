@@ -83,7 +83,7 @@ class Excel_export extends CI_Controller {
    foreach ($employee_data as $row) {
        
        $schedule_date = strtotime($row->created_date);
-       $date = date('d-m-Y', $schedule_date);
+       $date = date('d-m-Y', strtotime($row->delivery_date));
        $rate = $row->rate;
 
        $inc_tax = $rate * 1.09;
@@ -436,7 +436,7 @@ class Excel_export extends CI_Controller {
 //       print_r($row);
         
         $schedule_date = strtotime($row->created_date);
-        $date = date('d-m-Y', $schedule_date);
+        $date = date('d-m-Y', strtotime($row->delivery_date));
         $rate = $row->rate;
 
         $inc_tax = $rate * 1.09;
@@ -791,7 +791,7 @@ function actiondaterange()
 
 
         $schedule_date = strtotime($row->created_date);
-        $date = date('d-m-Y', $schedule_date);
+        $date = date('d-m-Y', strtotime($row->delivery_date));
         $rate = $row->rate;
 
         $inc_tax = $rate * 1.09;
