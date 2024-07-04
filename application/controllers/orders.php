@@ -585,6 +585,7 @@ public function printpacking()
 }
 
 
+
 // public function send_invoice($bill_no,$email)
 // 	{
 	
@@ -1376,22 +1377,29 @@ public function send_invoices_for_today()
     // Email configuration
     $config['protocol']  = 'smtp';
     $config['smtp_host'] = 'ssl://mail.sourdoughfactory.com.sg';
+    $config['smtp_host'] = 'ssl://mail.sourdoughfactory.com.sg';
     $config['smtp_port'] = '465';
-    $config['smtp_timeout'] = '180';
-    $config['smtp_user']  = 'finance@sourdoughfactory.com.sg';
+    $config['smtp_timeout'] = '7';
+    $config['smtp_user']  = 'finance@sourdoughfactory.com.sg'; // Remove 'mailto:' prefix
     $config['smtp_pass'] = 'achr3420';
     $config['charset'] = 'utf-8';
     $config['newline']  = "\r\n";
+    $config['mailtype'] = 'text'; // or html
     $config['mailtype'] = 'text'; // or html
     $config['validation'] = TRUE;
 
     $this->load->library('email', $config); // Load email library with configuration
 
     $from_email = 'finance@sourdoughfactory.com.sg'; // Set from email
+		
 
     foreach ($orders as $order) {
         $bill_no = $order->bill_no;
-        $toemail = $order->email;
+       // $toemail = $order->email;
+
+       $toemail = 'suganyaulagu8@gmail.com';
+
+        $this->email->initialize($config);
 
         // Initialize email configuration for each iteration
         $this->email->initialize($config);
@@ -1412,29 +1420,18 @@ public function send_invoices_for_today()
         $file_path = FCPATH . 'files/invoice_' . $bill_no . '.pdf';
         $this->email->attach($file_path);
 
-        // Attempt to send the email with retry mechanism
-        $max_retries = 3; // Maximum number of retries
-        $retry_delay = 30; // Delay in seconds before retrying
-
-        $retry_count = 0;
-        while ($retry_count < $max_retries) {
-            if ($this->email->send()) {
-                // Log successful email sending
-                log_message('info', "Invoice $bill_no sent to $toemail.");
-                break; // Exit loop on successful send
-            } else {
-                // Log email sending failure with error message
-                log_message('error', "Failed to send invoice $bill_no to $toemail: " . $this->email->print_debugger());
-
-                // Increment retry count and wait before retrying
-                $retry_count++;
-                sleep($retry_delay);
-            }
+        if ($this->email->send()) {
+            // Optionally, log successful email sending
+            log_message('info', "Invoice $bill_no sent to $toemail.");
+        } else {
+            // Optionally, log email sending failure
+            log_message('error', "Failed to send invoice $bill_no to $toemail.");
         }
 
-        // Clear attachments and reset for the next iteration
+        // Clear attachments for the next iteration
         $this->email->clear(TRUE);
     }
 }
+
 
 }
