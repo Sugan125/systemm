@@ -52,7 +52,7 @@ class orders extends CI_Controller {
 					$order_id = $order_id['order_id'];
 					
 					$this->download($order_id); 
-					$this->send_invoice($bill_no,$email); 
+					//$this->send_invoice($bill_no,$email); 
 					//exit;
 					$this->session->set_flashdata('success', 'Order Placed');
         			redirect('orders', 'refresh');
@@ -89,7 +89,7 @@ class orders extends CI_Controller {
 					$order_id = $order_id['order_id'];
 					
 					$this->download($order_id); 
-					$this->send_invoice($bill_no,$email); 
+					//$this->send_invoice($bill_no,$email); 
 					//exit;
 					$this->session->set_flashdata('success', 'Order Placed');
         			redirect('orders', 'refresh');
@@ -162,7 +162,7 @@ class orders extends CI_Controller {
 					
 			$this->download($order_id); 
 			
-			$this->send_invoice($bill_no,$email); 
+			//$this->send_invoice($bill_no,$email); 
 
 
 			$this->session->set_flashdata('success', 'Order Updated Successfully');
@@ -585,59 +585,59 @@ public function printpacking()
 }
 
 
-public function send_invoice($bill_no,$email)
-	{
+// public function send_invoice($bill_no,$email)
+// 	{
 	
 
-		//$bill_no = '24059014';
+// 		//$bill_no = '24059014';
 		
-		$toemail= $email;
-		//$cc_email = $email;
+// 		$toemail= $email;
+// 		//$cc_email = $email;
 		
-		$config['protocol']  = 'smtp';
-		$config['smtp_host'] = 'ssl://smtp.gmail.com';
-		$config['smtp_port'] = '465';
-		$config['smtp_timeout'] = '7';
-		$config['smtp_user']  = 'mailto:suganyaulagu8@gmail.com';
-		$config['smtp_pass'] = 'qqcb mupl eyeb azdo';
-		$config['charset'] = 'utf-8';
-		$config['newline']  = "\r\n";
-		$config['mailtype'] = 'text'; 
-		$config['validation'] = TRUE;
-		$this->email->initialize($config);
-		$from_email = 'suganyaulagu8@gmail.com';
+// 		$config['protocol']  = 'smtp';
+// 		$config['smtp_host'] = 'ssl://smtp.gmail.com';
+// 		$config['smtp_port'] = '465';
+// 		$config['smtp_timeout'] = '7';
+// 		$config['smtp_user']  = 'mailto:suganyaulagu8@gmail.com';
+// 		$config['smtp_pass'] = 'qqcb mupl eyeb azdo';
+// 		$config['charset'] = 'utf-8';
+// 		$config['newline']  = "\r\n";
+// 		$config['mailtype'] = 'text'; 
+// 		$config['validation'] = TRUE;
+// 		$this->email->initialize($config);
+// 		$from_email = 'suganyaulagu8@gmail.com';
 		
 	
-		$this->email->initialize($config);
+// 		$this->email->initialize($config);
 	
 
-		$subject = "Invoice Attached , Invoice No:  $bill_no";
+// 		$subject = "Invoice Attached , Invoice No:  $bill_no";
 		
-		date_default_timezone_set('Asia/Singapore');
+// 		date_default_timezone_set('Asia/Singapore');
 
 
-		$current_date_time = date('Y-m-d H:i:s');
+// 		$current_date_time = date('Y-m-d H:i:s');
 
-		$msg = "Hi, Please find the attached invoice for your review and processing: Invoice No:  $bill_no, Date:  $current_date_time
+// 		$msg = "Hi, Please find the attached invoice for your review and processing: Invoice No:  $bill_no, Date:  $current_date_time
 
 
-Best regards,
-The Sourdough Factory Team";
+// Best regards,
+// The Sourdough Factory Team";
 
-						$flashdataMessage = 'Please check your email for new password!';
-						$this->email->from($from_email, 'Sourdough Factory');
-						$this->email->to($toemail);
-						//$this->email->cc($cc_email); 
-						$this->email->subject($subject);
-						$this->email->message($msg);
+// 						$flashdataMessage = 'Please check your email for new password!';
+// 						$this->email->from($from_email, 'Sourdough Factory');
+// 						$this->email->to($toemail);
+// 						//$this->email->cc($cc_email); 
+// 						$this->email->subject($subject);
+// 						$this->email->message($msg);
 					
-					//	$filepdath = FCPATH . 'files/' . $filename;
-						$file_path = 'C:\xampp\htdocs\systemm\files\invoice_' . $bill_no . '.pdf';
-						$this->email->attach($file_path);
-						$this->email->send();
+// 					//	$filepdath = FCPATH . 'files/' . $filename;
+// 						$file_path = 'C:\xampp\htdocs\systemm\files\invoice_' . $bill_no . '.pdf';
+// 						$this->email->attach($file_path);
+// 						$this->email->send();
 
 
-	}
+// 	}
 
 
 	public function repeat_order($id)
@@ -660,7 +660,7 @@ The Sourdough Factory Team";
 					$order_id = $update['order_id'];
 					
 					$this->download($order_id); 
-					$this->send_invoice($bill_no,$email); 
+					//$this->send_invoice($bill_no,$email); 
 
 			$this->session->set_flashdata('success', 'Order Placed Successfully');
 			redirect('orders', 'refresh');
@@ -745,7 +745,7 @@ The Sourdough Factory Team";
 				$order_id = $order_id['order_id'];
 				
 				$this->download($order_id); 
-				$this->send_invoice($bill_no,$email); 
+				//$this->send_invoice($bill_no,$email); 
 				//exit;
 				$this->session->set_flashdata('success', 'Order Placed Successfully');
 				redirect('orders/manage_orders', 'refresh');

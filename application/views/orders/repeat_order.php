@@ -481,7 +481,7 @@ function confirmOrder() {
       // Show SweetAlert confirmation dialog
       swal({
           title: "Are you sure want to repeat this order?",
-          text: "An invoice will be sent to your Finance department",
+          text: "An E-invoice will be sent to your Finance on the delivery day. A hard copy invoice will also be provided.",
           icon: "warning",
           buttons: {
               cancel: {
