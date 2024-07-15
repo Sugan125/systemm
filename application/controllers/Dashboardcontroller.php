@@ -568,97 +568,123 @@ function action_category()
         }
         $grouped_data[$key][] = $row;
     }
-    
-    // Generate the report
-    foreach ($grouped_data as $key => $rows) {
-        list($prod_id, $prod_category, $product_name) = explode('|', $key);
-    
-        $total_quantity = 0;
-        $total_amount = 0;
+// Initialize variables to track totals
+$current_category = null;
+$total_category_quantity = 0;
+$total_category_amount = 0;
+$first_category = true;
 
-        // Add a heading row for each product
+foreach ($grouped_data as $key => $rows) {
+    list($prod_id, $prod_category, $product_name) = explode('|', $key);
+
+    // Check if category has changed
+    if ($prod_category !== $current_category) {
+        // Display totals for the previous category, if it exists
+        if (!$first_category) {
+            $excel_row++;
+            $object->getActiveSheet()->setCellValueByColumnAndRow(4, $excel_row, 'Total for ' . $current_category . ':');
+            $object->getActiveSheet()->setCellValueByColumnAndRow(5, $excel_row, $total_category_quantity);
+            $object->getActiveSheet()->setCellValueByColumnAndRow(6, $excel_row, '$' . number_format($total_category_amount, 2));
+
+            // Adjust alignment
+            $object->getActiveSheet()->getStyleByColumnAndRow(4, $excel_row)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+            $object->getActiveSheet()->getStyleByColumnAndRow(5, $excel_row)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+            $object->getActiveSheet()->getStyleByColumnAndRow(6, $excel_row)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+
+            // Reset category totals
+            $total_category_quantity = 0;
+            $total_category_amount = 0;
+        } else {
+            $first_category = false;
+        }
+
+        // Update current category
+        $current_category = $prod_category;
+
+        // Add a heading row for the new category
+        $excel_row++;
         $object->getActiveSheet()->setCellValueByColumnAndRow(1, $excel_row, $prod_category);
+        $object->getActiveSheet()->getStyleByColumnAndRow(1, $excel_row)->applyFromArray($header_style);
+        $excel_row++;
+        $excel_row++;
+    }
+
+    // Group by company name within each product grouping
+    $company_grouped_data = [];
+    foreach ($rows as $row) {
+        if (!isset($company_grouped_data[$row->company_name])) {
+            $company_grouped_data[$row->company_name] = [
+                'quantity' => 0,
+                'amount' => 0
+            ];
+        }
+        $company_grouped_data[$row->company_name]['quantity'] += $row->qty;
+        $company_grouped_data[$row->company_name]['amount'] += $row->rate * $row->qty;
+    }
+
+    foreach ($company_grouped_data as $company_name => $data) {
+        $quantity = $data['quantity'];
+        $amount = $data['amount'];
+
+        // Set cell values and adjust alignment
         $object->getActiveSheet()->setCellValueByColumnAndRow(2, $excel_row, $prod_id);
         $object->getActiveSheet()->setCellValueByColumnAndRow(3, $excel_row, $product_name);
+        $object->getActiveSheet()->setCellValueByColumnAndRow(4, $excel_row, $company_name);
+        $object->getActiveSheet()->setCellValueByColumnAndRow(5, $excel_row, $quantity);
+        $object->getActiveSheet()->setCellValueByColumnAndRow(6, $excel_row, '$' . number_format($amount, 2));
+
+        // Adjust alignment for specific columns
+        $object->getActiveSheet()->getStyleByColumnAndRow(4, $excel_row)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+        $object->getActiveSheet()->getStyleByColumnAndRow(5, $excel_row)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+        $object->getActiveSheet()->getStyleByColumnAndRow(6, $excel_row)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+
+        // Increment category totals
+        $total_category_quantity += $quantity;
+        $total_category_amount += $amount;
+
+        // Move to the next row
         $excel_row++;
-        $excel_row++;
+    }
+}
 
-        // Group by company name within each product grouping
-        $company_grouped_data = [];
-        foreach ($rows as $row) {
-            if (!isset($company_grouped_data[$row->company_name])) {
-                $company_grouped_data[$row->company_name] = [
-                    'quantity' => 0,
-                    'amount' => 0
-                ];
-            }
-            $company_grouped_data[$row->company_name]['quantity'] += $row->qty;
-            $company_grouped_data[$row->company_name]['amount'] += $row->rate * $row->qty;
-        }
+// Display totals for the last category
+if ($current_category !== null) {
+    $excel_row++;
+    $object->getActiveSheet()->setCellValueByColumnAndRow(4, $excel_row, 'Total for ' . $current_category . ':');
+    $object->getActiveSheet()->setCellValueByColumnAndRow(5, $excel_row, $total_category_quantity);
+    $object->getActiveSheet()->setCellValueByColumnAndRow(6, $excel_row, '$' . number_format($total_category_amount, 2));
 
-        foreach ($company_grouped_data as $company_name => $data) {
-            $quantity = $data['quantity'];
-            $amount = $data['amount'];
+    // Adjust alignment
+    $object->getActiveSheet()->getStyleByColumnAndRow(4, $excel_row)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+    $object->getActiveSheet()->getStyleByColumnAndRow(5, $excel_row)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+    $object->getActiveSheet()->getStyleByColumnAndRow(6, $excel_row)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+}
 
-            // Set cell values and adjust alignment
-            $object->getActiveSheet()->setCellValueByColumnAndRow(4, $excel_row, $company_name);
-            $object->getActiveSheet()->setCellValueByColumnAndRow(5, $excel_row, $quantity);
-            $object->getActiveSheet()->setCellValueByColumnAndRow(6, $excel_row, '$' . number_format($amount, 2));
+// Apply white border to all cells
+$highest_row = $object->getActiveSheet()->getHighestRow();
+$highest_column = 'G'; // Since we are starting from column B, highest column would be G
 
-            // Adjust alignment for specific columns
-            $object->getActiveSheet()->getStyleByColumnAndRow(4, $excel_row)
-                ->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
-            $object->getActiveSheet()->getStyleByColumnAndRow(5, $excel_row)
-                ->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
-            $object->getActiveSheet()->getStyleByColumnAndRow(6, $excel_row)
-                ->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+// Apply white border before the content
+$object->getActiveSheet()->getStyle("B1:$highest_column$highest_row")->applyFromArray($white_border_style);
 
-            // Increment total quantities and amounts
-            $total_quantity += $quantity;
-            $total_amount += $amount;
+// Add one empty row before the outer border
+$excel_row++;
 
-            // Move to the next row
-            $excel_row++;
-        }
-         // Add a total row for each product
-         $excel_row++;
-         $object->getActiveSheet()->setCellValueByColumnAndRow(4, $excel_row, $product_name . ' Total:');
-         $object->getActiveSheet()->setCellValueByColumnAndRow(5, $excel_row, $total_quantity);
-         $object->getActiveSheet()->setCellValueByColumnAndRow(6, $excel_row, '$' . number_format($total_amount, 2));
- 
-       $object->getActiveSheet()->getStyleByColumnAndRow(4, $excel_row)
-                 ->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
-             $object->getActiveSheet()->getStyleByColumnAndRow(5, $excel_row)
-                 ->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
-             $object->getActiveSheet()->getStyleByColumnAndRow(6, $excel_row)
-                 ->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
-                 
-         // Add an empty row after the total
-         $excel_row += 2;
-     }
-         // Apply white border to all cells
-         $highest_row = $object->getActiveSheet()->getHighestRow();
-         $highest_column = 'G'; // Since we are starting from column B, highest column would be F
-     
-         // Apply white border before the content
-         $object->getActiveSheet()->getStyle("B1:$highest_column$highest_row")->applyFromArray($white_border_style);
-     
-         // Add one empty row before the outer border
-         $excel_row++;
-     
-         // Apply outer border to the entire content
-         $object->getActiveSheet()->getStyle("B1:$highest_column$highest_row")->applyFromArray($outer_border_style);
-     
-         // Auto size columns to fit the content
-         foreach (range('B', $highest_column) as $columnID) {
-             $object->getActiveSheet()->getColumnDimension($columnID)->setAutoSize(true);
-         }
-     
-         $object_writer = PHPExcel_IOFactory::createWriter($object, 'Excel5');
-         header('Content-Type: application/vnd.ms-excel');
-         header('Content-Disposition: attachment;filename="Sales_summary_' . $formatted_month . '.xls"');
-         header('Cache-Control: max-age=0');
-         $object_writer->save('php://output');
+// Apply outer border to the entire content
+$object->getActiveSheet()->getStyle("B1:$highest_column$highest_row")->applyFromArray($outer_border_style);
+
+// Auto size columns to fit the content
+foreach (range('B', $highest_column) as $columnID) {
+    $object->getActiveSheet()->getColumnDimension($columnID)->setAutoSize(true);
+}
+
+// Output the Excel file
+$object_writer = PHPExcel_IOFactory::createWriter($object, 'Excel5');
+header('Content-Type: application/vnd.ms-excel');
+header('Content-Disposition: attachment;filename="Sales_summary_' . $formatted_month . '.xls"');
+header('Cache-Control: max-age=0');
+$object_writer->save('php://output');
+
 
          
      }
