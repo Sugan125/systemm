@@ -207,7 +207,7 @@ class Dashboardcontroller extends CI_Controller{
     $excel_row += 2;
     $object->getActiveSheet()->mergeCells('B' . $excel_row . ':F' . $excel_row);
     $current_month = date('F Y'); // Example: June 2024
-    $object->getActiveSheet()->setCellValue('B' . $excel_row, $current_month);
+    $object->getActiveSheet()->setCellValue('B' . $excel_row, $formatted_month);
     $object->getActiveSheet()->getStyle('B' . $excel_row)->applyFromArray($month_year_style);
 
     // Adjust row after headers
@@ -485,7 +485,7 @@ function action_category()
     $excel_row += 2;
     $object->getActiveSheet()->mergeCells('B' . $excel_row . ':G' . $excel_row);
     $current_month = date('F Y'); // Example: June 2024
-    $object->getActiveSheet()->setCellValue('B' . $excel_row, $current_month);
+    $object->getActiveSheet()->setCellValue('B' . $excel_row, $formatted_month);
     $object->getActiveSheet()->getStyle('B' . $excel_row)->applyFromArray($month_year_style);
 
     // Adjust row after headers
