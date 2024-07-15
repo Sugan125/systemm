@@ -812,34 +812,10 @@ public function admin_create()
 			$order_date = $pre_order;
 		}
 
-	if (date('w', strtotime($order_date)) == 0) {
-		$order_date = date('Y-m-d', strtotime($order_date . ' +1 day'));
-	}
-
-	// Check if a sample already exists for the same delivery date
-	$sample_check_sql = "SELECT max(sample) as sample FROM order_items WHERE delivery_date = ? ";
-	$sample_check_query = $this->db->query($sample_check_sql, array($order_date));
-
-	
-
-	if ($sample_check_query) {
-		// Fetch the result row
-		$result_row = $sample_check_query->row();
-		
-		if ($result_row) {
-			// Retrieve the existing sample value
-			$existing_sample = $result_row->sample;
-			//echo "Existing Sample: " . $existing_sample;
-			
-			// Increment the sample value
-			$sample = $existing_sample + 1;
-			
-		
-			//echo "New Sample: " . $sample;
-			//exit;  // Exit to stop further execution for debugging
-		} 
-	}
-
+	// 	if (date('w', strtotime($order_date)) == 0) {
+	// 	// Adjust order_date to the following Monday
+	// 	$order_date = date('Y-m-d', strtotime($order_date . ' +1 day'));
+	// }
 	date_default_timezone_set('UTC');
 
 		// Create a DateTime object for the current time
@@ -892,6 +868,12 @@ public function admin_create()
 			$rate = $rate_value;
 		} else {
 			$rate = 0; 
+		}
+		if($rate == 0){
+			$sample = 1;
+		}
+		else{
+			$sample = 0;
 		}
         $category = !empty($this->input->post('category')[$x]) ? $this->input->post('category')[$x] : null;
         $product_id = !empty($this->input->post('product')[$x]) ? $this->input->post('product')[$x] : null;
