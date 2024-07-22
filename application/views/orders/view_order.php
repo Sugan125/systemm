@@ -145,7 +145,15 @@
       <!-- col-md-12 -->
     </div>
     <!-- /.row -->
-    
+    <div class="col-md-12">
+           
+           <div class="col-sm-6 d-flex justify-content-start">
+               <?php $total_rowss = $total_rows; echo "Showing 1 to 10 of ".$total_rowss." entries"; ?>
+           </div>
+           <div class="col-sm-6 d-flex justify-content-end">
+               <?php echo $this->pagination->create_links(); ?>
+           </div>
+       </div>
 
   </section>
   <!-- /.content -->

@@ -72,4 +72,17 @@ public function fetch_data_by_date_range($start_date, $end_date)
         
         return $query->result();
     }
+
+    function fetch_date_range_category($start_date, $end_date) {
+        $sql = "SELECT ord.*, orrr.*, uss.*, prod.prod_category as prod_category, prod.product_id as prod_id, prod.product_name as product_name, orrr.created_date as created_date
+            FROM orders ord 
+            JOIN order_items orrr ON ord.id = orrr.order_id 
+            JOIN user_register uss ON ord.user_id = uss.id 
+            JOIN products prod ON orrr.product_id = prod.id
+            WHERE DATE(ord.created_date) BETWEEN '$start_date' AND '$end_date'
+            ORDER BY prod.prod_category"; // Order by product_category
+        $query = $this->db->query($sql);
+
+        return $query->result();
+    }
 }

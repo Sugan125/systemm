@@ -19,26 +19,63 @@ class orders extends CI_Controller {
 		
     }
 
-     public function index() {
-
+    public function index() {
         $data['title'] = 'orders';
-
-		$loginuser = $this->session->userdata('LoginSession');
-	
-		$data['user_id'] = $loginuser['id'];
-
-		$data['orders'] = $this->order_model->getorderuser($data['user_id']);
-
+    
+        $loginuser = $this->session->userdata('LoginSession');
+        $data['user_id'] = $loginuser['id'];
+    
+        // Pagination configuration
+        $config['base_url'] = site_url('orders/index');
+        $config['total_rows'] = $this->order_model->count_user_orders($data['user_id']); // Adjust this function in your model to count orders for the specific user
+        
+        $data['total_rows'] = $this->order_model->count_user_orders($data['user_id']); // Adjust this function in your model to count orders for the specific user
+       
+      
+        $config['per_page'] = 10;
+        $config['uri_segment'] = 3;
+        $config['use_page_numbers'] = TRUE;
+    
+        $config['full_tag_open'] = '<ul class="pagination">';
+        $config['full_tag_close'] = '</ul>';
+        $config['first_link'] = 'First';
+        $config['last_link'] = 'Last';
+        $config['first_tag_open'] = '<li class="page-item"><span class="page-link">';
+        $config['first_tag_close'] = '</span></li>';
+        $config['prev_link'] = 'Previous';
+        $config['prev_tag_open'] = '<li class="page-item"><span class="page-link">';
+        $config['prev_tag_close'] = '</span></li>';
+        $config['next_link'] = 'Next';
+        $config['next_tag_open'] = '<li class="page-item"><span class="page-link">';
+        $config['next_tag_close'] = '</span></li>';
+        $config['last_tag_open'] = '<li class="page-item"><span class="page-link">';
+        $config['last_tag_close'] = '</span></li>';
+        $config['cur_tag_open'] = '<li class="page-item active"><span class="page-link">';
+        $config['cur_tag_close'] = '</span></li>';
+        $config['num_tag_open'] = '<li class="page-item"><span class="page-link">';
+        $config['num_tag_close'] = '</span></li>';
+    
+        $page = ($this->uri->segment(3)) ? $this->uri->segment(3) : 1; // Set the default page to 1
+        $offset = ($page - 1) * $config['per_page'];
+    
+        $this->pagination->initialize($config);
+    
+        // Fetch the paginated results
+        $data['orders'] = $this->order_model->get_user_orders($data['user_id'], $config['per_page'], $offset); // Adjust this function in your model to fetch orders for the specific user with limit and offset
+    
+        // Pagination links
+        $data['pagination'] = $this->pagination->create_links();
+    
+        // Load views
         $this->load->view('template/header.php', $data);
         $user = $this->session->userdata('user_register');
         $users = $this->session->userdata('normal_user');
         $loginuser = $this->session->userdata('LoginSession');
-        //var_dump($loginuser);
-        $this->load->view('template/sidebar.php', array('user' => $user, 'users' => $users, 'data' => $data,'loginuser' => $loginuser));
+        $this->load->view('template/sidebar.php', array('user' => $user, 'users' => $users, 'data' => $data, 'loginuser' => $loginuser));
         $this->load->view('orders/view_order.php', $data);
         $this->load->view('template/footer.php');
     }
-
+    
 		public function create() {
 			$data['title'] = 'Orders';
 		

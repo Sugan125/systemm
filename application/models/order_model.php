@@ -1070,6 +1070,18 @@ public function getcategoryfrozen(){
 	return $query->result_array();
 }
 
+public function count_user_orders($user_id) {
+    $this->db->where('user_id', $user_id);
+    return $this->db->count_all_results('orders');
+}
+
+public function get_user_orders($user_id, $limit, $offset) {
+    $this->db->where('user_id', $user_id);
+    $this->db->limit($limit, $offset);
+    $query = $this->db->get('orders');
+    return $query->result();
+}
+
 
 
 }
