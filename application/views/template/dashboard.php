@@ -1,22 +1,41 @@
 
-<div class="breadcrumbs">
-            <div class="col-sm-4">
-                <div class="page-header float-left">
-                    <div class="page-title">
-                        <h1>Dashboard</h1>
-                    </div>
+<div class="content mt-3" style="padding: 0 35px;">
+    <div class="row align-items-center">
+        <div class="col-12 col-md-6 mb-3 mb-md-0">
+            <div class="page-header">
+                <div class="page-title">
+                    <h1>Dashboard</h1>
                 </div>
             </div>
-            
         </div>
+
+       
+    </div>
+     <?php
+           $loginuser = $this->session->userdata('LoginSession');
+
+           $roles = is_array($loginuser['roles']) ? $loginuser['roles'] : explode(',', $loginuser['roles']);
+           $access = is_array($loginuser['access']) ? $loginuser['access'] : explode(',', $loginuser['access']);    
+           
+        if (in_array('Dashboard', $access) && (in_array('Admin', $roles) || in_array('Owner', $roles))) { ?>
+        <div class="col-sm-12 col-md-12 d-flex justify-content-md-end">
+            <form method="post" action="<?php echo site_url('Dashboardcontroller/index'); ?>" class="form-inline">
+                <div class="form-group d-flex flex-wrap align-items-center">
+                <label for="created_date" class="mr-2 mb-2 mb-md-0">Filter by Date:</label>
+                    <input type="date" id="created_date" name="created_date" value="<?php echo $selected_date; ?>" class="form-control mr-2 mb-2 mb-md-0">
+                    <button type="submit" class="btn btn-primary">Filter</button>
+                </div>
+            </form>
+        </div>
+        <?php } ?>
+        </div>
+
+
+     
 
         <div class="content mt-3">
             <?php
-        $loginuser = $this->session->userdata('LoginSession');
-
-        $roles = is_array($loginuser['roles']) ? $loginuser['roles'] : explode(',', $loginuser['roles']);
-        $access = is_array($loginuser['access']) ? $loginuser['access'] : explode(',', $loginuser['access']);    
-        
+     
         
     
         if (isset($loginuser['roles']) && !empty($loginuser['roles'])) {
@@ -400,5 +419,20 @@
 
     document.addEventListener('DOMContentLoaded', function () {
         updateChart('day'); // Default to month view
+    });
+
+    $(document).ready(function() {
+        $('input[name="created_date"]').change(function() {
+            var date = $(this).val();
+            $.ajax({
+                type: 'POST',
+                url: '<?php echo site_url('controller/index'); ?>',
+                data: { created_date: date },
+                success: function(response) {
+                    // Update your view with the new total_amt_sales value
+                    // You can use jQuery to update specific elements in the DOM
+                }
+            });
+        });
     });
 </script>

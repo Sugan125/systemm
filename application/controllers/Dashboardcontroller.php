@@ -13,6 +13,14 @@ class Dashboardcontroller extends CI_Controller{
         $data['title'] = 'Dashboard';
         $this->load->view('template/header.php',$data);
         
+        date_default_timezone_set('Asia/Singapore');
+
+        $created_date = $this->input->post('created_date');
+        if (!$created_date) {
+            $created_date = date('Y-m-d'); // Default to today
+        }
+        $data['selected_date'] = $created_date;
+
         $query_day = $this->db->query("
         SELECT DATE(delivery_date) as date, COUNT(bill_no) as count, SUM(net_amount) as total_amt 
         FROM orders 
@@ -36,16 +44,6 @@ class Dashboardcontroller extends CI_Controller{
         ");
         $data['year_data'] = $query_year->result();
 
-        date_default_timezone_set('UTC');
-
-        // Create a DateTime object for the current time
-        $current_date_time = new DateTime('now');
-        
-        // Add 8 hours to adjust to Singapore time (GMT+8)
-        $current_date_time->modify('+8 hours');
-        
-        // Format the datetime
-        $created_date = $current_date_time->format('Y-m-d');
 
         $query5 = $this->db->query("SELECT COUNT(bill_no) as count FROM orders WHERE DATE(created_date) = '$created_date'");
   
