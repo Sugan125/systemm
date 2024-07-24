@@ -80,35 +80,66 @@
             
           
         </div>
-    <table border="1">
-      <thead>
+        <table border="1">
+    <thead>
         <tr>
-          <th style="background-color:white!important;" colspan="4"></th>
-          <th style="background-color: var(--blue) !important;" colspan="2">Outlets</th>
-          <th style="background-color:white!important;" colspan="3"></th>
+            <th style="background-color:white!important;" colspan="4"></th>
+            <th style="background-color: var(--blue) !important;" colspan="2">Outlets</th>
+            <th style="background-color:white!important;" colspan="3"></th>
         </tr>
         <tr>
-          <th>Sno</th>
-          <th>Item</th>
-          <th></th>
-          <th>Category</th>
-          <th>Daily</th>
-          <th>S/O</th>
-          <th>Customers</th>
-          <th>Total Qty</th>
-          <th>UOM</th>
+            <th>Sno</th>
+            <th>Item</th>
+            <th style="width: 300px;">Description</th> <!-- Adjust the width here -->
+            <th>Category</th>
+            <th>Daily</th>
+            <th>S/O</th>
+            <th>Customers</th>
+            <th>Total Qty</th>
+            <th>UOM</th>
         </tr>
-      </thead>
-      <tbody>
-      <?php 
+    </thead>
+    <tbody>
+    <?php 
         $total_qty = 0;
-        foreach($orders as $val => $row):
+        $previous_category = '';
+        foreach ($orders as $val => $row):
+            // Detect category change
+            if ($row->category !== $previous_category && $previous_category !== ''):
+                // Add a separator row for category change
+                echo '<tr><td colspan="9" style="border-top: 2px solid black;"></td></tr>';
+            endif;
+
             $total_qty += $row->qty;
+            $description_parts = [];
+            if ($row->white_drizzle_qty > 0) {
+                $description_parts[] = "{$row->white_drizzle_qty} White Drizzle";
+            }
+            if ($row->black_drizzle_qty > 0) {
+                $description_parts[] = "{$row->black_drizzle_qty} Black Drizzle";
+            }
+            if ($row->white_full_seed > 0) {
+                $description_parts[] = "{$row->white_full_seed} White Full Seed";
+            }
+            if ($row->white_black_mix > 0) {
+                $description_parts[] = "{$row->white_black_mix} White Black Mix";
+            }
+            if ($row->seedless_qty > 0) {
+                $description_parts[] = "{$row->seedless_qty} Seedless";
+            }
+
+            // Build the description string if there are parts
+            $description = !empty($description_parts) ? '(' . implode(', ', $description_parts) . ')' : '';
+            
+            // Update previous category
+            $previous_category = $row->category;
             ?>
             <tr>
                 <td><?= $row->id; ?></td>
                 <td><?= $row->product_id; ?></td>
-                <td><?= $row->product_name; ?></td>
+                <td style="width: 300px;">
+                    <?= $row->product_name; ?> <?= $description ?>
+                </td>
                 <td><?= $row->category; ?></td>
                 <td>0</td>
                 <td>0</td>
@@ -118,16 +149,17 @@
             </tr>
         <?php endforeach; ?>
         <!-- Total quantity row -->
-            <tr>
-                <td colspan="4"></td>
-                <td style="border:1px solid black;"><b>0</b></td>
-                <td style="border:1px solid black;"><b>0</b></td> <!-- Se/t Daily to 0 -->
-                <td style="border:1px solid black;"><b><?= $total_qty; ?></b></td> <!-- Total quantity -->
-                <td style="border:1px solid black;"><b><?= $total_qty; ?></b></td> <!-- Total quantity -->
-                <td colspan="1"></td>
-            </tr>
+        <tr>
+            <td colspan="4"></td>
+            <td style="border:1px solid black;"><b>0</b></td>
+            <td style="border:1px solid black;"><b>0</b></td> <!-- Se/t Daily to 0 -->
+            <td style="border:1px solid black;"><b><?= $total_qty; ?></b></td> <!-- Total quantity -->
+            <td style="border:1px solid black;"><b><?= $total_qty; ?></b></td> <!-- Total quantity -->
+            <td colspan="1"></td>
+        </tr>
     </tbody>
-    </table>
+</table>
+
   </div>
   
   </div>
