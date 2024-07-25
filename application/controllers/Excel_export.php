@@ -15,6 +15,12 @@ class Excel_export extends CI_Controller {
 
  function action()
 {
+
+    set_time_limit(300); 
+
+// Alternatively
+ini_set('max_execution_time', 300);
+
     $this->load->model("excel_export_model");
     $this->load->library("excel");
     $object = new PHPExcel();
@@ -363,6 +369,11 @@ class Excel_export extends CI_Controller {
  
  function actiondate()
 {
+
+    set_time_limit(300); 
+
+// Alternatively
+ini_set('max_execution_time', 300);
     $sales_date = $this->input->post('sales_date');
     $this->load->model("excel_export_model");
      $this->load->library("excel");
@@ -720,6 +731,12 @@ class Excel_export extends CI_Controller {
 
 function actiondaterange()
 {
+
+    set_time_limit(300); 
+
+// Alternatively
+ini_set('max_execution_time', 300);
+
     $start_date = $this->input->post('start_date');
     $end_date = $this->input->post('end_date');
     $this->load->model("excel_export_model");

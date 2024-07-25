@@ -8,9 +8,12 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
     RewriteBase /
-  
+
     # Remove index.php from the URL
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^(.*)$ index.php/$1 [L]
-  </IfModule>
+
+    # Set max execution time
+    php_value max_execution_time 300
+</IfModule>
