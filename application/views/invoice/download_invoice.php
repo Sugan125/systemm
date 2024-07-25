@@ -110,7 +110,7 @@
        }
     ?>
     <tr>
-      <td style="padding: 10px; border: 1px solid #ccc; text-align:center;"><?php echo isset($order['qty']) ? $order['qty'] : ''; ?></td>
+      <td style="padding: 10px; border: 1px solid #ccc; text-align:center;"><?php echo isset($order['promo_qty']) ? $order['promo_qty'] : $order['qty']; ?></td>
       <td style="padding: 10px; border: 1px solid #ccc; text-align:center;"><?php echo isset($order['product_id']) ? $order['product_id'] : ''; ?></td>
       <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">
         <?php 
@@ -139,7 +139,7 @@
     </tr>
     <?php if($slice == '12mm'): ?>
     <tr class="odd text-center">
-      <td style="padding: 10px; border: 1px solid #ccc; text-align:center;"><?php echo isset($order['qty']) ? $order['qty'] : ''; ?></td>
+      <td style="padding: 10px; border: 1px solid #ccc; text-align:center;"><?php echo isset($order['promo_qty']) ? $order['promo_qty'] : $order['qty']; ?></td>
       <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">SL012</td>
       <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">Slice 12mm Service Charge <?php echo $samplee; ?></td>
       <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">$0.50</td>
@@ -149,7 +149,7 @@
     </tr>
     <?php elseif($slice == '20mm'): ?>
     <tr class="odd text-center">
-      <td style="padding: 10px; border: 1px solid #ccc; text-align:center;"><?php echo isset($order['qty']) ? $order['qty'] : ''; ?></td>
+      <td style="padding: 10px; border: 1px solid #ccc; text-align:center;"><?php echo isset($order['promo_qty']) ? $order['promo_qty'] : $order['qty']; ?></td>
       <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">SL020</td>
       <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">Slice 20mm Service Charge <?php echo $samplee; ?></td>
       <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">$0.50</td>

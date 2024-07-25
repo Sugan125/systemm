@@ -191,6 +191,7 @@ public function getProductData($id = null)
         $category = !empty($this->input->post('category')[$x]) ? $this->input->post('category')[$x] : null;
         $product_id = !empty($this->input->post('product')[$x]) ? $this->input->post('product')[$x] : null;
         $qty = !empty($this->input->post('qty')[$x]) ? $this->input->post('qty')[$x] : null;
+		$promo_qty = !empty($this->input->post('total_qty')[$x]) ? $this->input->post('total_qty')[$x] : null;
         $rate = !empty($this->input->post('rate_value')[$x]) ? $this->input->post('rate_value')[$x] : null;
         $amount = !empty($this->input->post('amount_value')[$x]) ? $this->input->post('amount_value')[$x] : null;
         $slice_type = !empty($this->input->post('sliced')[$x]) ? $this->input->post('sliced')[$x] : null;
@@ -241,6 +242,7 @@ public function getProductData($id = null)
             'category' => $category,
             'product_id' => $product_id,
             'qty' => $qty,
+			'promo_qty' => $promo_qty,
             'rate' => $rate,
             'amount' => $amount,
             'slice_type' => $slice_type,
@@ -553,34 +555,36 @@ public function update($id,$user_id)
 		return $query->result_array();
 	}
 
-public function getscheduleorder($schedule_date) {
-	$sql = "SELECT 
-    prod.product_id AS product_id,
-    prod.product_name AS product_name,SUM(ordd.qty) as qty, ordd.id as id, ordd.category as category ,
-    SUM(CASE WHEN ordd.seed_type = 'Black drizzle' THEN ordd.qty ELSE 0 END) AS black_drizzle_qty,
-    SUM(CASE WHEN ordd.seed_type = 'White drizzle' THEN ordd.qty ELSE 0 END) AS white_drizzle_qty,
-	SUM(CASE WHEN ordd.seed_type = 'White full seed' THEN ordd.qty ELSE 0 END) AS white_full_seed,
-	SUM(CASE WHEN ordd.seed_type = 'White black mix' THEN ordd.qty ELSE 0 END) AS white_black_mix,
-    SUM(CASE WHEN ordd.seed_type = 'Seedless' THEN ordd.qty ELSE 0 END) AS seedless_qty,
-    ordd.id AS id,
-    ordd.category AS category
-FROM 
-    order_items ordd
-JOIN 
-    products prod ON ordd.product_id = prod.id
-WHERE 
-    DATE(ordd.delivery_date) = '$schedule_date' 
-GROUP BY 
-    prod.product_name
-ORDER BY 
-    ordd.category";
-	$query = $this->db->query($sql);
-
-	//echo $this->db->last_query();
-
-	return $query->result(); 
-}
-
+	public function getscheduleorder($schedule_date) {
+		$sql = "SELECT 
+			prod.product_id AS product_id,
+			prod.product_name AS product_name,
+			SUM(COALESCE(ordd.promo_qty, ordd.qty)) AS qty, 
+			ordd.id AS id, 
+			ordd.category AS category,
+			SUM(CASE WHEN ordd.seed_type = 'Black drizzle' THEN ordd.qty ELSE 0 END) AS black_drizzle_qty,
+			SUM(CASE WHEN ordd.seed_type = 'White drizzle' THEN ordd.qty ELSE 0 END) AS white_drizzle_qty,
+			SUM(CASE WHEN ordd.seed_type = 'White full seed' THEN ordd.qty ELSE 0 END) AS white_full_seed,
+			SUM(CASE WHEN ordd.seed_type = 'White black mix' THEN ordd.qty ELSE 0 END) AS white_black_mix,
+			SUM(CASE WHEN ordd.seed_type = 'Seedless' THEN ordd.qty ELSE 0 END) AS seedless_qty
+		FROM 
+			order_items ordd
+		JOIN 
+			products prod ON ordd.product_id = prod.id
+		WHERE 
+			DATE(ordd.delivery_date) = '$schedule_date' 
+		GROUP BY 
+			prod.product_id, prod.product_name, ordd.category
+		ORDER BY 
+			ordd.category";
+	
+		$query = $this->db->query($sql);
+	
+		//echo $this->db->last_query();
+	
+		return $query->result(); 
+	}
+	
 public function getpackingorder($schedule_date) {
 	$date = $schedule_date;
 	$formatted_schedule_date = date("d/m/y", strtotime($date));

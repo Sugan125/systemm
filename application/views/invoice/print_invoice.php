@@ -101,7 +101,7 @@
           ?>
          
         <tr class="odd text-center">
-        <td><?php echo isset($order['qty']) ? $order['qty'] : ''; ?></td>
+        <td><?php echo isset($order['promo_qty']) ? $order['promo_qty'] : $order['qty']; ?></td>
         <td><?php echo isset($order['product_id']) ? $order['product_id'] : ''; ?></td>
         <td>
             <?php 
@@ -133,7 +133,7 @@
          if($slice == '12mm'){
         ?>
            <tr class="odd text-center">
-        <td><?php echo isset($order['qty']) ? $order['qty'] : ''; ?></td>
+        <td><?php echo isset($order['promo_qty']) ? $order['promo_qty'] : $order['qty'];?></td>
         <td><?php echo  'SL012'; ?></td>
         <td><?php echo 'Slice 12mm Service Charge'.$samplee; ?></td>
         <td>$<?php echo '0.50'; ?></td>
@@ -147,7 +147,7 @@
          if($slice == '20mm'){
         ?>
            <tr class="odd text-center">
-        <td><?php echo isset($order['qty']) ? $order['qty'] : ''; ?></td>
+        <td><?php echo isset($order['promo_qty']) ? $order['promo_qty'] : $order['qty']; ?></td>
         <td><?php echo  'SL020'; ?></td>
         <td><?php echo 'Slice 20mm Service Charge'.$samplee; ?></td>
         <td>$<?php echo '0.50'; ?></td>

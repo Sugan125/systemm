@@ -155,6 +155,23 @@
                     <input type="text" name="prod_rate" class="form-control" placeholder="Product Price" value="<?= $row->prod_rate; ?>">
                   </div>
                 </div>
+                    <div class="form-group">
+                    <label>Promotion Rule (Buy N Get M Free)</label>
+                    <div class="input-group" id="input_promotion_rule_n">
+                        <div class="input-group-prepend">
+                        <span class="input-group-text">Buy</span>
+                        </div>
+                        <input type="number" id="promotion_rule_n" name="promo_rule_buy" class="form-control" placeholder="Buy" value="<?= $row->promo_rule_buy; ?>">
+                    </div>
+                    <div class="input-group" id="input_promotion_rule_m" style="margin-top: 10px;">
+                        <div class="input-group-prepend">
+                        <span class="input-group-text">Free</span>
+                        </div>
+                        <input type="number" id="promotion_rule_m" name="promo_rule_free" class="form-control" placeholder="Free" value="<?= $row->promo_rule_free; ?>">
+                    </div>
+                    </div>
+                </div>
+
 
                 <input type="hidden" id="updated_by" name="updated_by" value="<?php echo $loginuser['name']; ?>">
 

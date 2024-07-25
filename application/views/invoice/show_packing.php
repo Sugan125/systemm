@@ -84,6 +84,7 @@
     $current_order = null;
     $current_shipping = null; // Track the current shipping address
     foreach($orders as $order): 
+      
         // Determine the shipping address
         if (!empty($order->shipping_address) || !empty($order->shipping_address_line2) || !empty($order->shipping_address_line3) || !empty($order->shipping_address_line4) || !empty($order->shipping_address_city) || !empty($order->shipping_address_postcode)) {
             $shipping = trim($order->shipping_address .' '. $order->shipping_address_line2 .' '. $order->shipping_address_line3 .' '. $order->shipping_address_line4 .' '. $order->shipping_address_city .' '. $order->shipping_address_postcode);
@@ -148,11 +149,17 @@
         else{
           $sample = "(Sample ".$order->sample.")";
         }
-
+          if($order->promo_qty != NULL){
+            $qty = $order->promo_qty;
+          }
+          else{
+            $qty = $order->qty;
+          }
         echo "<tr>
                 <td class='col-1' style='border-right: none;'>{$order->prod_id}</td>
                 <td class='col-2' style='border-left: none; border-right: none;'>{$order->product_name}{$add_on} {$sample}</td>
-                <td class='col-3' style='border-left: none; text-align: right;'>{$order->qty} pc</td>
+                  <td class='col-3' style='border-left: none; text-align: right;'>{$qty} pc</td>
+
               </tr>";
     endforeach;
 

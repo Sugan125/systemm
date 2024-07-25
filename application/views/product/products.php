@@ -111,6 +111,8 @@
       <th>Slice</th>
       <th>Seed</th>
       <th>Price</th>
+      <th>Promotion</th>
+      <th>Promo Rule</th>
       <th>Created By</th>
       <th>Updated By</th>
       <th>Action</th>
@@ -149,7 +151,21 @@
     </label>
 </td>
 
-        <td>$<?= $row->prod_rate; ?></td>   
+        <td>$<?= $row->prod_rate; ?></td> 
+        <td>
+    <label class="toggle-switch">
+        <input type="checkbox" class="toggleCheckbox add_on_promotion" data-id="<?= $row->id ?>" <?= $row->promotion ? 'checked' : '' ?>>
+        <span class="slider"></span>
+    </label>
+</td>
+<td>
+  <?php if (!empty($row->promo_rule_buy) && !empty($row->promo_rule_free)): ?>
+    <?= $row->promo_rule_buy; ?> Buy <?= $row->promo_rule_free; ?> Free
+  <?php else: ?>
+    <!-- You can leave this blank or put any placeholder text if needed -->
+  <?php endif; ?>
+</td>
+
         <td><?= $row->created_by; ?></td>   
         <td><?= $row->updated_by; ?></td>   
         <td>
@@ -312,7 +328,81 @@ $('.add_on_seed').click(function(){
     });
 });
 
+
+
+
+
+$('.add_on_promotion').click(function(){
+  //  alert('Checkbox clicked');
+    var productid = $(this).data('id');
+    var isChecked = $(this).prop('checked') ? 1 : 0; 
+
+    $.ajax({
+        
+        url: '<?php echo base_url('index.php/Productcontroller/update_promotion'); ?>',
+        method: 'POST',
+        data: { productid: productid, isChecked: isChecked },
+        dataType: 'json', 
+        success: function(response){
+
+            console.log(response);
+
+            if(response.status === 'success'){
+                if(response.isChecked === '1'){
+                  $('.add_on_promotion[data-id="' + productid + '"]').prop('checked', true);
+                swal({
+                    title: "Success",
+                    text: "Promotion Enabled For this Product",
+                    icon: "success",
+                    buttons: {
+                        confirm: {
+                            text: "OK",
+                            value: true,
+                            visible: true,
+                            className: "btn btn-primary",
+                            closeModal: true
+                        }
+                    }
+                }).then((value) => {
+                    // Reload the page after success
+                    window.location.reload();
+                });
+                  
+                } else {
+                  $('.add_on_promotion[data-id="' + productid + '"]').prop('checked', false);
+                swal({
+                    title: "Success",
+                    text: "Promotion Disabled For this Product",
+                    icon: "success",
+                    buttons: {
+                        confirm: {
+                            text: "OK",
+                            value: true,
+                            visible: true,
+                            className: "btn btn-primary",
+                            closeModal: true
+                        }
+                    }
+                }).then((value) => {
+                    // Reload the page after success
+                    window.location.reload();
+                });
+                  
+                }
+
+                
+            } else {
+              
+                alert('Error updating Enable/disable Promotion option.');
+            }
+        },
+        error: function(xhr, status, error){
+            console.log('AJAX Error:', error);
+        }
+    });
 });
+});
+
 </script>
 </body>
 </html>

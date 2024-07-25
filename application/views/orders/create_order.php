@@ -141,6 +141,8 @@
                         <td>
                         <input type="hidden" name="minn" id="minn" class="form-control" autocomplete="off">
                           <input type="number" name="qty[]" id="qty_1" class="form-control" required onkeyup="getTotal(1)"></td>
+                          <input type="hidden" name="total_qty[]" id="total_qty_1" class="form-control" autocomplete="off">
+
                         <td>
                             <input type="text" name="rate[]" id="rate_1" class="form-control" disabled autocomplete="off">
                             <input type="hidden" name="rate_value[]" id="rate_value_1" class="form-control" autocomplete="off">
@@ -410,6 +412,34 @@
         </div><!-- /modal-content -->
     </div><!-- /modal-dialog -->
 </div><!-- /myModal -->
+.<!-- Modal --><!-- Modal -->
+<!-- Modal -->
+<div class="modal fade" id="promotionModal" tabindex="-1" role="dialog" aria-labelledby="promotionModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="promotionModalLabel">Special Promotion!</h5>
+        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="text-center">
+          <h4>Exclusive Offer for You!</h4>
+          <p id="promotionProductInfo" style="color:green;"></p>
+          <p>Buy more and save more with our amazing promotion:</p>
+          <div class="promotion-details" id="promotionDetails">
+            <!-- Dynamic promotion details will be inserted here -->
+          </div>
+          <p class="text-muted">Hurry up! Offer valid for 6 Months Only.</p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Great, Got it!</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script src="<?= base_url();?>public/plugins/pikaday/pikaday.js"></script>
 <script src="<?= base_url();?>public/plugins/pikaday/moment.min.js"></script>
@@ -545,7 +575,9 @@ $(document).on('change', '.seed', function() {
                         '<option value="White black mix">White black mix</option>'+
                     '</select>'+
                 '</td>'+
-                '<td><input type="hidden" name="minn" id="minn" class="form-control" autocomplete="off"><input type="number" name="qty[]" id="qty_'+row_id+'" class="form-control" onkeyup="getTotal('+row_id+')"></td>'+
+                '<td><input type="hidden" name="minn" id="minn" class="form-control" autocomplete="off"><input type="number" name="qty[]" id="qty_'+row_id+'" class="form-control" onkeyup="getTotal('+row_id+')">'+
+                '<input type="hidden" name="total_qty[]" id="total_qty_'+row_id+'" class="form-control" autocomplete="off">'+
+                '</td>'+
                 '<td><input type="text" name="rate[]" id="rate_'+row_id+'" class="form-control" disabled><input type="hidden" name="rate_value[]" id="rate_value_'+row_id+'" class="form-control"></td>'+
                 '<td hidden><input type="text" name="gst_percent[]" id="gst_percent_'+row_id+'" class="form-control" disabled><input type="hidden" name="gst_percent_val[]" id="gst_percent_val_'+row_id+'" class="form-control"></td>'+
                 '<td><input type="text" name="service_charge_lineitem[]" id="service_charge_lineitem_'+row_id+'" class="form-control" disabled><input type="hidden" name="service_charge_itemval[]" id="service_charge_itemval_'+row_id+'" class="form-control"></td>'+
@@ -785,6 +817,38 @@ function removeRow(tr_id) {
                   $("#amount_" + row_id).val(total);
                   $("#amount_value_" + row_id).val(total);
 
+                // Show promotion modal for product IDs 55 and 65
+                if (response.promotion == 1) {
+  $("#qty_" + row_id).on('change', function() {
+    var qty = $(this).val();
+    var promotionRuleN = response.promo_rule_buy; // Get the promotion rule N (Buy)
+    var promotionRuleM = response.promo_rule_free; // Get the promotion rule M (Free)
+    
+    if (promotionRuleN && promotionRuleM) {
+      var freeQty = Math.floor(qty / promotionRuleN) * promotionRuleM; // Calculate free items based on the promotion rules
+      var totalQty = parseInt(qty) + freeQty;
+
+      $("#total_qty_" + row_id).val(totalQty); // Update the total quantity with free items
+    }
+  });
+
+  // Construct dynamic promotion details
+  var promotionDetailsHtml = '';
+  if (response.promo_rule_buy && response.promo_rule_free) {
+    promotionDetailsHtml = `<p><span class="badge badge-success">Buy ${response.promo_rule_buy}</span> - Get <strong>${response.promo_rule_free}</strong> free</p>`;
+  } else {
+    promotionDetailsHtml = '<p>No promotion details available.</p>';
+  }
+
+  // Update the modal with promotion details and product info
+  $("#promotionDetails").html(promotionDetailsHtml);
+  var promotionProductInfo = `Special promotion for product ID ${response.product_id} - ${response.product_name}.`;
+  $("#promotionProductInfo").text(promotionProductInfo);
+
+  // Show the modal
+  $("#promotionModal").modal('show');
+}
+
 
                 subAmount();
                 getTotal(row_id);
@@ -946,6 +1010,7 @@ function handleNext() {
         confirmSubmission(event);
     });
 }
+
 function confirmSubmission(event) {
     event.preventDefault(); // Prevent the default form submission
 

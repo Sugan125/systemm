@@ -279,6 +279,8 @@ class Productcontroller extends CI_Controller {
             'min_order' => $this->input->post('min_order'),
             'prod_img' => $image_path, // Image path
             'prod_rate' => $this->input->post('prod_rate'),
+            'promo_rule_buy' => $this->input->post('promo_rule_buy'),
+            'promo_rule_free' => $this->input->post('promo_rule_free'),
             'deleted'=> '0',
             'updated_by' =>  $this->input->post('updated_by'),
             'updated_date' => $updated_date,
@@ -389,6 +391,26 @@ class Productcontroller extends CI_Controller {
         
             // Update the restrict_time column in the database
             $this->db->set('add_on_seed', $isChecked);
+            $this->db->where('id', $productid);
+            $this->db->update('products');
+        
+            // Check if the update was successful
+            if($this->db->affected_rows() > 0){
+                // Return success response with isChecked value
+                echo json_encode(array('status' => 'success', 'isChecked' => $isChecked));
+            } else {
+                // Return error response
+                echo json_encode(array('status' => 'error'));
+            }
+        }
+
+        
+        public function update_promotion(){
+            $productid = $this->input->post('productid');
+            $isChecked = $this->input->post('isChecked');
+        
+            // Update the restrict_time column in the database
+            $this->db->set('promotion', $isChecked);
             $this->db->where('id', $productid);
             $this->db->update('products');
         
