@@ -186,6 +186,8 @@ class Productcontroller extends CI_Controller {
             'min_order' => $this->input->post('min_order'),
             'prod_img' => $image_path, // Image path
             'prod_rate' => $this->input->post('prod_rate'),
+            'promo_rule_buy' => $this->input->post('promo_rule_buy'),
+            'promo_rule_free' => $this->input->post('promo_rule_free'),
             'deleted'=> '0',
             'created_by' => $this->input->post('created_by'),
             'created_datee' => $created_date,            

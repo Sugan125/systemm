@@ -898,6 +898,7 @@ public function admin_create()
         $category = !empty($this->input->post('category')[$x]) ? $this->input->post('category')[$x] : null;
         $product_id = !empty($this->input->post('product')[$x]) ? $this->input->post('product')[$x] : null;
         $qty = !empty($this->input->post('qty')[$x]) ? $this->input->post('qty')[$x] : null;
+		$promo_qty = !empty($this->input->post('total_qty')[$x]) ? $this->input->post('total_qty')[$x] : null;
         $rate = $rate;
 		$sample = $sample;
         $amount = !empty($this->input->post('amount_value')[$x]) ? $this->input->post('amount_value')[$x] : null;
@@ -949,6 +950,7 @@ public function admin_create()
             'category' => $category,
             'product_id' => $product_id,
             'qty' => $qty,
+			'promo_qty' => $promo_qty,
             'rate' => $rate,
 			'sample' => $sample,
             'amount' => $amount,
