@@ -101,7 +101,7 @@
           ?>
          
         <tr class="odd text-center">
-        <td><?php echo isset($order['promo_qty']) ? $order['promo_qty'] : $order['qty']; ?></td>
+        <td><?php echo isset($order['qty']) ? $order['qty'] : ''; ?></td>
         <td><?php echo isset($order['product_id']) ? $order['product_id'] : ''; ?></td>
         <td>
             <?php 
@@ -128,12 +128,35 @@
         <!-- <td>$<php //echo isset($order['service_charge']) ? $order['service_charge'] : 0; ?></td> -->
         <td>$<?php echo isset($order['amount']) ? $ammount : ''; ?></td>
     </tr>
-
+    <tr class="odd text-center">
+    <td><?php echo $order['promo_qty']-$order['qty']; ?></td>
+    <td><?php echo isset($order['product_id']) ? $order['product_id'] : ''; ?></td>
+    <td>
+        <?php echo isset($order['product_name']) ? $order['product_name'] :  $order['product_name'];
+            if(isset($order['slice_type']) && $order['slice_type'] !== '' || isset($order['seed_type']) && $order['seed_type'] !== '') {
+              echo ' (';
+              if(isset($order['slice_type'])) {
+                  echo $order['slice_type'];
+                  if(isset($order['seed_type']) && $order['seed_type'] !== '') {
+                      echo ', ' . $order['seed_type'];
+                  }
+              } elseif(isset($order['seed_type']) && $order['seed_type'] !== '') {
+                  echo $order['seed_type'];
+              }
+              echo ')';
+          }
+          echo $samplee. ' <span style="font-weight: bold;">(free)</span>' ; ?>
+    </td>
+    <td>$0.00</td>
+    <td>pc</td>
+    <!-- <td>$0.00</td> -->
+    <td>$0.00</td>
+</tr>
     <?php
          if($slice == '12mm'){
         ?>
            <tr class="odd text-center">
-        <td><?php echo isset($order['promo_qty']) ? $order['promo_qty'] : $order['qty'];?></td>
+        <td><?php echo isset($order['qty']) ? $order['qty'] : $order['qty'];?></td>
         <td><?php echo  'SL012'; ?></td>
         <td><?php echo 'Slice 12mm Service Charge'.$samplee; ?></td>
         <td>$<?php echo '0.50'; ?></td>
