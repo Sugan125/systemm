@@ -729,6 +729,7 @@ public function repeat_order($id)
 			$category = $rows['category'];
 			$product_id = $rows['product_id'];
 			$qty = $rows['qty'];
+			$promo_qty = $rows['promo_qty'];
 			$rate = $rows['rate'];
 			$amount = $rows['amount'];
 			$slice_type = $rows['slice_type'];
@@ -754,6 +755,7 @@ public function repeat_order($id)
             'category' => $category,
             'product_id' => $product_id,
             'qty' => $qty,
+			'promo_qty'=>$promo_qty,
             'rate' => $rate,
             'amount' => $amount,
             'slice_type' => $slice_type,

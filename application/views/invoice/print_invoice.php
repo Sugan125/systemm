@@ -128,6 +128,7 @@
         <!-- <td>$<php //echo isset($order['service_charge']) ? $order['service_charge'] : 0; ?></td> -->
         <td>$<?php echo isset($order['amount']) ? $ammount : ''; ?></td>
     </tr>
+    <?php if (!is_null($order['promo_qty'])): ?>
     <tr class="odd text-center">
     <td><?php echo $order['promo_qty']-$order['qty']; ?></td>
     <td><?php echo isset($order['product_id']) ? $order['product_id'] : ''; ?></td>
@@ -152,6 +153,7 @@
     <!-- <td>$0.00</td> -->
     <td>$0.00</td>
 </tr>
+<?php endif; ?>
     <?php
          if($slice == '12mm'){
         ?>
@@ -170,7 +172,7 @@
          if($slice == '20mm'){
         ?>
            <tr class="odd text-center">
-        <td><?php echo isset($order['promo_qty']) ? $order['promo_qty'] : $order['qty']; ?></td>
+        <td><?php echo isset($order['qty']) ? $order['qty'] : $order['qty']; ?></td>
         <td><?php echo  'SL020'; ?></td>
         <td><?php echo 'Slice 20mm Service Charge'.$samplee; ?></td>
         <td>$<?php echo '0.50'; ?></td>
