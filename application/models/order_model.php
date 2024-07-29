@@ -390,6 +390,7 @@ public function update($id,$user_id)
                 'category' => $this->input->post('category')[$x],
                 'product_id' => $this->input->post('product')[$x],
                 'qty' => $this->input->post('qty')[$x],
+				'promo_qty' => !empty($this->input->post('total_qty')[$x]) ? $this->input->post('total_qty')[$x] : null,
                 'rate' => $rate,
 				'sample' => $sample,
                 'amount' => $this->input->post('amount_value')[$x],
