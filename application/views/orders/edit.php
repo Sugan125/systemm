@@ -859,7 +859,10 @@ function getProductData(row_id) {
       var freeQty = Math.floor(qty / promotionRuleN) * promotionRuleM; // Calculate free items based on the promotion rules
       var totalQty = parseInt(qty) + freeQty;
 
+      if(freeQty != 0){
       $("#total_qty_" + row_id).val(totalQty); // Update the total quantity with free items
+      }
+      
     }
   });
 

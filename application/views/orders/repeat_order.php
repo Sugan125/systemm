@@ -779,36 +779,39 @@ function getProductData(row_id) {
                   $("#amount_" + row_id).val(total);
                   $("#amount_value_" + row_id).val(total);
       // Show promotion modal for product IDs 55 and 65
-      if (response.promotion == 1) {
-  $("#qty_" + row_id).on('change', function() {
-    var qty = $(this).val();
-    var promotionRuleN = response.promo_rule_buy; // Get the promotion rule N (Buy)
-    var promotionRuleM = response.promo_rule_free; // Get the promotion rule M (Free)
-    
-    if (promotionRuleN && promotionRuleM) {
-      var freeQty = Math.floor(qty / promotionRuleN) * promotionRuleM; // Calculate free items based on the promotion rules
-      var totalQty = parseInt(qty) + freeQty;
+                  if (response.promotion == 1) {
+                      $("#qty_" + row_id).on('change', function() {
+                        var qty = $(this).val();
+                        var promotionRuleN = response.promo_rule_buy; // Get the promotion rule N (Buy)
+                        var promotionRuleM = response.promo_rule_free; // Get the promotion rule M (Free)
+                        
+                        if (promotionRuleN && promotionRuleM) {
+                          var freeQty = Math.floor(qty / promotionRuleN) * promotionRuleM; // Calculate free items based on the promotion rules
+                          var totalQty = parseInt(qty) + freeQty;
 
-      $("#total_qty_" + row_id).val(totalQty); // Update the total quantity with free items
-    }
-  });
+                          if(freeQty != 0){
+                          $("#total_qty_" + row_id).val(totalQty); // Update the total quantity with free items
+                          }
+                          
+                        }
+                      });
 
-  // Construct dynamic promotion details
-  var promotionDetailsHtml = '';
-  if (response.promo_rule_buy && response.promo_rule_free) {
-    promotionDetailsHtml = `<p><span class="badge badge-success">Buy ${response.promo_rule_buy}</span> - Get <strong>${response.promo_rule_free}</strong> free</p>`;
-  } else {
-    promotionDetailsHtml = '<p>No promotion details available.</p>';
-  }
+                      // Construct dynamic promotion details
+                      var promotionDetailsHtml = '';
+                      if (response.promo_rule_buy && response.promo_rule_free) {
+                        promotionDetailsHtml = `<p><span class="badge badge-success">Buy ${response.promo_rule_buy}</span> - Get <strong>${response.promo_rule_free}</strong> free</p>`;
+                      } else {
+                        promotionDetailsHtml = '<p>No promotion details available.</p>';
+                      }
 
-  // Update the modal with promotion details and product info
-  $("#promotionDetails").html(promotionDetailsHtml);
-  var promotionProductInfo = `Special promotion for product ID ${response.product_id} - ${response.product_name}.`;
-  $("#promotionProductInfo").text(promotionProductInfo);
+                      // Update the modal with promotion details and product info
+                      $("#promotionDetails").html(promotionDetailsHtml);
+                      var promotionProductInfo = `Special promotion for product ID ${response.product_id} - ${response.product_name}.`;
+                      $("#promotionProductInfo").text(promotionProductInfo);
 
-  // Show the modal
-  $("#promotionModal").modal('show');
-}
+                      // Show the modal
+                      $("#promotionModal").modal('show');
+                }
 
 
                 subAmount();
