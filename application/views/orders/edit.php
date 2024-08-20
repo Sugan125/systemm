@@ -609,48 +609,94 @@ $(document).on('input', 'input[name^="qty"]', function() {
     var rowId = $(this).attr('id').split('_')[1];
     getTotal(rowId);
 });
+$(document).on('keyup change', 'input[name="qty[]"]', function() { // Listen to both 'keyup' and 'change' events
+    var row_id = $(this).attr('id').split('_')[1];
+    var min_order = parseFloat($("#minn").val()) || 1;
+    var qty = parseFloat($(this).val());
 
-$(document).on('keyup', 'input[name="qty[]"]', function() {
-        var row_id = $(this).attr('id').split('_')[1];
-        var min_order = parseFloat($("#minn").val()) || 1;
-        var qty = parseFloat($(this).val());
+    if (isNaN(qty) || qty < min_order) {
+        qty = min_order;
+        $(this).val(qty);
+    } else if (qty % min_order !== 0) {
+        qty = Math.floor(qty / min_order) * min_order;
+        $(this).val(qty);
+        swal({
+          title: "Minimum Order Quantity",
+          text: 'Quantity must be a multiple of the minimum order value (' + min_order + ').',
+          icon: "warning",
+          buttons: {
+            confirm: {
+              text: "OK",
+              value: true,
+              visible: true,
+              className: "btn btn-primary",
+              closeModal: true
+            }
+          }
+        });
+    } else {
+        $('#msg').html('');
+    }
 
-        // Sample selection check
-        if ($('#sample_'+row_id).is(':checked')) {
-            $(this).val($(this).val());
-        }
+    // Apply promotion rules if applicable
+    var response = getProductDatas(row_id); // Assuming this function returns the product response
+    if (response && response.promotion == 1) {
+        applyPromotionRule(row_id, qty, response.promo_rule_buy, response.promo_rule_free, response.product_id, response.product_name);
+    }
 
-        else if (isNaN(qty) || qty < min_order) {
-            qty = min_order;
-        
-        } else if (qty % min_order !== 0) {
-            qty = Math.floor(qty / min_order) * min_order;
-            $(this).val(qty);
-            swal({
-                title: "Minimum Order Quantity",
-                text: 'Quantity must be a multiple of the minimum order value (' + min_order + ').',
-                icon: "warning",
-                buttons: {
-                    confirm: {
-                        text: "OK",
-                        value: true,
-                        visible: true,
-                        className: "btn btn-primary",
-                        closeModal: true
-                    }
+    subAmount();
+    getTotal(row_id);
+});
+
+function applyPromotionRule(row_id, qty, promotionRuleN, promotionRuleM, product_id, product_name) {
+    // Reset total quantity before recalculating
+    $("#total_qty_" + row_id).val(qty);
+
+    if (promotionRuleN && promotionRuleM) {
+        var freeQty = Math.floor(qty / promotionRuleN) * promotionRuleM;
+        var totalQty = parseInt(qty) + freeQty;
+        if(freeQty != 0){
+            $("#total_qty_" + row_id).val(totalQty);
+        } 
+        if (freeQty == 0) {
+          $("#total_qty_" + row_id).val(''); // Clear the field with an empty string
+      }
+    }
+
+    // Optional: Show promotion details in the modal if needed
+    // Construct dynamic promotion details
+}
+
+function getProductDatas(row_id) {
+    var product_id = $("#product_" + row_id).val();
+    if (product_id == "") {
+        $("#rate_" + row_id).val("");
+        $("#rate_value_" + row_id).val("");
+        $("#qty_" + row_id).val("");
+        $("#amount_" + row_id).val("");
+        $("#amount_value_" + row_id).val("");
+    } else {
+        $.ajax({
+            url: '<?php echo base_url('index.php/orders/getProductValueById'); ?>',
+            type: 'post',
+            data: { product_id: product_id },
+            dataType: 'json',
+            success: function(response) {
+                // Show promotion modal for product IDs 55 and 65
+                if (response.promotion == 1) {
+                    var qty = parseFloat($("#qty_" + row_id).val());
+                    applyPromotionRule(row_id, qty, response.promo_rule_buy, response.promo_rule_free, response.product_id, response.product_name);
                 }
-            });
-        } else {
-            $('#msg').html('');
-        }
-
-        subAmount();
-        getTotal(row_id);
-    });
+                subAmount();
+                getTotal(row_id);
+            }
+        });
+    }
+    $("#product_" + row_id).blur();
+}
 
 
 $('#product_info_table').on('change', 'input[name^="qty"]', function() {
-    alert('hi');
     
     var rowId = $(this).attr('id').split('_')[1];
     var minOrder = parseInt($('#minn').val()); // Get the stored min_order value
