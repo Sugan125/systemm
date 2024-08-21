@@ -136,9 +136,12 @@
     <!-- <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">$<php// echo isset($order['service_charge']) ? $order['service_charge'] : 0; ?></td> -->
     <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">$<?php echo isset($order['amount']) ? $ammount : ''; ?></td>
   </tr>
-  <?php if (!is_null($order['promo_qty'])): ?>
+  <?php if (!is_null($order['promo_qty'])): 
+      $total_qty = $order['promo_qty']-$order['qty'];
+      if($total_qty != 0){
+    ?>
   <tr class="odd text-center">
-    <td style="padding: 10px; border: 1px solid #ccc;text-align:center;"><?php echo $order['promo_qty']-$order['qty']; ?></td>
+    <td style="padding: 10px; border: 1px solid #ccc;text-align:center;"><?php echo $total_qty; ?></td>
     <td style="padding: 10px; border: 1px solid #ccc;text-align:center;"><?php echo isset($order['product_id']) ? $order['product_id'] : ''; ?></td>
     <td style="padding: 10px; border: 1px solid #ccc;text-align:center;">
       <?php echo isset($order['product_name']) ? $order['product_name'] :  $order['product_name'];
@@ -161,7 +164,7 @@
     <!-- <td>$0.00</td> -->
     <td style="padding: 10px; border: 1px solid #ccc;text-align:center;">$0.00</td>
   </tr>
-  <?php endif; ?>
+  <?php } endif; ?>
   <?php if($slice == '12mm'): ?>
   <tr class="odd text-center">
     <td style="padding: 10px; border: 1px solid #ccc; text-align:center;"><?php echo isset($order['qty']) ? $order['qty'] : $order['qty']; ?></td>

@@ -128,9 +128,12 @@
         <!-- <td>$<php //echo isset($order['service_charge']) ? $order['service_charge'] : 0; ?></td> -->
         <td>$<?php echo isset($order['amount']) ? $ammount : ''; ?></td>
     </tr>
-    <?php if (!is_null($order['promo_qty'])): ?>
+    <?php if (!is_null($order['promo_qty'])): 
+     $total_qty = $order['promo_qty']-$order['qty'];
+     if($total_qty != 0){
+      ?>
     <tr class="odd text-center">
-    <td><?php echo $order['promo_qty']-$order['qty']; ?></td>
+    <td><?php echo $total_qty; ?></td>
     <td><?php echo isset($order['product_id']) ? $order['product_id'] : ''; ?></td>
     <td>
         <?php echo isset($order['product_name']) ? $order['product_name'] :  $order['product_name'];
@@ -152,8 +155,8 @@
     <td>pc</td>
     <!-- <td>$0.00</td> -->
     <td>$0.00</td>
-</tr>
-<?php endif; ?>
+</tr> 
+<?php } endif; ?>
     <?php
          if($slice == '12mm'){
         ?>

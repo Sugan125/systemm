@@ -867,7 +867,6 @@ function removeRow(tr_id) {
 
     if (isNaN(qty) || qty < min_order) {
         qty = min_order;
-        $(this).val(qty);
     } else if (qty % min_order !== 0) {
         qty = Math.floor(qty / min_order) * min_order;
         $(this).val(qty);
@@ -894,10 +893,79 @@ function removeRow(tr_id) {
     if (response && response.promotion == 1) {
         applyPromotionRule(row_id, qty, response.promo_rule_buy, response.promo_rule_free, response.product_id, response.product_name);
     }
-
+    updatePromotionAcrossRows(row_id);
     subAmount();
     getTotal(row_id);
 });
+
+function updatePromotionAcrossRows(changedRowId) {
+    var product_id = $("#product_" + changedRowId).val();
+    var totalQty = 0;
+    var rows = [];
+    var hasPromotion = false;
+
+    // Step 1: Calculate the total quantity of the product across all rows and check if promotion exists
+    $('input[name="qty[]"]').each(function() {
+        var row_id = $(this).attr('id').split('_')[1];
+        if ($("#product_" + row_id).val() == product_id) {
+            var rowQty = parseFloat($(this).val());
+            totalQty += rowQty;
+            rows.push({ row_id: row_id, qty: rowQty });
+        }
+    });
+
+    // Step 2: Fetch promotion details from the server
+    $.ajax({
+        url: '<?php echo base_url('index.php/orders/getProductValueById'); ?>',
+        type: 'post',
+        data: { product_id: product_id },
+        dataType: 'json',
+        success: function(response) {
+            if (response.promotion == 1) {
+                hasPromotion = true;
+
+                // Calculate the free items based on accumulated quantity
+                var freeQty = Math.floor(totalQty / response.promo_rule_buy) * response.promo_rule_free;
+
+                // Distribute free items based on the scenario
+                var remainingFreeQty = freeQty;
+
+                // Scenario 1: Multiple rows with same product
+                if (rows.length > 1) {
+                  var freeQty = Math.floor(totalQty / response.promo_rule_buy) * response.promo_rule_free;
+
+                  // Step 3: Distribute free items across the rows
+                  var remainingFreeQty = freeQty;
+                  for (var i = 0; i < rows.length; i++) {
+                      var row = rows[i];
+                      var rowFreeQty = Math.min(remainingFreeQty, response.promo_rule_free);
+                      var rowTotalQty = row.qty + rowFreeQty;
+
+                      // Update the total quantity for this row
+                      $("#total_qty_" + row.row_id).val(rowTotalQty);
+                      remainingFreeQty -= rowFreeQty;
+                  }
+                } else {
+                    // Scenario 2: Single row with promotion
+                    var row_id = rows[0].row_id;
+                    var qty = rows[0].qty;
+                    var rowFreeQty = Math.floor(qty / response.promo_rule_buy) * response.promo_rule_free;
+                    var rowTotalQty = qty + rowFreeQty;
+
+                    // Update the total quantity for this row
+                    $("#total_qty_" + row_id).val(rowTotalQty);
+                }
+
+                
+            }
+
+            // Always call these functions to ensure the amounts are updated
+            subAmount();
+            getTotal(changedRowId);
+        }
+    });
+}
+
 
 function applyPromotionRule(row_id, qty, promotionRuleN, promotionRuleM, product_id, product_name) {
     // Reset total quantity before recalculating
