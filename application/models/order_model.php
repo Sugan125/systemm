@@ -509,13 +509,19 @@ public function update($id,$user_id)
 		}
 	}
 
-	public function getmanageorder() {
+	public function getmanageorder($limit = 10, $offset = 0) {
+		$current_month = date('Y-m'); // Get the current month in 'YYYY-MM' format
 	
-			$sql = "SELECT ord.*,us.name as name FROM orders ord join user_register us WHERE us.id = ord.user_id limit 10";
-			$query = $this->db->query($sql);
-			
-			
-			return $query->result(); 
+		$this->db->select('ord.*, us.name as name');
+		$this->db->from('orders ord');
+		$this->db->join('user_register us', 'us.id = ord.user_id');
+		$this->db->where('DATE_FORMAT(ord.created_date, "%Y-%m") =', $current_month); // Correct the WHERE clause
+		$this->db->limit($limit, $offset);
+		$query = $this->db->get();
+
+	//	echo $this->db->last_query();
+
+		return $query->result();
 	
 	}
 
@@ -978,6 +984,9 @@ public function admin_create()
 }
 
 public function count_all_orders() {
+    $current_month = date('Y-m'); // Get the current month in 'YYYY-MM' format
+
+    $this->db->where('DATE_FORMAT(created_date, "%Y-%m") =', $current_month); // Correct the WHERE clause
     return $this->db->count_all_results('orders');
 }
 

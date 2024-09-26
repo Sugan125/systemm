@@ -475,59 +475,58 @@ public function download($id)
     $this->load->view('template/footer.php');
 }
 
+public function manage_orders() {
+    $data['title'] = 'orders';
 
-public function manage_orders(){
-	$data['title'] = 'orders';
+    // Pagination configuration
+    $config['base_url'] = site_url('orders/manage_orders');
+    $config['total_rows'] = $this->order_model->count_all_orders(); // Ensure total rows are counted for the current month
+    $config['per_page'] = 10;
+    $config['uri_segment'] = 3;
+    $config['use_page_numbers'] = TRUE;
 
-	$config['base_url'] = site_url('orders/manage_search');
-	$config['total_rows'] = $this->order_model->count_all_orders(); // Ensure at least 10 total rows
-	$config['per_page'] = 10;
-	$config['uri_segment'] = 3;
-	$config['use_page_numbers'] = TRUE;
+    // Pagination styling
+    $config['full_tag_open'] = '<ul class="pagination">';
+    $config['full_tag_close'] = '</ul>';
+    $config['first_link'] = 'First';
+    $config['last_link'] = 'Last';
+    $config['first_tag_open'] = '<li class="page-item"><span class="page-link">';
+    $config['first_tag_close'] = '</span></li>';
+    $config['prev_link'] = 'Previous';
+    $config['prev_tag_open'] = '<li class="page-item"><span class="page-link">';
+    $config['prev_tag_close'] = '</span></li>';
+    $config['next_link'] = 'Next';
+    $config['next_tag_open'] = '<li class="page-item"><span class="page-link">';
+    $config['next_tag_close'] = '</span></li>';
+    $config['last_tag_open'] = '<li class="page-item"><span class="page-link">';
+    $config['last_tag_close'] = '</span></li>';
+    $config['cur_tag_open'] = '<li class="page-item active"><span class="page-link">';
+    $config['cur_tag_close'] = '</span></li>';
+    $config['num_tag_open'] = '<li class="page-item"><span class="page-link">';
+    $config['num_tag_close'] = '</span></li>';
 
-	$config['full_tag_open'] = '<ul class="pagination">';
-	$config['full_tag_close'] = '</ul>';
-	$config['first_link'] = 'First';
-	$config['last_link'] = 'Last';
-	$config['first_tag_open'] = '<li class="page-item"><span class="page-link">';
-	$config['first_tag_close'] = '</span></li>';
-	$config['prev_link'] = 'Previous';
-	$config['prev_tag_open'] = '<li class="page-item"><span class="page-link">';
-	$config['prev_tag_close'] = '</span></li>';
-	$config['next_link'] = 'Next';
-	$config['next_tag_open'] = '<li class="page-item"><span class="page-link">';
-	$config['next_tag_close'] = '</span></li>';
-	$config['last_tag_open'] = '<li class="page-item"><span class="page-link">';
-	$config['last_tag_close'] = '</span></li>';
-	$config['cur_tag_open'] = '<li class="page-item active"><span class="page-link">';
-	$config['cur_tag_close'] = '</span></li>';
-	$config['num_tag_open'] = '<li class="page-item"><span class="page-link">';
-	$config['num_tag_close'] = '</span></li>'; 
+    // Initialize pagination
+    $page = ($this->uri->segment(3)) ? $this->uri->segment(3) : 1;
+    $offset = ($page - 1) * $config['per_page'];
 
-	$page = ($this->uri->segment(3)) ? $this->uri->segment(3) : 1; // Set the default page to 1
-	$offset = ($page - 1) * $config['per_page'];
-	
-	$config['total_rows'] = $this->order_model->count_all_orders();
+    $this->pagination->initialize($config);
 
-	$this->pagination->initialize($config);
+    $loginuser = $this->session->userdata('LoginSession');
+    $data['user_id'] = $loginuser['id'];
 
-	$loginuser = $this->session->userdata('LoginSession');
+    // Fetch orders for the current month with pagination
+    $data['orders'] = $this->order_model->getmanageorder($config['per_page'], $offset);
+    $data['total_rows'] = $this->order_model->count_all_orders();
 
-	$data['user_id'] = $loginuser['id'];
-
-	$data['orders'] = $this->order_model->getmanageorder();
-
-	$data['total_rows'] = $this->order_model->count_all_orders();
-
-	$this->load->view('template/header.php', $data);
-	$user = $this->session->userdata('user_register');
-	$users = $this->session->userdata('normal_user');
-	$loginuser = $this->session->userdata('LoginSession');
-	//var_dump($loginuser);
-	$this->load->view('template/sidebar.php', array('user' => $user, 'users' => $users, 'data' => $data,'loginuser' => $loginuser));
-	$this->load->view('orders/manage_order.php', $data);
-	$this->load->view('template/footer.php');
+    // Load views
+    $this->load->view('template/header.php', $data);
+    $user = $this->session->userdata('user_register');
+    $users = $this->session->userdata('normal_user');
+    $this->load->view('template/sidebar.php', array('user' => $user, 'users' => $users, 'data' => $data, 'loginuser' => $loginuser));
+    $this->load->view('orders/manage_order.php', $data);
+    $this->load->view('template/footer.php');
 }
+
 
 
 public function printschedule()
