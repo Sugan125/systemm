@@ -564,26 +564,26 @@ public function update($id,$user_id)
 
 	public function getscheduleorder($schedule_date) {
 		$sql = "SELECT 
-			prod.product_id AS product_id,
-			prod.product_name AS product_name,
-			SUM(COALESCE(ordd.promo_qty, ordd.qty)) AS qty, 
-			ordd.id AS id, 
-			ordd.category AS category,
-			SUM(CASE WHEN ordd.seed_type = 'Black drizzle' THEN ordd.qty ELSE 0 END) AS black_drizzle_qty,
-			SUM(CASE WHEN ordd.seed_type = 'White drizzle' THEN ordd.qty ELSE 0 END) AS white_drizzle_qty,
-			SUM(CASE WHEN ordd.seed_type = 'White full seed' THEN ordd.qty ELSE 0 END) AS white_full_seed,
-			SUM(CASE WHEN ordd.seed_type = 'White black mix' THEN ordd.qty ELSE 0 END) AS white_black_mix,
-			SUM(CASE WHEN ordd.seed_type = 'Seedless' THEN ordd.qty ELSE 0 END) AS seedless_qty
-		FROM 
-			order_items ordd
-		JOIN 
-			products prod ON ordd.product_id = prod.id
-		WHERE 
-			DATE(ordd.delivery_date) = '$schedule_date' 
-		GROUP BY 
-			prod.product_id, prod.product_name, ordd.category
-		ORDER BY 
-			ordd.category";
+    prod.product_id AS product_id, 
+    prod.product_name AS product_name, 
+    SUM(COALESCE(ordd.promo_qty, ordd.qty)) AS qty, 
+    ordd.id AS id, 
+    ordd.category AS category, 
+    SUM(CASE WHEN TRIM(LOWER(ordd.seed_type)) = 'black drizzle' THEN ordd.qty ELSE 0 END) AS black_drizzle_qty, 
+    SUM(CASE WHEN TRIM(LOWER(ordd.seed_type)) = 'white drizzle' THEN ordd.qty ELSE 0 END) AS white_drizzle_qty, 
+    SUM(CASE WHEN TRIM(LOWER(ordd.seed_type)) LIKE '%full%' THEN ordd.qty ELSE 0 END) AS white_full_seed, 
+    SUM(CASE WHEN TRIM(LOWER(ordd.seed_type)) LIKE '%mix%' THEN ordd.qty ELSE 0 END) AS white_black_mix, 
+    SUM(CASE WHEN TRIM(LOWER(ordd.seed_type)) = 'seedless' THEN ordd.qty ELSE 0 END) AS seedless_qty 
+FROM 
+    order_items ordd 
+JOIN 
+    products prod ON ordd.product_id = prod.id 
+WHERE 
+    DATE(ordd.delivery_date) = '$schedule_date' 
+GROUP BY 
+    prod.product_id, prod.product_name, ordd.category 
+ORDER BY 
+    ordd.category";
 	
 		$query = $this->db->query($sql);
 	

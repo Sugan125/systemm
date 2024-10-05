@@ -127,9 +127,17 @@
             if ($row->seedless_qty > 0) {
                 $description_parts[] = "{$row->seedless_qty} Seedless";
             }
-
-            // Build the description string if there are parts
-            $description = !empty($description_parts) ? '(' . implode(', ', $description_parts) . ')' : '';
+            
+            // Build the description string
+            $description = '';
+            if (!empty($description_parts)) {
+                foreach ($description_parts as $part) {
+                    $description .= $row->product_name.'(' . $part . ')<br>'; // Wrap each part in its own brackets and add a line break
+                }
+            }
+            else{
+                $description = !empty($description_parts) ? '(' . implode(', ', $description_parts) . ')' : '';
+            }
             
             // Update previous category
             $previous_category = $row->category;
@@ -138,8 +146,10 @@
                 <td><?= $row->id; ?></td>
                 <td><?= $row->product_id; ?></td>
                 <td style="width: 300px;">
-                    <?= $row->product_name; ?> <?= $description ?>
+                  
+                    <?= !empty($description_parts) ? $description : $row->product_name;; ?> <!-- Output the description with each part in brackets and new lines -->
                 </td>
+                
                 <td><?= $row->category; ?></td>
                 <td>0</td>
                 <td>0</td>
@@ -147,6 +157,7 @@
                 <td><?= $row->qty; ?></td>
                 <td>pc</td>
             </tr>
+            <tr><td colspan="9" style="border-top: 1px solid black;"></td></tr>
         <?php endforeach; ?>
         <!-- Total quantity row -->
         <tr>
