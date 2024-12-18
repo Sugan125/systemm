@@ -449,7 +449,7 @@ ini_set('max_execution_time', 300);
         $schedule_date = strtotime($row->created_date);
         $date = date('d-m-Y', strtotime($row->delivery_date));
         $rate = $row->rate;
-
+        $rate = (float)$row->rate;
         $inc_tax = $rate * 1.09;
 
         if (is_numeric($row->delivery_date)) {

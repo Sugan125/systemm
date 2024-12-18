@@ -258,10 +258,11 @@
             $image_data = file_get_contents($image_path);
             $base64_image = base64_encode($image_data);
             ?>
-        <p><img src="data:image/jpeg;base64,<?php echo $base64_image; ?>" height="100" width="auto" style="float: right;"></p><br><br><br><br>
+        <p><img src="data:image/jpeg;base64,<?php echo $base64_image; ?>" height="200" width="auto" style="float: right;"></p><br><br><br><br>
+        <br><br><br><br><br><br><br><br>
         <p><span style="float: right;">Paynow: T12LL1071J</span></p>
       </div>
-      <br><br><br><br><br><br>
+      <br><br><br><br><br><br><br><br><br><br><br><br><br><br>
       <div style="box-sizing: border-box;width: 100%;padding-bottom: 10px;">
       <p> </p>
       </div>

@@ -526,7 +526,7 @@ minDate.setDate(today.getDate() + 0);
 
 // Set the maximum date for the pre-order input field (10 days from now)
 var maxDate = new Date(today);
-maxDate.setDate(today.getDate() + 10);
+maxDate.setDate(today.getDate() + 20);
 
 // Function to check if a given date is a Sunday (now unused)
 function isSunday(date) {

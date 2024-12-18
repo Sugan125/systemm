@@ -247,7 +247,7 @@ endforeach;
        <p>All cheque should be made payable to <b>"Sourdough Factory LLP"</b><br>Bank transfer: <b>DBS</b><br>Bank Account Number: <b>072 000 7590</b></p>
        </div>
        <div class="col-sm-5 col-xs-12" style="padding: 0px;float: right;display: grid;">
-       <p><img src="<?php echo base_url('images/pay-now.jpg'); ?>" height="100" width="auto" style="float: right;"></p><p><span style="float: right;">Paynow: T12LL1071J</span></p></div>
+       <p><img src="<?php echo base_url('images/pay-now.jpg'); ?>" height="230" width="auto" style="float: right;"></p><p><span style="float: right;">Paynow: T12LL1071J</span></p></div>
        <div class="col-sm-12 col-xs-12" style="padding: 0px;">
 
        <div style="box-sizing: border-box;width: 100%;padding-bottom: 10px;">
