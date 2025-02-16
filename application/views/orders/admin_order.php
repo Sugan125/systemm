@@ -1,6 +1,41 @@
 
 <head>
 <style>
+    input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.number-input {
+  position: relative;
+  width: fit-content;
+}
+
+input {
+  width: 60px;
+}
+
+.spinners {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  display: flex;
+  flex-direction: column;
+  width: fit-content;
+  margin: 1px;
+  transform: translateX(-7px) translateY(-11px);
+}
+
+.spinner {
+  font-size: 7px;
+  border: none;
+  padding: 0 1px;
+}
+
+.spinner:hover {
+  background: lightgrey;
+}
     .msg{
       margin-left: 440px; 
     }
@@ -146,7 +181,15 @@
                         </td>
                         <td>
                         <input type="hidden" name="minn" id="minn" class="form-control" autocomplete="off">
-                          <input type="number" name="qty[]" id="qty_1" class="form-control" required onkeyup="getTotal(1)"></td>
+                        <input type="hidden" name="minns" id="minn_1" class="form-control" autocomplete="off">
+                          <div class="number-input">
+                            <input type="number" name="qty[]" id="qty_1" class="form-control" required onkeyup="getTotal(1)">
+                            <div class="spinners">
+                              <button class="spinner increment">&#9650;</button>
+                              <button class="spinner decrement">&#9660;</button>
+                            </div>
+                          </div>
+                        </td>
                           <input type="hidden" name="total_qty[]" id="total_qty_1" class="form-control" autocomplete="off">
                         <td>
                             <input type="text" name="rate[]" id="rate_1" class="form-control" disabled autocomplete="off">
@@ -367,6 +410,68 @@
 <script src="<?= base_url();?>public/plugins/pikaday/moment.min.js"></script>
 
 <script type="text/javascript">
+    
+$(document).ready(function () {
+  
+  // Use event delegation for dynamic rows
+  $("#product_info_table").on("click", ".increment", function (event) {
+      event.preventDefault();  // Prevent the form from submitting
+      
+      var row_id = $(this).closest("tr").attr("id").split("_")[1]; // Get row_id based on row's id attribute
+      if(row_id == 1){
+        var minus = 1;
+      }
+      else{
+        var minus = 0;
+      }
+      var currentValue = parseInt($("#qty_" + row_id).val() - minus) || 0; // Get the current value of the qty input
+      var step = parseInt($("#minn_" + row_id).val()) || 1; // Get the step value (default to 1 if undefined)
+      var newValue = currentValue + step;
+      
+      $("#qty_" + row_id).val(newValue).trigger("change");
+      subAmount();
+      getTotal(row_id); 
+  });
+
+  $("#product_info_table").on("click", ".decrement", function (event) {
+      event.preventDefault();  
+      
+      var row_id = $(this).closest("tr").attr("id").split("_")[1]; // Get row_id based on row's id attribute
+      if(row_id == 1){
+        var minus = 1;
+      }
+      else{
+        var minus = 0;
+      }
+      var currentValue = parseInt($("#qty_" + row_id).val()) || 0; // Get the current value of the qty input
+      var step = parseInt($("#minn_" + row_id).val()) || 1; // Get the step value (default to 1 if undefined)
+      var newValue = (currentValue+minus) - step;
+      var minValue = 0; // Minimum value (you can adjust this based on your needs)
+      
+      if (newValue < minValue) {
+          newValue = minValue; 
+      }
+
+      $("#qty_" + row_id).val(newValue).trigger("change"); // Update the qty input for this row
+      subAmount();
+      getTotal(row_id); 
+  });
+});
+
+
+
+  const input = document.querySelector('input[type=number]')
+
+const increment = () => {
+  input.value = Number(input.value) + 1
+}
+const decrement = () => {
+  input.value = Number(input.value) - 1
+}
+
+document.querySelector('.spinner.increment').addEventListener('click', increment)
+document.querySelector('.spinner.decrement').addEventListener('click', decrement)
+
     document.addEventListener('DOMContentLoaded', function () {
         document.querySelector('select[name="user_id"]').addEventListener('change', function () {
         var userId = this.value;
@@ -713,7 +818,12 @@ $("#add_row").unbind('click').bind('click', function() {
                     '<option value="White black mix">White black mix</option>'+
                 '</select>'+
             '</td>'+
-            '<td><input type="hidden" name="minn" id="minn" class="form-control" autocomplete="off"><input type="number" name="qty[]" id="qty_'+row_id+'" class="form-control" onkeyup="getTotal('+row_id+')">'+
+            '<td><input type="hidden" name="minn" id="minn" class="form-control" autocomplete="off"><input type="hidden" name="minns" id="minn_'+row_id+'" class="form-control" autocomplete="off">'+
+                ' <div class="number-input"><input type="number" name="qty[]" id="qty_'+row_id+'" class="form-control" onkeyup="getTotal('+row_id+')">'+
+                '<div class="spinners">'+
+                '<button class="spinner increment">&#9650;</button>'+
+                '<button class="spinner decrement">&#9660;</button>'+
+                '</div></div>'+
             '<input type="hidden" name="total_qty[]" id="total_qty_'+row_id+'" class="form-control" autocomplete="off">'+
             '</td>'+
             '<td><input type="text" name="rate[]" id="rate_'+row_id+'" class="form-control" disabled><input type="hidden" name="rate_value[]" id="rate_value_'+row_id+'" class="form-control"></td>'+
@@ -805,7 +915,7 @@ $('#product_info_table').on('change', '.sliced', function() {
 }); // /document
 $(document).on('keyup change', 'input[name="qty[]"]', function() { // Listen to both 'keyup' and 'change' events
     var row_id = $(this).attr('id').split('_')[1];
-    var min_order = parseFloat($("#minn").val()) || 1;
+    var min_order = parseFloat($("#minn_"+row_id).val()) || 1;
     var qty = parseFloat($(this).val());
 // Sample selection check
 if ($('#sample_'+row_id).is(':checked')) {
@@ -974,7 +1084,7 @@ $(document).on('input', 'input[name^="qty"]', function() {
 $('#product_info_table').on('change', 'input[name^="qty"]', function() {
     var rowId = $(this).attr('id').split('_')[1];
     var minOrder = parseInt($('#minn').val()); // Get the stored min_order value
-
+    var minOrder = parseInt($("#minn_"+rowId).val());
     if ($('#sample_'+rowId).is(':checked')) {
         $(this).val($(this).val());
         }
@@ -1124,6 +1234,7 @@ function getProductData(row_id) {
 
                     if (response.min_order !== undefined && response.min_order !== null && response.min_order !== "") {
                         $('#minn').val(response.min_order);
+                        $("#minn_" + row_id).val(response.min_order);
                         $("#qty_" + row_id).val(response.min_order);
                         $("#qty_" + row_id).prop('step', response.min_order);
                         $("#qty_value_" + row_id).val(response.min_order);

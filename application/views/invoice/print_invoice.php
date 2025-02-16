@@ -61,7 +61,7 @@
 
       </div>
       <div class="col-sm-12 col-xs-12" style="padding: 30px 0px;">
-      <b>Salesman:</b> Henri<br>
+      <b>Salesman:</b> <?php echo $order_data['sales_person']; ?><br>
       <b>Delivery Date: </b><?php echo date('d/m/Y', strtotime($order_data['delivery_date'])); ?>
       </div> 
       </div>

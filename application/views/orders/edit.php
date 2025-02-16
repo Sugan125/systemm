@@ -141,7 +141,7 @@
                                   </select>
                               </td>
                             <td><input type="number" name="qty[]" id="qty_<?php echo $x; ?>" class="form-control" required onkeyup="getTotal(<?php echo $x; ?>)" value="<?php echo $val['qty'] ?>" autocomplete="off">
-                            <input type="hidden" name="total_qty[]" id="total_qty_1" class="form-control" autocomplete="off">
+                            <input type="hidden" name="total_qty[]" id="total_qty_<?php echo $x; ?>" class="form-control" autocomplete="off">
 
                         </td>
                             <td>
@@ -446,6 +446,32 @@ preOrderInput.addEventListener('input', function() {
   var userInteracted = false;  
 
   $(document).ready(function() {
+
+    $('#product_info_table tbody tr').each(function() {
+    var rowId = $(this).attr('id').split('_')[1];
+    var qty = parseFloat($("#qty_" + rowId).val());
+
+    if (qty) {
+        var productId = $("#product_" + rowId).val();
+      
+        
+        // Call the function and handle the response inside the callback
+        $.ajax({
+            url: '<?php echo base_url('index.php/orders/getProductValueById'); ?>',
+            type: 'post',
+            data: { product_id: productId },
+            dataType: 'json',
+            success: function(response) {
+                console.log('response', response);
+                if (response && response.promotion == 1) {
+                    applyPromotionRule(rowId, qty, response.promo_rule_buy, response.promo_rule_free, response.product_id, response.product_name);
+                }
+            }
+        });
+    }
+});
+
+
     setInitialSteps();
 
     function checkSampleChecked() {
@@ -718,8 +744,7 @@ function updatePromotionAcrossRows(changedRowId) {
 
 
 function applyPromotionRule(row_id, qty, promotionRuleN, promotionRuleM, product_id, product_name) {
-    // Reset total quantity before recalculating
-    $("#total_qty_" + row_id).val(qty);
+
 
     if (promotionRuleN && promotionRuleM) {
         var freeQty = Math.floor(qty / promotionRuleN) * promotionRuleM;
@@ -732,13 +757,13 @@ function applyPromotionRule(row_id, qty, promotionRuleN, promotionRuleM, product
       }
     }
 
-    // Optional: Show promotion details in the modal if needed
-    // Construct dynamic promotion details
+   
 }
 
 function getProductDatas(row_id) {
     var product_id = $("#product_" + row_id).val();
     if (product_id == "") {
+        // Reset fields
         $("#rate_" + row_id).val("");
         $("#rate_value_" + row_id).val("");
         $("#qty_" + row_id).val("");
@@ -751,7 +776,6 @@ function getProductDatas(row_id) {
             data: { product_id: product_id },
             dataType: 'json',
             success: function(response) {
-                // Show promotion modal for product IDs 55 and 65
                 if (response.promotion == 1) {
                     var qty = parseFloat($("#qty_" + row_id).val());
                     applyPromotionRule(row_id, qty, response.promo_rule_buy, response.promo_rule_free, response.product_id, response.product_name);
@@ -765,14 +789,18 @@ function getProductDatas(row_id) {
 }
 
 
+
+
 $('#product_info_table').on('change', 'input[name^="qty"]', function() {
     
     var rowId = $(this).attr('id').split('_')[1];
-    var minOrder = parseInt($('#minn').val()); // Get the stored min_order value
+    var qty = parseFloat($(this).val());
+   
 
     if ($('#sample_'+rowId).is(':checked')) {
         $(this).val($(this).val());
         }
+
 
     // If the input value is less than the min_order value, set it to min_order
     else  if ($(this).val() < minOrder) {
@@ -793,6 +821,7 @@ $('#product_info_table').on('change', 'input[name^="qty"]', function() {
         });
     }
 
+    
     getTotal(rowId);
 });
 
