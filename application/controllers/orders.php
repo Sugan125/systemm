@@ -1402,40 +1402,47 @@ public function send_invoices_for_today()
 
     $today = date('Y-m-d');
 
+    //echo $today;
+    //exit;
+
     // Fetch orders with today's delivery date
-    $this->db->select('orders.bill_no, user_register.email');
+    $this->db->select('orders.bill_no, user_register.email, user_register.primary_email, user_register.secondary_email');
     $this->db->from('orders');
     $this->db->join('user_register', 'orders.user_id = user_register.id');
     $this->db->where('orders.delivery_date', $today);
+   
     $query = $this->db->get();
     $orders = $query->result();
 
     // Email configuration
     $config['protocol']  = 'smtp';
     $config['smtp_host'] = 'ssl://mail.sourdoughfactory.com.sg';
-    $config['smtp_host'] = 'ssl://mail.sourdoughfactory.com.sg';
     $config['smtp_port'] = '465';
-    $config['smtp_timeout'] = '7';
-    $config['smtp_user']  = 'finance@sourdoughfactory.com.sg'; // Remove 'mailto:' prefix
-    $config['smtp_pass'] = 'achr3420';
+    $config['smtp_timeout'] = '180';
+    $config['smtp_user']  = 'finance@sourdoughfactory.com.sg';
+    $config['smtp_pass'] = 'Sourdough0705';
     $config['charset'] = 'utf-8';
     $config['newline']  = "\r\n";
-    $config['mailtype'] = 'text'; // or html
     $config['mailtype'] = 'text'; // or html
     $config['validation'] = TRUE;
 
     $this->load->library('email', $config); // Load email library with configuration
 
     $from_email = 'finance@sourdoughfactory.com.sg'; // Set from email
-		
 
     foreach ($orders as $order) {
         $bill_no = $order->bill_no;
-       // $toemail = $order->email;
+        $toemail = $order->email;
+        $primaryemail = $order->primary_email;
+        $secondaryemail = $order->secondary_email;
+       //$toemail = 'suganyaulagu8@gmail.com';
 
-       $toemail = 'suganyaulagu8@gmail.com';
+        $recipients = array_filter([$toemail, $primaryemail, $secondaryemail]);
 
-        $this->email->initialize($config);
+        if (empty($recipients)) {
+            log_message('error', "No valid email addresses for invoice $bill_no.");
+            continue; // Skip this iteration if no valid emails
+        }
 
         // Initialize email configuration for each iteration
         $this->email->initialize($config);
@@ -1448,7 +1455,8 @@ public function send_invoices_for_today()
         $msg = "Hi,\n\nPlease find the attached invoice for your review and processing:\nInvoice No: $bill_no\nDate: $current_date_time\n\nBest regards,\nThe Sourdough Factory Team";
 
         $this->email->from($from_email, 'Sourdough Factory');
-        $this->email->to($toemail);
+      //  $this->email->to($toemail);
+        $this->email->to($recipients); // Send to multiple emails
         $this->email->subject($subject);
         $this->email->message($msg);
 
@@ -1456,15 +1464,27 @@ public function send_invoices_for_today()
         $file_path = FCPATH . 'files/invoice_' . $bill_no . '.pdf';
         $this->email->attach($file_path);
 
-        if ($this->email->send()) {
-            // Optionally, log successful email sending
-            log_message('info', "Invoice $bill_no sent to $toemail.");
-        } else {
-            // Optionally, log email sending failure
-            log_message('error', "Failed to send invoice $bill_no to $toemail.");
+        // Attempt to send the email with retry mechanism
+        $max_retries = 3; // Maximum number of retries
+        $retry_delay = 30; // Delay in seconds before retrying
+
+        $retry_count = 0;
+        while ($retry_count < $max_retries) {
+            if ($this->email->send()) {
+                // Log successful email sending
+                log_message('info', "Invoice $bill_no sent to $toemail.");
+                break; // Exit loop on successful send
+            } else {
+                // Log email sending failure with error message
+                log_message('error', "Failed to send invoice $bill_no to $toemail: " . $this->email->print_debugger());
+
+                // Increment retry count and wait before retrying
+                $retry_count++;
+                sleep($retry_delay);
+            }
         }
 
-        // Clear attachments for the next iteration
+        // Clear attachments and reset for the next iteration
         $this->email->clear(TRUE);
     }
 }
