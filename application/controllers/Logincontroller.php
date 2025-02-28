@@ -139,8 +139,13 @@ class Logincontroller extends CI_Controller {
 				//	exit;
                     $this->session->set_userdata('normal_user', $user);
                 }
-
-                redirect(base_url('index.php/Dashboardcontroller'));
+			
+				if ($user->terms_agreed == 0 && $user->role == 'User') {
+					redirect(base_url('index.php/Terms_conditions/')); // Redirect to terms page if not agreed
+				} else {
+					redirect(base_url('index.php/Dashboardcontroller'));
+				}
+                
             } else {
                 $this->session->set_flashdata('error', 'User Name or Password is Wrong');
                 redirect(base_url('index.php/Logincontroller/index'));
