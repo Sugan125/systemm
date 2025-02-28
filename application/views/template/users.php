@@ -82,7 +82,7 @@
       <th>Company Name</th>
       <th>Brand Name</th>
       <th>Sales Person Name</th>
-      <th>Company Email</th>
+      <th>Company Emails</th>
       <th>Office Address</th>
       <th>Shipping Address</th>
       <th>Shipping Address2</th>
@@ -130,7 +130,7 @@
         <td><?= $row->company_name; ?></td>
         <td><?= $row->brand_name; ?></td>
         <td><?= $row->sales_person; ?></td>
-        <td><?= $row->email; ?></td>
+        <td><?= $row->email; ?><br><?= $row->primary_email; ?><br><?= $row->secondary_email; ?></td>
         <td><?= ($row->address ? $row->address . ', ' : '') . ($row->address_line2 ? $row->address_line2 . ', ' : '') . ($row->address_line3 ? $row->address_line3 . ', ' : '') . ($row->address_line4 ? $row->address_line4 . ', ' : '') . ($row->address_city ? $row->address_city . ', ' : '') . ($row->address_postcode ? $row->address_postcode : ''); ?></td>
         <td><?= ($row->delivery_address ? $row->delivery_address . ', ' : '') . ($row->delivery_address_line2 ? $row->delivery_address_line2 . ', ' : '') . ($row->delivery_address_line3 ? $row->delivery_address_line3 . ', ' : '') . ($row->delivery_address_line4 ? $row->delivery_address_line4 . ', ' : '') . ($row->delivery_address_city ? $row->delivery_address_city . ', ' : '') . ($row->delivery_address_postcode ? $row->delivery_address_postcode : ''); ?></td>
         <td><?= ($row->address2 ? $row->address2 . ', ' : '') . ($row->address2_line2 ? $row->address2_line2 . ', ' : '') . ($row->address2_line3 ? $row->address2_line3 . ', ' : '') . ($row->address2_line4 ? $row->address2_line4 . ', ' : '') . ($row->address2_city ? $row->address2_city . ', ' : '') . ($row->address2_postcode ? $row->address2_postcode : ''); ?></td>
@@ -190,7 +190,7 @@
              <th>User Name</th>
              <th>Company Name</th>
              <th>Brand Name</th>
-             <th>Company Email</th>
+             <th>Company Emails</th>
              <th>Office Address</th>
              <th>Shipping Address</th>
              <th>Shipping Address2</th>
@@ -209,7 +209,7 @@
                <td><?=  $loginuser['name']; ?></td>
                <td><?=  $loginuser['company_name']; ?></td>
                <td><?=  $loginuser['brand_name']; ?></td>
-               <td><?= $loginuser['email']; ?></td>
+               <td><?= $loginuser['email']; ?><br><?=  $loginuser['primary_email']; ?><br><?= $loginuser['secondary_email']; ?></td>
                <td><?= ($loginuser['address'] ? $loginuser['address'] . ', ' : '') . ($loginuser['address_line2'] ? $loginuser['address_line2'] . ', ' : '') . ($loginuser['address_line3'] ? $loginuser['address_line3'] . ', ' : '') . ($loginuser['address_line4'] ? $loginuser['address_line4'] . ', ' : '') . ($loginuser['address_city'] ? $loginuser['address_city'] . ', ' : '') . ($loginuser['address_postcode'] ? $loginuser['address_postcode'] : ''); ?></td>
               <td><?= ($loginuser['delivery_address'] ? $loginuser['delivery_address'] . ', ' : '') . ($loginuser['delivery_address_line2'] ? $loginuser['delivery_address_line2'] . ', ' : '') . ($loginuser['delivery_address_line3'] ? $loginuser['delivery_address_line3'] . ', ' : '') . ($loginuser['delivery_address_line4'] ? $loginuser['delivery_address_line4'] . ', ' : '') . ($loginuser['delivery_address_city'] ? $loginuser['delivery_address_city'] . ', ' : '') . ($loginuser['delivery_address_postcode'] ? $loginuser['delivery_address_postcode'] : ''); ?></td>
               <td><?= ($loginuser['address2'] ? $loginuser['address2'] . ', ' : '') . ($loginuser['address2_line2'] ? $loginuser['address2_line2'] . ', ' : '') . ($loginuser['address2_line3'] ? $loginuser['address2_line3'] . ', ' : '') . ($loginuser['address2_line4'] ? $loginuser['address2_line4'] . ', ' : '') . ($loginuser['address2_city'] ? $loginuser['address2_city'] . ', ' : '') . ($loginuser['address2_postcode'] ? $loginuser['address2_postcode'] : ''); ?></td>

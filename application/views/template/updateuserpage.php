@@ -64,13 +64,31 @@
                   <input type="text" name="brand_name" class="form-control" value="<?= $row->brand_name; ?>" placeholder="Brand Name">
                 </div>
                 
-                  <label>Company Email</label>
+                  <label>Company Email 1</label>
                   <div class="input-group mb-3" id="input_size" >
                     
                   <div class="input-group-prepend">
                     <span class="input-group-text"><i class="fas fa-envelope"></i></span>
                   </div>
                   <input type="email" id="input_size" name="email" class="form-control" placeholder="Enter Email" value="<?= $row->email; ?>" required>
+                </div>
+
+
+                <label>Company Email 2</label>
+                  <div class="input-group mb-3" id="input_size" >
+                    
+                  <div class="input-group-prepend">
+                    <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                  </div>
+                  <input type="email" id="input_size" name="primaryemail" class="form-control" placeholder="Enter Email" value="<?= $row->primary_email; ?>" required>
+                </div>
+                <label>Company Email 3</label>
+                  <div class="input-group mb-3" id="input_size" >
+                    
+                  <div class="input-group-prepend">
+                    <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                  </div>
+                  <input type="email" id="input_size" name="secondaryemail" class="form-control" placeholder="Enter Email" value="<?= $row->secondary_email; ?>" required>
                 </div>
 
                 <label>Sales Person</label>

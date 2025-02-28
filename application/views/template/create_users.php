@@ -66,12 +66,28 @@
         <input type="text" name="brand_name" class="form-control" placeholder="Brand Name">
     </div>
                 
-    <label>Company Email</label>
+    <label>Company Email 1</label>
     <div class="input-group mb-3" id="input_size">    
         <div class="input-group-prepend">
             <span class="input-group-text"><i class="fas fa-envelope"></i></span>
         </div>
-        <input type="email" name="email" class="form-control" placeholder="Enter Email" required>
+        <input type="email" name="email" class="form-control" placeholder="Enter Email 1" required>
+    </div>
+
+    <label>Company Email 2</label>
+    <div class="input-group mb-3" id="input_size">    
+        <div class="input-group-prepend">
+            <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+        </div>
+        <input type="email" name="primaryemail" class="form-control" placeholder="Enter Email 2" required>
+    </div>
+
+    <label>Company Email 3</label>
+    <div class="input-group mb-3" id="input_size">    
+        <div class="input-group-prepend">
+            <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+        </div>
+        <input type="email" name="secondaryemail" class="form-control" placeholder="Enter Email 3" required>
     </div>
 
     <label>Sales Person</label>
