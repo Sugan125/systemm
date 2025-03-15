@@ -287,6 +287,27 @@
     <?php } ?>
 
 
+    <?php if ((in_array('Admin', $roles) || in_array('Owner', $roles))){ ?>
+    
+
+    <li class="nav-item">
+        <a href="#" class="nav-link toggle-orders">
+            <i class="menu-icon fa fa-clipboard"></i>
+            <span>Sale Agreement</span>
+            <span class="pull-right-container">
+                <i class="fa fa-angle-down pull-right" style="line-height: 2.1;"></i>
+            </span>
+        </a>
+        <ul class="treeview-menu" style="display: none;">
+        <?php if ((in_array('Admin', $roles) || in_array('Owner', $roles))){ ?>
+        <li class="nav-item"><a href="<?php echo base_url('index.php/orders/print_agreement/'); ?>"  class="nav-link"><i class="fas fa-print"></i>  Print Agreement</a></li>
+        <?php }  ?>
+    </ul>
+    </li>
+
+    <?php } ?>
+
+
 <!--- REPORTS ADMIN MENU END  -->
 <!--       
 

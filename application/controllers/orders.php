@@ -1490,4 +1490,46 @@ public function send_invoices_for_today()
 }
 
 
+
+public function print_agreement()
+	{
+    $data['print'] = 'print';
+
+	$loginuser = $this->session->userdata('LoginSession');
+	
+	$data['user_id'] = $loginuser['id'];
+
+	$user_id = $data['user_id'];
+
+	$data["employee_data"] = $this->excel_export_model->fetch_data();
+	$data['userss'] = $this->user_model->get_agreedusers();
+    $this->load->view('template/header.php', $data);
+    $user = $this->session->userdata('user_register');
+    $users = $this->session->userdata('normal_user');
+    $loginuser = $this->session->userdata('LoginSession');
+	$this->load->view('template/sidebar.php', array('user' => $user, 'users' => $users, 'data' => $data,'loginuser' => $loginuser));
+	$this->load->view('agreement/download_agreement.php', array('data' => $data,));
+	$this->load->view('template/footer.php');
+}
+
+public function downloadagreemnt()
+{
+    $this->load->helper('download'); // Load the download helper
+
+    $user_name = $this->input->post('user_name'); // Ensure the correct input field name
+    $loginuser = $this->session->userdata('LoginSession');
+
+    $user_id = $loginuser['id'];
+    
+    $filename = '\Agreement_of_User_' . $user_name . '.pdf';
+    $filepath = FCPATH . 'agreements' . $filename;
+
+    if (file_exists($filepath)) {
+        // Force file download
+        force_download($filepath, NULL);
+    } else {
+        echo "File not found for Customer: " . $filepath;
+    }
+}
+
 }

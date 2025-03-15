@@ -78,7 +78,7 @@ class Terms_conditions extends CI_Controller
             $dompdf->setPaper('A4', 'portrait');    
             $dompdf->render();
 
-            $filename = "terms_agreed_user_" . $user_name . '.pdf';
+            $filename = "Agreement_of_User_" . $user_name . '.pdf';
             $filepath = FCPATH . 'agreements/' . $filename;
             file_put_contents($filepath, $dompdf->output());
 

@@ -568,6 +568,11 @@ document.querySelector('.spinner.decrement').addEventListener('click', decrement
         return date.getDay() === 0; // 0 represents Sunday
     }
 
+    function disableSpecificDate(date) {
+    var disabledDate = new Date(2025, 2, 31); // March is month index 2 (0-based index)
+    return date.getTime() === disabledDate.getTime();
+}
+
     var picker = new Pikaday({
         field: document.getElementById('pre_order'),
         minDate: minDate,
@@ -582,6 +587,9 @@ document.querySelector('.spinner.decrement').addEventListener('click', decrement
         parse(dateString, format) {
             // Parse the date from the format YYYY-MM-DD
             return moment(dateString, 'YYYY-MM-DD').toDate();
+        },
+        disableDayFn: function(date) {
+        return isSunday(date) || disableSpecificDate(date);
         },
         onSelect: function(date) {
             // Validate the selected date

@@ -277,5 +277,11 @@ public function get_activeusers() {
   return $this->db->get('user_register')->result();
 }
 
+public function get_agreedusers() {
+  $this->db->where('terms_agreed', 1);
+  $this->db->order_by('name', 'ASC');
+  return $this->db->get('user_register')->result();
+}
+
 
 }
