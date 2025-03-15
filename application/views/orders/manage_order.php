@@ -235,6 +235,7 @@ $orderdate = isset($orderdate) ? date('Y-m-d', strtotime($orderdate)) : '';
         </div>
         <!-- /.modal-dialog -->
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script type="text/javascript">
   // Trigger form submission on date selection
@@ -307,6 +308,7 @@ $orderdate = isset($orderdate) ? date('Y-m-d', strtotime($orderdate)) : '';
         }
        
     </script>
+    
 <script>
      document.addEventListener('DOMContentLoaded', function () {
         // Select the delete-order class
@@ -318,27 +320,16 @@ $orderdate = isset($orderdate) ? date('Y-m-d', strtotime($orderdate)) : '';
                 event.preventDefault(); // Prevent the default action
 
                 // Show SweetAlert confirmation dialog
-                swal({
-        title: "Are you sure?",
-        text: "You want to delete this order?",
-        icon: "warning",
-        buttons: {
-            cancel: {
-                text: "Cancel",
-                value: false,
-                visible: true,
-                className: "btn btn-default",
-                closeModal: true
-            },
-            confirm: {
-                text: "Delete",
-                value: true,
-                visible: true,
-                className: "btn btn-success",
-                closeModal: true
-            }
-        }
-    }).then((confirmed) => {
+                Swal.fire({
+    title: "Are you sure?",
+    text: "You want to delete this order?",
+    icon: "warning",
+    showCancelButton: true,  // Show cancel button
+    confirmButtonText: "Delete",  // Text for the confirm button
+    cancelButtonText: "Cancel",  // Text for the cancel button
+    confirmButtonColor: "#3085d6", // Customize the confirm button color (optional)
+    cancelButtonColor: "#d33",  // Customize the cancel button color (optional)
+}).then((confirmed) => {
         if (confirmed) {
             // Proceed with form submission
             deleteOrder(button.href);

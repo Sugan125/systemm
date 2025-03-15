@@ -486,6 +486,9 @@ input {
 
 <script src="<?= base_url();?>public/plugins/pikaday/pikaday.js"></script>
 <script src="<?= base_url();?>public/plugins/pikaday/moment.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
 <script type="text/javascript">
 
 $(document).ready(function () {
@@ -615,7 +618,7 @@ document.querySelector('.spinner.decrement').addEventListener('click', decrement
 function openModal() {
     var deliveryDateInput = document.getElementById('pre_order');
     if (!deliveryDateInput.value) {
-      swal("Delivery Date", "Please select a delivery date before creating the order.", "warning");
+      swal.fire("Delivery Date", "Please select a delivery date before creating the order.", "warning");
     } else {
       $('#myModal').modal('show');
     }
@@ -794,19 +797,11 @@ $('#product_info_table').on('change', 'input[name^="qty"]', function() {
     // If the input value is less than the min_order value, set it to min_order
     if ($(this).val() < minOrder) {
       $(this).val(minOrder);
-      swal({
+      swal.fire({
           title: "Minimum Order Quantity",
           text: "You cannot order less than the minimum quantity.",
           icon: "warning",
-          buttons: {
-            confirm: {
-              text: "OK",
-              value: true,
-              visible: true,
-              className: "btn btn-primary",
-              closeModal: true
-            }
-          }
+          confirmButtonText: "OK"
         });
     }
 
@@ -989,19 +984,11 @@ function removeRow(tr_id) {
     } else if (qty % min_order !== 0) {
         qty = Math.floor(qty / min_order) * min_order;
         $(this).val(qty);
-        swal({
+        swal.fire({
           title: "Minimum Order Quantity",
           text: 'Quantity must be a multiple of the minimum order value (' + min_order + ').',
           icon: "warning",
-          buttons: {
-            confirm: {
-              text: "OK",
-              value: true,
-              visible: true,
-              className: "btn btn-primary",
-              closeModal: true
-            }
-          }
+          confirmButtonText: "OK"
         });
     } else {
         $('#msg').html('');
@@ -1248,7 +1235,7 @@ function handleNext() {
     $('#shipping_address_postcode').val(shipping_address_postcode);
 
     $('#myModal').modal('hide');
-    swal("Address Updated!", "You can now proceed to create the order.", "success").then((value) => {
+    swal.fire("Address Updated!", "You can now proceed to create the order.", "success").then((value) => {
         confirmSubmission(event);
     });
 }
@@ -1263,11 +1250,11 @@ function confirmSubmission(event) {
 
     // Check if the delivery charge is 20
     if (deliveryCharge === 20) {
-        swal({
+        swal.fire({
             title: "Warning",
             text: "Under $80 MOQ, a $20 fee will be imposed. Please add more items to avoid delivery charges.",
             icon: "info",
-            buttons:"Ok",
+            confirmButtonText: "OK"
         }).then((willContinue) => {
             if (willContinue) {
                 // Proceed with the rest of the confirmation
@@ -1285,26 +1272,15 @@ function confirmOrder() {
     var form = document.getElementById('create_orders');
 
     // Show SweetAlert confirmation dialog
-    swal({
+    Swal.fire({
         title: "You are about to confirm this order?",
-        text: "An E-invoice will be sent to your Finance on the delivery day. A hard copy invoice will also be provided.",
+        text: "An E-invoice will be sent to your Finance on the delivery day. A hard copy invoice will also be provided.",
         icon: "warning",
-        buttons: {
-            cancel: {
-                text: "Cancel",
-                value: false,
-                visible: true,
-                className: "btn btn-default",
-                closeModal: true // This will close the modal if cancel is clicked
-            },
-            confirm: {
-                text: "Create Order",
-                value: true,
-                visible: true,
-                className: "btn btn-success",
-                closeModal: true
-            }
-        }
+        showCancelButton: true,
+        cancelButtonText: "Cancel",
+        confirmButtonText: "Create Order",
+        confirmButtonColor: "#3085d6",  // Optional: Customize confirm button color
+        cancelButtonColor: "#d33",      // Optional: Customize cancel button color
     }).then((confirmed) => {
         if (confirmed) {
             // Proceed with form submission

@@ -390,6 +390,8 @@
     </div>
   </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
   <script type="text/javascript">   
    
    var today = new Date();
@@ -645,19 +647,11 @@ $(document).on('keyup change', 'input[name="qty[]"]', function() { // Listen to 
     } else if (qty % min_order !== 0) {
         qty = Math.floor(qty / min_order) * min_order;
         $(this).val(qty);
-        swal({
+        swal.fire({
           title: "Minimum Order Quantity",
           text: 'Quantity must be a multiple of the minimum order value (' + min_order + ').',
           icon: "warning",
-          buttons: {
-            confirm: {
-              text: "OK",
-              value: true,
-              visible: true,
-              className: "btn btn-primary",
-              closeModal: true
-            }
-          }
+          confirmButtonText: "OK"
         });
     } else {
         $('#msg').html('');
@@ -805,19 +799,11 @@ $('#product_info_table').on('change', 'input[name^="qty"]', function() {
     // If the input value is less than the min_order value, set it to min_order
     else  if ($(this).val() < minOrder) {
       $(this).val(minOrder);
-      swal({
+      swal.fire({
           title: "Minimum Order Quantity",
           text: "You cannot order less than the minimum quantity.",
           icon: "warning",
-          buttons: {
-            confirm: {
-              text: "OK",
-              value: true,
-              visible: true,
-              className: "btn btn-primary",
-              closeModal: true
-            }
-          }
+          confirmButtonText: "OK"
         });
     }
 
@@ -874,8 +860,6 @@ function removeRow(tr_id) {
                 service_charge = 0.5 * Number($("#qty_" + row).val());
             }
         }
-
-
         
         var total = Number($("#rate_value_" + row).val()) * Number($("#qty_" + row).val());
         var total_amt = total + service_charge;
@@ -1169,7 +1153,7 @@ function handleNext() {
     $('#shipping_address_postcode').val(shipping_address_postcode);
 
     $('#myModal').modal('hide');
-    swal("Address Updated!", "You can now proceed to create the order.", "success").then((value) => {
+    swal.fire("Address Updated!", "You can now proceed to create the order.", "success").then((value) => {
         confirmSubmission(event);
     });
 }
@@ -1184,18 +1168,22 @@ function confirmSubmission(event) {
 
     // Check if the delivery charge is 20
     if (deliveryCharge === 20) {
-        swal({
-            title: "Confirmation",
-            text: "Under $80 MOQ, a $20 fee will be imposed.",
-            icon: "info",
-            buttons: ["Cancel", "Continue"],
-        }).then((willContinue) => {
-            if (willContinue) {
+    Swal.fire({
+        title: "Confirmation",
+        text: "Under $80 MOQ, a $20 fee will be imposed.",
+        icon: "info",
+        showCancelButton: true,  // Show the cancel button
+        confirmButtonText: "Continue",  // Text for the confirm button
+        cancelButtonText: "Cancel",  // Text for the cancel button
+        confirmButtonColor: "#3085d6", // Optional, color for the confirm button
+        cancelButtonColor: "#d33"  // Optional, color for the cancel button
+        }).then((result) => {
+            if (result.isConfirmed) {
                 // Proceed with the rest of the confirmation
                 confirmOrder();
             }
         });
-    }  else {
+    } else {
         // If delivery charge is not 20, proceed with the existing confirmation
         confirmOrder();
     }
@@ -1206,28 +1194,17 @@ function confirmOrder() {
     var form = document.getElementById('update_orders');
 
     // Show SweetAlert confirmation dialog
-    swal({
-        title: "You are about to confirm this order?",
-        text: "An E-invoice will be sent to your Finance on the delivery day. A hard copy invoice will also be provided.",
-        icon: "warning",
-        buttons: {
-            cancel: {
-                text: "Cancel",
-                value: false,
-                visible: true,
-                className: "btn btn-default",
-                closeModal: true // This will close the modal if cancel is clicked
-            },
-            confirm: {
-                text: "Create Order",
-                value: true,
-                visible: true,
-                className: "btn btn-success",
-                closeModal: true
-            }
-        }
-    }).then((confirmed) => {
-        if (confirmed) {
+    Swal.fire({
+    title: "You are about to confirm this order?",
+    text: "An E-invoice will be sent to your Finance on the delivery day. A hard copy invoice will also be provided.",
+    icon: "warning",
+    showCancelButton: true,  // Show the cancel button
+    confirmButtonText: "Create Order",  // Text for the confirm button
+    cancelButtonText: "Cancel",  // Text for the cancel button
+    confirmButtonColor: "#3085d6", // Optional, color for the confirm button
+    cancelButtonColor: "#d33"  // Optional, color for the cancel button
+    }).then((result) => {
+    if (result.isConfirmed) {
             // Proceed with form submission
             form.submit();
         }

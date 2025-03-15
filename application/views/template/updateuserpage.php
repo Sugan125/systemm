@@ -80,7 +80,7 @@
                   <div class="input-group-prepend">
                     <span class="input-group-text"><i class="fas fa-envelope"></i></span>
                   </div>
-                  <input type="email" id="input_size" name="primaryemail" class="form-control" placeholder="Enter Email" value="<?= $row->primary_email; ?>" required>
+                  <input type="email" id="input_size" name="primaryemail" class="form-control" placeholder="Enter Email" value="<?= $row->primary_email; ?>" >
                 </div>
                 <label>Company Email 3</label>
                   <div class="input-group mb-3" id="input_size" >
@@ -88,7 +88,7 @@
                   <div class="input-group-prepend">
                     <span class="input-group-text"><i class="fas fa-envelope"></i></span>
                   </div>
-                  <input type="email" id="input_size" name="secondaryemail" class="form-control" placeholder="Enter Email" value="<?= $row->secondary_email; ?>" required>
+                  <input type="email" id="input_size" name="secondaryemail" class="form-control" placeholder="Enter Email" value="<?= $row->secondary_email; ?>" >
                 </div>
 
                 <label>Sales Person</label>
