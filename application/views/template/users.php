@@ -209,7 +209,12 @@
                <td><?=  $loginuser['name']; ?></td>
                <td><?=  $loginuser['company_name']; ?></td>
                <td><?=  $loginuser['brand_name']; ?></td>
-               <td><?= $loginuser['email']; ?><br><?=  $loginuser['primary_email']; ?><br><?= $loginuser['secondary_email']; ?></td>
+               <td>
+                  <?= isset($loginuser['email']) ? $loginuser['email'] : ''; ?><br>
+                  <?= isset($loginuser['primary_email']) ? $loginuser['primary_email'] : ''; ?><br>
+                  <?= isset($loginuser['secondary_email']) ? $loginuser['secondary_email'] : ''; ?>
+              </td>
+
                <td><?= ($loginuser['address'] ? $loginuser['address'] . ', ' : '') . ($loginuser['address_line2'] ? $loginuser['address_line2'] . ', ' : '') . ($loginuser['address_line3'] ? $loginuser['address_line3'] . ', ' : '') . ($loginuser['address_line4'] ? $loginuser['address_line4'] . ', ' : '') . ($loginuser['address_city'] ? $loginuser['address_city'] . ', ' : '') . ($loginuser['address_postcode'] ? $loginuser['address_postcode'] : ''); ?></td>
               <td><?= ($loginuser['delivery_address'] ? $loginuser['delivery_address'] . ', ' : '') . ($loginuser['delivery_address_line2'] ? $loginuser['delivery_address_line2'] . ', ' : '') . ($loginuser['delivery_address_line3'] ? $loginuser['delivery_address_line3'] . ', ' : '') . ($loginuser['delivery_address_line4'] ? $loginuser['delivery_address_line4'] . ', ' : '') . ($loginuser['delivery_address_city'] ? $loginuser['delivery_address_city'] . ', ' : '') . ($loginuser['delivery_address_postcode'] ? $loginuser['delivery_address_postcode'] : ''); ?></td>
               <td><?= ($loginuser['address2'] ? $loginuser['address2'] . ', ' : '') . ($loginuser['address2_line2'] ? $loginuser['address2_line2'] . ', ' : '') . ($loginuser['address2_line3'] ? $loginuser['address2_line3'] . ', ' : '') . ($loginuser['address2_line4'] ? $loginuser['address2_line4'] . ', ' : '') . ($loginuser['address2_city'] ? $loginuser['address2_city'] . ', ' : '') . ($loginuser['address2_postcode'] ? $loginuser['address2_postcode'] : ''); ?></td>

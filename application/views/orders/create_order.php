@@ -1235,9 +1235,14 @@ function handleNext() {
     $('#shipping_address_postcode').val(shipping_address_postcode);
 
     $('#myModal').modal('hide');
-    swal.fire("Address Updated!", "You can now proceed to create the order.", "success").then((value) => {
+    Swal.fire({
+    title: "Address Updated!",
+    text: "You can now proceed to create the order.",
+    icon: "success"
+    }).then((value) => {
         confirmSubmission(event);
     });
+
 }
 
 function confirmSubmission(event) {

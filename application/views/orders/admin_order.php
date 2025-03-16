@@ -614,9 +614,13 @@ function handleNext() {
         $('#myModal').modal('hide');
 
         // Show success alert and handle submission
-        swal.fire("Address Updated!", "You can now proceed to create the order.", "success").then((value) => {
-            confirmSubmission(event);
-        });
+        Swal.fire({
+    title: "Address Updated!",
+    text: "You can now proceed to create the order.",
+    icon: "success"
+    }).then((value) => {
+        confirmSubmission(event);
+    });
     } 
 }
 
