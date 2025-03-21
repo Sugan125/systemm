@@ -504,7 +504,7 @@ function fetchUserAddress(userId) {
             if (response.success && hasNonEmptyAddress(response.data)) {
                 updateModal(response.data);
                 if (!deliveryDateInput.value) {
-                        swal.fire("Delivery Date", "Please select a delivery date before creating the order.", "warning");   
+                        Swal.fire("Delivery Date", "Please select a delivery date before creating the order.", "warning");   
                 }
                 updateCreateOrderButton(true);
             } 
@@ -928,7 +928,7 @@ if ($('#sample_'+row_id).is(':checked')) {
     } else if (qty % min_order !== 0) {
         qty = Math.floor(qty / min_order) * min_order;
         $(this).val(qty);
-        swal.fire({
+        Swal.fire({
           title: "Minimum Order Quantity",
           text: 'Quantity must be a multiple of the minimum order value (' + min_order + ').',
           icon: "warning",
@@ -1083,7 +1083,7 @@ $('#product_info_table').on('change', 'input[name^="qty"]', function() {
     // If the input value is less than the min_order value, set it to min_order
   else  if ($(this).val() < minOrder) {
       $(this).val(minOrder);
-      swal.fire({
+      Swal.fire({
           title: "Minimum Order Quantity",
           text: "You cannot order less than the minimum quantity.",
           icon: "warning",

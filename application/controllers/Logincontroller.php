@@ -373,6 +373,12 @@ function logout() {
 				header('Location:'.filter_var($url,FILTER_SANITIZE_URL));
 			}
 	}
+public function check_session()
+{
+    if (!$this->session->userdata('LoginSession')) {
+        redirect(base_url('index.php/Logincontroller/logout')); // Redirect to logout
+    }
+}
 
 	
 

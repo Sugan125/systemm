@@ -618,7 +618,7 @@ document.querySelector('.spinner.decrement').addEventListener('click', decrement
 function openModal() {
     var deliveryDateInput = document.getElementById('pre_order');
     if (!deliveryDateInput.value) {
-      swal.fire("Delivery Date", "Please select a delivery date before creating the order.", "warning");
+      Swal.fire("Delivery Date", "Please select a delivery date before creating the order.", "warning");
     } else {
       $('#myModal').modal('show');
     }
@@ -797,7 +797,7 @@ $('#product_info_table').on('change', 'input[name^="qty"]', function() {
     // If the input value is less than the min_order value, set it to min_order
     if ($(this).val() < minOrder) {
       $(this).val(minOrder);
-      swal.fire({
+      Swal.fire({
           title: "Minimum Order Quantity",
           text: "You cannot order less than the minimum quantity.",
           icon: "warning",
@@ -984,7 +984,7 @@ function removeRow(tr_id) {
     } else if (qty % min_order !== 0) {
         qty = Math.floor(qty / min_order) * min_order;
         $(this).val(qty);
-        swal.fire({
+        Swal.fire({
           title: "Minimum Order Quantity",
           text: 'Quantity must be a multiple of the minimum order value (' + min_order + ').',
           icon: "warning",
@@ -1255,7 +1255,7 @@ function confirmSubmission(event) {
 
     // Check if the delivery charge is 20
     if (deliveryCharge === 20) {
-        swal.fire({
+        Swal.fire({
             title: "Warning",
             text: "Under $80 MOQ, a $20 fee will be imposed. Please add more items to avoid delivery charges.",
             icon: "info",

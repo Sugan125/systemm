@@ -142,6 +142,21 @@ error: function (xhr, status, error) {
         });
     });
 
-    </script>
+    let timeout;
+
+    function resetTimer() {
+        clearTimeout(timeout);
+        timeout = setTimeout(logoutUser, 900000); // 15 minutes (900000 ms)
+    }
+
+    function logoutUser() {
+        window.location.href = "<?= base_url('index.php/Logincontroller/logout'); ?>";
+    }
+
+    // Reset timer on user activity
+    document.onmousemove = resetTimer;
+    document.onkeypress = resetTimer;
+    document.onload = resetTimer;
+</script>
 </body>
 </html>
