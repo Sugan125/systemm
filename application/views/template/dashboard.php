@@ -32,99 +32,134 @@
 
 
      
-
         <div class="content mt-3">
-            <?php
-     
-        
-    
+    <div class="row">
+        <?php
         if (isset($loginuser['roles']) && !empty($loginuser['roles'])) {
-            if (in_array('Dashboard', $access) && (in_array('Admin', $roles) || in_array('Owner', $roles))){ 
-                echo '<a href="' . base_url('index.php/orders/manage_orders') . '">';
+            if (in_array('Dashboard', $access) && (in_array('Admin', $roles) || in_array('Owner', $roles))) { 
+                $orderLink = base_url('index.php/orders/manage_orders');
             } elseif ($loginuser['roles'] == 'User') {
-                echo '<a href="' . base_url('index.php/orders') . '">';
+                $orderLink = base_url('index.php/orders');
             } else {
-                echo '<a href="">';
+                $orderLink = "#";
             }
-        }
         ?>
-        
-        
-           
-            <div class="col-sm-6 col-lg-3">
+        <div class="col-lg-2 col-md-4">
+            <a href="<?= $orderLink ?>">
                 <div class="card text-white bg-flat-color-1">
-                    <div class="card-body pb-0">
-                        <p class="text-light" style="font-weight: 600;">View Orders</p>
+                    <div class="card-body pb-0 text-center">
+                        <p class="text-light font-weight-bold">Orders</p>
                     </div>
-
                 </div>
-            </div></a>
-            <!--/.col-->
-           <?php
-        $loginuser = $this->session->userdata('LoginSession');
-       
-         if (in_array('Dashboard', $access) && (in_array('Admin', $roles) || in_array('Owner', $roles))){ 
-                echo '<a href="' . base_url('index.php/Productcontroller') . '">';
-            } elseif ($loginuser['roles'] == 'User') {
-                echo '<a href="' . base_url('index.php/Productcontroller/userproduct') . '">';
-            } else {
-                echo '<a href="">';
-            }
+            </a>
+        </div>
+
         
-        ?>
-            <div class="col-sm-6 col-lg-3">
-                <div class="card text-white bg-flat-color-5">
-                    <div class="card-body pb-0">
-                        <p class="text-light" style="font-weight: 600;">View Products</p>
+      
+        <?php } ?>
 
+        <?php
+        if (isset($loginuser['roles']) && !empty($loginuser['roles'])) {
+            if (in_array('Dashboard', $access) && (in_array('Admin', $roles) || in_array('Owner', $roles))) { 
+                $productLink = base_url('index.php/Productcontroller');
+            } elseif ($loginuser['roles'] == 'User') {
+                $productLink = base_url('index.php/Productcontroller/userproduct');
+            } else {
+                $productLink = "#";
+            }
+        ?>
+        <div class="col-lg-2 col-md-4">
+            <a href="<?= $productLink ?>">
+                <div class="card text-white bg-flat-color-5">
+                    <div class="card-body pb-0 text-center">
+                        <p class="text-light font-weight-bold">Products</p>
                     </div>
                 </div>
-            </div></a>
-            <!--/.col-->
-           
-            <div class="col-sm-6 col-lg-3">
-            <div class="card text-white bg-flat-color-3">
-                <div class="card-body pb-0">
-                    <p class="text-light" style="font-weight: 600;">
-                        <?php if ($loginuser['roles'] == 'User') { ?>
-                            <a href="<?php echo base_url('index.php/Userscontroller') ?>">
-                                View My Details
-                            </a>
-                        <?php } else { ?>
-                            View Customer Details
-                        <?php } ?>
-                    </p>
+            </a>
+        </div>
+        <?php } ?>
+
+        <div class="col-lg-2 col-md-4">
+            <a href="<?= ($loginuser['roles'] == 'User') ? base_url('index.php/Userscontroller') : '#' ?>">
+                <div class="card text-white bg-flat-color-3">
+                    <div class="card-body pb-0 text-center">
+                        <p class="text-light font-weight-bold">
+                            <?= ($loginuser['roles'] == 'User') ? "My Details" : "Customer Details" ?>
+                        </p>
+                    </div>
                 </div>
+            </a>
+        </div>
+
+        <?php
+        if (in_array('Dashboard', $access) && (in_array('Admin', $roles) || in_array('Owner', $roles))) { 
+        ?>
+       
+       <div class="col-lg-2 col-md-4">
+            <a  href="<?= base_url('index.php/orders/admin_orders') ?>">
+                <div class="card text-white" style="background-color: #FF5733;">
+                    <div class="card-body pb-0 text-center">
+                        <p class="text-light font-weight-bold">Create Orders</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+            <div class="col-lg-2 col-md-4">
+                <a  href="<?= base_url('index.php/Excel_export/sales_summary') ?>">
+                    <div class="card text-white bg-flat-color-4">
+                        <div class="card-body pb-0 text-center">
+                            <p class="text-light font-weight-bold">Sales Summary</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        
+
+            <div class="col-lg-2 col-md-4">
+    <a href="javascript:void(0);" onclick="document.getElementById('weeklyReportForm').submit();">
+        <div class="card text-white bg-flat-color-3">
+            <div class="card-body pb-0 text-center">
+                <p class="text-light font-weight-bold">Weekly Report</p>
             </div>
         </div>
+    </a>
 
-            <!--/.col-->
-           <?php
-       
-       if (in_array('Dashboard', $access) && (in_array('Admin', $roles) || in_array('Owner', $roles))){ 
-               
+    <form id="weeklyReportForm" action="<?= base_url('index.php/Dashboardcontroller/action_date_range_pdf'); ?>" method="post" target="_blank">
+        <?php
+        // Get current date and time
+        $currentDate = date('Y-m-d');
+        $currentTime = date('H:i:s');
+        $currentDayOfWeek = date('w'); // 0=Sunday, 6=Saturday
+
+        // Find last Monday
+        $lastMonday = date('Y-m-d', strtotime('monday last week'));
+        // Find last Saturday
+        $lastSaturday = date('Y-m-d', strtotime($lastMonday . ' +5 days'));
+
+        // Find next Monday (for date switch at 12:00 AM Sunday)
+        $nextMonday = date('Y-m-d', strtotime('monday this week'));
+        $nextSaturday = date('Y-m-d', strtotime($nextMonday . ' +5 days'));
+
+        // If it's Sunday past midnight, update to next week
+        if ($currentDayOfWeek == 0 && $currentTime >= "00:00:00") { 
+            $weekStart = $nextMonday;
+            $weekEnd = $nextSaturday;
+        } else {
+            $weekStart = $lastMonday;
+            $weekEnd = $lastSaturday;
+        }
         ?>
-           
+        <input type="hidden" name="start_date" value="<?= $weekStart; ?>">
+        <input type="hidden" name="end_date" value="<?= $weekEnd; ?>">
+    </form>
+</div>
 
-            <a href="<?php echo base_url('index.php/Excel_export/sales_summary') ?>">
-   <div class="col-sm-6 col-lg-3">
-    <div class="card text-white bg-flat-color-4">
-        <div class="card-body pb-0" style="padding:0px!important;">
-       
+
+
         
-                <button type="submit" name="export" class="btn btn-block btn-danger" style="padding:17px; text-align:left;"><b>Sales Item Summary </b></button>
-        
-        </div>
+        <?php } ?>
     </div>
 </div>
-       </a>
-
-
-            <!--/.col-->
-            <?php
-             
-                   }
-                               ?>
 
 
         <?php
