@@ -1158,6 +1158,105 @@ class Dashboardcontroller extends CI_Controller{
          $dompdf->stream($filename, ['Attachment' => 1]); // Download file
          
      }
+
+     public function production_report_weekly()
+     {
+         $start_date = $this->input->post('start_date'); // YYYY-MM-DD
+         $end_date = $this->input->post('end_date'); // YYYY-MM-DD
+     
+         $formatted_start_date = date('F d, Y', strtotime($start_date));
+         $formatted_end_date = date('F d, Y', strtotime($end_date));
+     
+         $this->load->model("excel_export_model");
+         $employee_data = $this->excel_export_model->fetch_date_range_category($start_date, $end_date);
+     
+         // Grouping data by category, product ID, and product name
+         $grouped_data = [];
+         foreach ($employee_data as $row) {
+             $key = $row->prod_category . '|' . $row->prod_id . '|' . $row->product_name;
+             if (!isset($grouped_data[$key])) {
+                 $grouped_data[$key] = ['quantity' => 0];
+             }
+             $grouped_data[$key]['quantity'] += $row->qty;
+         }
+     
+         // Start HTML for PDF
+         $html = '<style>
+             table { border-collapse: collapse; width: 100%; font-size: 10pt; }
+             th, td { border: 1px solid black; padding: 5px; text-align: center; }
+             th { background-color: #000080; color: white; }
+             .category-header { background-color: #ddd; font-weight: bold; text-align: left; padding: 5px; }
+             .total-row { font-weight: bold; background-color: #f0f0f0; }
+         </style>';
+     
+         $html .= '<h2 style="text-align: center;">Sales [Item Summary]</h2>
+             <h3 style="text-align: center;">Weekly Report</h3>
+             <h4 style="text-align: center;">' . $formatted_start_date . ' to ' . $formatted_end_date . '</h4>';
+     
+         $html .= '<table>
+             <tr>
+                 <th>Product Category</th>
+                 <th>Product ID</th>
+                 <th>Product Name</th>
+                 <th>Quantity</th>
+             </tr>';
+     
+         $current_category = null;
+         $total_category_quantity = 0;
+         $first_category = true;
+     
+         foreach ($grouped_data as $key => $data) {
+             list($prod_category, $prod_id, $product_name) = explode('|', $key);
+     
+             // Check if category has changed
+             if ($prod_category !== $current_category) {
+                 // Display totals for previous category
+                 if (!$first_category) {
+                     $html .= '<tr class="total-row">
+                         <td colspan="3">Total for ' . $current_category . ':</td>
+                         <td>' . $total_category_quantity . '</td>
+                     </tr>';
+                 } else {
+                     $first_category = false;
+                 }
+     
+                 // New category header
+                 $html .= '<tr><td colspan="4" class="category-header">' . $prod_category . '</td></tr>';
+     
+                 // Reset category totals
+                 $total_category_quantity = 0;
+                 $current_category = $prod_category;
+             }
+     
+             // Display product data
+             $html .= '<tr>
+                 <td>' . $prod_category . '</td>
+                 <td>' . $prod_id . '</td>
+                 <td>' . $product_name . '</td>
+                 <td>' . $data['quantity'] . '</td>
+             </tr>';
+     
+             // Increment category totals
+             $total_category_quantity += $data['quantity'];
+         }
+     
+         // Final total row for the last category
+         $html .= '<tr class="total-row">
+             <td colspan="3">Total for ' . $current_category . ':</td>
+             <td>' . $total_category_quantity . '</td>
+         </tr>';
+     
+         $html .= '</table>';
+     
+         $dompdf = new Dompdf();
+         $dompdf->loadHtml($html);
+         $dompdf->setPaper(array(0, 0, 840, 1188), 'portrait');    
+         $dompdf->render();
+     
+         // Output PDF
+         $filename = 'WeeklyReport_' . date('d-M-Y', strtotime($start_date)) . '_to_' . date('d-M-Y', strtotime($end_date)) . '.pdf';
+         $dompdf->stream($filename, ['Attachment' => 1]); // Download file
+     }
      
     }
 
