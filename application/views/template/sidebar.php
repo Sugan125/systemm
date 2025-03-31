@@ -304,8 +304,32 @@
         <?php }  ?>
     </ul>
     </li>
+    <?php } ?>
+    <?php if ((in_array('Admin', $roles) || in_array('Owner', $roles)) &&  $loginuser['name'] === 'Henry'){ ?>
+    <li class="nav-item">
+    <a href="#" class="nav-link toggle-orders">
+        <i class="menu-icon fas fa-receipt"></i> <!-- Changed to receipt icon for GST -->
+        <span>GST</span>
+        <span class="pull-right-container">
+            <i class="fa fa-angle-down pull-right" style="line-height: 2.1;"></i>
+        </span>
+    </a>
+    <ul class="treeview-menu" style="display: none;">
+        <?php if ((in_array('Admin', $roles) || in_array('Owner', $roles)) &&  $loginuser['name'] !== 'Henry'){ ?>
+        <li class="nav-item">
+            <a href="<?php echo base_url('index.php/GstController/'); ?>" class="nav-link">
+                <i class="fas fa-edit"></i> <!-- Changed from print to edit for update action -->
+                Update GST
+            </a>
+        </li>
+        <?php } ?>
+    </ul>
+</li>
+
 
     <?php } ?>
+
+    
 
 
 <!--- REPORTS ADMIN MENU END  -->
