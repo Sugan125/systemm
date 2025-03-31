@@ -330,7 +330,7 @@ $orderdate = isset($orderdate) ? date('Y-m-d', strtotime($orderdate)) : '';
     confirmButtonColor: "#3085d6", // Customize the confirm button color (optional)
     cancelButtonColor: "#d33",  // Customize the cancel button color (optional)
 }).then((confirmed) => {
-        if (confirmed) {
+        if (result.isConfirmed) { 
             // Proceed with form submission
             deleteOrder(button.href);
         }
