@@ -26,7 +26,7 @@
         <div class="col-md-6">
             <div class="box">
                 <h5 class="box-title"><b>SALES SUMMARY ITEM WISE WEEKLY REPORT</b></h5><br>
-                <form action="<?php echo base_url('index.php/Dashboardcontroller/action_date_range_pdf'); ?>" method="post" target="_blank">
+                <form action="<?php echo base_url('index.php/Dashboardcontroller/production_report_weekly'); ?>" method="post" target="_blank">
     <div class="form-group">
         <?php
         // Get current date and time

@@ -120,7 +120,7 @@
         if ($loginuser['name'] == 'Henry') { 
         ?>
             <div class="col-lg-2 col-md-4">
-    <a href="javascript:void(0);" onclick="document.getElementById('weeklyReportForm').submit();">
+            <a  href="<?= base_url('index.php/WeeklyReport') ?>">
         <div class="card text-white bg-flat-color-3">
             <div class="card-body pb-0 text-center">
                 <p class="text-light font-weight-bold">Weekly Report</p>
@@ -129,37 +129,6 @@
     </a>
 
 
- 
-
-
-    <form id="weeklyReportForm" action="<?= base_url('index.php/Dashboardcontroller/action_date_range_pdf'); ?>" method="post" target="_blank">
-        <?php
-        // Get current date and time
-        $currentDate = date('Y-m-d');
-        $currentTime = date('H:i:s');
-        $currentDayOfWeek = date('w'); // 0=Sunday, 6=Saturday
-
-        // Find last Monday
-        $lastMonday = date('Y-m-d', strtotime('monday last week'));
-        // Find last Saturday
-        $lastSaturday = date('Y-m-d', strtotime($lastMonday . ' +5 days'));
-
-        // Find next Monday (for date switch at 12:00 AM Sunday)
-        $nextMonday = date('Y-m-d', strtotime('monday this week'));
-        $nextSaturday = date('Y-m-d', strtotime($nextMonday . ' +5 days'));
-
-        // If it's Sunday past midnight, update to next week
-        if ($currentDayOfWeek == 0 && $currentTime >= "00:00:00") { 
-            $weekStart = $nextMonday;
-            $weekEnd = $nextSaturday;
-        } else {
-            $weekStart = $lastMonday;
-            $weekEnd = $lastSaturday;
-        }
-        ?>
-        <input type="hidden" name="start_date" value="<?= $weekStart; ?>">
-        <input type="hidden" name="end_date" value="<?= $weekEnd; ?>">
-    </form>
 </div>
 
 
@@ -177,7 +146,7 @@
         ?>
 
             <div class="col-lg-2 col-md-4">
-    <a href="javascript:void(0);" onclick="document.getElementById('prodweeklyReportForm').submit();">
+            <a  href="<?= base_url('index.php/WeeklyReport/ProdWeeklyReport') ?>">
         <div class="card text-white bg-flat-color-3">
             <div class="card-body pb-0 text-center">
                 <p class="text-light font-weight-bold">Weekly Report</p>
