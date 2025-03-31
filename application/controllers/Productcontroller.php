@@ -295,18 +295,57 @@ class Productcontroller extends CI_Controller {
          }
          
          
-         public function userproduct() {
+         public function userproduct($offset = 0) {
+            $this->load->library('pagination'); 
+        
+            // Get search inputs
+            $search_name = $this->input->get('search_name'); 
+            $search_price = $this->input->get('search_price');
+        
+            // Total products count with search filters
+            $total_rows = $this->product_model->get_product_count($search_name, $search_price);
+        
+            // Pagination configuration
+            $config['base_url'] = base_url('index.php/Productcontroller/userproduct'); 
+            $config['total_rows'] = $total_rows; 
+            $config['per_page'] = 12; 
+            $config['uri_segment'] = 3; 
+            $config['use_page_numbers'] = TRUE; 
+        
+            // Pagination styling
+            $config['full_tag_open'] = '<ul class="pagination">';
+            $config['full_tag_close'] = '</ul>';
+            $config['num_tag_open'] = '<li class="page-item">';
+            $config['num_tag_close'] = '</li>';
+            $config['cur_tag_open'] = '<li class="page-item active"><a class="page-link">';
+            $config['cur_tag_close'] = '</a></li>';
+            $config['prev_tag_open'] = '<li class="page-item">';
+            $config['prev_tag_close'] = '</li>';
+            $config['next_tag_open'] = '<li class="page-item">';
+            $config['next_tag_close'] = '</li>';
+            $config['attributes'] = array('class' => 'page-link');
+        
+            $this->pagination->initialize($config);
+        
+            // Convert page number into offset
+            $offset = ($offset > 0) ? ($offset - 1) * $config['per_page'] : 0;
+        
+            // Fetch filtered products
+            $data['products'] = $this->product_model->get_products($config['per_page'], $offset, $search_name, $search_price);
+            $data['pagination_links'] = $this->pagination->create_links();
+            $data['search_name'] = $search_name;
+            $data['search_price'] = $search_price;
+        
             $data['title'] = 'Products';
             $this->load->view('template/header.php', $data);
             $user = $this->session->userdata('user_register');
             $users = $this->session->userdata('normal_user');
             $loginuser = $this->session->userdata('LoginSession');
-            $data['products'] = $this->product_model->get_products();
-            $this->load->view('template/sidebar.php', array('user' => $user, 'users' => $users, 'data' => $data,'loginuser' => $loginuser));
-            $this->load->view('user_prod/user_products.php',$data);
+            $this->load->view('template/sidebar.php', array('user' => $user, 'users' => $users, 'data' => $data, 'loginuser' => $loginuser));
+            $this->load->view('user_prod/user_products.php', $data);
             $this->load->view('template/footer.php');
         }
-     
+        
         public function importfile(){
             if ($this->input->post('submit')) {
                 $path = './uploads/';
@@ -425,6 +464,8 @@ class Productcontroller extends CI_Controller {
                 echo json_encode(array('status' => 'error'));
             }
         }
+
+        
         
 }
 

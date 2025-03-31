@@ -54,6 +54,10 @@ $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
 $route['Login'] =  'Logincontroller/index';
+
+$route['Productcontroller/userproduct/(:num)'] = 'Productcontroller/userproduct/$1';
+$route['userproduct/(:num)'] = 'Productcontroller/userproduct/$1';
+
 $rout['orders'] = 'orders';
 
 

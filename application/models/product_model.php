@@ -87,11 +87,33 @@ public function product_details_user() {
       }
 
   }
+  public function get_products($limit, $offset, $search_name = null, $search_price = null) {
+    $this->db->where('active', 1);
 
-  public function get_products() {
-    //     $this->db->limit($limit, $offset);
-          $this->db->where('active', 1);
-         return $this->db->get('products')->result();
-     }
+    if (!empty($search_name)) {
+        $this->db->like('product_name', $search_name);
+    }
+    if (!empty($search_price)) {
+        $this->db->where('prod_rate <=', $search_price);
+    }
+
+    $this->db->limit($limit, $offset);
+    return $this->db->get('products')->result();
+}
+
+public function get_product_count($search_name = null, $search_price = null) {
+    $this->db->where('active', 1);
+
+    if (!empty($search_name)) {
+        $this->db->like('product_name', $search_name);
+    }
+    if (!empty($search_price)) {
+        $this->db->where('prod_rate <=', $search_price);
+    }
+
+    return $this->db->count_all_results('products');
+}
+
+
   
 }
