@@ -552,68 +552,70 @@ const decrement = () => {
 document.querySelector('.spinner.increment').addEventListener('click', increment)
 document.querySelector('.spinner.decrement').addEventListener('click', decrement)
 
- var today = new Date();
+var today = new Date();
 
-    // Calculate the date 3 days from now for the default value
-    var defaultDate = new Date(today);
-    defaultDate.setDate(today.getDate() + 3);
+// Calculate the date 3 days from now for the default value
+var defaultDate = new Date(today);
+defaultDate.setDate(today.getDate() + 3);
 
-    // Set the minimum date for the pre-order input field (3 days from now)
-    var minDate = new Date(today);
-    minDate.setDate(today.getDate() + 3);
+// Set the minimum and maximum dates
+var minDate = new Date(today);
+minDate.setDate(today.getDate() + 3);
 
-    // Set the maximum date for the pre-order input field (10 days from now)
-    var maxDate = new Date(today);
-    maxDate.setDate(today.getDate() + 10);
+var maxDate = new Date(today);
+maxDate.setDate(today.getDate() + 10);
 
-    // Function to check if a given date is a Sunday
-    function isSunday(date) {
-        return date.getDay() === 0; // 0 represents Sunday
-    }
-
-    function disableSpecificDate(date) {
-    var disabledDate = new Date(2025, 2, 31); // March is month index 2 (0-based index)
-    return date.getTime() === disabledDate.getTime();
+// Function to check if a given date is a Sunday
+function isSunday(date) {
+    return date.getDay() === 0; // 0 represents Sunday
 }
 
-    var picker = new Pikaday({
-        field: document.getElementById('pre_order'),
-        minDate: minDate,
-        maxDate: maxDate,
-        defaultDate: !isSunday(defaultDate) ? defaultDate : null,
-        setDefaultDate: true,
-        format: 'YYYY-MM-DD',
-        toString(date, format) {
-            // Convert the date to the format YYYY-MM-DD
-            return moment(date).format('YYYY-MM-DD');
-        },
-        parse(dateString, format) {
-            // Parse the date from the format YYYY-MM-DD
-            return moment(dateString, 'YYYY-MM-DD').toDate();
-        },
-        disableDayFn: function(date) {
-        return isSunday(date) || disableSpecificDate(date);
-        },
-        onSelect: function(date) {
-            // Validate the selected date
-            if (isSunday(date)) {
-                alert('No delivery on Sunday.');
-                picker.setDate(null); // Clear the invalid date
-            } else if ( date > maxDate) {
-                alert('You can only select a date within the next 7 days.');
-                picker.setDate(null); // Clear the invalid date
-            } else {
-                document.getElementById('pre_order').value = moment(date).format('YYYY-MM-DD');
-            }
-        }
-    });
+// Function to disable a specific date (March 31, 2025)
+function disableSpecificDate(date) {
+    var disabledDates = [
+        new Date(2025, 2, 31).toDateString(), // March 31, 2025
+        new Date(2025, 3, 1).toDateString()   // April 1, 2025
+    ];
+    return disabledDates.includes(date.toDateString());
+}
 
-    // Ensure the default date is not set if it's a Sunday
-    if (isSunday(defaultDate)) {
-        picker.setDate(null);
-    } else {
-        document.getElementById('pre_order').value = moment(defaultDate).format('YYYY-MM-DD');
+// Adjust default date if it's a Sunday or a disabled date
+while (isSunday(defaultDate) || disableSpecificDate(defaultDate)) {
+    defaultDate.setDate(defaultDate.getDate() + 1);
+}
+
+
+// Initialize Pikaday date picker
+var picker = new Pikaday({
+    field: document.getElementById('pre_order'),
+    minDate: minDate,
+    maxDate: maxDate,
+    defaultDate: defaultDate,
+    setDefaultDate: true,
+    format: 'YYYY-MM-DD',
+    toString(date, format) {
+        return moment(date).format('YYYY-MM-DD');
+    },
+    parse(dateString, format) {
+        return moment(dateString, 'YYYY-MM-DD').toDate();
+    },
+    disableDayFn: function(date) {
+        return isSunday(date) || disableSpecificDate(date);
+    },
+    onSelect: function(date) {
+        if (isSunday(date) || disableSpecificDate(date)) {
+            alert('This date is unavailable. Please select another date.');
+            picker.setDate(null);
+        } else {
+            document.getElementById('pre_order').value = moment(date).format('YYYY-MM-DD');
+        }
     }
+});
+
+// Ensure the correct default date is displayed
+document.getElementById('pre_order').value = moment(defaultDate).format('YYYY-MM-DD');
+
+
 
 function openModal() {
     var deliveryDateInput = document.getElementById('pre_order');
