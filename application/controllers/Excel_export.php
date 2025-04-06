@@ -16,10 +16,8 @@ class Excel_export extends CI_Controller {
  function action()
 {
 
-    set_time_limit(300); 
-
-// Alternatively
-ini_set('max_execution_time', 300);
+    ini_set('memory_limit', '-1'); 
+    ini_set('max_execution_time', 0); 
 
     $this->load->model("excel_export_model");
     $this->load->library("excel");

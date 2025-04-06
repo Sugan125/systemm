@@ -14,9 +14,9 @@ class Excel_export_model extends CI_Model
                     WHERE DATE(ord.delivery_date) BETWEEN '$first_day_of_month' AND '$last_day_of_month'";
             $query = $this->db->query($sql);
 
-          //  echo $this->db->last_query();
-
-            return $query->result();
+           echo $this->db->last_query();
+           exit;
+           return $query->result();
 
     }
 

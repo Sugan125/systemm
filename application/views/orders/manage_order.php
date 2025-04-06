@@ -316,25 +316,25 @@ $orderdate = isset($orderdate) ? date('Y-m-d', strtotime($orderdate)) : '';
 
         // Add event listener to each delete button
         deleteButtons.forEach(button => {
-            button.addEventListener('click', function (event) {
-                event.preventDefault(); // Prevent the default action
+    button.addEventListener('click', function (event) {
+        event.preventDefault(); // Prevent the default action
 
-                // Show SweetAlert confirmation dialog
-                Swal.fire({
-    title: "Are you sure?",
-    text: "You want to delete this order?",
-    icon: "warning",
-    showCancelButton: true,  // Show cancel button
-    confirmButtonText: "Delete",  // Text for the confirm button
-    cancelButtonText: "Cancel",  // Text for the cancel button
-    confirmButtonColor: "#3085d6", // Customize the confirm button color (optional)
-    cancelButtonColor: "#d33",  // Customize the cancel button color (optional)
-}).then((confirmed) => {
-        if (result.isConfirmed) { 
-            // Proceed with form submission
-            deleteOrder(button.href);
-        }
-    });
+        // Show SweetAlert confirmation dialog
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You want to delete this order?",
+            icon: "warning",
+            showCancelButton: true,  
+            confirmButtonText: "Delete",  
+            cancelButtonText: "Cancel",  
+            confirmButtonColor: "#3085d6", 
+            cancelButtonColor: "#d33",  
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Proceed with form submission
+                deleteOrder(button.href);
+            }
+        });
             });
         });
 
