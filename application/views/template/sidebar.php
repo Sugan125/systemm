@@ -76,7 +76,7 @@
                   
         <li class="nav-item">
         <a href="#" class="nav-link toggle-orders">
-                <i class="menu-icon fa fa-user-circle"></i>
+                <i class="menu-icon fas fa-key"></i>
                 <span>User Access</span>
                 <span class="pull-right-container">
                     <i class="fa fa-angle-down pull-right" style="line-height: 2.1;"></i>
@@ -137,7 +137,7 @@
     <?php if(in_array($loginuser['roles'], ['User']) || (strpos($loginuser['roles'], 'User') !== false)): ?>
         <li class="nav-item">
             <a href="#" class="nav-link toggle-orders">
-                <i class="menu-icon fa fa-clipboard"></i>
+            <i class="menu-icon fas fa-shopping-bag"></i>
                 <span>Orders</span>
                 <span class="pull-right-container">
                     <i class="fa fa-angle-down pull-right" style="line-height: 2.1;"></i>
@@ -185,7 +185,7 @@
            
      <li class="nav-item">
             <a href="#" class="nav-link toggle-orders">
-                <i class="menu-icon fa fa-clipboard"></i>
+            <i class="menu-icon fas fa-shopping-bag"></i>
                 <span>Orders</span>
                 <span class="pull-right-container">
                     <i class="fa fa-angle-down pull-right" style="line-height: 2.1;"></i>
@@ -214,7 +214,7 @@
     ?>
         <li class="nav-item">
             <a href="#" class="nav-link toggle-orders">
-                <i class="menu-icon fa fa-clipboard"></i>
+            <i class="menu-icon fas fa-shopping-bag"></i>
                 <span>Frozen Orders</span>
                 <span class="pull-right-container">
                     <i class="fa fa-angle-down pull-right" style="line-height: 2.1;"></i>
@@ -242,7 +242,7 @@
 
     <li class="nav-item">
         <a href="#" class="nav-link toggle-orders">
-            <i class="menu-icon fa fa-clipboard"></i>
+        <i class="menu-icon fas fa-dollar-sign"></i>
             <span>Reports</span>
             <span class="pull-right-container">
                 <i class="fa fa-angle-down pull-right" style="line-height: 2.1;"></i>
@@ -267,7 +267,7 @@
 
     <li class="nav-item">
         <a href="#" class="nav-link toggle-orders">
-            <i class="menu-icon fa fa-clipboard"></i>
+            <i class="menu-icon fas fa-chart-line"></i>
             <span>Sales</span>
             <span class="pull-right-container">
                 <i class="fa fa-angle-down pull-right" style="line-height: 2.1;"></i>
@@ -292,7 +292,7 @@
 
     <li class="nav-item">
         <a href="#" class="nav-link toggle-orders">
-            <i class="menu-icon fa fa-clipboard"></i>
+           <i class="menu-icon fas fa-file-contract"></i>
             <span>Sale Agreement</span>
             <span class="pull-right-container">
                 <i class="fa fa-angle-down pull-right" style="line-height: 2.1;"></i>
@@ -319,6 +319,15 @@
         <li class="nav-item"><a href="<?php echo base_url('index.php/GstController/'); ?>"  class="nav-link"> <i class="fas fa-edit"></i> Update GST</a></li>
         <?php }  ?>
     </ul>
+    </li>
+
+
+
+
+    <li class="nav-item">
+                <a href="<?= base_url('index.php/LabelController/index'); ?>" class="nav-link <?php if($this->uri->segment(1) == 'downloadlabels') echo 'active' ?>"> 
+                <i class="menu-icon fas fa-tags"></i> Download Labels
+                </a>
     </li>
 
     <?php } ?>
