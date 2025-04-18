@@ -1,5 +1,6 @@
 
 <head>
+  
 <style>
   input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button {
@@ -373,7 +374,10 @@ input {
 ?>
 
 <?php echo $modal_id; ?>
-<button type="<?php echo $btn; ?>" class="btn btn-success create_order" <?php echo $btn; ?>>Create Order</button>
+<button id="submitBtn" type="<?php echo $btn; ?>" class="btn btn-success create_order" <?php echo $btn; ?>>
+<span id="btnText">Create Order</span>
+<i id="btnSpinner" class="fa fa-spinner fa-spin d-none" aria-hidden="true"></i>
+</button>
 <?php echo $end_id; ?>  <a href="<?php echo base_url('index.php/orders/') ?>" class="btn btn-danger create_order">Back</a>
               </div>
             </form>
@@ -792,23 +796,54 @@ $(document).on('input', 'input[name^="qty"]', function() {
     getTotal(rowId);
 });
 
-$('#product_info_table').on('change', 'input[name^="qty"]', function() {
-    var rowId = $(this).attr('id').split('_')[1];
-    var minOrder = parseInt($('#minn').val()); // Get the stored min_order value
-    var minOrder = parseInt($("#minn_"+rowId).val());
-    // If the input value is less than the min_order value, set it to min_order
-    if ($(this).val() < minOrder) {
-      $(this).val(minOrder);
-      Swal.fire({
-          title: "Minimum Order Quantity",
-          text: "You cannot order less than the minimum quantity.",
-          icon: "warning",
-          confirmButtonText: "OK"
-        });
-    }
+$('#product_info_table').on('input', 'input[name^="qty"]', function () {
+    var $this = $(this);
+    var rowId = $this.attr('id').split('_')[1];
+    var minOrder = parseFloat($("#minn_" + rowId).val()) || 1;
 
-    getTotal(rowId);
+    clearTimeout($this.data("timeout"));
+
+    var timeout = setTimeout(function () {
+        var qty = parseFloat($this.val());
+
+        // Check for invalid or too small values
+        if (isNaN(qty) || qty < minOrder) {
+            $this.val(minOrder);
+            Swal.fire({
+                title: "Minimum Order Quantity",
+                text: "You cannot order less than the minimum quantity of " + minOrder + ".",
+                icon: "warning",
+                confirmButtonText: "OK"
+            });
+            qty = minOrder;
+        }
+
+        // Check if quantity is not a multiple of minOrder
+        if (qty % minOrder !== 0) {
+            qty = Math.floor(qty / minOrder) * minOrder;
+            $this.val(qty);
+            Swal.fire({
+                title: "Minimum Order Quantity",
+                text: 'Quantity must be a multiple of the minimum order value (' + minOrder + ').',
+                icon: "warning",
+                confirmButtonText: "OK"
+            });
+        }
+
+        // Promotion logic
+        var response = getProductDatas(rowId);
+        if (response && response.promotion == 1) {
+            applyPromotionRule(rowId, qty, response.promo_rule_buy, response.promo_rule_free, response.product_id, response.product_name);
+        }
+
+        updatePromotionAcrossRows(rowId);
+        subAmount();
+        getTotal(rowId);
+
+    }, 2000); // Wait for typing to stop
+    $this.data("timeout", timeout);
 });
+
 
 function removeRow(tr_id) {
     $("#product_info_table tbody tr#row_" + tr_id).remove();
@@ -976,35 +1011,46 @@ function removeRow(tr_id) {
       }
       $("#product_" + row_id).blur();
   }
-  $(document).on('keyup change', 'input[name="qty[]"]', function() { // Listen to both 'keyup' and 'change' events
-    var row_id = $(this).attr('id').split('_')[1];
-    var min_order = parseFloat($("#minn_"+row_id).val()) || 1;
-    var qty = parseFloat($(this).val());
+  $(document).on('keyup change', 'input[name="qty[]"]', function() {
+    var $this = $(this);
+    var row_id = $this.attr('id').split('_')[1];
+    var min_order = parseFloat($("#minn_" + row_id).val()) || 1;
+    var qty = parseFloat($this.val());
 
-    if (isNaN(qty) || qty < min_order) {
-        qty = min_order;
-    } else if (qty % min_order !== 0) {
-        qty = Math.floor(qty / min_order) * min_order;
-        $(this).val(qty);
-        Swal.fire({
-          title: "Minimum Order Quantity",
-          text: 'Quantity must be a multiple of the minimum order value (' + min_order + ').',
-          icon: "warning",
-          confirmButtonText: "OK"
-        });
-    } else {
-        $('#msg').html('');
+    if (!qty || qty < min_order) {
+      
+        return;
     }
 
-    // Apply promotion rules if applicable
-    var response = getProductDatas(row_id); // Assuming this function returns the product response
-    if (response && response.promotion == 1) {
-        applyPromotionRule(row_id, qty, response.promo_rule_buy, response.promo_rule_free, response.product_id, response.product_name);
-    }
-    updatePromotionAcrossRows(row_id);
-    subAmount();
-    getTotal(row_id);
+    // Only check and correct when user stops typing (use debounce or check on change)
+    clearTimeout($this.data("timeout")); // clear previous timer
+    var timeout = setTimeout(function () {
+        if (qty % min_order !== 0) {
+            qty = Math.floor(qty / min_order) * min_order;
+            $this.val(qty);
+            Swal.fire({
+              title: "Minimum Order Quantity",
+              text: 'Quantity must be a multiple of the minimum order value (' + min_order + ').',
+              icon: "warning",
+              confirmButtonText: "OK"
+            });
+        } else {
+            $('#msg').html('');
+        }
+
+        // Apply promotion rules if applicable
+        var response = getProductDatas(row_id);
+        if (response && response.promotion == 1) {
+            applyPromotionRule(row_id, qty, response.promo_rule_buy, response.promo_rule_free, response.product_id, response.product_name);
+        }
+        updatePromotionAcrossRows(row_id);
+        subAmount();
+        getTotal(row_id);
+
+    }, 2000); // wait 0.5s after last keyup
+    $this.data("timeout", timeout);
 });
+
 
 function updatePromotionAcrossRows(changedRowId) {
     var product_id = $("#product_" + changedRowId).val();
@@ -1277,7 +1323,9 @@ function confirmSubmission(event) {
 function confirmOrder() {
     // Find the closest form element to the clicked button
     var form = document.getElementById('create_orders');
-
+    var submitBtn = document.getElementById('submitBtn');
+    var btnText = document.getElementById('btnText');
+    var btnSpinner = document.getElementById('btnSpinner');
     // Show SweetAlert confirmation dialog
     Swal.fire({
         title: "You are about to confirm this order?",
@@ -1290,6 +1338,9 @@ function confirmOrder() {
         cancelButtonColor: "#d33",      // Optional: Customize cancel button color
     }).then((confirmed) => {
         if (confirmed) {
+          submitBtn.disabled = true;
+            btnText.textContent = "Processing...";
+            btnSpinner.classList.remove("d-none");
             // Proceed with form submission
             form.submit();
         }
