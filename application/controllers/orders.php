@@ -215,7 +215,7 @@ class orders extends CI_Controller {
 
 			// $user_id = $data['user_id'];
 
-			$orders_data = $this->order_model->getOrdersDatas($id,$user_id);
+			$orders_data = $this->order_model->getOrdersDatas($user_id,$id);
 
 			foreach ($orders_data as $order) {
 				$orders_item = $this->order_model->getOrdersItemDatasedit($id);
@@ -315,6 +315,8 @@ class orders extends CI_Controller {
 
 		echo json_encode($result);
 	}
+
+  
 	public function printDiv($id)
 	{
     $data['print'] = 'print';
@@ -325,7 +327,7 @@ class orders extends CI_Controller {
 
 	$user_id = $data['user_id'];
 
-    $orders_data = $this->order_model->getOrdersDatas($id,$user_id);
+    $orders_data = $this->order_model->getOrdersDatas($user_id,$id);
 
 	foreach ($orders_data as $order) {
 		$orders_item = $this->order_model->getOrdersItemDatas($id);
@@ -710,7 +712,7 @@ public function printpacking()
 
 			$user_id = $data['user_id'];
 
-			$orders_data = $this->order_model->getOrdersDatas($id,$user_id);
+			$orders_data = $this->order_model->getOrdersDatas($user_id,$id);
 
 			foreach ($orders_data as $order) {
 				$orders_item = $this->order_model->getOrdersItemDatasedit($id);
@@ -1532,4 +1534,295 @@ public function downloadagreemnt()
     }
 }
 
+public function fetchdeleteOrdersData()
+{
+
+    
+    $result = array('data' => array());
+
+    $data = $this->order_model->getdeletedOrdersData();
+
+    foreach ($data as $key => $value) {
+
+
+        $count_total_item = $this->order_model->countOrderItem($value['id']);
+        $date = date('d-m-Y', $value['date_time']);
+        $time = date('h:i a', $value['date_time']);
+
+        $date_time = $date . ' ' . $time;
+
+        // button
+        $buttons = '';
+
+        if(in_array('viewOrder', $this->permission)) {
+            $buttons .= '<a target="__blank" href="'.base_url('index.php/orders/printDiv/'.$value['id']).'" class="btn btn-warning"><i class="fa fa-print"></i></a>';
+        }
+
+        
+        if(in_array('deleteOrder', $this->permission)) {
+            $buttons .= ' <button type="button" class="btn btn-danger" onclick="removeFunc('.$value['id'].')" data-toggle="modal" data-target="#removeModal"><i class="fa fa-undo"></i></button>';
+        }
+
+    
+           $result['data'][$key] = array(
+            $value['bill_no'],
+            $date_time,
+            $count_total_item,
+            $value['net_amount'],
+            // $paid_status,
+            $buttons
+        );
+    }
+
+    echo json_encode($result);
+}
+
+public function manage_delete_orders() {
+    $data['title'] = 'orders';
+
+    // Pagination configuration
+    $config['base_url'] = site_url('orders/manage_delete_orders');
+    $config['total_rows'] = $this->order_model->count_all_deleted_orders(); // Ensure total rows are counted for the current month
+    $config['per_page'] = 10;
+    $config['uri_segment'] = 3;
+    $config['use_page_numbers'] = TRUE;
+
+    // Pagination styling
+    $config['full_tag_open'] = '<ul class="pagination">';
+    $config['full_tag_close'] = '</ul>';
+    $config['first_link'] = 'First';
+    $config['last_link'] = 'Last';
+    $config['first_tag_open'] = '<li class="page-item"><span class="page-link">';
+    $config['first_tag_close'] = '</span></li>';
+    $config['prev_link'] = 'Previous';
+    $config['prev_tag_open'] = '<li class="page-item"><span class="page-link">';
+    $config['prev_tag_close'] = '</span></li>';
+    $config['next_link'] = 'Next';
+    $config['next_tag_open'] = '<li class="page-item"><span class="page-link">';
+    $config['next_tag_close'] = '</span></li>';
+    $config['last_tag_open'] = '<li class="page-item"><span class="page-link">';
+    $config['last_tag_close'] = '</span></li>';
+    $config['cur_tag_open'] = '<li class="page-item active"><span class="page-link">';
+    $config['cur_tag_close'] = '</span></li>';
+    $config['num_tag_open'] = '<li class="page-item"><span class="page-link">';
+    $config['num_tag_close'] = '</span></li>';
+
+    // Initialize pagination
+    $page = ($this->uri->segment(3)) ? $this->uri->segment(3) : 1;
+    $offset = ($page - 1) * $config['per_page'];
+
+    $this->pagination->initialize($config);
+
+    $loginuser = $this->session->userdata('LoginSession');
+    $data['user_id'] = $loginuser['id'];
+
+    // Fetch orders for the current month with pagination
+    $data['orders'] = $this->order_model->getmanagedeleteorder($config['per_page'], $offset);
+    $data['total_rows'] = $this->order_model->count_all_deleted_orders();
+
+    // Load views
+    $this->load->view('template/header.php', $data);
+    $user = $this->session->userdata('user_register');
+    $users = $this->session->userdata('normal_user');
+    $this->load->view('template/sidebar.php', array('user' => $user, 'users' => $users, 'data' => $data, 'loginuser' => $loginuser));
+    $this->load->view('orders/manage_delete_orders.php', $data);
+    $this->load->view('template/footer.php');
+}
+
+public function revertorder($id){
+	$delete = $this->order_model->revertorder($id);
+
+	if($delete){
+		$this->session->set_flashdata('success', 'Order Reverted Successfully');
+		redirect('orders/manage_delete_orders', 'refresh');
+		
+	}
+	else{
+		return false;
+	}
+}
+
+public function searchdeletedinvoice() {
+    $keyword = $this->input->get('keyword');
+    $data['title'] = 'Dashboard';
+
+    // Load pagination library
+    $this->load->library('pagination');
+
+    // Pagination Config for Search Results
+    $config['base_url'] = site_url('Orders/searchdeletedinvoice');
+    $config['total_rows'] = $this->order_model->count_search_deleted_orders($keyword);
+    $config['per_page'] = 10;
+    $config['uri_segment'] = 3;
+    $config['use_page_numbers'] = TRUE;
+
+    // Include the keyword in the query string for pagination links
+    $config['suffix'] = '?keyword=' . $keyword;
+    $config['first_url'] = $config['base_url'] . '/1' . $config['suffix'];
+
+    $config['full_tag_open'] = '<ul class="pagination">';
+    $config['full_tag_close'] = '</ul>';
+    $config['first_link'] = 'First';
+    $config['last_link'] = 'Last';
+    $config['first_tag_open'] = '<li class="page-item"><span class="page-link">';
+    $config['first_tag_close'] = '</span></li>';
+    $config['prev_link'] = 'Previous';
+    $config['prev_tag_open'] = '<li class="page-item"><span class="page-link">';
+    $config['prev_tag_close'] = '</span></li>';
+    $config['next_link'] = 'Next';
+    $config['next_tag_open'] = '<li class="page-item"><span class="page-link">';
+    $config['next_tag_close'] = '</span></li>';
+    $config['last_tag_open'] = '<li class="page-item"><span class="page-link">';
+    $config['last_tag_close'] = '</span></li>';
+    $config['cur_tag_open'] = '<li class="page-item active"><span class="page-link">';
+    $config['cur_tag_close'] = '</span></li>';
+    $config['num_tag_open'] = '<li class="page-item"><span class="page-link">';
+    $config['num_tag_close'] = '</span></li>';
+
+    $page = ($this->uri->segment(3)) ? $this->uri->segment(3) : 1;
+    $offset = ($page - 1) * $config['per_page'];
+
+    $data['keyword'] = $keyword;
+    $data['config'] = $config;
+    $data['offset'] = $offset;
+
+    $this->pagination->initialize($config);
+
+    $loginuser = $this->session->userdata('LoginSession');
+    $data['user_id'] = $loginuser['id'];
+
+    $data['orders'] = $this->order_model->search_deleted_orders($keyword, $config['per_page'], $offset);
+    $data['total_rows'] = $this->order_model->count_search_deleted_orders($keyword);
+
+    $this->load->view('template/header.php', $data);
+    $user = $this->session->userdata('user_register');
+    $users = $this->session->userdata('normal_user');
+    $loginuser = $this->session->userdata('LoginSession');
+    $this->load->view('template/sidebar.php', array('user' => $user, 'users' => $users, 'data' => $data, 'loginuser' => $loginuser));
+    $this->load->view('orders/manage_delete_orders.php', $data);
+    $this->load->view('template/footer.php');
+}
+
+
+public function searchdeletedate() {
+    $keyword = $this->input->get('date');
+    $data['title'] = 'Dashboard';
+
+    // Load pagination library
+    $this->load->library('pagination');
+
+    // Pagination Config for Search Results
+    $config['base_url'] = site_url('Orders/searchdeletedate');
+    $config['total_rows'] = $this->order_model->count_delete_search_date($keyword);
+    $config['per_page'] = 10;
+    $config['uri_segment'] = 3;
+    $config['use_page_numbers'] = TRUE;
+
+    // Include the keyword in the query string for pagination links
+    $config['suffix'] = '?date=' . urlencode($keyword);
+    $config['first_url'] = $config['base_url'] . '/1' . $config['suffix'];
+
+    $config['full_tag_open'] = '<ul class="pagination">';
+    $config['full_tag_close'] = '</ul>';
+    $config['first_link'] = 'First';
+    $config['last_link'] = 'Last';
+    $config['first_tag_open'] = '<li class="page-item"><span class="page-link">';
+    $config['first_tag_close'] = '</span></li>';
+    $config['prev_link'] = 'Previous';
+    $config['prev_tag_open'] = '<li class="page-item"><span class="page-link">';
+    $config['prev_tag_close'] = '</span></li>';
+    $config['next_link'] = 'Next';
+    $config['next_tag_open'] = '<li class="page-item"><span class="page-link">';
+    $config['next_tag_close'] = '</span></li>';
+    $config['last_tag_open'] = '<li class="page-item"><span class="page-link">';
+    $config['last_tag_close'] = '</span></li>';
+    $config['cur_tag_open'] = '<li class="page-item active"><span class="page-link">';
+    $config['cur_tag_close'] = '</span></li>';
+    $config['num_tag_open'] = '<li class="page-item"><span class="page-link">';
+    $config['num_tag_close'] = '</span></li>';
+
+    $page = ($this->uri->segment(3)) ? $this->uri->segment(3) : 1;
+    $offset = ($page - 1) * $config['per_page'];
+
+    $data['date'] = $keyword;
+    $data['config'] = $config;
+    $data['offset'] = $offset;
+
+    $this->pagination->initialize($config);
+
+    $loginuser = $this->session->userdata('LoginSession');
+    $data['user_id'] = $loginuser['id'];
+
+    $data['orders'] = $this->order_model->search_date($keyword, $config['per_page'], $offset);
+    $data['total_rows'] = $this->order_model->count_delete_search_date($keyword);
+
+    $this->load->view('template/header.php', $data);
+    $user = $this->session->userdata('user_register');
+    $users = $this->session->userdata('normal_user');
+    $loginuser = $this->session->userdata('LoginSession');
+    $this->load->view('template/sidebar.php', array('user' => $user, 'users' => $users, 'data' => $data, 'loginuser' => $loginuser));
+    $this->load->view('orders/manage_delete_orders.php', $data);
+    $this->load->view('template/footer.php');
+}
+
+public function searchdeletedorderdate() {
+    $keyword = $this->input->get('orderdate');
+    $data['title'] = 'Dashboard';
+
+    // Load pagination library
+    $this->load->library('pagination');
+
+    // Pagination Config for Search Results
+    $config['base_url'] = site_url('Orders/searchdeletedorderdate');
+    $config['total_rows'] = $this->order_model->count_search_delete_orderdate($keyword);
+    $config['per_page'] = 10;
+    $config['uri_segment'] = 3;
+    $config['use_page_numbers'] = TRUE;
+
+    // Include the keyword in the query string for pagination links
+    $config['suffix'] = '?orderdate=' . urlencode($keyword);
+    $config['first_url'] = $config['base_url'] . '/1' . $config['suffix'];
+
+    $config['full_tag_open'] = '<ul class="pagination">';
+    $config['full_tag_close'] = '</ul>';
+    $config['first_link'] = 'First';
+    $config['last_link'] = 'Last';
+    $config['first_tag_open'] = '<li class="page-item"><span class="page-link">';
+    $config['first_tag_close'] = '</span></li>';
+    $config['prev_link'] = 'Previous';
+    $config['prev_tag_open'] = '<li class="page-item"><span class="page-link">';
+    $config['prev_tag_close'] = '</span></li>';
+    $config['next_link'] = 'Next';
+    $config['next_tag_open'] = '<li class="page-item"><span class="page-link">';
+    $config['next_tag_close'] = '</span></li>';
+    $config['last_tag_open'] = '<li class="page-item"><span class="page-link">';
+    $config['last_tag_close'] = '</span></li>';
+    $config['cur_tag_open'] = '<li class="page-item active"><span class="page-link">';
+    $config['cur_tag_close'] = '</span></li>';
+    $config['num_tag_open'] = '<li class="page-item"><span class="page-link">';
+    $config['num_tag_close'] = '</span></li>';
+
+    $page = ($this->uri->segment(3)) ? $this->uri->segment(3) : 1;
+    $offset = ($page - 1) * $config['per_page'];
+
+    $data['orderdate'] = $keyword;
+    $data['config'] = $config;
+    $data['offset'] = $offset;
+
+    $this->pagination->initialize($config);
+
+    $loginuser = $this->session->userdata('LoginSession');
+    $data['user_id'] = $loginuser['id'];
+
+    $data['orders'] = $this->order_model->search_orderdate($keyword, $config['per_page'], $offset);
+    $data['total_rows'] = $this->order_model->count_search_delete_orderdate($keyword);
+
+    $this->load->view('template/header.php', $data);
+    $user = $this->session->userdata('user_register');
+    $users = $this->session->userdata('normal_user');
+    $loginuser = $this->session->userdata('LoginSession');
+    $this->load->view('template/sidebar.php', array('user' => $user, 'users' => $users, 'data' => $data, 'loginuser' => $loginuser));
+    $this->load->view('orders/manage_delete_orders.php', $data);
+    $this->load->view('template/footer.php');
+}
 }

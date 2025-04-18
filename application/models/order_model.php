@@ -443,9 +443,7 @@ public function update($id,$user_id)
 				return $query->result(); // Use result() to fetch objects
 			}
 		}
-		
-
-    public function getOrdersDatas($id = null,$user_id)
+    public function getOrdersDatas($user_id,$id = null)
 	{
 		if($id) {
 			$sql = "SELECT ord.*,user.id as user_id,user.name as name,user.address as address, user.address_line2 as address_line2,
@@ -1143,7 +1141,95 @@ public function get_user_orders($user_id, $limit, $offset) {
     $query = $this->db->get('orders');
     return $query->result();
 }
+public function count_all_deleted_orders() {
+ 
+	$this->db->where('isdeleted', 1);
+    return $this->db->count_all_results('orders');
+}
 
+public function revertorder($id) {
+    // Get the logged-in user ID
+    $user = $this->session->userdata('normal_user');
+    $user_id = $user->id; // assuming 'id' is the user ID field
 
+    // Soft delete the order
+    $this->db->where('id', $id);
+    $this->db->update('orders', [
+        'isdeleted' => 0,
+        'revert_by' => $user_id
+    ]);
 
+    // Soft delete the order items
+    $this->db->where('order_id', $id);
+    $this->db->update('order_items', [
+        'isdeleted' => 0,
+        'revert_by' => $user_id
+    ]);
+
+    return ($this->db->affected_rows() > 0);
+}
+public function count_delete_search_date($keyword) {
+	$this->db->where('delivery_date', $keyword);
+	$this->db->where('isdeleted', 1);
+    return $this->db->count_all_results('orders');
+}
+
+public function getdeletedOrdersData() {
+	//     $this->db->limit($limit, $offset);
+			$this->db->where('ord.isdeleted', 1);
+		 return $this->db->get('orders')->result();
+	 }
+
+	 
+public function count_search_deleted_orders($keyword) {
+    $this->db->from('orders ord');
+    $this->db->join('user_register us', 'us.id = ord.user_id');
+    
+    $this->db->where('ord.isdeleted', 1); // Ensure only non-deleted orders
+
+    // Group the LIKE conditions
+    $this->db->group_start();
+    $this->db->like('ord.bill_no', $keyword);
+    $this->db->or_like('us.name', $keyword);
+    $this->db->group_end();
+
+    return $this->db->count_all_results();
+}
+
+public function search_deleted_orders($keyword, $limit, $offset) {
+    $this->db->select('ord.*, us.name as name'); 
+    $this->db->from('orders ord');
+    $this->db->join('user_register us', 'us.id = ord.user_id');
+    $this->db->where('ord.isdeleted', 1);
+    $this->db->group_start();
+    $this->db->like('ord.bill_no', $keyword);
+    $this->db->or_like('us.name', $keyword);
+    $this->db->group_end();
+    $this->db->limit($limit, $offset);
+
+    $query = $this->db->get();
+    return $query->result();
+}
+
+public function count_search_delete_orderdate($keyword) {
+	$this->db->where('DATE(created_date)', $keyword);
+	$this->db->where('isdeleted', 0);
+    return $this->db->count_all_results('orders');
+}
+	
+public function getmanagedeleteorder($limit = 10, $offset = 0) {
+	$current_month = date('Y-m'); // Get the current month in 'YYYY-MM' format
+
+	$this->db->select('ord.*, us.name as name');
+	$this->db->from('orders ord');
+	$this->db->join('user_register us', 'us.id = ord.user_id');
+	$this->db->where('ord.isdeleted', 1);
+	$this->db->limit($limit, $offset);
+	$query = $this->db->get();
+
+//	echo $this->db->last_query();
+
+	return $query->result();
+
+}
 }

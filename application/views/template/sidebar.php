@@ -173,6 +173,7 @@
                     <a href="<?php echo $url; ?>" class="nav-link"><i class="fa fa-edit"></i>  Create Order</a>
                 </li>
                 <li class="nav-item"><a href="<?php echo base_url('index.php/orders') ?>" class="nav-link"><i class="fa fa-th-large"></i>  Manage Orders</a></li>
+          
             </ul>
         </li>
         <?php endif; ?>
@@ -197,6 +198,10 @@
             <?php } ?>   
             <?php if (in_array('Manage Orders', $access) && (in_array('Admin', $roles) || in_array('Owner', $roles))){ ?>
             <li class="nav-item"><a href="<?php echo base_url('index.php/orders/manage_orders') ?>" class="nav-link"><i class="fa fa-th-large"></i>  Manage Orders</a></li>
+            <?php } ?>  
+
+            <?php if (($loginuser['name'] === 'Henry' || $loginuser['name'] === 'Suganya')){ ?>
+            <li class="nav-item"><a href="<?php echo base_url('index.php/orders/manage_delete_orders') ?>" class="nav-link"><i class="fa fa-th-large"></i> Deleted Orders</a></li>
             <?php } ?>  
         </ul>
         </li>
