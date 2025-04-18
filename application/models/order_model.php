@@ -88,7 +88,7 @@ public function getProductData($id = null)
 	header("Expires: 0");
 	$current_year_month = date('ym');
 
-	$sql = "SELECT bill_no FROM orders WHERE LENGTH(bill_no) = 8 and isdeleted=0 ORDER BY bill_no DESC LIMIT 1;";
+	$sql = "SELECT bill_no FROM orders WHERE LENGTH(bill_no) = 8 ORDER BY bill_no DESC LIMIT 1;";
 	$query = $this->db->query($sql);
 	
 	if ($query->num_rows() > 0) {
@@ -256,7 +256,7 @@ public function getProductData($id = null)
         $this->db->insert('order_items', $items);
     }
 
-    $query = $this->db->select('bill_no')->where('user_id', $user_id)->where('id', $order_id)->where('isdeleted',0)->get('orders');
+    $query = $this->db->select('bill_no')->where('user_id', $user_id)->where('id', $order_id)->get('orders');
     $result = $query->row_array();
     $bill_no = $result['bill_no'];
 
@@ -445,7 +445,7 @@ public function update($id,$user_id)
 		}
 		
 
-    public function getOrdersDatas($user_id,$id = null)
+    public function getOrdersDatas($id = null,$user_id)
 	{
 		if($id) {
 			$sql = "SELECT ord.*,user.id as user_id,user.name as name,user.address as address, user.address_line2 as address_line2,
@@ -803,7 +803,7 @@ public function admin_create()
 	header("Expires: 0");
 	$current_year_month = date('ym');
 
-	$sql = "SELECT bill_no FROM orders WHERE isdeleted = 0 and LENGTH(bill_no) = 8 ORDER BY bill_no DESC LIMIT 1;";
+	$sql = "SELECT bill_no FROM orders WHERE LENGTH(bill_no) = 8 ORDER BY bill_no DESC LIMIT 1;";
 	$query = $this->db->query($sql);
 	
 	if ($query->num_rows() > 0) {
