@@ -11,11 +11,10 @@ class Excel_export_model extends CI_Model
                     JOIN order_items orrr ON ord.id = orrr.order_id 
                     JOIN user_register uss ON ord.user_id = uss.id 
                     JOIN products prod ON orrr.product_id = prod.id
-                    WHERE DATE(ord.delivery_date) BETWEEN '$first_day_of_month' AND '$last_day_of_month'";
+                    WHERE DATE(ord.delivery_date) BETWEEN '$first_day_of_month' AND '$last_day_of_month' AND ord.isdeleted=0";
             $query = $this->db->query($sql);
 
-           echo $this->db->last_query();
-           exit;
+        
            return $query->result();
 
     }
@@ -28,7 +27,7 @@ class Excel_export_model extends CI_Model
         JOIN order_items orrr ON ord.id = orrr.order_id 
         JOIN user_register uss ON ord.user_id = uss.id 
         JOIN products prod ON orrr.product_id = prod.id
-        WHERE DATE(ord.delivery_date) = '$sales_date'";
+        WHERE DATE(ord.delivery_date) = '$sales_date' and ord.isdeleted=0";
         $query = $this->db->query($sql);
         return $query->result();
 
@@ -42,7 +41,7 @@ public function fetch_data_by_date_range($start_date, $end_date)
             JOIN order_items orrr ON ord.id = orrr.order_id 
             JOIN user_register uss ON ord.user_id = uss.id 
             JOIN products prod ON orrr.product_id = prod.id
-            WHERE DATE(ord.delivery_date) BETWEEN '$start_date' AND '$end_date'";
+            WHERE DATE(ord.delivery_date) BETWEEN '$start_date' AND '$end_date' AND isdeleted=0";
     $query = $this->db->query($sql);
     return $query->result();
 }
@@ -66,7 +65,7 @@ public function fetch_data_by_date_range($start_date, $end_date)
             JOIN order_items orrr ON ord.id = orrr.order_id 
             JOIN user_register uss ON ord.user_id = uss.id 
             JOIN products prod ON orrr.product_id = prod.id
-            WHERE DATE(ord.created_date) BETWEEN '$first_day_of_month' AND '$last_day_of_month'
+            WHERE DATE(ord.created_date) BETWEEN '$first_day_of_month' AND '$last_day_of_month' AND isdeleted = 0
             ORDER BY prod.prod_category"; // Order by product_name
         $query = $this->db->query($sql);
         
@@ -79,7 +78,7 @@ public function fetch_data_by_date_range($start_date, $end_date)
             JOIN order_items orrr ON ord.id = orrr.order_id 
             JOIN user_register uss ON ord.user_id = uss.id 
             JOIN products prod ON orrr.product_id = prod.id
-            WHERE DATE(ord.created_date) BETWEEN '$start_date' AND '$end_date'
+            WHERE DATE(ord.created_date) BETWEEN '$start_date' AND '$end_date' AND isdeleted=0
             ORDER BY prod.prod_category"; // Order by product_category
         $query = $this->db->query($sql);
 

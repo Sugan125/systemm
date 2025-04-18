@@ -88,7 +88,7 @@ public function getProductData($id = null)
 	header("Expires: 0");
 	$current_year_month = date('ym');
 
-	$sql = "SELECT bill_no FROM orders WHERE LENGTH(bill_no) = 8 ORDER BY bill_no DESC LIMIT 1;";
+	$sql = "SELECT bill_no FROM orders WHERE LENGTH(bill_no) = 8 and isdeleted=0 ORDER BY bill_no DESC LIMIT 1;";
 	$query = $this->db->query($sql);
 	
 	if ($query->num_rows() > 0) {
@@ -256,7 +256,7 @@ public function getProductData($id = null)
         $this->db->insert('order_items', $items);
     }
 
-    $query = $this->db->select('bill_no')->where('user_id', $user_id)->where('id', $order_id)->get('orders');
+    $query = $this->db->select('bill_no')->where('user_id', $user_id)->where('id', $order_id)->where('isdeleted',0)->get('orders');
     $result = $query->row_array();
     $bill_no = $result['bill_no'];
 
@@ -407,7 +407,7 @@ public function update($id,$user_id)
 
 		
 
-        $query = $this->db->select('bill_no')->where('user_id', $user_id)->where('id', $id)->get('orders');
+        $query = $this->db->select('bill_no')->where('user_id', $user_id)->where('id', $id)->where('isdeleted',0)->get('orders');
 		$result = $query->row_array();
 		$bill_no = $result['bill_no'];
 
@@ -425,7 +425,7 @@ public function update($id,$user_id)
 			return false;
 		}
 
-		$sql = "SELECT ord.*, user.*, ord.driver_memo as memo, ord.packer_memo as pmemo,  ord.po_ref as po_ref,ord.created_date as created_date FROM orders ord join user_register user WHERE ord.id = ? and user.id=ord.user_id";
+		$sql = "SELECT ord.*, user.*, ord.driver_memo as memo, ord.packer_memo as pmemo,  ord.po_ref as po_ref,ord.created_date as created_date FROM orders ord join user_register user WHERE ord.id = ? and user.id=ord.user_id and ord.isdeleted=0";
 		$query = $this->db->query($sql, array($order_id));
 		return $query->result_array();
 	}
@@ -438,19 +438,19 @@ public function update($id,$user_id)
 
 		 public function getorderuser($id) {
 			if ($id) {
-				$sql = "SELECT * FROM orders WHERE user_id = ?";
+				$sql = "SELECT * FROM orders WHERE user_id = ? AND isdeleted = 0";
 				$query = $this->db->query($sql, array($id));
 				return $query->result(); // Use result() to fetch objects
 			}
 		}
 		
 
-    public function getOrdersDatas($id = null,$user_id)
+    public function getOrdersDatas($user_id,$id = null)
 	{
 		if($id) {
 			$sql = "SELECT ord.*,user.id as user_id,user.name as name,user.address as address, user.address_line2 as address_line2,
 			user.address_city, user.address_postcode, user.delivery_address, user.delivery_address_line2, user.delivery_address_city,
-			user.delivery_address_postcode  FROM orders ord join user_register user WHERE ord.user_id = user.id  and ord.id = ? and ord.user_id = '".$user_id."'";
+			user.delivery_address_postcode  FROM orders ord join user_register user WHERE ord.isdeleted = 0 and ord.user_id = user.id  and ord.id = ? and ord.user_id = '".$user_id."'";
 			$query = $this->db->query($sql, array($id));
 			return $query->row_array();
 		}
@@ -462,7 +462,7 @@ public function update($id,$user_id)
 			return false;
 		}
 
-		$sql = "SELECT * FROM order_items WHERE order_id = ?";
+		$sql = "SELECT * FROM order_items WHERE isdeleted=0 and order_id = ?";
 		$query = $this->db->query($sql, array($order_id));
 		return $query->result_array();
 	}
@@ -476,7 +476,7 @@ public function update($id,$user_id)
 		$sql = "SELECT ord.*, pd.product_name , pd.product_id 
 				FROM order_items ord 
 				LEFT JOIN products pd ON ord.product_id = pd.id 
-				WHERE ord.order_id = ?";
+				WHERE isdeleted = 0 and ord.order_id = ?";
 
 		
 		$query = $this->db->query($sql, array($order_id));
@@ -503,7 +503,7 @@ public function update($id,$user_id)
     public function countOrderItem($order_id)
 	{
 		if($order_id) {
-			$sql = "SELECT * FROM order_items WHERE order_id = ?";
+			$sql = "SELECT * FROM order_items WHERE order_id = ? and isdeleted=0";
 			$query = $this->db->query($sql, array($order_id));
 			return $query->num_rows();
 		}
@@ -516,6 +516,7 @@ public function update($id,$user_id)
 		$this->db->from('orders ord');
 		$this->db->join('user_register us', 'us.id = ord.user_id');
 		$this->db->where('DATE_FORMAT(ord.created_date, "%Y-%m") =', $current_month); // Correct the WHERE clause
+		$this->db->where('ord.isdeleted', 0);
 		$this->db->limit($limit, $offset);
 		$query = $this->db->get();
 
@@ -528,7 +529,7 @@ public function update($id,$user_id)
 	public function getOrdersadmin($id = null)
 	{
 		if($id) {
-			$sql = "SELECT ord.*,user.* FROM orders ord join user_register user WHERE ord.user_id = user.id and ord.id = ? ";
+			$sql = "SELECT ord.*,user.* FROM orders ord join user_register user WHERE ord.isdeleted=0 and ord.user_id = user.id and ord.id = ? ";
 			$query = $this->db->query($sql, array($id));
 			return $query->row_array();
 		}
@@ -545,7 +546,7 @@ public function update($id,$user_id)
 		$sql = "SELECT ord.*, pd.product_name , pd.product_id
 				FROM order_items ord 
 				LEFT JOIN products pd ON ord.product_id = pd.id 
-				WHERE ord.order_id = ?";
+				WHERE isdeleted = 0 and ord.order_id = ?";
 
 		
 		$query = $this->db->query($sql, array($order_id));
@@ -557,7 +558,7 @@ public function update($id,$user_id)
 			return false;
 		}
 
-		$sql = "SELECT ord.*, user.*,ord.driver_memo as memo ,user.company_name as company_name FROM orders ord join user_register user WHERE ord.id = ? and user.id=ord.user_id";
+		$sql = "SELECT ord.*, user.*,ord.driver_memo as memo ,user.company_name as company_name FROM orders ord join user_register user WHERE isdeleted=0 and ord.id = ? and user.id=ord.user_id";
 		$query = $this->db->query($sql, array($order_id));
 		return $query->result_array();
 	}
@@ -579,7 +580,7 @@ FROM
 JOIN 
     products prod ON ordd.product_id = prod.id 
 WHERE 
-    DATE(ordd.delivery_date) = '$schedule_date' 
+    DATE(ordd.delivery_date) = '$schedule_date' and isdeleted=0
 GROUP BY 
     prod.product_id, prod.product_name, ordd.category 
 ORDER BY 
@@ -600,7 +601,7 @@ public function getpackingorder($schedule_date) {
 	JOIN order_items orrr ON ord.id = orrr.order_id 
 	JOIN user_register uss ON ord.user_id = uss.id 
 	join products prod ON orrr.product_id=prod.id
-	WHERE DATE(orrr.delivery_date) = '$schedule_date';";
+	WHERE ord.isdeleted = 0 and DATE(orrr.delivery_date) = '$schedule_date';";
 	$query = $this->db->query($sql);
 	return $query->result(); 
 
@@ -632,7 +633,7 @@ public function repeat_order($id)
 		header("Expires: 0");
 		$current_year_month = date('ym');
 
-		$sql = "SELECT bill_no FROM orders WHERE LENGTH(bill_no) = 8 ORDER BY bill_no DESC LIMIT 1;";
+		$sql = "SELECT bill_no FROM orders WHERE isdeleted = 0 and LENGTH(bill_no) = 8 ORDER BY bill_no DESC LIMIT 1;";
 		$query = $this->db->query($sql);
 		
 		if ($query->num_rows() > 0) {
@@ -651,7 +652,7 @@ public function repeat_order($id)
 		$bill_no = $current_year_month . sprintf('%04d', $invoice_counter);
 		$do_bill_no = 'DO'.$current_year_month . sprintf('%04d', $invoice_counter);
    
-		$sql = "select * from orders where id=".$id;
+		$sql = "select * from orders where isdeleted=0 and id=".$id;
 		$query = $this->db->query($sql);
 		$orderss = $query->result_array(); 
 
@@ -727,7 +728,7 @@ public function repeat_order($id)
 		$order_id = $this->db->insert_id(); 
 		}
 		
-		$sqll = "SELECT * FROM order_items WHERE order_id=" . $id;
+		$sqll = "SELECT * FROM order_items WHERE is_deleted=0 and order_id=" . $id;
 		$queryy = $this->db->query($sqll);
 		$orders_items = $queryy->result_array();
 
@@ -777,7 +778,7 @@ public function repeat_order($id)
 			$this->db->insert('order_items', $items);
 		}
 	
-		$query = $this->db->select('bill_no')->where('user_id', $user_id)->where('id', $order_id)->get('orders');
+		$query = $this->db->select('bill_no')->where('user_id', $user_id)->where('id', $order_id)->where('isdeleted',0)->get('orders');
 		$result = $query->row_array();
 		$bill_no = $result['bill_no'];
 	
@@ -802,7 +803,7 @@ public function admin_create()
 	header("Expires: 0");
 	$current_year_month = date('ym');
 
-	$sql = "SELECT bill_no FROM orders WHERE LENGTH(bill_no) = 8 ORDER BY bill_no DESC LIMIT 1;";
+	$sql = "SELECT bill_no FROM orders WHERE isdeleted = 0 and LENGTH(bill_no) = 8 ORDER BY bill_no DESC LIMIT 1;";
 	$query = $this->db->query($sql);
 	
 	if ($query->num_rows() > 0) {
@@ -987,18 +988,20 @@ public function count_all_orders() {
     $current_month = date('Y-m'); // Get the current month in 'YYYY-MM' format
 
     $this->db->where('DATE_FORMAT(created_date, "%Y-%m") =', $current_month); // Correct the WHERE clause
+	$this->db->where('isdeleted', 0);
     return $this->db->count_all_results('orders');
 }
 
 public function count_search_results($keyword) {
 	$this->db->like('bill_no', $keyword);
+	$this->db->where('isdeleted', 0);
 	return $this->db->count_all_results('orders');
 }
 
 
 public function getinvoice($date) {
 	
-	$sql = "SELECT bill_no FROM orders WHERE   DATE(delivery_date) = '$date'";
+	$sql = "SELECT bill_no FROM orders WHERE isdeleted = 0 and  DATE(delivery_date) = '$date'";
 	$query = $this->db->query($sql);
 	//echo $this->db->last_query();
 	return $query->result(); 
@@ -1008,43 +1011,55 @@ public function getinvoice($date) {
 
 public function getdo($date) {
 	
-	$sql = "SELECT do_bill_no FROM orders WHERE  DATE(delivery_date) = '$date'";
+	$sql = "SELECT do_bill_no FROM orders WHERE isdeleted = 0 and DATE(delivery_date) = '$date'";
 	$query = $this->db->query($sql);
 	//echo $this->db->last_query();
 	return $query->result(); 
 
 }
 
-public function deleteorder($id){
-    // Delete order from 'orders' table
+public function deleteorder($id) {
+    // Get the logged-in user ID
+    $user = $this->session->userdata('normal_user');
+    $user_id = $user->id; // assuming 'id' is the user ID field
+
+    // Soft delete the order
     $this->db->where('id', $id);
-    $this->db->delete('orders');
+    $this->db->update('orders', [
+        'isdeleted' => 1,
+        'delete_by' => $user_id
+    ]);
 
-    // Delete associated items from 'order_items' table
+    // Soft delete the order items
     $this->db->where('order_id', $id);
-    $this->db->delete('order_items');
+    $this->db->update('order_items', [
+        'isdeleted' => 1,
+        'delete_by' => $user_id
+    ]);
 
-    // No need to return any data here since it's a deletion operation
-    // Return true or false based on the success of deletion
     return ($this->db->affected_rows() > 0);
 }
 
 
+
+
 public function count_search_date($keyword) {
 	$this->db->where('delivery_date', $keyword);
+	$this->db->where('isdeleted', 0);
     return $this->db->count_all_results('orders');
 }
 
 public function search_date($keyword, $limit, $offset) {
-    $this->db->where('delivery_date', $keyword);
-    $this->db->limit($limit, $offset);
-    $this->db->select('ord.*, us.name as name'); // Select fields from both tables
-
+    $this->db->select('ord.*, us.name as name');
     $this->db->from('orders ord');
     $this->db->join('user_register us', 'us.id = ord.user_id');
+    
+    $this->db->where('ord.isdeleted', 0);
+    $this->db->where('ord.delivery_date', $keyword);
+
+    $this->db->limit($limit, $offset);
 
     $query = $this->db->get();
-	//var_dump($this->db->last_query()); // Check the generated SQL query
     return $query->result();
 }
 
@@ -1052,11 +1067,13 @@ public function search_date($keyword, $limit, $offset) {
 
 public function count_search_orderdate($keyword) {
 	$this->db->where('DATE(created_date)', $keyword);
+	$this->db->where('isdeleted', 0);
     return $this->db->count_all_results('orders');
 }
 
 public function search_orderdate($keyword, $limit, $offset) {
 	$this->db->where('DATE(ord.created_date)', $keyword);
+	$this->db->where('ord.isdeleted', 0);
     $this->db->limit($limit, $offset);
     $this->db->select('ord.*, us.name as name'); // Select fields from both tables
 
@@ -1079,24 +1096,33 @@ public function getuseraddress($user_id){
 public function count_search_orders($keyword) {
     $this->db->from('orders ord');
     $this->db->join('user_register us', 'us.id = ord.user_id');
+    
+    $this->db->where('ord.isdeleted', 0); // Ensure only non-deleted orders
+
+    // Group the LIKE conditions
+    $this->db->group_start();
     $this->db->like('ord.bill_no', $keyword);
     $this->db->or_like('us.name', $keyword);
+    $this->db->group_end();
+
     return $this->db->count_all_results();
 }
 
 public function search_orders($keyword, $limit, $offset) {
-    $this->db->select('ord.*, us.name as name'); // Select fields from both tables
+    $this->db->select('ord.*, us.name as name'); 
     $this->db->from('orders ord');
     $this->db->join('user_register us', 'us.id = ord.user_id');
+    $this->db->where('ord.isdeleted', 0);
+    $this->db->group_start();
     $this->db->like('ord.bill_no', $keyword);
     $this->db->or_like('us.name', $keyword);
+    $this->db->group_end();
     $this->db->limit($limit, $offset);
-    
+
     $query = $this->db->get();
-    // Uncomment the next line to debug the generated SQL query
-    // var_dump($this->db->last_query()); // Check the generated SQL query
     return $query->result();
 }
+
 
 public function getcategoryfrozen(){
 	$sql = "SELECT prod_category FROM products WHERE active = 1 and prod_category = 'Frozen Dough'  GROUP BY prod_category ORDER BY prod_category ASC";
@@ -1106,11 +1132,13 @@ public function getcategoryfrozen(){
 
 public function count_user_orders($user_id) {
     $this->db->where('user_id', $user_id);
+	$this->db->where('isdeleted', 0);
     return $this->db->count_all_results('orders');
 }
 
 public function get_user_orders($user_id, $limit, $offset) {
     $this->db->where('user_id', $user_id);
+	$this->db->where('isdeleted', 0);
     $this->db->limit($limit, $offset);
     $query = $this->db->get('orders');
     return $query->result();

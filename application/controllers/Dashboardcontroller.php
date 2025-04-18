@@ -24,7 +24,7 @@ class Dashboardcontroller extends CI_Controller{
 
         $query_day = $this->db->query("
         SELECT DATE(delivery_date) as date, COUNT(bill_no) as count, SUM(net_amount) as total_amt 
-        FROM orders 
+        FROM orders  where isdeleted=0
         GROUP BY DATE(delivery_date)
         ");
         $data['day_data'] = $query_day->result();
@@ -32,7 +32,7 @@ class Dashboardcontroller extends CI_Controller{
         // Fetch data for orders grouped by month
         $query_month = $this->db->query("
             SELECT DATE_FORMAT(delivery_date, '%Y-%m') as month, COUNT(bill_no) as count, SUM(net_amount) as total_amt 
-            FROM orders 
+            FROM orders where isdeleted=0
             GROUP BY DATE_FORMAT(delivery_date, '%Y-%m')
         ");
         $data['month_data'] = $query_month->result();
@@ -40,13 +40,13 @@ class Dashboardcontroller extends CI_Controller{
         // Fetch data for orders grouped by year
         $query_year = $this->db->query("
             SELECT YEAR(delivery_date) as year, COUNT(bill_no) as count, SUM(net_amount) as total_amt 
-            FROM orders 
+            FROM orders where isdeleted=0
             GROUP BY YEAR(delivery_date)
         ");
         $data['year_data'] = $query_year->result();
 
 
-        $query5 = $this->db->query("SELECT COUNT(bill_no) as count FROM orders WHERE DATE(created_date) = '$created_date'");
+        $query5 = $this->db->query("SELECT COUNT(bill_no) as count FROM orders WHERE isdeleted=0 and DATE(created_date) = '$created_date'");
   
 
         $record5 = $query5->result();
@@ -55,7 +55,7 @@ class Dashboardcontroller extends CI_Controller{
             $data['today_orders'] =  $row5->count;
         }
 
-        $query6= $this->db->query("SELECT sum(net_amount) as total_amt FROM orders WHERE DATE(delivery_date) ='$created_date'"); 
+        $query6= $this->db->query("SELECT sum(net_amount) as total_amt FROM orders WHERE isdeleted=0 and DATE(delivery_date) ='$created_date'"); 
 
         $record6 = $query6->result();
     
