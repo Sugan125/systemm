@@ -291,7 +291,10 @@
                     ?>
 
                     <?php echo $modal_id; ?>
-                    <button type="<?php echo $btn; ?>" class="btn btn-success create_order" <?php echo $btn; ?>>Create Order</button>
+                     <button id="submitBtn" type="<?php echo $btn; ?>" class="btn btn-success create_order" <?php echo $btn; ?>>
+                    <span id="btnText">Repeat Order</span>
+                    <i id="btnSpinner" class="fa fa-spinner fa-spin d-none" aria-hidden="true"></i>
+                    </button>
                     <?php echo $end_id; ?> 
                   <a href="<?php echo base_url('index.php/orders/') ?>" class="btn btn-danger">Back</a>
                 </div>
@@ -378,6 +381,8 @@
 
 <script src="<?= base_url();?>public/plugins/pikaday/pikaday.js"></script>
 <script src="<?= base_url();?>public/plugins/pikaday/moment.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script type="text/javascript">
  var today = new Date();
 
@@ -439,7 +444,7 @@
 function openModal() {
     var deliveryDateInput = document.getElementById('pre_order');
     if (!deliveryDateInput.value) {
-      swal("Delivery Date", "Please select a delivery date before creating the order.", "warning");
+      Swal.fire("Delivery Date", "Please select a delivery date before creating the order.", "warning");
     } else {
       $('#myModal').modal('show');
     }
@@ -453,59 +458,48 @@ function openModal() {
     var deliveryCharge = parseFloat(document.getElementById('delivery_charge').value);
 
     // Check if the delivery charge is below 80
-    if (deliveryCharge == 20) {
-        swal({
-            title: "Confirmation",
-            text: "Under $80 MOQ, a $20 fee will be imposed.",
+    if (deliveryCharge === 20) {
+        Swal.fire({
+            title: "Warning",
+            text: "Under $80 MOQ, a $20 fee will be imposed. Please add more items to avoid delivery charges.",
             icon: "info",
-            buttons: ["Cancel", "Continue"],
+            confirmButtonText: "OK"
         }).then((willContinue) => {
             if (willContinue) {
                 // Proceed with the rest of the confirmation
-                confirmOrder();
+                //confirmOrder();
             }
         });
-    } else {
-        // If delivery charge is not below 80, proceed with the existing confirmation
+    }  else {
+        // If delivery charge is not 20, proceed with the existing confirmation
         confirmOrder();
     }
 }
-
-
 function confirmOrder() {
-      event.preventDefault(); // Prevent the default form submission
+    var form = document.getElementById('repeat_order');
+    var submitBtn = document.getElementById('submitBtn');
+    var btnText = document.getElementById('btnText');
+    var btnSpinner = document.getElementById('btnSpinner');
 
-      // Find the closest form element to the clicked button
-      var form = document.getElementById('repeat_order');
-
-      // Show SweetAlert confirmation dialog
-      swal({
-          title: "Are you sure want to repeat this order?",
-          text: "An E-invoice will be sent to your Finance on the delivery day. A hard copy invoice will also be provided.",
-          icon: "warning",
-          buttons: {
-              cancel: {
-                  text: "Cancel",
-                  value: false,
-                  visible: true,
-                  className: "btn btn-default",
-                  closeModal: true
-              },
-              confirm: {
-                  text: "Repeat Order",
-                  value: true,
-                  visible: true,
-                  className: "btn btn-success",
-                  closeModal: true
-              }
-          }
-      }).then((confirmed) => {
-          if (confirmed) {
-              // Proceed with form submission
-              form.submit();
-          }
-      });
-  }
+    Swal.fire({
+        title: "You are about to confirm this order?",
+        text: "An E-invoice will be sent to your Finance on the delivery day. A hard copy invoice will also be provided.",
+        icon: "warning",
+        showCancelButton: true,
+        cancelButtonText: "Cancel",
+        confirmButtonText: "Repeat Order",
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+    }).then((result) => {
+        if (result.isConfirmed) {
+            submitBtn.disabled = true;
+            btnText.textContent = "Processing...";
+            btnSpinner.classList.remove("d-none");
+            form.submit();
+        }
+        // If cancelled, do nothing
+    });
+}
 
 
 
@@ -640,19 +634,11 @@ subAmount();
       // If the input value is less than the min_order value, set it to min_order
       if ($(this).val() < minOrder) {
         $(this).val(minOrder);
-        swal({
-            title: "Minimum Order Quantity",
-            text: "You cannot order less than the minimum quantity.",
-            icon: "warning",
-            buttons: {
-              confirm: {
-                text: "OK",
-                value: true,
-                visible: true,
-                className: "btn btn-primary",
-                closeModal: true
-              }
-            }
+        Swal.fire({
+                title: "Minimum Order Quantity",
+                text: "You cannot order less than the minimum quantity of " + minOrder + ".",
+                icon: "warning",
+                confirmButtonText: "OK"
           });
       }
 
@@ -1007,8 +993,13 @@ function handleNext() {
     $('#shipping_address_postcode').val(shipping_address_postcode);
 
     $('#myModal').modal('hide');
-    swal("Address Updated!", "You can now proceed to create the order.", "success").then((value) => {
+    Swal.fire({
+    title: "Address Updated!",
+    text: "You can now proceed to create the order.",
+    icon: "success"
+    }).then((value) => {
         confirmSubmission(event);
     });
+
 }
   </script>

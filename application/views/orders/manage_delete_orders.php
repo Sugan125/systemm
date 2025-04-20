@@ -138,6 +138,7 @@ $orderdate = isset($orderdate) ? date('Y-m-d', strtotime($orderdate)) : '';
                                             <th>Net Amount</th>
                                             <th>Created By</th>
                                             <th>Updated By</th>
+                                            <th>Deleted By</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -160,6 +161,8 @@ $orderdate = isset($orderdate) ? date('Y-m-d', strtotime($orderdate)) : '';
                                             <td><?php echo $val->net_amount; ?></td>
                                             <td><?php echo $val->created_by; ?></td>
                                             <td><?php echo $val->updated_by; ?></td>
+                                            <td><?php echo !empty($val->deleted_name) ? $val->deleted_name : ''; ?></td>
+
                                             <td>
                                                
                                                        

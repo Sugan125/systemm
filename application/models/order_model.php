@@ -726,7 +726,7 @@ public function repeat_order($id)
 		$order_id = $this->db->insert_id(); 
 		}
 		
-		$sqll = "SELECT * FROM order_items WHERE is_deleted=0 and order_id=" . $id;
+		$sqll = "SELECT * FROM order_items WHERE isdeleted=0 and order_id=" . $id;
 		$queryy = $this->db->query($sqll);
 		$orders_items = $queryy->result_array();
 
@@ -1218,18 +1218,21 @@ public function count_search_delete_orderdate($keyword) {
 }
 	
 public function getmanagedeleteorder($limit = 10, $offset = 0) {
-	$current_month = date('Y-m'); // Get the current month in 'YYYY-MM' format
+    $current_month = date('Y-m'); // Not used, remove if unnecessary
 
-	$this->db->select('ord.*, us.name as name');
-	$this->db->from('orders ord');
-	$this->db->join('user_register us', 'us.id = ord.user_id');
-	$this->db->where('ord.isdeleted', 1);
-	$this->db->limit($limit, $offset);
-	$query = $this->db->get();
+    $this->db->select('ord.*, 
+                       u1.name as name, 
+                       u2.name as deleted_name');
+    $this->db->from('orders ord');
+    $this->db->join('user_register u1', 'u1.id = ord.user_id', 'left');
+    $this->db->join('user_register u2', 'u2.id = ord.delete_by', 'left');
+    $this->db->where('ord.isdeleted', 1);
+    $this->db->limit($limit, $offset);
+    $query = $this->db->get();
 
-//	echo $this->db->last_query();
+    // echo $this->db->last_query();
 
-	return $query->result();
-
+    return $query->result();
 }
+
 }

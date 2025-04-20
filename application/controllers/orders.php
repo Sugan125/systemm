@@ -1141,7 +1141,7 @@ public function searchdate() {
     $config['per_page'] = 10;
     $config['uri_segment'] = 3;
     $config['use_page_numbers'] = TRUE;
-
+    
     // Include the keyword in the query string for pagination links
     $config['suffix'] = '?date=' . urlencode($keyword);
     $config['first_url'] = $config['base_url'] . '/1' . $config['suffix'];

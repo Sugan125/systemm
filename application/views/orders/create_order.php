@@ -1321,12 +1321,11 @@ function confirmSubmission(event) {
 }
 
 function confirmOrder() {
-    // Find the closest form element to the clicked button
     var form = document.getElementById('create_orders');
     var submitBtn = document.getElementById('submitBtn');
     var btnText = document.getElementById('btnText');
     var btnSpinner = document.getElementById('btnSpinner');
-    // Show SweetAlert confirmation dialog
+
     Swal.fire({
         title: "You are about to confirm this order?",
         text: "An E-invoice will be sent to your Finance on the delivery day. A hard copy invoice will also be provided.",
@@ -1334,17 +1333,18 @@ function confirmOrder() {
         showCancelButton: true,
         cancelButtonText: "Cancel",
         confirmButtonText: "Create Order",
-        confirmButtonColor: "#3085d6",  // Optional: Customize confirm button color
-        cancelButtonColor: "#d33",      // Optional: Customize cancel button color
-    }).then((confirmed) => {
-        if (confirmed) {
-          submitBtn.disabled = true;
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+    }).then((result) => {
+        if (result.isConfirmed) {
+            submitBtn.disabled = true;
             btnText.textContent = "Processing...";
             btnSpinner.classList.remove("d-none");
-            // Proceed with form submission
             form.submit();
         }
+        // If cancelled, do nothing
     });
 }
+
 
 </script>
