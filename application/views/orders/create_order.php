@@ -286,6 +286,23 @@ input {
                       <input type="hidden" class="form-control" id="delivery_charge_value" name="delivery_charge_value" autocomplete="off">
                     </div>
                   </div><br>
+
+                  <?php if($loginuser['id'] == '2403' || $loginuser['id'] == '2402'){ ?>
+
+                    <div class="form-group" style="margin-bottom:30px;">
+                      <div class="col-sm-4">
+                        <label class="control-label">Free Delivery</label>
+                      </div>
+                      <div class="col-sm-8">
+                        <label style="font-size: 16px;">
+                          <input type="checkbox" id="free_delivery" onclick="subAmount()" style="transform: scale(1.5); margin-right: 10px;">
+                          Zero Delivery Charge
+                        </label>
+                      </div>
+                    </div><br>
+
+                    <?php } ?>
+
                   <div class="form-group" style="margin-bottom:30px;">
                     <div class="col-sm-4">
                     <label for="gross_amount" class="control-label">GST (9%)</label></div>
@@ -1205,7 +1222,12 @@ function getProductDatas(row_id) {
     var discount = $("#discount").val() || 0;
     var netAmount = grossAmount;
 
-    var deliveryCharge = netAmount < 80 ? 20.00 : 0;
+//    var deliveryCharge = netAmount < 80 ? 20.00 : 0;
+
+var deliveryCharge = 0;
+if (!$('#free_delivery').is(':checked') && netAmount < 80) {
+    deliveryCharge = 20.00;
+}
 
     var totall = grossAmount + deliveryCharge;
     var gstRate = 9; 
@@ -1346,5 +1368,10 @@ function confirmOrder() {
     });
 }
 
-
+var loginUserId = <?php echo json_encode($loginuser['id']); ?>;
+  window.onload = function () {
+    if ([2402, 2403].includes(loginUserId)) {
+      $('#free_delivery').prop('checked', true);
+    }
+  };
 </script>
