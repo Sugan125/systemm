@@ -95,7 +95,7 @@
        <?php } ?>
  
 
-       <?php if ((in_array('Create Products', $access) && (in_array('Admin', $roles) || in_array('Owner', $roles))) || (in_array('Manage Products', $access) && (in_array('Admin', $roles) || in_array('Owner', $roles)))){ ?>
+       <?php if ((in_array('Create Products', $access) && (in_array('Admin', $roles) || in_array('Owner', $roles))) || (in_array('Manage Products', $access) && (in_array('Admin', $roles) || in_array('Owner', $roles) ||  in_array('Marketing', $roles)))){ ?>
         
 
         <li class="nav-item">
@@ -122,9 +122,11 @@
 
         <!--  START  OF CUSTOMER MENU -->
 
-    <?php if(isset($loginuser['roles']) && !empty($loginuser['roles'])): ?>
-    <?php if(in_array($loginuser['roles'], ['User', 'Owner']) || (strpos($loginuser['roles'], 'User') !== false)): ?>
-        <li class="nav-item">
+        <?php if (isset($loginuser['roles']) && !empty($loginuser['roles'])): ?>
+    <?php if (
+        in_array($loginuser['roles'], ['User', 'Owner', 'Marketing,Admin']) || 
+        strpos($loginuser['roles'], 'User') !== false
+    ): ?> <li class="nav-item">
             <a href="<?= base_url('index.php/Productcontroller/userproduct');?>" class="nav-link <?php if($this->uri->segment(1) == 'Productcontroller/userproduct') echo 'active' ?>">
                 <i class="menu-icon fa fa-shopping-cart"></i>Products Detail
             </a>
@@ -292,8 +294,8 @@
     <?php } ?>
 
 
-    <?php if ((in_array('Admin', $roles) || in_array('Owner', $roles))){ ?>
-    
+    <?php if ((in_array('Admin', $roles) || in_array('Owner', $roles)) && !in_array('Marketing', $roles)) { ?>
+ 
 
     <li class="nav-item">
         <a href="#" class="nav-link toggle-orders">

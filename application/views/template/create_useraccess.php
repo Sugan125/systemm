@@ -96,6 +96,10 @@
                                         <input class="form-check-input" type="checkbox" name="role[]" value="Owner" id="managerCheckbox">
                                         <label class="form-check-label" for="managerCheckbox">Manager</label>
                                     </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" name="role[]" value="Marketing" id="marketingcheckbox">
+                                            <label class="form-check-label" for="marketingcheckbox">Marketing</label>
+                                        </div>
                                 </div> 
 
                                 <label><b>MENU ACCESS</b></label>
@@ -197,6 +201,9 @@
                 $('#userCheckbox').prop('checked', true);
             } else if (selectedRole === 'Owner') {
                 $('#managerCheckbox').prop('checked', true);
+            }
+            else if (selectedRole === 'Marketing') {
+                $('#marketingcheckbox').prop('checked', true);
             }
         });
     });

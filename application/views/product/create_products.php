@@ -73,70 +73,37 @@
                   </div>
                 </div>
 
-                <!-- <div class="form-group">
-                <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="checkbox"  value="no_add_on" id="no_add_on">
-                          <label class="form-check-label" for="no_add_on">No add-on</label>
-                      </div>
-                  </div> -->
+                            
+<br><br>
+<div class="input-group mb-3" id="input_size">
+  <div id="seedOptions">
+    <label>Seed</label><br>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" name="add_on_seed" id="seedYes" value="1" >
+      <label class="form-check-label" for="seedYes">Yes</label>
+    </div>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" name="add_on_seed" id="seedNo" value="0" >
+      <label class="form-check-label" for="seedNo">No</label>
+    </div>
+  </div>
+ 
+</div>
 
-                  <div class="form-group" id="hide_add_on" hidden>
-                <label>Add-on</label>
-                  <div class="input-group mb-3" id="input_size">
-                      <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="checkbox" value="Sliced" id="slicedCheckbox">
-                          <label class="form-check-label" for="slicedCheckbox">Pre Sliced</label>
-                      </div>
-
-                      <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="checkbox" value="Unsliced" id="unslicedCheckbox">
-                        <label class="form-check-label" for="unslicedCheckbox">Unsliced</label>
-                    </div>
-
-                    <div id="presliceOptionsyes" style="display: none; margin-top: 10px;margin-left: 50px;">
-                        <label for="presliceThickness">Preslice Thickness</label>
-                        <select class="form-select" id="presliceThickness" name="add_on_slice">
-                        <option value="">Select</option>    
-                        <option value="12mm">12mm</option>
-                        </select>
-                    </div>
-
-                    <div id="presliceOptionsno" style="display: none; margin-top: 10px;margin-left: 50px;">
-                        <label for="presliceThickness">Preslice Thickness</label>
-                        <select class="form-select" id="presliceThickness" name="add_on_slice">
-                            <option value="">Select</option> 
-                            <option value="20mm">20mm</option>
-                        </select>
-                    </div>
-                  
-
-                    <br><br>
-                <div class="input-group mb-3" id="input_size">
-                <div id="seedOptions">
-                          <label>Seed</label><br>
-                          <div class="form-check form-check-inline">
-                              <input class="form-check-input" type="checkbox" value="Yes" id="seedYes">
-                              <label class="form-check-label" for="seedYes">Yes</label>
-                          </div>
-                          <div class="form-check form-check-inline">
-                              <input class="form-check-input" type="checkbox" value="No" id="seedNo">
-                              <label class="form-check-label" for="seedNo">No</label>
-                          </div>
-                      
-                          
-                        
-                      </div>
-
-                      <div id="seedsoption" style="display:none;margin-left: 131px; margin-top: 25px;">
-                      <label for="seedColor">Seed Color</label>
-                          <select class="form-select" id="seedColor" name="add_on_seed">
-                              <option value="">Select</option> 
-                              <option value="Black">Black</option>
-                              <option value="White">White</option>
-                          </select> 
-                    </div>
-                </div>
-                </div>
+<br><br>
+<div class="input-group mb-3" id="input_size">
+  <div id="sliceOptions">
+    <label>Slice</label><br>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" name="add_on_slice" id="sliceYes" value="1">
+      <label class="form-check-label" for="sliceYes">Yes</label>
+    </div>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" name="add_on_slice" id="sliceNo" value="0" >
+      <label class="form-check-label" for="sliceNo">No</label>
+    </div>
+  </div>
+  </div>     
 
                 </div>
                   <div class="form-group">

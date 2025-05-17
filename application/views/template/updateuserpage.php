@@ -158,28 +158,26 @@
                   <div class="form-group">
                       <label>Role</label>
                       <div class="input-group mb-3" id="input_size">
-                          <?php
-                          $roles = array("Admin", "User","Owner");
-                          $selectedRoles = explode(',', $row->role);
+                      <?php
+                        $roles = ["Admin", "User", "Owner", "Marketing"];
+                        $selectedRoles = explode(',', $row->role);
 
-                          foreach ($roles as $role) {
-                            
-                              $checked = in_array($role, $selectedRoles) ? 'checked' : '';
+                        foreach ($roles as $role) {
+                            $isChecked = in_array($role, $selectedRoles) ? 'checked' : '';
+                            $label = ($role === 'Owner') ? 'Manager' : $role;
 
-                              if($role == 'Owner'){
-                                $rolee = 'Manager';
-                              }
-                              else{
-                                $rolee = $role;
-                              }
+                            $safeRole = htmlspecialchars($role);
+                            $safeLabel = htmlspecialchars($label);
 
-                              echo '
-                                  <div class="form-check form-check-inline">
-                                      <input class="form-check-input" type="checkbox" name="role[]" value="' . $role . '" id="' . $role . 'Checkbox" ' . $checked . '>
-                                      <label class="form-check-label" for="' . $role . 'Checkbox">' . $rolee . '</label>
-                                  </div>';
-                          }
-                          ?>
+                            echo <<<HTML
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="role[]" value="{$safeRole}" id="{$safeRole}Checkbox" {$isChecked}>
+                                <label class="form-check-label" for="{$safeRole}Checkbox">{$safeLabel}</label>
+                            </div>
+                            HTML;
+                        }
+                        ?>
+
                       </div>
                   </div>
 

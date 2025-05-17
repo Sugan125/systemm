@@ -182,6 +182,11 @@
             <input class="form-check-input" type="checkbox" name="role[]" value="Owner" id="managercheckbox">
             <label class="form-check-label" for="managercheckbox">Manager</label>
         </div>
+
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="checkbox" name="role[]" value="Marketing" id="marketingcheckbox">
+            <label class="form-check-label" for="marketingcheckbox">Marketing</label>
+        </div>
         <!-- Add more checkboxes as needed -->
     </div> 
 
