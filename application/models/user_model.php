@@ -54,32 +54,49 @@ class user_model extends CI_Model{
 
     }
 
-    public function count_all_users() {
-      return $this->db->count_all_results('user_register');
-  }
+   public function count_all_users() {
+    $this->db->where('is_archieve', 0);
+    return $this->db->count_all_results('user_register');
+}
 
   //public function get_users($limit, $offset) {
-    public function get_users() {
+public function get_users() {
+    $this->db->where('is_archieve', 0);
+    $this->db->order_by('name', 'ASC');
+    $this->db->order_by('company_name', 'ASC');
     $this->db->limit(10);
-      return $this->db->get('user_register')->result();
-  }
+    return $this->db->get('user_register')->result();
+}
 
-  public function count_search_results($keyword) {
-      $this->db->like('name', $keyword);
-      $this->db->or_like('email', $keyword);
-      return $this->db->count_all_results('user_register');
-  }
+public function count_search_results($keyword) {
+    $this->db->from('user_register');
+    $this->db->where('is_archieve', 0);
+    $this->db->group_start();
+    $this->db->like('name', $keyword, 'both', false);  // false disables ESCAPE by default
+    $this->db->or_like('email', $keyword, 'both', false);
+    $this->db->group_end();
 
-  public function search_users($keyword, $limit, $offset) {
-    $this->db->like('name', $keyword);
-    $this->db->or_like('email', $keyword);
-    $this->db->or_like('company_name', $keyword);
+    // echo $this->db->get_compiled_select();  // View SQL query
+    // exit;
+
+    return $this->db->count_all_results();
+}
+
+
+ public function search_users($keyword, $limit, $offset) {
+    $this->db->from('user_register');
+    $this->db->where('is_archieve', 0);
+    $this->db->group_start();
+        $this->db->like('name', $keyword);
+        $this->db->or_like('email', $keyword);
+        $this->db->or_like('company_name', $keyword);
+    $this->db->group_end();
     $this->db->limit($limit, $offset);
 
-    $query = $this->db->get('user_register');
-   // var_dump($this->db->last_query()); // Check the generated SQL query
+    $query = $this->db->get();
     return $query->result();
 }
+
       
 function checkCurrentPassword($currentPassword)
 	{
@@ -192,6 +209,7 @@ public function update_profile_pic($user_id, $filename) {
   );
 
   $this->db->where('id', $user_id);
+  $this->db->where('is_archieve', 0);
   $this->db->update('user_register', $data);
 }
 
@@ -201,13 +219,14 @@ public function count_all_user_role() {
   
       $this->db->where('access !=', '');
   
-
+ $this->db->where('is_archieve', 0);
   return $this->db->count_all_results('user_register');
 }
 
 
 public function get_roleusers($limit, $offset) {
   $this->db->where('access !=', '');
+   $this->db->where('is_archieve', 0);
   $this->db->limit($limit, $offset);
   return $this->db->get('user_register')->result();
 }
@@ -273,6 +292,7 @@ public function insert_import($data) {
 
 public function get_activeusers() {
   $this->db->where('status', 1);
+   $this->db->where('is_archieve', 0);
   $this->db->order_by('name', 'ASC');
   return $this->db->get('user_register')->result();
 }
@@ -283,5 +303,47 @@ public function get_agreedusers() {
   return $this->db->get('user_register')->result();
 }
 
+
+   public function count_all_users_archive() {
+    $this->db->where('is_archieve', 1);
+    return $this->db->count_all_results('user_register');
+}
+
+public function get_users_archive() {
+    $this->db->where('is_archieve', 1);
+    $this->db->order_by('name', 'ASC');
+    $this->db->order_by('company_name', 'ASC');
+    $this->db->limit(10);
+    return $this->db->get('user_register')->result();
+}
+
+public function count_search_results_archive($keyword) {
+    $this->db->from('user_register');
+    $this->db->where('is_archieve', 1);
+    $this->db->group_start();
+    $this->db->like('name', $keyword, 'both', false);  // false disables ESCAPE by default
+    $this->db->or_like('email', $keyword, 'both', false);
+    $this->db->group_end();
+
+    // echo $this->db->get_compiled_select();  // View SQL query
+    // exit;
+
+    return $this->db->count_all_results();
+}
+public function search_users_archive($keyword, $limit, $offset) {
+    $this->db->from('user_register');
+    $this->db->where('is_archieve', 1);
+    $this->db->group_start();
+        $this->db->like('name', $keyword);
+        $this->db->or_like('email', $keyword);
+        $this->db->or_like('company_name', $keyword);
+    $this->db->group_end();
+    $this->db->limit($limit, $offset);
+
+    // echo $this->db->get_compiled_select();  // View the actual SQL
+    // exit;
+
+     return $this->db->get()->result(); // if not debugging
+}
 
 }

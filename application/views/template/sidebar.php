@@ -49,6 +49,9 @@
                             <?php if (in_array('Manage User', $access) && (in_array('Admin', $roles) || in_array('Owner', $roles))){ ?>
                                 <li class="nav-item"><a href="<?php echo base_url('index.php/Userscontroller') ?>" class="nav-link"><i class="fa fa-th-large"></i>  Manage Users</a></li>
                             <?php } ?>
+                             <?php if (in_array('Admin', $roles) || in_array('Owner', $roles)){ ?>
+                                <li class="nav-item"><a href="<?php echo base_url('index.php/Userscontroller/ArchiveUser') ?>" class="nav-link"><i class="fa fa-th-large"></i>  Archive Users</a></li>
+                            <?php } ?>
                         </ul>
                     </li>
         <?php } ?>

@@ -149,7 +149,7 @@ class Userscontroller extends CI_Controller {
 			
 			// Format the datetime
 		$created_date = $current_date_time->format('Y-m-d H:i:s');
-
+$is_archieve = ($this->input->post('status') == 1) ? 0 : 1;
        $data = array(
         'name'=>$this->input->post('name'),
         'record_id'=>$this->input->post('record_id'),
@@ -197,7 +197,7 @@ class Userscontroller extends CI_Controller {
        'driver_memo' => $this->input->post('driver_memo'),
        'packer_memo' => $this->input->post('packer_memo'),
        'payment_terms'=> $this->input->post('payment_terms'),
-
+ 'is_archieve' => $is_archieve, // <-- Add this line
        'status'=>$this->input->post('status'),
        'contact'=>$this->input->post('contact'),
        'password'=>$this->input->post('password'),
@@ -244,6 +244,8 @@ class Userscontroller extends CI_Controller {
 			
 			// Format the datetime
 		$created_date = $current_date_time->format('Y-m-d H:i:s');
+
+        $is_archieve = ($this->input->post('status') == 1) ? 0 : 1;
 
     $data = array(
         'id'      => $id,
@@ -294,6 +296,7 @@ class Userscontroller extends CI_Controller {
         'payment_terms'=> $this->input->post('payment_terms'),
 
         'status'=>$this->input->post('status'),
+         'is_archieve' => $is_archieve, // <-- Add this line
         'contact'=>$this->input->post('contact'),
         'password'=>$this->input->post('password'),
         'role' => implode(',', $this->input->post('role')),
@@ -554,6 +557,7 @@ class Userscontroller extends CI_Controller {
         }
     }
 
+
     public function importfile(){
         if ($this->input->post('submit')) {
             $path = './uploads/';
@@ -654,7 +658,158 @@ class Userscontroller extends CI_Controller {
         $this->load->view('import');
     }
     
+     public function ArchiveUser() {
+        $data['title'] = 'Dashboard';
+        $config['base_url'] = site_url('Userscontroller/searchArchive');
+        $config['total_rows'] = $this->user_model->count_all_users_archive(); 
+        $config['per_page'] = 10;
+        $config['uri_segment'] = 3;
+        $config['use_page_numbers'] = TRUE;
     
+        $config['full_tag_open'] = '<ul class="pagination">';
+        $config['full_tag_close'] = '</ul>';
+        $config['first_link'] = 'First';
+        $config['last_link'] = 'Last';
+        $config['first_tag_open'] = '<li class="page-item"><span class="page-link">';
+        $config['first_tag_close'] = '</span></li>';
+        $config['prev_link'] = 'Previous';
+        $config['prev_tag_open'] = '<li class="page-item"><span class="page-link">';
+        $config['prev_tag_close'] = '</span></li>';
+        $config['next_link'] = 'Next';
+        $config['next_tag_open'] = '<li class="page-item"><span class="page-link">';
+        $config['next_tag_close'] = '</span></li>';
+        $config['last_tag_open'] = '<li class="page-item"><span class="page-link">';
+        $config['last_tag_close'] = '</span></li>';
+        $config['cur_tag_open'] = '<li class="page-item active"><span class="page-link">';
+        $config['cur_tag_close'] = '</span></li>';
+        $config['num_tag_open'] = '<li class="page-item"><span class="page-link">';
+        $config['num_tag_close'] = '</span></li>'; 
+    
+        $page = ($this->uri->segment(3)) ? $this->uri->segment(3) : 1; // Set the default page to 1
+        $offset = ($page - 1) * $config['per_page'];
+
+        $config['total_rows'] = $this->user_model->count_all_users_archive();
+
+	    $this->pagination->initialize($config);
+
+       $data['userss'] = $this->user_model->get_users_archive();
+
+        $this->load->view('template/header.php', $data);
+        $user = $this->session->userdata('user_register');
+        $users = $this->session->userdata('normal_user');
+        $loginuser = $this->session->userdata('LoginSession');
+
+        $data['total_rows'] = $this->user_model->count_all_users_archive();
+
+      
+
+        if (isset($loginuser['roles']) && !empty($loginuser['roles']) && $loginuser['roles'] == 'Admin') {
+            $data['total_rows'] = $this->user_model->count_all_users_archive();
+            $this->pagination->initialize($config);
+        } elseif (isset($loginuser['roles']) && !empty($loginuser['roles']) && $loginuser['roles'] == 'User') {
+            $data['total_rows'] = 1;
+        } else {
+            $data['total_rows'] = $this->user_model->count_all_users_archive();
+            $this->pagination->initialize($config);
+        }
+       
+        $this->load->view('template/header.php');
+        $this->load->view('template/sidebar.php', array('user' => $user, 'users' => $users, 'data' => $data,'loginuser' => $loginuser));
+        $this->load->view('template/users_archive.php', $data);
+        $this->load->view('template/footer.php');
+    }
+    
+    public function searchArchive() {
+        $keyword = $this->input->get('keyword');
+        $data['title'] = 'Dashboard';
+    
+        // Pagination Config for Search Results
+        $config['base_url'] = site_url('Userscontroller/searchArchive');
+        $config['total_rows'] = max($this->user_model->count_search_results_archive($keyword), 10); // Ensure at least 10 total rows
+        $config['per_page'] = 10;
+        $config['uri_segment'] = 3;
+        $config['use_page_numbers'] = TRUE;
+    
+        $config['full_tag_open'] = '<ul class="pagination">';
+        $config['full_tag_close'] = '</ul>';
+        $config['first_link'] = 'First';
+        $config['last_link'] = 'Last';
+        $config['first_tag_open'] = '<li class="page-item"><span class="page-link">';
+        $config['first_tag_close'] = '</span></li>';
+        $config['prev_link'] = 'Previous';
+        $config['prev_tag_open'] = '<li class="page-item"><span class="page-link">';
+        $config['prev_tag_close'] = '</span></li>';
+        $config['next_link'] = 'Next';
+        $config['next_tag_open'] = '<li class="page-item"><span class="page-link">';
+        $config['next_tag_close'] = '</span></li>';
+        $config['last_tag_open'] = '<li class="page-item"><span class="page-link">';
+        $config['last_tag_close'] = '</span></li>';
+        $config['cur_tag_open'] = '<li class="page-item active"><span class="page-link">';
+        $config['cur_tag_close'] = '</span></li>';
+        $config['num_tag_open'] = '<li class="page-item"><span class="page-link">';
+        $config['num_tag_close'] = '</span></li>'; 
+    
+        $page = ($this->uri->segment(3)) ? $this->uri->segment(3) : 1; // Set the default page to 1
+        $offset = ($page - 1) * $config['per_page'];
+
+        $data['keyword'] = $keyword;
+
+        $config['total_rows'] = $this->user_model->count_all_users_archive();
+
+	    $this->pagination->initialize($config);
+        $data['userss'] = $this->user_model->search_users_archive($keyword, $config['per_page'], $offset);
+        $data['total_rows'] = $this->user_model->count_search_results_archive($keyword);
+        
+        $this->load->view('template/header.php', $data);
+        $user = $this->session->userdata('user_register');
+        $users = $this->session->userdata('normal_user');
+        $loginuser = $this->session->userdata('LoginSession');
+        //var_dump($loginuser);
+        $this->load->view('template/sidebar.php', array('user' => $user, 'users' => $users, 'data' => $data,'loginuser' => $loginuser));
+        $this->load->view('template/users_archive.php', $data);
+        $this->load->view('template/footer.php');
+    }
+    
+        public function update_status_active(){
+        $userId = $this->input->post('userId');
+        $isChecked = $this->input->post('isChecked');
+    
+        // Update the restrict_time column in the database
+        $this->db->set('status', 1);
+        $this->db->set('is_archieve', 0);
+        $this->db->where('id', $userId);
+        $this->db->update('user_register');
+    
+        // Check if the update was successful
+        if($this->db->affected_rows() > 0){
+            // Return success response with isChecked value
+            echo json_encode(array('status' => 'success', 'isChecked' => $isChecked));
+        } else {
+            // Return error response
+            echo json_encode(array('status' => 'error'));
+        }
+    }
+
+     public function update_status_inactive(){
+        $userId = $this->input->post('userId');
+        $isChecked = $this->input->post('isChecked');
+    
+        // Update the restrict_time column in the database
+        $this->db->set('status', 0);
+        $this->db->set('is_archieve', 1);
+        $this->db->where('id', $userId);
+        $this->db->update('user_register');
+    
+        // Check if the update was successful
+        if($this->db->affected_rows() > 0){
+            // Return success response with isChecked value
+            echo json_encode(array('status' => 'success', 'isChecked' => $isChecked));
+        } else {
+            // Return error response
+            echo json_encode(array('status' => 'error'));
+        }
+    }
+
     
    
 }

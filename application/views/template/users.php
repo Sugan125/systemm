@@ -95,6 +95,7 @@
       <th>Packer Memo</th>
       <th>Restrict time</th>
       <th>Status</th>
+       <th>Archive & Inactive</th>
       <th>Created By</th>
       <th>Updated By</th>
       <!-- <th>File Upload</th>
@@ -144,6 +145,8 @@
         <!-- Change id="restrictCheckbox" to class="restrictCheckbox" -->
         <td> <input type="checkbox" class="restrictCheckbox" data-id="<?php echo $row->id; ?>" <?php if($row->restrict_time == 1){ echo 'checked'; } ?>></td>
         <td><?= $status; ?></td>
+        <td> <input type="checkbox" class="changestatus" data-id="<?php echo $row->id; ?>" <?php if($row->status == 1 && $row->is_archieve == 0){ echo 'checked'; } ?>></td>
+      
         <td><?=  $row->created_by; ?></td>
         <td><?=  $row->updated_by; ?></td>
         <!-- <td>
@@ -168,7 +171,8 @@
             <!-- Pagination Links -->
             <div class="row">
             <div class="col-sm-6">
-                <?php $total_rowss = $total_rows; echo "Showing 1 to 10 of ".$total_rowss." entries"; ?>
+                <?php $total_rowss = $total_rows; 
+                echo "Showing 1 to 10 of ".$total_rowss." entries"; ?>
             </div>
                 <div class="col-sm-6">
                     <?php echo $this->pagination->create_links(); ?>
@@ -332,6 +336,76 @@ $(document).ready(function(){
         }
     });
 });
+
+$('.changestatus').click(function(e){
+    e.preventDefault(); // prevent immediate toggle
+
+    var checkbox = $(this);
+    var userId = checkbox.data('id');
+    var isChecked = checkbox.prop('checked') ? 1 : 0;
+
+    swal({
+        title: "Are you sure?",
+        text: isChecked 
+            ? "Do you want to archive this user?" 
+            : "Do you want to unarchive this user?",
+        icon: "warning",
+        buttons: {
+          confirm: {
+                text: "Yes",
+                visible: true,
+                className: "btn btn-primary"
+            },
+            cancel: {
+                text: "Cancel",
+                visible: true,
+                className: "btn btn-secondary"
+            }
+            
+        },
+        dangerMode: true,
+    }).then((confirmed) => {
+        if (confirmed) {
+            // Proceed with AJAX
+            $.ajax({
+                url: '<?php echo base_url('index.php/Userscontroller/update_status_inactive'); ?>',
+                method: 'POST',
+                data: { userId: userId, isChecked: isChecked },
+                dataType: 'json',
+                success: function(response){
+                    if(response.status === 'success'){
+                        if(response.isChecked === '1'){
+                            $('.restrictCheckbox[data-id="' + userId + '"]').prop('checked', true);
+                            swal({
+                                title: "Success",
+                                text: "Archived the User!",
+                                icon: "success",
+                                buttons: { confirm: { className: "btn btn-primary" } }
+                            }).then(() => { window.location.reload(); });
+                        } else {
+                            $('.restrictCheckbox[data-id="' + userId + '"]').prop('checked', false);
+                            swal({
+                                title: "Success",
+                                text: "Archived the User!",
+                                icon: "success",
+                                buttons: { confirm: { className: "btn btn-primary" } }
+                            }).then(() => { window.location.reload(); });
+                        }
+                    } else {
+                        alert('Error updating restrict time.');
+                    }
+                },
+                error: function(xhr, status, error){
+                    console.log('AJAX Error:', error);
+                }
+            });
+        } else {
+            // Revert checkbox if cancelled
+            checkbox.prop('checked', !isChecked);
+        }
+    });
+});
+
 
 });
 </script>
