@@ -1250,6 +1250,7 @@ public function get_last_checkpay_invoices($user_id, $limit)
 {
     return $this->db->where('user_id', $user_id)
                     ->where('check_paystatus', 1)
+					->where('isdeleted', 0)
                     ->order_by('date_time', 'DESC')
                     ->limit($limit)
                     ->get('orders')
@@ -1261,6 +1262,7 @@ public function get_all_checkpay_invoices($user_id)
 {
     return $this->db->where('user_id', $user_id)
                     ->where('check_paystatus', 1)
+					 ->where('isdeleted', 0)
                     ->get('orders')
                     ->result();
 }
@@ -1269,6 +1271,7 @@ public function get_invoices_between($user_id, $start_date, $end_date)
 {
     return $this->db->where('user_id', $user_id)
                     ->where('check_paystatus', 1)
+					 ->where('isdeleted', 0)
                     ->where('created_date >=', $start_date)
                     ->where('created_date <=', $end_date)
                     ->get('orders')
@@ -1289,21 +1292,25 @@ public function get_invoices_between($user_id, $start_date, $end_date)
             ->where([
                 'user_id' => $user->id,
                 'check_paystatus' => 1,
-                'account_paid' => 0
+                'account_paid' => 0,
+                'isdeleted' => 0 // Only not deleted invoices
             ])
             ->get()
             ->result();
 
-        $report[] = [
-            'user_id'  => $user->id,
-            'name'     => $user->name,
-			'payment_terms' => $user->payment_terms,
-            'invoices' => array_map(function ($i) {
-                return $i->bill_no;
-            }, $invoices),
-        ];
+        if (!empty($invoices)) { // Only include users with matching invoices
+            $report[] = [
+                'user_id'  => $user->id,
+                'name'     => $user->name,
+                'payment_terms' => $user->payment_terms,
+                'invoices' => array_map(function ($i) {
+                    return $i->bill_no;
+                }, $invoices),
+            ];
+        }
     }
 
     return $report;
 }
+
 }

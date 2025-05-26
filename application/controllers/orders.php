@@ -1859,6 +1859,7 @@ public function cron_check_user_payment_status()
     $user_ids = $this->db->distinct()
                          ->select('user_id')
                          ->where('check_paystatus', 1)
+                         ->where('isdeleted', 0)
                          ->get('orders')
                          ->result();
 
@@ -1877,9 +1878,13 @@ public function cron_check_user_payment_status()
                 return $carry && $invoice->account_paid == 1;
             }, true);
 
+          
+           
             if ($all_paid) {
+                //  echo 'activate'.$user_id;
                 $this->activate_user($user_id);
             } else {
+                //   echo 'deactivate'.$user_id;
                 $this->deactivate_user($user_id);
             }
 
