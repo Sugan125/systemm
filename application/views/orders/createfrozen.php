@@ -302,6 +302,8 @@
                     $sql = "select * from user_register where id=".$user_id;
                     $query = $this->db->query($sql);
                     $restrict_time = $query->row()->restrict_time;
+
+                     $pay_restrict = $query->row()->pay_restrict;
                       // Get the current time
                       date_default_timezone_set('Asia/Singapore');
                       $current_time = date("H:i");
@@ -327,7 +329,14 @@
                         $text = '';
                       }
                    
-                  
+                   if ($pay_restrict == 1) {
+                        
+                          $btn = 'disabled';
+                          $text = '<div class="heading">🚫 Ordering Temporarily Disabled 🚫</div>
+                                  <p>💳 Kindly clear your outstanding payment to resume ordering.</p>
+                                  <p>📞 Please contact our Customer Service or Accounts Team for assistance.</p>';
+                      }
+
                     ?>
                     <?php echo $text; ?>
 
@@ -337,16 +346,16 @@
   if ($loginuser['address2'] != NULL || $loginuser['address3'] != NULL) {
     $modal_id = '<a class="galName" href="#" onclick="openModal()">'; // Change href to "#" and onclick to call openModal()
     $end_id = '</a>';
-    $btn = "button";
+    $btns = "button";
   } else {
     $modal_id = '';
     $end_id = '';
-    $btn = "submit";
+    $btns = "submit";
   }
 ?>
 
 <?php echo $modal_id; ?>
-<button type="<?php echo $btn; ?>" class="btn btn-success create_order" <?php echo $btn; ?>>Create Order</button>
+<button type="<?php echo $btns; ?>" class="btn btn-success create_order" <?php echo $btn; ?>>Create Order</button>
 <?php echo $end_id; ?>  <a href="<?php echo base_url('index.php/orders/') ?>" class="btn btn-danger create_order">Back</a>
               </div>
             </form>

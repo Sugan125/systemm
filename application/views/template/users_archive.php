@@ -42,7 +42,7 @@
     <div class="card-header">
     <div class="row">
         <div class="col-sm-3 col-md-3">
-            <form action="<?= base_url('index.php/Userscontroller/search'); ?>" method="get">
+            <form action="<?= base_url('index.php/Userscontroller/searchArchive'); ?>" method="get">
                 <div class="input-group">
                     <input type="text" class="form-control" placeholder="Search" name="keyword" value="<?= isset($keyword) ? $keyword : '' ?>">
                     <div class="input-group-append">

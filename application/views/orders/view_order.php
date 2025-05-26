@@ -31,6 +31,7 @@
                     $sql = "select * from user_register where id=".$user_id;
                     $query = $this->db->query($sql);
                     $restrict_time = $query->row()->restrict_time;
+                    $pay_restrict = $query->row()->pay_restrict;
                       // Get the current time
                       date_default_timezone_set('Asia/Singapore');
                       $current_time = date("H:i");
@@ -51,7 +52,10 @@
                         $url = base_url('index.php/orders/create');
                       }
                    
-                  
+                    if ($pay_restrict == 1) {
+                        
+                          $url = base_url('index.php/orders/pay_restrict');
+                      }
                     ?>
           <a href="<?php echo $url; ?>" class="btn btn-success">Add Order</a>
           <br /> <br />
@@ -101,6 +105,8 @@
                     $sql = "select * from user_register where id=".$user_id;
                     $query = $this->db->query($sql);
                     $restrict_time = $query->row()->restrict_time;
+
+                      $pay_restrict = $query->row()->pay_restrict;
                       // Get the current time
                       date_default_timezone_set('Asia/Singapore');
                       $current_time = date("H:i");
@@ -120,7 +126,10 @@
                       else{
                         $url = base_url('index.php/orders/repeat_order/'.$val->id);
                       }
-                   
+                   if ($pay_restrict == 1) { 
+                          // Time is within the restricted range, redirect to order_restrict page
+                          $url = base_url('index.php/orders/pay_restrict');
+                        }
                   
                     ?>
             <a href="<?php echo $url; ?>" class="btn-sm btn btn-info"><i class="fas fa-repeat"></i> Repeat Order</a></td>

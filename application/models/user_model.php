@@ -290,13 +290,17 @@ public function insert_import($data) {
 
 }
 
-public function get_activeusers() {
-  $this->db->where('status', 1);
-   $this->db->where('is_archieve', 0);
-  $this->db->order_by('name', 'ASC');
-  return $this->db->get('user_register')->result();
-}
+public function get_activeusers($current_user_id) {
+    $this->db->where('status', 1);
+    $this->db->where('is_archieve', 0);
 
+    if ($current_user_id == '1236' || $current_user_id == '1237') {
+        $this->db->where('pay_restrict', 0);
+    }
+
+    $this->db->order_by('name', 'ASC');
+    return $this->db->get('user_register')->result();
+}
 public function get_agreedusers() {
   $this->db->where('terms_agreed', 1);
   $this->db->order_by('name', 'ASC');

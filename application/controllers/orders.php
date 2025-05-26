@@ -797,7 +797,9 @@ public function printpacking()
 			$this->load->view('template/header.php', $data);
 			$user = $this->session->userdata('user_register');
 			$users = $this->session->userdata('normal_user');
-			$data['userss'] = $this->user_model->get_activeusers();
+            $loginuser = $this->session->userdata('LoginSession');
+           
+			$data['userss'] = $this->user_model->get_activeusers($loginuser['id']);
 			$loginuser = $this->session->userdata('LoginSession');
 	
 			$this->load->view('template/sidebar.php', array('user' => $user, 'users' => $users, 'data' => $data,'loginuser' => $loginuser));
@@ -1825,4 +1827,160 @@ public function searchdeletedorderdate() {
     $this->load->view('orders/manage_delete_orders.php', $data);
     $this->load->view('template/footer.php');
 }
+public function update_paid_status()
+{
+    $input = json_decode($this->input->raw_input_stream, true);
+    $order_id = intval($input['order_id']);
+    $customer_id = intval($input['customer_id']);
+  $account_paid = isset($input['account_paid']) ? intval($input['account_paid']) : 0;
+
+    $response = ['success' => false, 'message' => 'Invalid request'];
+
+    if ($order_id && $customer_id) { 
+        
+          $updated = $this->order_model->mark_order_paid($order_id, $account_paid);
+
+        if ($updated) {
+           
+            $response = ['success' => true, 'message' => 'Payment status updated successfully'];
+        } else {
+            $response['message'] = 'Failed to update order';
+        }
+    }
+
+    echo json_encode($response);
+}
+public function cron_check_user_payment_status()
+{
+    $this->load->model('order_model');
+    $today = date('j'); // Day of the month (1-31)
+
+    // Get distinct user_ids from orders where check_paystatus = 1
+    $user_ids = $this->db->distinct()
+                         ->select('user_id')
+                         ->where('check_paystatus', 1)
+                         ->get('orders')
+                         ->result();
+
+    foreach ($user_ids as $row) {
+        $user_id = $row->user_id;
+
+        // Get user's payment_terms and current status
+        $user = $this->db->where('id', $user_id)->get('user_register')->row();
+        if (!$user) continue;
+
+        $terms = strtolower(trim($user->payment_terms));
+
+        if ($terms == 'cod') {
+            $last_two = $this->order_model->get_last_checkpay_invoices($user_id, 2);
+            $all_paid = count($last_two) == 2 && array_reduce($last_two, function ($carry, $invoice) {
+                return $carry && $invoice->account_paid == 1;
+            }, true);
+
+            if ($all_paid) {
+                $this->activate_user($user_id);
+            } else {
+                $this->deactivate_user($user_id);
+            }
+
+        } elseif ($terms == '30' && $today == 30) {
+
+            // Get last month’s first and last date
+            $start_date = date('Y-m-01', strtotime('first day of last month'));
+            $end_date = date('Y-m-t', strtotime('last day of last month'));
+
+            // Fetch invoices within that range
+            $invoices = $this->order_model->get_invoices_between($user_id, $start_date, $end_date);
+
+            // Check if all invoices are paid
+            $all_paid = !empty($invoices) && array_reduce($invoices, function ($carry, $invoice) {
+                return $carry && $invoice->account_paid == 1;
+            }, true);
+
+            if ($all_paid) {
+                $this->activate_user($user_id);
+            } else {
+                $this->deactivate_user($user_id);
+            }
+        }
+       elseif ($terms == '15' && $today == 20) {
+
+    // Get current year and month
+    $start_date = date('Y-m-01');
+    $end_date = date('Y-m-15');
+
+    // Fetch invoices within 1st to 15th of the current month
+    $invoices = $this->order_model->get_invoices_between($user_id, $start_date, $end_date);
+
+    // Check if all are paid
+    $all_paid = !empty($invoices) && array_reduce($invoices, function ($carry, $invoice) {
+        return $carry && $invoice->account_paid == 1;
+    }, true);
+
+    if ($all_paid) {
+        $this->activate_user($user_id);
+    } else {
+        $this->deactivate_user($user_id);
+    }
+}
+    }
+
+    echo "Cron executed.";
+}
+
+private function deactivate_user($user_id)
+{
+    $this->db->where('id', $user_id)->update('user_register', [
+        // 'status' => 0,
+        // 'is_archieve' => 1,
+        'pay_restrict' => 1
+    ]);
+}
+
+
+private function activate_user($user_id)
+{
+    $this->db->where('id', $user_id)->update('user_register', [
+        // 'status' => 1,
+        // 'is_archieve' => 0,
+        'pay_restrict' => 0
+    ]);
+}
+public function get_restricted_users_with_invoices()
+{
+    $this->load->model('order_model');
+
+    $data['report'] = $this->order_model->get_restricted_users_with_unpaid_invoices();
+    $data['title'] = "Restricted Users Report";
+
+    // Load session data for sidebar
+    $user = $this->session->userdata('user_register');
+    $users = $this->session->userdata('normal_user');
+    $loginuser = $this->session->userdata('LoginSession');
+
+    // Load views
+    $this->load->view('template/header.php', $data);
+    $this->load->view('template/sidebar.php', array_merge($data, ['user' => $user, 'users' => $users, 'loginuser' => $loginuser]));
+    $this->load->view('orders/restricted_users.php', $data);
+    $this->load->view('template/footer.php');
+}
+
+    public function pay_restrict(){
+		$data['title'] = 'orders';
+	
+		$loginuser = $this->session->userdata('LoginSession');
+	
+		$data['user_id'] = $loginuser['id'];
+	
+		$data['orders'] = $this->order_model->getmanageorder();
+	
+		$this->load->view('template/header.php', $data);
+		$user = $this->session->userdata('user_register');
+		$users = $this->session->userdata('normal_user');
+		$loginuser = $this->session->userdata('LoginSession');
+		//var_dump($loginuser);
+		$this->load->view('template/sidebar.php', array('user' => $user, 'users' => $users, 'data' => $data,'loginuser' => $loginuser));
+		$this->load->view('orders/pay_restrict.php', $data);
+		$this->load->view('template/footer.php');
+	}
 }

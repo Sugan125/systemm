@@ -162,7 +162,7 @@ public function getProductData($id = null)
 		'shipping_address_line4' => $this->input->post('shipping_address_line4'),
 		'shipping_address_city' => $this->input->post('shipping_address_city'),
 		'shipping_address_postcode' => $this->input->post('shipping_address_postcode'),
-
+		'check_paystatus' => 1,
         'delivery_charge' => $this->input->post('delivery_charge_value'),
         'net_amount' => $this->input->post('net_amount_value'),
         'discount' => $this->input->post('discount'),
@@ -510,7 +510,7 @@ public function update($id,$user_id)
 	public function getmanageorder($limit = 10, $offset = 0) {
 		$current_month = date('Y-m'); // Get the current month in 'YYYY-MM' format
 	
-		$this->db->select('ord.*, us.name as name');
+		$this->db->select('ord.*, us.name as name, us.payment_terms as terms, us.status as status');
 		$this->db->from('orders ord');
 		$this->db->join('user_register us', 'us.id = ord.user_id');
 		$this->db->where('DATE_FORMAT(ord.created_date, "%Y-%m") =', $current_month); // Correct the WHERE clause
@@ -710,6 +710,7 @@ public function repeat_order($id)
 			'packer_memo' => $this->input->post('packer_memo'),
 			'po_ref' => $this->input->post('po_ref'),
 			'shipping_address' => $shipping_address,
+			'check_paystatus' => 1,
 			'shipping_address_line2' => $shipping_address_line2,
 			'shipping_address_line3' => $shipping_address_line3,
 			'shipping_address_line4' => $shipping_address_line4,
@@ -869,6 +870,7 @@ public function admin_create()
         'discount' => $this->input->post('discount'),
         'gst_amt' => $this->input->post('gst_rate'),
         'gst_percent' => $this->input->post('gst_value'),
+		'check_paystatus' => 1,
 		'shipping_address' => $this->input->post('shipping_address'),
 		'shipping_address_line2' => $this->input->post('shipping_address_line2'),
 		'shipping_address_line3' => $this->input->post('shipping_address_line3'),
@@ -1048,7 +1050,7 @@ public function count_search_date($keyword) {
 }
 
 public function search_date($keyword, $limit, $offset) {
-    $this->db->select('ord.*, us.name as name');
+    $this->db->select('ord.*, us.name as name, us.payment_terms as terms, us.status as status');
     $this->db->from('orders ord');
     $this->db->join('user_register us', 'us.id = ord.user_id');
     
@@ -1073,8 +1075,7 @@ public function search_orderdate($keyword, $limit, $offset) {
 	$this->db->where('DATE(ord.created_date)', $keyword);
 	$this->db->where('ord.isdeleted', 0);
     $this->db->limit($limit, $offset);
-    $this->db->select('ord.*, us.name as name'); // Select fields from both tables
-
+   $this->db->select('ord.*, us.name as name, us.payment_terms as terms, us.status as status');
     $this->db->from('orders ord');
     $this->db->join('user_register us', 'us.id = ord.user_id');
 
@@ -1107,7 +1108,7 @@ public function count_search_orders($keyword) {
 }
 
 public function search_orders($keyword, $limit, $offset) {
-    $this->db->select('ord.*, us.name as name'); 
+   $this->db->select('ord.*, us.name as name, us.payment_terms as terms, us.status as status');
     $this->db->from('orders ord');
     $this->db->join('user_register us', 'us.id = ord.user_id');
     $this->db->where('ord.isdeleted', 0);
@@ -1197,7 +1198,7 @@ public function count_search_deleted_orders($keyword) {
 }
 
 public function search_deleted_orders($keyword, $limit, $offset) {
-    $this->db->select('ord.*, us.name as name'); 
+    $this->db->select('ord.*, us.name as name, us.payment_terms as terms, us.status as status');
     $this->db->from('orders ord');
     $this->db->join('user_register us', 'us.id = ord.user_id');
     $this->db->where('ord.isdeleted', 1);
@@ -1234,5 +1235,75 @@ public function getmanagedeleteorder($limit = 10, $offset = 0) {
 
     return $query->result();
 }
+public function mark_order_paid($order_id, $account_paid)
+{
+    $data = [
+        'account_paid' => $account_paid,
+        'pay_close_date' => ($account_paid == 1) ? date('Y-m-d H:i:s') : NULL
+    ];
 
+    return $this->db->update('orders', $data, ['id' => $order_id]);
+}
+
+// Get last N orders where check_paystatus = 1
+public function get_last_checkpay_invoices($user_id, $limit)
+{
+    return $this->db->where('user_id', $user_id)
+                    ->where('check_paystatus', 1)
+                    ->order_by('date_time', 'DESC')
+                    ->limit($limit)
+                    ->get('orders')
+                    ->result();
+}
+
+// Get all orders where check_paystatus = 1
+public function get_all_checkpay_invoices($user_id)
+{
+    return $this->db->where('user_id', $user_id)
+                    ->where('check_paystatus', 1)
+                    ->get('orders')
+                    ->result();
+}
+
+public function get_invoices_between($user_id, $start_date, $end_date)
+{
+    return $this->db->where('user_id', $user_id)
+                    ->where('check_paystatus', 1)
+                    ->where('created_date >=', $start_date)
+                    ->where('created_date <=', $end_date)
+                    ->get('orders')
+                    ->result();
+}
+
+	public function get_restricted_users_with_unpaid_invoices()
+{
+    $users = $this->db->where([
+        'pay_restrict' => 1
+    ])->get('user_register')->result();
+
+    $report = [];
+
+    foreach ($users as $user) {
+        $invoices = $this->db->select('bill_no')
+            ->from('orders')
+            ->where([
+                'user_id' => $user->id,
+                'check_paystatus' => 1,
+                'account_paid' => 0
+            ])
+            ->get()
+            ->result();
+
+        $report[] = [
+            'user_id'  => $user->id,
+            'name'     => $user->name,
+			'payment_terms' => $user->payment_terms,
+            'invoices' => array_map(function ($i) {
+                return $i->bill_no;
+            }, $invoices),
+        ];
+    }
+
+    return $report;
+}
 }

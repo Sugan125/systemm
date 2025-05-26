@@ -347,6 +347,9 @@ input {
                     $sql = "select * from user_register where id=".$user_id;
                     $query = $this->db->query($sql);
                     $restrict_time = $query->row()->restrict_time;
+
+                    $pay_restrict = $query->row()->pay_restrict;
+
                       // Get the current time
                       date_default_timezone_set('Asia/Singapore');
                       $current_time = date("H:i");
@@ -367,11 +370,20 @@ input {
                           $btn = '';
                           $text = '';
                       }
+                      
                       else{
                         $btn = '';
                         $text = '';
                       }
-                   
+                      
+                      if ($pay_restrict == 1) {
+                        
+                          $btn = 'disabled';
+                          $text = '<div class="heading">🚫 Ordering Temporarily Disabled 🚫</div>
+                                  <p>💳 Kindly clear your outstanding payment to resume ordering.</p>
+                                  <p>📞 Please contact our Customer Service or Accounts Team for assistance.</p>';
+                      }
+
                   
                     ?>
                     <?php echo $text; ?>
@@ -382,16 +394,16 @@ input {
   if ($loginuser['address2'] != NULL || $loginuser['address3'] != NULL) {
     $modal_id = '<a class="galName" href="#" onclick="openModal()">'; // Change href to "#" and onclick to call openModal()
     $end_id = '</a>';
-    $btn = "button";
+    $btns = "button";
   } else {
     $modal_id = '';
     $end_id = '';
-    $btn = "submit";
+    $btns = "submit";
   }
 ?>
 
 <?php echo $modal_id; ?>
-<button id="submitBtn" type="<?php echo $btn; ?>" class="btn btn-success create_order" <?php echo $btn; ?>>
+<button id="submitBtn" type="<?php echo $btns; ?>" class="btn btn-success create_order" <?php echo $btn; ?>>
 <span id="btnText">Create Order</span>
 <i id="btnSpinner" class="fa fa-spinner fa-spin d-none" aria-hidden="true"></i>
 </button>

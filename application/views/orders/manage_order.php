@@ -124,6 +124,13 @@ $orderdate = isset($orderdate) ? date('Y-m-d', strtotime($orderdate)) : '';
                         <!-- /.box-header -->
                         <div class="box-body">
                         <div class="table-wrapper">
+                             <?php
+                                $allowed_ids = ['1234', '1238','1229'];
+
+                               
+                                $show_payment_column = in_array($loginuser['id'], $allowed_ids) && in_array('Owner', (array)$loginuser['role']);
+
+                            ?>
                             <table id="manageTable" class="table table-bordered table-hover table-striped">
                             <thead>
                              <tr>
@@ -136,29 +143,54 @@ $orderdate = isset($orderdate) ? date('Y-m-d', strtotime($orderdate)) : '';
                                             <th>Delivery Charge</th>
                                             <th>GST</th>
                                             <th>Net Amount</th>
+                                            
+                                            <?php if ($show_payment_column): ?>
+                                            <th>Payment Paid</th>
+                                            <?php endif; ?>
                                             <th>Created By</th>
                                             <th>Updated By</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <?php 
-                                    if(!empty($orders)){
-                                        foreach ($orders as $key => $val):
-                                        ?>
-                                        <tr>
-                                            <td><?php echo $val->bill_no; ?></td>
-                                            <td><?php echo $val->name; ?></td>
-                                            <td><?php echo empty($val->created_date) ? date('Y-m-d', $val->date_time) : $val->created_date; ?></td>
-                                            <td><?php echo $val->delivery_date; ?></td>
-                                            <td><?php echo $val->gross_amount; ?></td>
-                                            <td><?php if( $val->service_charge_rate == NULL){
-                                                echo "No service charge";
-                                            } else { echo $val->service_charge_rate; } ?></td>
-                                            <td><?php echo $val->delivery_charge; ?></td>
-                                            <td><?php echo $val->gst_amt; ?></td>
-                                            <td><?php echo $val->net_amount; ?></td>
-                                            <td><?php echo $val->created_by; ?></td>
+                                            <?php 
+                                        if(!empty($orders)){
+                                            foreach ($orders as $key => $val):
+                                            
+                                                $show_checkbox = ($val->check_paystatus == 1);
+                                            ?>
+                                            <tr>
+                                                <td><?php echo $val->bill_no; ?></td>
+                                                <td><?php echo $val->name; ?></td>
+                                                <td><?php echo empty($val->created_date) ? date('Y-m-d', $val->date_time) : $val->created_date; ?></td>
+                                                <td><?php echo $val->delivery_date; ?></td>
+                                                <td><?php echo $val->gross_amount; ?></td>
+                                                <td><?php if( $val->service_charge_rate == NULL){
+                                                    echo "No service charge";
+                                                } else { echo $val->service_charge_rate; } ?></td>
+                                                <td><?php echo $val->delivery_charge; ?></td>
+                                                
+                                                <td><?php echo $val->gst_amt; ?></td>
+                                                <td><?php echo $val->net_amount; ?></td>
+                                               <?php if ($show_payment_column): ?>
+                                                   <td>
+                                                    <?php if ($show_checkbox): ?>
+                                                                <input type="checkbox" class="payment-checkbox"
+                                                                    data-order-id="<?= $val->id ?>"
+                                                                    data-customer-id="<?= $val->user_id ?>"
+                                                                    <?= ($val->account_paid == '1') ? 'checked' : '' ?>>
+                                                            <?php else: ?>
+                                                                -
+                 
+
+                                           <?php endif; ?>
+                                                        </td>
+                                                 
+                                                <?php endif; ?>
+
+
+
+                                             <td><?php echo $val->created_by; ?></td>
                                             <td><?php echo $val->updated_by; ?></td>
                                             <td>
                                                 <a target="__blank"
@@ -343,8 +375,53 @@ $orderdate = isset($orderdate) ? date('Y-m-d', strtotime($orderdate)) : '';
             window.location.href = url;
         }
     });
-</script>
 
+
+
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.payment-checkbox').forEach(function (checkbox) {
+        checkbox.addEventListener('change', function (e) {
+            const orderId = this.getAttribute('data-order-id');
+            const customerId = this.getAttribute('data-customer-id');
+            const isChecked = this.checked;
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "Do you want to change paid status?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, confirm it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+
+                    console.log('suanya');
+                    // Make an AJAX call to update the order and check invoices
+                  fetch('<?= base_url("index.php/orders/update_paid_status") ?>', {   // NEW
+
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ order_id: orderId, customer_id: customerId, account_paid: isChecked ? 1 : 0  })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+
+                            Swal.fire('Updated!', data.message, 'success');
+                        } else {
+                            Swal.fire('Error!', data.message, 'error');
+                            checkbox.checked = !isChecked; // revert checkbox
+                        }
+                    });
+                } else {
+                    checkbox.checked = !isChecked; // revert checkbox
+                }
+            });
+        });
+    });
+});
+</script>
 </body>
 
 </html>

@@ -156,6 +156,7 @@
                     $sql = "select * from user_register where id=".$user_id;
                     $query = $this->db->query($sql);
                     $restrict_time = $query->row()->restrict_time;
+                      $pay_restrict = $query->row()->pay_restrict;
                    
                       date_default_timezone_set('Asia/Singapore');
                       $current_time = date("H:i");
@@ -173,6 +174,10 @@
                       } else {
                          
                           $url = base_url('index.php/orders/create');
+                      }
+
+                      if($pay_restrict == 1){
+                        $url = base_url('index.php/orders/pay_restrict');
                       }
                     ?>
                     <a href="<?php echo $url; ?>" class="nav-link"><i class="fa fa-edit"></i>  Create Order</a>
@@ -267,6 +272,9 @@
             
             <li class="nav-item"><a href="<?php echo base_url('index.php/orders/printschedule/'); ?>"  class="nav-link"><i class="fas fa-print"></i>  Production List</a></li>
                 <?php } ?>
+
+            <li class="nav-item"><a href="<?php echo base_url('index.php/orders/get_restricted_users_with_invoices/'); ?>"  class="nav-link"><i class="fas fa-print"></i> Pending Payment</a></li>
+           
         </ul>
     </li>
     <?php } ?>
