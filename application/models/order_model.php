@@ -510,7 +510,7 @@ public function update($id,$user_id)
 	public function getmanageorder($limit = 10, $offset = 0) {
 		$current_month = date('Y-m'); // Get the current month in 'YYYY-MM' format
 	
-		$this->db->select('ord.*, us.name as name, us.payment_terms as terms, us.status as status');
+		$this->db->select('ord.*, us.name as name, us.payment_terms as terms, us.status as status, us.pay_restrict as pay_restrict');
 		$this->db->from('orders ord');
 		$this->db->join('user_register us', 'us.id = ord.user_id');
 		$this->db->where('DATE_FORMAT(ord.created_date, "%Y-%m") =', $current_month); // Correct the WHERE clause
@@ -1050,7 +1050,7 @@ public function count_search_date($keyword) {
 }
 
 public function search_date($keyword, $limit, $offset) {
-    $this->db->select('ord.*, us.name as name, us.payment_terms as terms, us.status as status');
+    $this->db->select('ord.*, us.name as name, us.payment_terms as terms, us.status as status, us.pay_restrict as pay_restrict');
     $this->db->from('orders ord');
     $this->db->join('user_register us', 'us.id = ord.user_id');
     
@@ -1075,7 +1075,7 @@ public function search_orderdate($keyword, $limit, $offset) {
 	$this->db->where('DATE(ord.created_date)', $keyword);
 	$this->db->where('ord.isdeleted', 0);
     $this->db->limit($limit, $offset);
-   $this->db->select('ord.*, us.name as name, us.payment_terms as terms, us.status as status');
+   $this->db->select('ord.*, us.name as name, us.payment_terms as terms, us.status as status, us.pay_restrict as pay_restrict');
     $this->db->from('orders ord');
     $this->db->join('user_register us', 'us.id = ord.user_id');
 
@@ -1108,7 +1108,7 @@ public function count_search_orders($keyword) {
 }
 
 public function search_orders($keyword, $limit, $offset) {
-   $this->db->select('ord.*, us.name as name, us.payment_terms as terms, us.status as status');
+   $this->db->select('ord.*, us.name as name, us.payment_terms as terms, us.status as status, us.pay_restrict as pay_restrict');
     $this->db->from('orders ord');
     $this->db->join('user_register us', 'us.id = ord.user_id');
     $this->db->where('ord.isdeleted', 0);
@@ -1198,7 +1198,7 @@ public function count_search_deleted_orders($keyword) {
 }
 
 public function search_deleted_orders($keyword, $limit, $offset) {
-    $this->db->select('ord.*, us.name as name, us.payment_terms as terms, us.status as status');
+    $this->db->select('ord.*, us.name as name, us.payment_terms as terms, us.status as status, us.pay_restrict as pay_restrict');
     $this->db->from('orders ord');
     $this->db->join('user_register us', 'us.id = ord.user_id');
     $this->db->where('ord.isdeleted', 1);

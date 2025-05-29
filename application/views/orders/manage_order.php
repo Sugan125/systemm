@@ -127,8 +127,9 @@ $orderdate = isset($orderdate) ? date('Y-m-d', strtotime($orderdate)) : '';
                              <?php
                                 $allowed_ids = ['1234', '1238','1229'];
 
-                               
+                              // print_r($loginuser);
                                 $show_payment_column = in_array($loginuser['id'], $allowed_ids) && in_array('Owner', (array)$loginuser['role']);
+                                
 
                             ?>
                             <table id="manageTable" class="table table-bordered table-hover table-striped">
@@ -158,8 +159,9 @@ $orderdate = isset($orderdate) ? date('Y-m-d', strtotime($orderdate)) : '';
                                             foreach ($orders as $key => $val):
                                             
                                                 $show_checkbox = ($val->check_paystatus == 1);
+                                                  $highlight_row = ($loginuser['id'] == 1229 && $val->pay_restrict == 1);
                                             ?>
-                                            <tr>
+                                           <tr <?= $highlight_row ? 'style="background-color: #f8d7da;"' : '' ?>>
                                                 <td><?php echo $val->bill_no; ?></td>
                                                 <td><?php echo $val->name; ?></td>
                                                 <td><?php echo empty($val->created_date) ? date('Y-m-d', $val->date_time) : $val->created_date; ?></td>
