@@ -1988,4 +1988,40 @@ public function get_restricted_users_with_invoices()
 		$this->load->view('orders/pay_restrict.php', $data);
 		$this->load->view('template/footer.php');
 	}
+
+    public function check_user_can_order()
+{
+    $loginuser = $this->session->userdata('LoginSession'); // get current logged-in user
+
+    $user_id = $loginuser['id'];
+    if (!$user_id) {
+        echo json_encode(['status' => false, 'message' => 'User not logged in']);
+        return;
+    }
+
+    // Get user info
+    $user = $this->db->where('id', $user_id)->get('user_register')->row();
+    if (!$user) {
+        echo json_encode(['status' => false, 'message' => 'User not found']);
+        return;
+    }
+
+    $terms = strtolower(trim($user->payment_terms));
+
+    if ($terms === 'cod') {
+        $last_two = $this->order_model->get_last_checkpay($user_id, 2);
+
+       if (count($last_two) == 2) {
+            echo json_encode([
+                'status' => false,
+                'message' => 'Your last 2 invoices are not paid. You are restricted from placing new orders.'
+            ]);
+            return;
+        }
+    }
+
+    // If not COD or all invoices are paid
+    echo json_encode(['status' => true]);
+}
+
 }

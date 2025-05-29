@@ -1257,6 +1257,18 @@ public function get_last_checkpay_invoices($user_id, $limit)
                     ->result();
 }
 
+public function get_last_checkpay($user_id, $limit)
+{
+    return $this->db->where('user_id', $user_id)
+                    ->where('check_paystatus', 1)
+                    ->where('isdeleted', 0)
+                    ->where('account_paid', 0)
+                    ->order_by('date_time', 'DESC')
+                    ->limit($limit)
+                    ->get('orders')
+                    ->result();
+}
+
 // Get all orders where check_paystatus = 1
 public function get_all_checkpay_invoices($user_id)
 {

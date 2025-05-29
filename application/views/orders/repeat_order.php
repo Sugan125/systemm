@@ -465,6 +465,24 @@ function openModal() {
     // Get the delivery charge value
     var deliveryCharge = parseFloat(document.getElementById('delivery_charge').value);
 
+        // First check user payment status via AJAX
+    fetch('<?= base_url("index.php/orders/check_user_can_order") ?>')
+        .then(response => response.json())
+        .then(data => {
+            if (!data.status) {
+               Swal.fire({
+                    title: "🚫 Your last 2 invoices are not paid 🚫",
+                    html: `
+                        <p>💳 Kindly clear your outstanding payments to resume ordering.</p>
+                        <p>📞 For assistance, please contact our Customer Service or Accounts Team.</p>
+                    `,
+                    icon: "error",
+                    confirmButtonText: "OK"
+                });
+                return;
+            }
+
+            // Proceed with delivery charge check
     // Check if the delivery charge is below 80
     if (deliveryCharge === 20) {
         Swal.fire({
@@ -482,6 +500,11 @@ function openModal() {
         // If delivery charge is not 20, proceed with the existing confirmation
         confirmOrder();
     }
+      })
+        .catch(error => {
+            console.error("Error checking user status:", error);
+            Swal.fire("Error", "Failed to verify your account status. Please try again.", "error");
+        });
 }
 function confirmOrder() {
     var form = document.getElementById('repeat_order');
