@@ -1248,9 +1248,13 @@ public function mark_order_paid($order_id, $account_paid)
 // Get last N orders where check_paystatus = 1
 public function get_last_checkpay_invoices($user_id, $limit)
 {
+	$yesterday = date('Y-m-d', strtotime('-1 day')); // get yesterday's date
+
     return $this->db->where('user_id', $user_id)
                     ->where('check_paystatus', 1)
+					->where('account_paid', 0)
 					->where('isdeleted', 0)
+					->where('delivery_date <=', $yesterday) // only till yesterday
                     ->order_by('date_time', 'DESC')
                     ->limit($limit)
                     ->get('orders')
@@ -1281,11 +1285,15 @@ public function get_all_checkpay_invoices($user_id)
 
 public function get_invoices_between($user_id, $start_date, $end_date)
 {
+	$yesterday = date('Y-m-d', strtotime('-1 day')); // get yesterday's date
+
     return $this->db->where('user_id', $user_id)
+					->where('account_paid', 0)
                     ->where('check_paystatus', 1)
 					 ->where('isdeleted', 0)
                     ->where('created_date >=', $start_date)
                     ->where('created_date <=', $end_date)
+					->where('delivery_date <=', $yesterday) 
                     ->get('orders')
                     ->result();
 }

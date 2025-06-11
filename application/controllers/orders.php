@@ -1852,21 +1852,21 @@ public function update_paid_status()
 }
 public function cron_check_user_payment_status()
 {
-    $this->load->model('order_model');
-    $today = date('j'); // Day of the month (1-31)
+   $this->load->model('order_model');
+    $today = date('j'); 
+    $current_day = (int)$today;
+    $current_month = date('Y-m');
+    $next_month = date('Y-m', strtotime('+1 month'));
 
-    // Get distinct user_ids from orders where check_paystatus = 1
     $user_ids = $this->db->distinct()
-                         ->select('user_id')
-                         ->where('check_paystatus', 1)
-                         ->where('isdeleted', 0)
-                         ->get('orders')
-                         ->result();
+                        ->select('user_id')
+                        ->where('check_paystatus', 1)
+                        ->where('isdeleted', 0)
+                        ->get('orders')
+                        ->result();
 
     foreach ($user_ids as $row) {
         $user_id = $row->user_id;
-
-        // Get user's payment_terms and current status
         $user = $this->db->where('id', $user_id)->get('user_register')->row();
         if (!$user) continue;
 
@@ -1874,30 +1874,87 @@ public function cron_check_user_payment_status()
 
         if ($terms == 'cod') {
             $last_two = $this->order_model->get_last_checkpay_invoices($user_id, 2);
-            $all_paid = count($last_two) == 2 && array_reduce($last_two, function ($carry, $invoice) {
+            $all_paid = array_reduce($last_two, function ($carry, $invoice) {
                 return $carry && $invoice->account_paid == 1;
             }, true);
-
-          
-           
-            if ($all_paid) {
-                //  echo 'activate'.$user_id;
+            if ($all_paid || count($last_two) < 2) {
                 $this->activate_user($user_id);
             } else {
-                //   echo 'deactivate'.$user_id;
                 $this->deactivate_user($user_id);
             }
 
-        } elseif ($terms == '30' && $today == 30) {
-
-            // Get last month’s first and last date
+        } elseif ($terms == '30' && $current_day == 30) {
             $start_date = date('Y-m-01', strtotime('first day of last month'));
             $end_date = date('Y-m-t', strtotime('last day of last month'));
-
-            // Fetch invoices within that range
             $invoices = $this->order_model->get_invoices_between($user_id, $start_date, $end_date);
+            $all_paid = !empty($invoices) && array_reduce($invoices, function ($carry, $invoice) {
+                return $carry && $invoice->account_paid == 1;
+            }, true);
+            if ($all_paid) {
+                $this->activate_user($user_id);
+            } else {
+                $this->deactivate_user($user_id);
+            }
 
-            // Check if all invoices are paid
+        } elseif ($terms == '15') {
+
+    // Check 1st–15th orders on 20th of the current month
+    if ($current_day == 20) {
+        $start_date = date('Y-m-01');
+        $end_date = date('Y-m-15');
+
+        $invoices = $this->order_model->get_invoices_between($user_id, $start_date, $end_date);
+
+        $all_paid = !empty($invoices) && array_reduce($invoices, function ($carry, $invoice) {
+            return $carry && $invoice->account_paid == 1;
+        }, true);
+
+        if ($all_paid) {
+            $this->activate_user($user_id);
+        } else {
+            $this->deactivate_user($user_id);
+        }
+    }
+
+    // Check 16th–end orders on 6th of next month
+    elseif ($current_day == 6) {
+        $start_date = date('Y-m-16', strtotime('first day of last month'));
+        $end_date = date('Y-m-t', strtotime('last day of last month'));
+
+        $invoices = $this->order_model->get_invoices_between($user_id, $start_date, $end_date);
+
+        $all_paid = !empty($invoices) && array_reduce($invoices, function ($carry, $invoice) {
+            return $carry && $invoice->account_paid == 1;
+        }, true);
+
+        if ($all_paid) {
+            $this->activate_user($user_id);
+        } else {
+            $this->deactivate_user($user_id);
+        }
+    }
+
+    // On other days, keep user active
+    else {
+        $this->activate_user($user_id);
+    }
+}
+ elseif ($terms == '14') {
+            if ($current_day == 21) {
+                // Check 1st–14th of current month, due on 21st
+                $start_date = "$current_month-01";
+                $end_date = "$current_month-14";
+            } elseif ($current_day == 7) {
+                // Check 15th–end of previous month, due on 7th
+                $start_date = date('Y-m-15', strtotime('first day of last month'));
+                $end_date = date('Y-m-t', strtotime('last day of last month'));
+            } else {
+                // Not due date yet; keep active
+                $this->activate_user($user_id);
+                continue;
+            }
+
+            $invoices = $this->order_model->get_invoices_between($user_id, $start_date, $end_date);
             $all_paid = !empty($invoices) && array_reduce($invoices, function ($carry, $invoice) {
                 return $carry && $invoice->account_paid == 1;
             }, true);
@@ -1907,31 +1964,19 @@ public function cron_check_user_payment_status()
             } else {
                 $this->deactivate_user($user_id);
             }
-        }
-       elseif ($terms == '15' && $today == 20) {
 
-    // Get current year and month
-    $start_date = date('Y-m-01');
-    $end_date = date('Y-m-15');
-
-    // Fetch invoices within 1st to 15th of the current month
-    $invoices = $this->order_model->get_invoices_between($user_id, $start_date, $end_date);
-
-    // Check if all are paid
-    $all_paid = !empty($invoices) && array_reduce($invoices, function ($carry, $invoice) {
-        return $carry && $invoice->account_paid == 1;
-    }, true);
-
-    if ($all_paid) {
-        $this->activate_user($user_id);
-    } else {
-        $this->deactivate_user($user_id);
-    }
+        } elseif (
+    ($terms == '30' && $current_day != 30) ||
+    ($terms == '15' && $current_day != 20 && $current_day != 6) ||
+    ($terms == '14' && $current_day != 7 && $current_day != 21)
+) {
+    $this->activate_user($user_id);
 }
     }
 
     echo "Cron executed.";
 }
+
 
 private function deactivate_user($user_id)
 {
