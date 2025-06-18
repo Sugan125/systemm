@@ -115,7 +115,21 @@ $orderdate = isset($orderdate) ? date('Y-m-d', strtotime($orderdate)) : '';
 
      
 
-
+<div class="col-sm-4 col-md-4">
+    <form action="<?= base_url('index.php/Orders/searchbycustomer'); ?>" method="get">
+        <label><b>Search by Customer</b></label>
+        <select name="user_id" class="form-control" required onchange="this.form.submit()">
+            <option value="">Select User Name</option>
+            <?php foreach ($userss as $row): ?>
+                <?php if($row->role != 'Owner'): ?>
+                    <option value="<?= $row->id; ?>" <?= ($user_id ?? '') == $row->id ? 'selected' : ''; ?>>
+                        <?= $row->name; ?>
+                    </option>
+                <?php endif; ?>
+            <?php endforeach; ?>
+        </select>
+    </form>
+</div>
  
                     </div>
                         <br>
@@ -212,7 +226,7 @@ $orderdate = isset($orderdate) ? date('Y-m-d', strtotime($orderdate)) : '';
                                         </tr>
                                         <?php endforeach; } 
                                     else{
-                                        echo '<tr><td colspan="12" class="text-center">No orders found for this user</td></tr>';
+                                        echo '<tr><td colspan="13" class="text-center">No orders found for this user</td></tr>';
                                     }
                                     ?>
                                     </tbody>

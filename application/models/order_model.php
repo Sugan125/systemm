@@ -1333,4 +1333,29 @@ public function get_invoices_between($user_id, $start_date, $end_date)
     return $report;
 }
 
+public function count_orders_by_user($user_id) {
+    $this->db->where('user_id', $user_id);
+    return $this->db->count_all_results('orders');
+}
+
+
+
+public function get_orders_by_user($user_id, $limit = 10, $offset = 0) {
+		$current_month = date('Y-m'); // Get the current month in 'YYYY-MM' format
+	
+		$this->db->select('ord.*, us.name as name, us.payment_terms as terms, us.status as status, us.pay_restrict as pay_restrict');
+		$this->db->from('orders ord');
+		$this->db->join('user_register us', 'us.id = ord.user_id');
+	//	$this->db->where('DATE_FORMAT(ord.created_date, "%Y-%m") =', $current_month); // Correct the WHERE clause
+		$this->db->where('ord.isdeleted', 0);
+		$this->db->where('ord.user_id', $user_id);
+		$this->db->limit($limit, $offset);
+		$query = $this->db->get();
+
+	//	echo $this->db->last_query();
+
+		return $query->result();
+	
+	}
+
 }

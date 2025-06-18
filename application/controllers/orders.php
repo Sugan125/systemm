@@ -519,7 +519,7 @@ public function manage_orders() {
     // Fetch orders for the current month with pagination
     $data['orders'] = $this->order_model->getmanageorder($config['per_page'], $offset);
     $data['total_rows'] = $this->order_model->count_all_orders();
-
+	$data['userss'] = $this->user_model->get_allusers($loginuser['id']);
     // Load views
     $this->load->view('template/header.php', $data);
     $user = $this->session->userdata('user_register');
@@ -1119,7 +1119,8 @@ public function searchinvoice() {
 
     $data['orders'] = $this->order_model->search_orders($keyword, $config['per_page'], $offset);
     $data['total_rows'] = $this->order_model->count_search_orders($keyword);
-
+    $data['userss'] = $this->user_model->get_allusers($loginuser['id']);
+ 
     $this->load->view('template/header.php', $data);
     $user = $this->session->userdata('user_register');
     $users = $this->session->userdata('normal_user');
@@ -1181,7 +1182,8 @@ public function searchdate() {
 
     $data['orders'] = $this->order_model->search_date($keyword, $config['per_page'], $offset);
     $data['total_rows'] = $this->order_model->count_search_date($keyword);
-
+    $data['userss'] = $this->user_model->get_allusers($loginuser['id']);
+ 
     $this->load->view('template/header.php', $data);
     $user = $this->session->userdata('user_register');
     $users = $this->session->userdata('normal_user');
@@ -1242,7 +1244,8 @@ public function searchorderdate() {
 
     $data['orders'] = $this->order_model->search_orderdate($keyword, $config['per_page'], $offset);
     $data['total_rows'] = $this->order_model->count_search_orderdate($keyword);
-
+    $data['userss'] = $this->user_model->get_allusers($loginuser['id']);
+ 
     $this->load->view('template/header.php', $data);
     $user = $this->session->userdata('user_register');
     $users = $this->session->userdata('normal_user');
@@ -2024,6 +2027,63 @@ public function get_restricted_users_with_invoices()
 
     // If not COD or all invoices are paid
     echo json_encode(['status' => true]);
+}
+
+public function searchbycustomer() {
+    $user_id = $this->input->get('user_id');
+    $data['title'] = 'Dashboard';
+
+    $this->load->library('pagination');
+
+    $config['base_url'] = site_url('Orders/searchbycustomer');
+    $config['total_rows'] = $this->order_model->count_orders_by_user($user_id);
+    $config['per_page'] = 10;
+    $config['uri_segment'] = 3;
+    $config['use_page_numbers'] = TRUE;
+
+    $config['suffix'] = '?user_id=' . urlencode($user_id);
+    $config['first_url'] = $config['base_url'] . '/1' . $config['suffix'];
+
+    // pagination styling (optional)
+    $config['full_tag_open'] = '<ul class="pagination">';
+    $config['full_tag_close'] = '</ul>';
+    $config['first_link'] = 'First';
+    $config['last_link'] = 'Last';
+    $config['first_tag_open'] = '<li class="page-item"><span class="page-link">';
+    $config['first_tag_close'] = '</span></li>';
+    $config['prev_link'] = 'Previous';
+    $config['prev_tag_open'] = '<li class="page-item"><span class="page-link">';
+    $config['prev_tag_close'] = '</span></li>';
+    $config['next_link'] = 'Next';
+    $config['next_tag_open'] = '<li class="page-item"><span class="page-link">';
+    $config['next_tag_close'] = '</span></li>';
+    $config['last_tag_open'] = '<li class="page-item"><span class="page-link">';
+    $config['last_tag_close'] = '</span></li>';
+    $config['cur_tag_open'] = '<li class="page-item active"><span class="page-link">';
+    $config['cur_tag_close'] = '</span></li>';
+    $config['num_tag_open'] = '<li class="page-item"><span class="page-link">';
+    $config['num_tag_close'] = '</span></li>';
+
+    $page = ($this->uri->segment(3)) ? $this->uri->segment(3) : 1;
+    $offset = ($page - 1) * $config['per_page'];
+
+    $this->pagination->initialize($config);
+
+    $loginuser = $this->session->userdata('LoginSession');
+
+    $data['user_id'] = $user_id;
+    $data['orders'] = $this->order_model->get_orders_by_user($user_id, $config['per_page'], $offset);
+    $data['total_rows'] = $config['total_rows'];
+
+    // Get active users
+    $data['userss'] = $this->user_model->get_activeusers($loginuser['id']);
+
+    $this->load->view('template/header.php', $data);
+    $user = $this->session->userdata('user_register');
+    $users = $this->session->userdata('normal_user');
+    $this->load->view('template/sidebar.php', array('user' => $user, 'users' => $users, 'data' => $data, 'loginuser' => $loginuser));
+    $this->load->view('orders/manage_order.php', $data);
+    $this->load->view('template/footer.php');
 }
 
 }
