@@ -1899,17 +1899,17 @@ public function cron_check_user_payment_status()
                 $this->deactivate_user($user_id);
             }
 
-        }  elseif ($terms == '14' || $terms == '15') {
-            if ($current_day == 21) {
-                // Check 1st–14th of current month, due on 21st
+        }  
+        elseif ($terms == '14' || $terms == '15') {
+            if ($current_day == date('t')) {
+                // Today is the last day of the current month
                 $start_date = "$current_month-01";
                 $end_date = "$current_month-15";
-            } elseif ($current_day == 7) {
-                // Check 15th–end of previous month, due on 7th
+            } elseif ($current_day == 15 && date('d') == '15') {
+                // Today is the 15th of the next month
                 $start_date = date('Y-m-16', strtotime('first day of last month'));
                 $end_date = date('Y-m-t', strtotime('last day of last month'));
             } else {
-                // Not due date yet; keep active
                 $this->activate_user($user_id);
                 continue;
             }
@@ -1924,8 +1924,8 @@ public function cron_check_user_payment_status()
             } else {
                 $this->deactivate_user($user_id);
             }
-
-        } elseif (
+        }
+        elseif (
             ($terms == '30' && $current_day != 30) ||
             ($terms == '15' && $current_day != 7 && $current_day != 21) ||
             ($terms == '14' && $current_day != 7 && $current_day != 21)
