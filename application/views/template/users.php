@@ -145,7 +145,7 @@
         <!-- Change id="restrictCheckbox" to class="restrictCheckbox" -->
         <td> <input type="checkbox" class="restrictCheckbox" data-id="<?php echo $row->id; ?>" <?php if($row->restrict_time == 1){ echo 'checked'; } ?>></td>
         <td><?= $status; ?></td>
-        <td> <input type="checkbox" class="changestatus" data-id="<?php echo $row->id; ?>" <?php if($row->status == 1 && $row->is_archieve == 0){ echo 'checked'; } ?>></td>
+        <td> <input type="checkbox" class="changestatus" data-id="<?php echo $row->id; ?>" <?php if($row->status == 1 && $row->is_archieve == 1){ echo 'checked'; } ?>></td>
       
         <td><?=  $row->created_by; ?></td>
         <td><?=  $row->updated_by; ?></td>
