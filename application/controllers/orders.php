@@ -2134,7 +2134,11 @@ public function searchbycustomer() {
 }
 public function searchpaymentinvoice()
 {
-    $keyword = trim(strtolower($this->input->get('keyword')));
+    $keyword = trim(strtolower($this->input->get('keyword', true)));
+      if ($keyword === null || $keyword === '') {
+        redirect('orders/get_restricted_users_with_invoices');
+        return;
+    }
     $filtered_data = [];
 
     // Get all users with pay_restrict
@@ -2142,7 +2146,8 @@ public function searchpaymentinvoice()
 
     foreach ($users as $user) {
         $user_name = strtolower($user->name);
-        $name_match = strpos($user_name, $keyword) !== false;
+        $name_match = $keyword !== '' && strpos($user_name, $keyword) !== false;
+
 
         // Get all unpaid invoices for the user
         $invoices = $this->db->select('bill_no')
