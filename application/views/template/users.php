@@ -35,6 +35,21 @@
 <?= $this->session->flashdata('updated'); ?>
 <?= $this->session->flashdata('deleted'); ?>
 <?= $this->session->flashdata('imported'); ?>
+<!-- Loading overlay, initially hidden -->
+<div id="loadingOverlay" style="
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(255,255,255,0.7);
+    text-align: center;
+    padding-top: 20%;
+    font-size: 1.5rem;
+    color: #333;
+    font-weight: bold;
+">
+    Loading, please wait...
+</div>
 
 
 <!-- Search Form -->
@@ -91,6 +106,7 @@
       <th>Mobile Number</th>
       <th>Role</th>
       <th>Payment Terms</th>
+      <th>Trustable Customer</th>
       <th>Driver Memo</th>
       <th>Packer Memo</th>
       <th>Restrict time</th>
@@ -140,6 +156,7 @@
         <td><?= $row->contact; ?></td>
         <td><?=  $rolee; ?></td>
         <td><?=  $row->payment_terms; ?></td>
+         <td> <input type="checkbox" class="trustcustomer" data-id="<?php echo $row->id; ?>" <?php if($row->trust_customer == 1){ echo 'checked'; } ?>></td>
         <td><?=  $row->driver_memo; ?></td>
         <td><?=  $row->packer_memo; ?></td>
         <!-- Change id="restrictCheckbox" to class="restrictCheckbox" -->
@@ -336,6 +353,70 @@ $(document).ready(function(){
         }
     });
 });
+$('.trustcustomer').click(function(){
+    var userId = $(this).data('id');
+    var isChecked = $(this).prop('checked') ? 1 : 0;
+
+    // Show loading overlay before AJAX
+    $('#loadingOverlay').show();
+
+    $.ajax({
+        url: '<?php echo base_url('index.php/Userscontroller/update_trustedcustomer'); ?>',
+        method: 'POST',
+        data: { userId: userId, isChecked: isChecked },
+        dataType: 'json', 
+        success: function(response){
+            $('#loadingOverlay').hide();  // Hide loading on success
+            
+            if(response.status === 'success'){
+                if(response.isChecked === '1'){
+                    $('.trustcustomer[data-id="' + userId + '"]').prop('checked', true);
+                    swal({
+                        title: "Success",
+                        text: "Payment terms restriction has been **removed** for this customer.",
+                        icon: "success",
+                        buttons: {
+                            confirm: {
+                                text: "OK",
+                                value: true,
+                                visible: true,
+                                className: "btn btn-primary",
+                                closeModal: true
+                            }
+                        }
+                    }).then(() => {
+                        window.location.reload();
+                    });
+                } else {
+                    $('.trustcustomer[data-id="' + userId + '"]').prop('checked', false);
+                    swal({
+                        title: "Success",
+                        text: "Payment terms restriction has been **applied** to this customer.",
+                        icon: "success",
+                        buttons: {
+                            confirm: {
+                                text: "OK",
+                                value: true,
+                                visible: true,
+                                className: "btn btn-primary",
+                                closeModal: true
+                            }
+                        }
+                    }).then(() => {
+                        window.location.reload();
+                    });
+                }
+            } else {
+                alert('Error updating restrict time.');
+            }
+        },
+        error: function(xhr, status, error){
+            $('#loadingOverlay').hide();  // Hide loading on error
+            console.log('AJAX Error:', error);
+        }
+    });
+});
+
 
 $('.changestatus').click(function(e){
     e.preventDefault(); // prevent immediate toggle

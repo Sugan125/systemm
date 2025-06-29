@@ -1297,15 +1297,15 @@ public function get_invoices_between($user_id, $start_date, $end_date)
                     ->get('orders')
                     ->result();
 }
-
-	public function get_restricted_users_with_unpaid_invoices()
+public function get_restricted_users_with_unpaid_invoices($limit = 10, $offset = 0, $payment_terms = null)
 {
-    $users = $this->db->where([
-        'pay_restrict' => 1
-    ])->get('user_register')->result();
+    $users_query = $this->db->where('pay_restrict', 1);
+    if ($payment_terms) {
+        $users_query->where('payment_terms', $payment_terms);
+    }
+    $users = $users_query->get('user_register')->result();
 
     $report = [];
-
     foreach ($users as $user) {
         $invoices = $this->db->select('bill_no')
             ->from('orders')
@@ -1313,24 +1313,22 @@ public function get_invoices_between($user_id, $start_date, $end_date)
                 'user_id' => $user->id,
                 'check_paystatus' => 1,
                 'account_paid' => 0,
-                'isdeleted' => 0 // Only not deleted invoices
+                'isdeleted' => 0
             ])
             ->get()
             ->result();
 
-        if (!empty($invoices)) { // Only include users with matching invoices
+        if (!empty($invoices)) {
             $report[] = [
-                'user_id'  => $user->id,
-                'name'     => $user->name,
+                'user_id' => $user->id,
+                'name' => $user->name,
                 'payment_terms' => $user->payment_terms,
-                'invoices' => array_map(function ($i) {
-                    return $i->bill_no;
-                }, $invoices),
+                'invoices' => array_map(fn($i) => $i->bill_no, $invoices),
             ];
         }
     }
 
-    return $report;
+    return array_slice($report, $offset, $limit);
 }
 
 public function count_orders_by_user($user_id) {
@@ -1357,5 +1355,34 @@ public function get_orders_by_user($user_id, $limit = 10, $offset = 0) {
 		return $query->result();
 	
 	}
+public function count_filtered_restricted_users($payment_terms = null)
+{
+    $users_query = $this->db->where('pay_restrict', 1);
+    if ($payment_terms) {
+        $users_query->where('payment_terms', $payment_terms);
+    }
+    $users = $users_query->get('user_register')->result();
+
+    $count = 0;
+    foreach ($users as $user) {
+        $invoices = $this->db->select('bill_no')
+            ->from('orders')
+            ->where([
+                'user_id' => $user->id,
+                'check_paystatus' => 1,
+                'account_paid' => 0,
+                'isdeleted' => 0
+            ])
+            ->get()
+            ->result();
+
+        if (!empty($invoices)) {
+            $count++;
+        }
+    }
+
+    return $count;
+}
+
 
 }

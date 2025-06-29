@@ -810,8 +810,102 @@ $is_archieve = ($this->input->post('status') == 1) ? 0 : 1;
         }
     }
 
-    
-   
+
+
+
+    public function update_trustedcustomer()
+{
+    $userId = $this->input->post('userId');
+    $isChecked = $this->input->post('isChecked');
+
+    // If checkbox checked, trust_customer = 1, remove payment restriction immediately
+    if ($isChecked == '1') {
+        $this->db->where('id', $userId)->update('user_register', [
+            'trust_customer' => 1,
+            'pay_restrict' => 0
+        ]);
+    } else {
+        // Checkbox unchecked, trust_customer = 0, check invoices and set pay_restrict accordingly
+
+        // Update trust_customer first
+        $this->db->where('id', $userId)->update('user_register', [
+            'trust_customer' => 0
+        ]);
+
+        // Get user payment terms
+        $user = $this->db->where('id', $userId)->get('user_register')->row();
+
+        if (!$user) {
+            echo json_encode(['status' => 'error', 'message' => 'User not found']);
+            return;
+        }
+
+        $terms = strtolower(trim($user->payment_terms));
+
+      
+
+        // Load model if not already loaded
+        $this->load->model('order_model');
+
+        $pending = false;
+
+        if ($terms == 'cod') {
+            $last_two = $this->order_model->get_last_checkpay_invoices($userId, 2);
+            foreach ($last_two as $invoice) {
+                if ($invoice->account_paid != 1) {
+                    $pending = true;
+                    break;
+                }
+            }
+        } elseif ($terms == '30') {
+            $start_date = date('Y-m-01', strtotime('first day of last month'));
+            $end_date = date('Y-m-t', strtotime('last day of last month'));
+            $invoices = $this->order_model->get_invoices_between($userId, $start_date, $end_date);
+            foreach ($invoices as $invoice) {
+                if ($invoice->account_paid != 1) {
+                    $pending = true;
+                    break;
+                }
+            }
+        } elseif ($terms == '14' || $terms == '15') {
+            $current_day = (int)date('j');
+            $current_month = date('Y-m');
+
+            if ($current_day == date('t')) {
+                $start_date = "$current_month-01";
+                $end_date = "$current_month-15";
+            } elseif ($current_day == 15 && date('d') == '15') {
+                $start_date = date('Y-m-16', strtotime('first day of last month'));
+                $end_date = date('Y-m-t', strtotime('last day of last month'));
+            } else {
+                // Assume no pending since not on relevant days
+                $pending = false;
+            }
+
+            if (isset($start_date) && isset($end_date)) {
+                $invoices = $this->order_model->get_invoices_between($userId, $start_date, $end_date);
+                foreach ($invoices as $invoice) {
+                    if ($invoice->account_paid != 1) {
+                        $pending = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        // Update pay_restrict based on pending invoices
+        $this->db->where('id', $userId)->update('user_register', [
+            'pay_restrict' => $pending ? 1 : 0
+        ]);
+    }
+
+    // Check if update was successful
+    if ($this->db->affected_rows() > 0) {
+        echo json_encode(['status' => 'success', 'isChecked' => $isChecked]);
+    } else {
+        echo json_encode(['status' => 'error']);
+    }
+}
 }
 
 ?>

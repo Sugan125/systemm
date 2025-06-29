@@ -1855,7 +1855,7 @@ public function update_paid_status()
 }
 public function cron_check_user_payment_status()
 {
-   $this->load->model('order_model');
+$this->load->model('order_model');
     $today = date('j'); 
     $current_day = (int)$today;
     $current_month = date('Y-m');
@@ -1872,6 +1872,10 @@ public function cron_check_user_payment_status()
         $user_id = $row->user_id;
         $user = $this->db->where('id', $user_id)->get('user_register')->row();
         if (!$user) continue;
+
+        if ($user->trust_customer == 1) {
+            continue;
+        }
 
         $terms = strtolower(trim($user->payment_terms));
 
@@ -1934,6 +1938,10 @@ public function cron_check_user_payment_status()
                 }
     }
 
+    $trusted_users = $this->db->where('trust_customer', 1)->get('user_register')->result();
+    foreach ($trusted_users as $trusted_user) {
+        $this->activate_user($trusted_user->id);
+    }
     echo "Cron executed.";
 }
 
@@ -1958,19 +1966,58 @@ private function activate_user($user_id)
 }
 public function get_restricted_users_with_invoices()
 {
-    $this->load->model('order_model');
+    $keyword = $this->input->get('payment_terms'); // read filter
+    $data['payment_terms'] = $keyword;
 
-    $data['report'] = $this->order_model->get_restricted_users_with_unpaid_invoices();
-    $data['title'] = "Restricted Users Report";
+    $data['title'] = 'orders';
 
-    // Load session data for sidebar
+    // Pagination config
+    $config['base_url'] = site_url('orders/get_restricted_users_with_invoices');
+    $config['total_rows'] = $this->order_model->count_filtered_restricted_users($keyword);
+   
+    $config['per_page'] = 10;
+    $config['uri_segment'] = 3;
+    $config['use_page_numbers'] = TRUE;
+
+    // Include the keyword in the query string for pagination links
+    $config['suffix'] = '?orderdate=' . urlencode($keyword);
+    $config['first_url'] = $config['base_url'] . '/1' . $config['suffix'];
+
+    $config['full_tag_open'] = '<ul class="pagination">';
+    $config['full_tag_close'] = '</ul>';
+    $config['first_link'] = 'First';
+    $config['last_link'] = 'Last';
+    $config['first_tag_open'] = '<li class="page-item"><span class="page-link">';
+    $config['first_tag_close'] = '</span></li>';
+    $config['prev_link'] = 'Previous';
+    $config['prev_tag_open'] = '<li class="page-item"><span class="page-link">';
+    $config['prev_tag_close'] = '</span></li>';
+    $config['next_link'] = 'Next';
+    $config['next_tag_open'] = '<li class="page-item"><span class="page-link">';
+    $config['next_tag_close'] = '</span></li>';
+    $config['last_tag_open'] = '<li class="page-item"><span class="page-link">';
+    $config['last_tag_close'] = '</span></li>';
+    $config['cur_tag_open'] = '<li class="page-item active"><span class="page-link">';
+    $config['cur_tag_close'] = '</span></li>';
+    $config['num_tag_open'] = '<li class="page-item"><span class="page-link">';
+    $config['num_tag_close'] = '</span></li>';
+
+    $page = ($this->uri->segment(3)) ? $this->uri->segment(3) : 1;
+    $offset = ($page - 1) * $config['per_page'];
+
+    $this->pagination->initialize($config);
+
+
+    $loginuser = $this->session->userdata('LoginSession');
+    $data['user_id'] = $loginuser['id'];
+    $data['orders'] = $this->order_model->get_restricted_users_with_unpaid_invoices($config['per_page'], $offset, $keyword);
+    $data['total_rows'] = $config['total_rows'];
+    $data['userss'] = $this->user_model->get_allusers($loginuser['id']);
+
+    $this->load->view('template/header.php', $data);
     $user = $this->session->userdata('user_register');
     $users = $this->session->userdata('normal_user');
-    $loginuser = $this->session->userdata('LoginSession');
-
-    // Load views
-    $this->load->view('template/header.php', $data);
-    $this->load->view('template/sidebar.php', array_merge($data, ['user' => $user, 'users' => $users, 'loginuser' => $loginuser]));
+    $this->load->view('template/sidebar.php', array('user' => $user, 'users' => $users, 'data' => $data, 'loginuser' => $loginuser));
     $this->load->view('orders/restricted_users.php', $data);
     $this->load->view('template/footer.php');
 }
@@ -2085,5 +2132,72 @@ public function searchbycustomer() {
     $this->load->view('orders/manage_order.php', $data);
     $this->load->view('template/footer.php');
 }
+public function searchpaymentinvoice()
+{
+    $keyword = trim(strtolower($this->input->get('keyword')));
+    $filtered_data = [];
 
+    // Get all users with pay_restrict
+    $users = $this->db->where('pay_restrict', 1)->get('user_register')->result();
+
+    foreach ($users as $user) {
+        $user_name = strtolower($user->name);
+        $name_match = strpos($user_name, $keyword) !== false;
+
+        // Get all unpaid invoices for the user
+        $invoices = $this->db->select('bill_no')
+            ->from('orders')
+            ->where([
+                'user_id' => $user->id,
+                'check_paystatus' => 1,
+                'account_paid' => 0,
+                'isdeleted' => 0
+            ])
+            ->get()
+            ->result();
+
+        // Search for invoice matches
+        $matched = [];
+        foreach ($invoices as $invoice) {
+            if ($keyword && strpos(strtolower($invoice->bill_no), $keyword) !== false) {
+                $matched[] = $invoice->bill_no;
+            }
+        }
+
+        if ($name_match || !empty($matched)) {
+            $filtered_data[] = [
+                'user_id' => $user->id,
+                'name' => $user->name,
+                'payment_terms' => $user->payment_terms,
+                'invoices' => array_map(fn($i) => $i->bill_no, $invoices),
+                'highlight_invoices' => $matched
+            ];
+        }
+    }
+
+    $data['orders'] = $filtered_data;
+    $data['keyword'] = $this->input->get('keyword');
+    $data['total_rows'] = count($filtered_data);
+
+    $this->load->view('template/header', $data);
+    $user = $this->session->userdata('user_register');
+    $users = $this->session->userdata('normal_user');
+    $loginuser = $this->session->userdata('LoginSession');
+    $this->load->view('template/sidebar', compact('user', 'users', 'loginuser'));
+    $this->load->view('orders/restricted_users', $data);
+    $this->load->view('template/footer');
+}
+public function searchbyterms()
+{
+    $payment_terms = $this->input->get('payment_terms');
+
+    $this->db->where('payment_terms', $payment_terms);
+    $data['users'] = $this->db->get('user_register')->result();
+
+    $data['payment_terms'] = $payment_terms;
+
+    $this->load->view('template/header', $data);
+    $this->load->view('orders/payment_terms_results', $data);
+    $this->load->view('template/footer');
+}
 }
