@@ -100,9 +100,9 @@
                         <label><b>Search by Payment Terms</b></label>
                         <select name="payment_terms" class="form-control" onchange="this.form.submit()">
                             <option value="">Select Payment Terms</option>
-                            <option value="COD" <?= ($payment_terms ?? '') == 'COD' ? 'selected' : ''; ?>>COD</option>
-                            <option value="14 Days" <?= ($payment_terms ?? '') == '14 Days' ? 'selected' : ''; ?>>14 Days</option>
-                            <option value="30 Days" <?= ($payment_terms ?? '') == '30 Days' ? 'selected' : ''; ?>>30 Days</option>
+                            <option value="cod" <?= ($payment_terms ?? '') == 'COD' ? 'selected' : ''; ?>>COD</option>
+                            <option value="14" <?= ($payment_terms ?? '') == '14' ? 'selected' : ''; ?>>14 Days</option>
+                            <option value="30" <?= ($payment_terms ?? '') == '30' ? 'selected' : ''; ?>>30 Days</option>
                         </select>
                     </form>
                 </div>

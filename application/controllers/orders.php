@@ -1905,7 +1905,7 @@ $this->load->model('order_model');
 
         }  
         elseif ($terms == '14' || $terms == '15') {
-            if ($current_day == date('t')) {
+            if ($current_day == 30) {
                 // Today is the last day of the current month
                 $start_date = "$current_month-01";
                 $end_date = "$current_month-15";
@@ -1966,21 +1966,17 @@ private function activate_user($user_id)
 }
 public function get_restricted_users_with_invoices()
 {
-    $keyword = $this->input->get('payment_terms'); // read filter
+    $keyword = strtolower(trim($this->input->get('payment_terms')));
     $data['payment_terms'] = $keyword;
-
     $data['title'] = 'orders';
 
     // Pagination config
     $config['base_url'] = site_url('orders/get_restricted_users_with_invoices');
     $config['total_rows'] = $this->order_model->count_filtered_restricted_users($keyword);
-   
     $config['per_page'] = 10;
     $config['uri_segment'] = 3;
     $config['use_page_numbers'] = TRUE;
-
-    // Include the keyword in the query string for pagination links
-    $config['suffix'] = '?orderdate=' . urlencode($keyword);
+    $config['suffix'] = '?payment_terms=' . urlencode($keyword);
     $config['first_url'] = $config['base_url'] . '/1' . $config['suffix'];
 
     $config['full_tag_open'] = '<ul class="pagination">';
@@ -2004,9 +2000,7 @@ public function get_restricted_users_with_invoices()
 
     $page = ($this->uri->segment(3)) ? $this->uri->segment(3) : 1;
     $offset = ($page - 1) * $config['per_page'];
-
     $this->pagination->initialize($config);
-
 
     $loginuser = $this->session->userdata('LoginSession');
     $data['user_id'] = $loginuser['id'];
@@ -2017,7 +2011,7 @@ public function get_restricted_users_with_invoices()
     $this->load->view('template/header.php', $data);
     $user = $this->session->userdata('user_register');
     $users = $this->session->userdata('normal_user');
-    $this->load->view('template/sidebar.php', array('user' => $user, 'users' => $users, 'data' => $data, 'loginuser' => $loginuser));
+    $this->load->view('template/sidebar.php', compact('user', 'users', 'loginuser'));
     $this->load->view('orders/restricted_users.php', $data);
     $this->load->view('template/footer.php');
 }
@@ -2139,43 +2133,74 @@ public function searchpaymentinvoice()
         redirect('orders/get_restricted_users_with_invoices');
         return;
     }
-    $filtered_data = [];
 
+    $current_day = (int)date('j');
+    $current_month = date('Y-m');
+    $filtered_data = [];
     // Get all users with pay_restrict
     $users = $this->db->where('pay_restrict', 1)->get('user_register')->result();
 
     foreach ($users as $user) {
         $user_name = strtolower($user->name);
-        $name_match = $keyword !== '' && strpos($user_name, $keyword) !== false;
+        $terms = strtolower(trim($user->payment_terms));
 
+        $name_match = strpos($user_name, $keyword) !== false;
+        $highlighted = [];
 
-        // Get all unpaid invoices for the user
-        $invoices = $this->db->select('bill_no')
-            ->from('orders')
-            ->where([
-                'user_id' => $user->id,
-                'check_paystatus' => 1,
-                'account_paid' => 0,
-                'isdeleted' => 0
-            ])
-            ->get()
-            ->result();
+        // Start invoice query
+        $this->db->reset_query();
+        $this->db->select('bill_no, delivery_date')
+                 ->from('orders')
+                 ->where('user_id', $user->id)
+                 ->where('check_paystatus', 1)
+                 ->where('account_paid', 0)
+                 ->where('isdeleted', 0);
 
-        // Search for invoice matches
-        $matched = [];
+        // Filter invoices by payment term condition
+        if ($terms === 'cod') {
+            // No delivery_date filter — show all unpaid
+        } elseif ($terms == '30') {
+            if ($current_day == 29) {
+                $start_date = date('Y-m-01', strtotime('first day of last month'));
+                $end_date = date('Y-m-t', strtotime('last day of last month'));
+                $this->db->where('delivery_date >=', $start_date)
+                         ->where('delivery_date <=', $end_date);
+            } else {
+                continue;
+            }
+        } elseif ($terms == '14' || $terms == '15') {
+            if ($current_day == 15) {
+                $start_date = date('Y-m-16', strtotime('first day of last month'));
+                $end_date = date('Y-m-t', strtotime('last day of last month'));
+                $this->db->where('delivery_date >=', $start_date)
+                         ->where('delivery_date <=', $end_date);
+            } elseif ($current_day == 29 || $current_day == 1) {
+                $start_date = "$current_month-01";
+                $end_date = "$current_month-15";
+                $this->db->where('delivery_date >=', $start_date)
+                         ->where('delivery_date <=', $end_date);
+            } else {
+                continue;
+            }
+        } else {
+            continue; // Unknown term
+        }
+
+        $invoices = $this->db->get()->result();
+
         foreach ($invoices as $invoice) {
-            if ($keyword && strpos(strtolower($invoice->bill_no), $keyword) !== false) {
-                $matched[] = $invoice->bill_no;
+            if (strpos(strtolower($invoice->bill_no), $keyword) !== false) {
+                $highlighted[] = $invoice->bill_no;
             }
         }
 
-        if ($name_match || !empty($matched)) {
+        if ($name_match || !empty($highlighted)) {
             $filtered_data[] = [
                 'user_id' => $user->id,
                 'name' => $user->name,
                 'payment_terms' => $user->payment_terms,
                 'invoices' => array_map(fn($i) => $i->bill_no, $invoices),
-                'highlight_invoices' => $matched
+                'highlight_invoices' => $highlighted
             ];
         }
     }
@@ -2192,6 +2217,7 @@ public function searchpaymentinvoice()
     $this->load->view('orders/restricted_users', $data);
     $this->load->view('template/footer');
 }
+
 public function searchbyterms()
 {
     $payment_terms = $this->input->get('payment_terms');
