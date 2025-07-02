@@ -1464,5 +1464,21 @@ public function count_filtered_restricted_users($payment_terms = null)
     return $count;
 }
 
+public function get_customers() {
+    return $this->db
+        ->where('status', 1)
+        ->where('is_archieve', 0)
+        ->get('user_register')
+        ->result();
+}
 
+    public function get_orders($user_id, $from_date, $to_date) {
+        $this->db->select('orders.created_date, orders.bill_no, orders.po_ref, orders.net_amount, orders.pay_close_date, user_register.name');
+        $this->db->from('orders');
+        $this->db->join('user_register', 'user_register.id = orders.user_id');
+        $this->db->where('orders.user_id', $user_id);
+        $this->db->where('orders.delivery_date >=', $from_date);
+        $this->db->where('orders.delivery_date <=', $to_date);
+        return $this->db->get()->result();
+    }
 }

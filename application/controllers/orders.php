@@ -2231,4 +2231,30 @@ public function searchbyterms()
     $this->load->view('orders/payment_terms_results', $data);
     $this->load->view('template/footer');
 }
+
+public function get_closed_invoices() {
+        $data['customers'] = $this->order_model->get_customers();
+
+        $user_id = $this->input->get('user_id');
+        $from_date = $this->input->get('from_date');
+        $to_date = $this->input->get('to_date');
+
+        if ($user_id && $from_date && $to_date) {
+            $data['orders'] = $this->order_model->get_orders($user_id, $from_date, $to_date);
+        } else {
+            $data['orders'] = [];
+        }
+
+       
+       $this->load->view('template/header', $data);
+    $user = $this->session->userdata('user_register');
+    $users = $this->session->userdata('normal_user');
+    $loginuser = $this->session->userdata('LoginSession');
+    $this->load->view('template/sidebar', compact('user', 'users', 'loginuser'));
+    $this->load->view('orders/orders_view', $data);
+    $this->load->view('template/footer');
+    }
+
+ 
+
 }
