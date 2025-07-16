@@ -1303,15 +1303,33 @@ public function get_invoices_between($user_id, $start_date, $end_date)
 
     return $query->result();
 }
+public function get_unpaid_before($user_id, $before_date)
+{
+    $this->db->where('user_id', $user_id)
+             ->where('account_paid', 0)
+             ->where('check_paystatus', 1)
+             ->where('isdeleted', 0)
+             ->where('delivery_date <', $before_date);
+
+    $query = $this->db->get('orders');
+
+    return $query->result();
+}
+
 public function get_restricted_users_with_unpaid_invoices($limit = 10, $offset = 0, $keyword = null)
 {
+    date_default_timezone_set('Asia/Singapore');
+
     $current_day = (int)date('j');
-    $current_month = date('Y-m');
-    $last_month = date('Y-m', strtotime('-1 month'));
+    $last_day_of_month = (int)date('t');
+    $this_month = date('Y-m', strtotime('-1 month')); // previous month
+    $start_1 = "$this_month-01";
+    $end_1 = "$this_month-15";
+    $end_of_month = date('Y-m-t', strtotime("$this_month-01"));
 
     $users_query = $this->db->where('pay_restrict', 1);
 
-    // ✅ If a payment_terms keyword is given (e.g., 14, 30, cod), filter users by it
+    // ✅ Filter by payment_terms if keyword is provided
     if (!empty($keyword)) {
         $users_query->where('LOWER(payment_terms)', strtolower($keyword));
     }
@@ -1321,9 +1339,8 @@ public function get_restricted_users_with_unpaid_invoices($limit = 10, $offset =
 
     foreach ($users as $user) {
         $terms = strtolower(trim($user->payment_terms));
-        $start_date = null;
-        $end_date = null;
 
+        // Reset the builder for each user
         $this->db->reset_query();
 
         $this->db->select('bill_no')
@@ -1334,49 +1351,47 @@ public function get_restricted_users_with_unpaid_invoices($limit = 10, $offset =
             ->where('isdeleted', 0);
 
         if ($terms === 'cod') {
-            // COD — show all unpaid invoices
+            // COD: show all unpaid invoices (no date filtering)
+
         } elseif ($terms === '30') {
-            if ($current_day == 29 || $current_day == 1) {
-                $start_date = date('Y-m-01', strtotime('first day of last month'));
-                $end_date = date('Y-m-t', strtotime('last day of last month'));
-                $this->db->where('delivery_date >=', $start_date)
-                         ->where('delivery_date <=', $end_date);
-            } else {
-                continue; // Skip if not 30th or 1st
-            }
+            // 30 days: check two months ago
+            $start_date = date('Y-m-01', strtotime('first day of -2 months'));
+            $end_date   = date('Y-m-t', strtotime('last day of -2 months'));
+
+            $this->db->where('delivery_date >=', $start_date)
+                     ->where('delivery_date <=', $end_date);
+
         } elseif ($terms === '14' || $terms === '15') {
-            if ($current_day == 29 || $current_day == 1) {
-                $start_date = "$current_month-01";
-                $end_date = "$current_month-15";
-                $this->db->where('delivery_date >=', $start_date)
-                         ->where('delivery_date <=', $end_date);
-            } elseif ($current_day == 15) {
-                $start_date = date('Y-m-16', strtotime('first day of last month'));
-                $end_date = date('Y-m-t', strtotime('last day of last month'));
-                $this->db->where('delivery_date >=', $start_date)
-                         ->where('delivery_date <=', $end_date);
+            if ($current_day >= 14 && $current_day <= $last_day_of_month) {
+                // ✅ Day 14–end of month → full last month's invoices
+                $this->db->where('delivery_date >=', $start_1)
+                         ->where('delivery_date <=', $end_of_month);
+            } elseif ($current_day >= 1 && $current_day <= 13) {
+                // ✅ Day 1–13 → only 1st–15th of last month
+                $this->db->where('delivery_date >=', $start_1)
+                         ->where('delivery_date <=', $end_1);
             } else {
-                continue; // Skip if not due period
+                continue; // fallback: skip user
             }
+
         } else {
-            continue; // Skip unknown terms
+            continue; // unknown terms
         }
 
         $invoices = $this->db->get()->result();
 
         if (!empty($invoices)) {
             $report[] = [
-                'user_id' => $user->id,
-                'name' => $user->name,
-                'payment_terms' => $user->payment_terms,
-                'invoices' => array_map(fn($i) => $i->bill_no, $invoices),
+                'user_id'        => $user->id,
+                'name'           => $user->name,
+                'payment_terms'  => $user->payment_terms,
+                'invoices'       => array_map(fn($i) => $i->bill_no, $invoices),
             ];
         }
     }
 
     return array_slice($report, $offset, $limit);
 }
-
 
 
 public function count_orders_by_user($user_id) {
@@ -1405,25 +1420,30 @@ public function get_orders_by_user($user_id, $limit = 10, $offset = 0) {
 	}
 public function count_filtered_restricted_users($payment_terms = null)
 {
+    date_default_timezone_set('Asia/Singapore');
+
     $current_day = (int)date('j');
-    $current_month = date('Y-m');
+    $last_day_of_month = (int)date('t');
     $last_month = date('Y-m', strtotime('-1 month'));
 
-    $users_query = $this->db->where('pay_restrict', 1);
-    if ($payment_terms) {
-        $users_query->where('payment_terms', $payment_terms);
-    }
-    $users = $users_query->get('user_register')->result();
+    // Define full last month date ranges
+    $start_1 = "$last_month-01";
+    $end_1 = "$last_month-15";
+    $end_of_month = date('Y-m-t', strtotime("$last_month-01"));
 
+    $users_query = $this->db->where('pay_restrict', 1);
+
+    if (!empty($payment_terms)) {
+        $users_query->where('LOWER(payment_terms)', strtolower($payment_terms));
+    }
+
+    $users = $users_query->get('user_register')->result();
     $count = 0;
+
     foreach ($users as $user) {
         $terms = strtolower(trim($user->payment_terms));
-        $start_date = null;
-        $end_date = null;
 
-
-
-        // Reset query builder before each invoice query
+        // Reset builder for each user
         $this->db->reset_query();
 
         $this->db->select('bill_no')
@@ -1434,24 +1454,31 @@ public function count_filtered_restricted_users($payment_terms = null)
             ->where('isdeleted', 0);
 
         if ($terms === 'cod') {
-            // For COD, all unpaid invoices
-        } elseif ($terms == '30') {
-            $start_date = date('Y-m-01', strtotime('first day of last month'));
-            $end_date = date('Y-m-t', strtotime('last day of last month'));
+            // Show all unpaid COD invoices (no date filter)
+
+        } elseif ($terms === '30') {
+            // Invoices from 2 months ago
+            $start_date = date('Y-m-01', strtotime('first day of -2 months'));
+            $end_date   = date('Y-m-t', strtotime('last day of -2 months'));
+
             $this->db->where('delivery_date >=', $start_date)
                      ->where('delivery_date <=', $end_date);
-        } elseif (($terms == '14' || $terms == '15')) {
-            $start_date = date('Y-m-16', strtotime('first day of last month'));
-            $end_date = date('Y-m-t', strtotime('last day of last month'));
-            $this->db->where('delivery_date >=', $start_date)
-                     ->where('delivery_date <=', $end_date);
-        } elseif (($terms == '14' || $terms == '15')) {
-            $start_date = "$current_month-01";
-            $end_date = "$current_month-15";
-            $this->db->where('delivery_date >=', $start_date)
-                     ->where('delivery_date <=', $end_date);
+
+        } elseif ($terms === '14' || $terms === '15') {
+            if ($current_day >= 14 && $current_day <= $last_day_of_month) {
+                // ✅ From 14th–end → check full previous month
+                $this->db->where('delivery_date >=', $start_1)
+                         ->where('delivery_date <=', $end_of_month);
+            } elseif ($current_day >= 1 && $current_day <= 13) {
+                // ✅ From 1st–13th → check only 1st–15th of previous month
+                $this->db->where('delivery_date >=', $start_1)
+                         ->where('delivery_date <=', $end_1);
+            } else {
+                continue; // fallback
+            }
+
         } else {
-            continue;
+            continue; // unknown terms
         }
 
         $invoices = $this->db->get()->result();
@@ -1463,6 +1490,7 @@ public function count_filtered_restricted_users($payment_terms = null)
 
     return $count;
 }
+
 
 public function get_customers() {
     return $this->db
