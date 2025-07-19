@@ -215,10 +215,11 @@ $orderdate = isset($orderdate) ? date('Y-m-d', strtotime($orderdate)) : '';
                                                         class="fas fa-print"></i></a>
                                                         <a href="<?php echo base_url('index.php/orders/update/'.$val->id.'/'.$val->user_id); ?>" class="btn-sm btn btn-info"><i class="fas fa-edit"></i></a>
 
-                                                <a href="<?php echo base_url('index.php/orders/deleteorder/'.$val->id); ?>"
-                                                    class="btn-sm btn btn-danger delete-order">
-                                                    <i class="fas fa-trash"></i>
+                                            <a href="<?php echo base_url('index.php/orders/deleteorder/'.$val->id); ?>"
+                                                class="btn-sm btn btn-danger delete-order">
+                                                <i class="fas fa-trash"></i>
                                                 </a>
+
 
 
                                             </td>
@@ -358,39 +359,53 @@ $orderdate = isset($orderdate) ? date('Y-m-d', strtotime($orderdate)) : '';
     </script>
     
 <script>
-     document.addEventListener('DOMContentLoaded', function () {
-        // Select the delete-order class
-        const deleteButtons = document.querySelectorAll('.delete-order');
+   document.addEventListener('DOMContentLoaded', function () {
+    const deleteButtons = document.querySelectorAll('.delete-order');
 
-        // Add event listener to each delete button
-        deleteButtons.forEach(button => {
-    button.addEventListener('click', function (event) {
-        event.preventDefault(); // Prevent the default action
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', function (event) {
+            event.preventDefault();
 
-        // Show SweetAlert confirmation dialog
-        Swal.fire({
-            title: "Are you sure?",
-            text: "You want to delete this order?",
-            icon: "warning",
-            showCancelButton: true,  
-            confirmButtonText: "Delete",  
-            cancelButtonText: "Cancel",  
-            confirmButtonColor: "#3085d6", 
-            cancelButtonColor: "#d33",  
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // Proceed with form submission
-                deleteOrder(button.href);
-            }
-        });
+            Swal.fire({
+                title: "Are you sure?",
+                text: "You want to delete this order?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Yes, delete it",
+                cancelButtonText: "Cancel"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Ask for remarks
+                    Swal.fire({
+                        title: "Remarks",
+                        input: "text",
+                        inputLabel: "Enter reason for deletion",
+                        inputPlaceholder: "Remarks...",
+                        inputAttributes: {
+                            maxlength: 100
+                        },
+                        showCancelButton: true,
+                        confirmButtonText: "Submit",
+                        cancelButtonText: "Cancel",
+                        preConfirm: (remarks) => {
+                            if (!remarks) {
+                                Swal.showValidationMessage('Remarks are required!');
+                            }
+                            return remarks;
+                        }
+                    }).then((remarksResult) => {
+                        if (remarksResult.isConfirmed && remarksResult.value) {
+                            // Append remarks to URL
+                            const url = new URL(button.href);
+                            url.searchParams.append("remarks", remarksResult.value);
+                            window.location.href = url.toString();
+                        }
+                    });
+                }
             });
         });
-
-        // Function to redirect to the delete URL
-        function deleteOrder(url) {
-            window.location.href = url;
-        }
     });
+});
 
 
 

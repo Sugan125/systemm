@@ -1017,24 +1017,39 @@ public function getdo($date) {
 	return $query->result(); 
 
 }
+public function deleteorder($id, $remarks) {
+    date_default_timezone_set('Asia/Singapore');
+    $delete_date = date('Y-m-d H:i:s');
 
-public function deleteorder($id) {
-    // Get the logged-in user ID
+    // Get logged-in user
     $user = $this->session->userdata('normal_user');
-    $user_id = $user->id; // assuming 'id' is the user ID field
 
-    // Soft delete the order
+    if (!$user || empty($user->id)) {
+        return false; // Fail if no user
+    }
+
+    $user_id = $user->id;
+
+    if (empty($remarks)) {
+        return false; // Fail if no remarks
+    }
+
+    // Update orders table (soft delete)
     $this->db->where('id', $id);
     $this->db->update('orders', [
         'isdeleted' => 1,
-        'delete_by' => $user_id
+        'delete_by' => $user_id,
+        'delete_remarks' => $remarks,
+        'deleted_date' => $delete_date
     ]);
 
-    // Soft delete the order items
+    // Update order_items table
     $this->db->where('order_id', $id);
     $this->db->update('order_items', [
         'isdeleted' => 1,
-        'delete_by' => $user_id
+        'delete_by' => $user_id,
+		'delete_remarks' => $remarks,
+        'deleted_date' => $delete_date
     ]);
 
     return ($this->db->affected_rows() > 0);

@@ -1056,18 +1056,20 @@ public function downaloaddo()
     }
 }
 
-public function deleteorder($id){
-	$delete = $this->order_model->deleteorder($id);
+public function deleteorder($id) {
+    $remarks = $this->input->get('remarks'); // or use post() if needed
 
-	if($delete){
-		$this->session->set_flashdata('deleted', 'Order Deleted Successfully');
-		redirect('orders/manage_orders', 'refresh');
-		
-	}
-	else{
-		return false;
-	}
+    $delete = $this->order_model->deleteorder($id, $remarks);
+
+    if ($delete) {
+        $this->session->set_flashdata('deleted', 'Order Deleted Successfully');
+    } else {
+        $this->session->set_flashdata('error', 'Failed to delete order. Make sure remarks are provided and user is logged in.');
+    }
+
+    redirect('orders/manage_orders', 'refresh');
 }
+
 public function searchinvoice() {
     $keyword = $this->input->get('keyword');
     $data['title'] = 'Dashboard';
