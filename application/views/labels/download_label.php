@@ -112,7 +112,7 @@
 
                                     <div class="form-group">
                                         <label for="no_of_labels">No. of Labels:</label>
-                                        <input type="number" name="no_of_labels" class="form-control" required>
+                                        <input type="number" name="no_of_labels" id="no_of_labels"  class="form-control" required>
                                     </div>
                                 </div>
 
@@ -129,7 +129,7 @@
 
                                     <div class="form-group">
                                         <label for="new_row">Indicate New Printing Row:</label>
-                                        <input type="number" value="1" name="new_row" class="form-control" required>
+                                        <input type="number" value="1" id="new_row" name="new_row" class="form-control" required>
                                     </div>
                                 </div>
                             </div>
@@ -168,7 +168,42 @@
             document.getElementById('prod_date').value = today;
             document.getElementById('prod_date').dispatchEvent(new Event('change'));
         });
-    </script>
+    
+    document.addEventListener('DOMContentLoaded', function () {
+        const newRowInput = document.getElementById('new_row');
+        const labelsInput = document.getElementById('no_of_labels');
+
+        const maxLabelsByRow = {
+            1: 24,
+            2: 21,
+            3: 18,
+            4: 15,
+            5: 12,
+            6: 9,
+            7: 6,
+            8: 3
+        };
+
+        function updateLabelLimit() {
+            const newRow = parseInt(newRowInput.value) || 1;
+            const maxLabels = maxLabelsByRow[newRow] || 0;
+
+            labelsInput.max = maxLabels;
+            labelsInput.placeholder = `Max ${maxLabels} labels`;
+
+            if (parseInt(labelsInput.value) > maxLabels) {
+                labelsInput.value = maxLabels;
+            }
+        }
+
+        // Initial limit set
+        updateLabelLimit();
+
+        // Update when new_row changes
+        newRowInput.addEventListener('input', updateLabelLimit);
+    });
+</script>
+
 </body>
 </html>
         

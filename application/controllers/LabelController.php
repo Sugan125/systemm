@@ -1,4 +1,5 @@
 <?php
+require 'vendor/autoload.php';
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
@@ -260,6 +261,10 @@ public function generate_labels()
         $production_date = $this->input->post('production_date');
         $no_of_labels = $this->input->post('no_of_labels');
         $product_id = $this->input->post('product_id');
+        $new_row = $this->input->post('new_row');
+        $new_row = intval($new_row); // Ensure it's an integer
+        $row = (($new_row - 1) * 7) + 1;
+
 
         if (!$product_id || !$production_date || !$no_of_labels) {
             throw new Exception("Missing POST data.");
@@ -309,19 +314,27 @@ $sheet->getColumnDimension('E')->setWidth(33.56);  // Set width for column E
         $sheet->getPageSetup()->setPrintArea('A:E');
 
       // Margins in inches
-        $sheet->getPageMargins()->setLeft(0.118110236220472);
-        $sheet->getPageMargins()->setTop(0.15748031496063);
-        $sheet->getPageMargins()->setHeader(0.31496062992126);
-        $sheet->getPageMargins()->setRight(0);
+        // $sheet->getPageMargins()->setLeft(0.118110236220472);
+        // $sheet->getPageMargins()->setTop(0.15748031496063);
+        // $sheet->getPageMargins()->setHeader(0.31496062992126);
+        // $sheet->getPageMargins()->setRight(0);
+        // $sheet->getPageMargins()->setBottom(0);
+        // $sheet->getPageMargins()->setFooter(0.31496062992126);
+
+        // Set all margins to 0
+        $sheet->getPageMargins()->setTop(0);
         $sheet->getPageMargins()->setBottom(0);
-        $sheet->getPageMargins()->setFooter(0.31496062992126);
+        $sheet->getPageMargins()->setLeft(0);
+        $sheet->getPageMargins()->setRight(0);
+        $sheet->getPageMargins()->setHeader(0);
+        $sheet->getPageMargins()->setFooter(0);
 
         $sheet->getPageSetup()->setFitToPage(true);
         $sheet->getPageSetup()->setFitToWidth(1);
         $sheet->getPageSetup()->setFitToHeight(1);
          
     
-        $row = 1;
+        //$row = 1;
         $colIndexes = ['A', 'C', 'E'];
     
         // $rowHeights = [
@@ -362,7 +375,7 @@ $sheet->getColumnDimension('E')->setWidth(33.56);  // Set width for column E
             $sheet->getRowDimension(18)->setRowHeight(9.9);
             $sheet->getRowDimension(19)->setRowHeight(9.9);
             $sheet->getRowDimension(20)->setRowHeight(12);
-            $sheet->getRowDimension(21)->setRowHeight(12.8);
+            $sheet->getRowDimension(21)->setRowHeight(13.5); //changed from 12.8
 
             $sheet->getRowDimension(22)->setRowHeight(22.8);
             $sheet->getRowDimension(23)->setRowHeight(15.8);
@@ -378,7 +391,7 @@ $sheet->getColumnDimension('E')->setWidth(33.56);  // Set width for column E
             $sheet->getRowDimension(32)->setRowHeight(9.9);
             $sheet->getRowDimension(33)->setRowHeight(9.9);
             $sheet->getRowDimension(34)->setRowHeight(12.5);
-            $sheet->getRowDimension(35)->setRowHeight(12);
+            $sheet->getRowDimension(35)->setRowHeight(12.7); //changed from 12
 
             $sheet->getRowDimension(36)->setRowHeight(22.8);
             $sheet->getRowDimension(37)->setRowHeight(15.8);
@@ -386,7 +399,7 @@ $sheet->getColumnDimension('E')->setWidth(33.56);  // Set width for column E
             $sheet->getRowDimension(39)->setRowHeight(9.9);
             $sheet->getRowDimension(40)->setRowHeight(9.9);
             $sheet->getRowDimension(41)->setRowHeight(13.5);
-            $sheet->getRowDimension(42)->setRowHeight(17.3);
+            $sheet->getRowDimension(42)->setRowHeight(18); //changed from 17.3
 
             $sheet->getRowDimension(43)->setRowHeight(22.8);
             $sheet->getRowDimension(44)->setRowHeight(15.8);

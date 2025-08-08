@@ -325,7 +325,7 @@
     </ul>
     </li>
     <?php } ?>
-    <?php if ((in_array('Admin', $roles) || in_array('Owner', $roles)) &&  $loginuser['name'] === 'Henry'){ ?>
+    <?php if ((in_array('Admin', $roles) || in_array('Owner', $roles)) &&  $loginuser['name'] === 'Henry') { ?>
         <li class="nav-item">
         <a href="#" class="nav-link toggle-orders">
         <i class="menu-icon fas fa-receipt"></i> 
@@ -340,17 +340,31 @@
         <?php }  ?>
     </ul>
     </li>
-
-
-
+    
+    <?php } ?>
+  <?php if ((in_array('Admin', $roles) || in_array('Owner', $roles)) ) { ?>
+ 
 
     <li class="nav-item">
-                <a href="<?= base_url('index.php/LabelController/index'); ?>" class="nav-link <?php if($this->uri->segment(1) == 'downloadlabels') echo 'active' ?>"> 
-                <i class="menu-icon fas fa-tags"></i> Download Labels
-                </a>
+        <a href="#" class="nav-link toggle-orders">
+           <i class="menu-icon fa fa-id-card"></i>
+            <span>Labels</span>
+            <span class="pull-right-container">
+                <i class="fa fa-angle-down pull-right" style="line-height: 2.1;"></i>
+            </span>
+        </a>
+        <ul class="treeview-menu" style="display: none;">
+        <?php if ((in_array('Admin', $roles) || in_array('Owner', $roles))){ ?>
+        <li class="nav-item"><a href="<?php echo base_url('index.php/LabelController/create'); ?>"  class="nav-link"><i class="fas fa-tags"></i> Create Label</a></li>
+        <li class="nav-item"><a href="<?php echo base_url('index.php/LabelController/index'); ?>"  class="nav-link"><i class="fas fa-tags"></i> Manage Labels</a></li>
+         <li class="nav-item"><a href="<?php echo base_url('index.php/LabelController/download_label'); ?>"  class="nav-link"><i class="fas fa-print"></i> Print Label</a></li>
+        
+        <?php }  ?>
+    </ul>
     </li>
-
     <?php } ?>
+   
+
 
     
 
