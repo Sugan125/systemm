@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Generate Product Labels</title>
+    <title>Generate Auto Labels</title>
     <style>
         .box-body {
             overflow-x: auto;
@@ -102,7 +102,7 @@
                 <input type="date" name="production_date" id="prod_date" class="form-control" required>
             </div>
 
-            <div class="form-group">
+            <div class="form-group" hidden>
                 <label for="new_row">Indicate New Printing Row:</label>
                 <input type="number" value="1" id="new_row" name="new_row" class="form-control">
             </div>

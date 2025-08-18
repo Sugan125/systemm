@@ -2,7 +2,7 @@
 class Label_model extends CI_Model {
     public function get_product_by_id($id)
     {
-        return $this->db->get_where('products_label', ['id' => $id])->row_array();
+        return $this->db->get_where('products', ['id' => $id])->row_array();
     }
     public function get_autoproduct_by_id($id)
     {
@@ -33,7 +33,9 @@ ORDER BY
 	}
     public function get_all_products()
     {
-        return $this->db->get('products_label')->result_array();
+        $this->db->where('active', 1);
+
+        return $this->db->get('products')->result_array();
     }
     
     public function product_details() {

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Generate Product Labels</title>
+    <title>Generate Manual Labels</title>
     <style>
         .box-body {
             overflow-x: auto;

@@ -621,7 +621,7 @@ $sheet->getColumnDimension('E')->setWidth(33.56);  // Set width for column E
             
     
             // Line 3: Ingredients
-            $sheet->setCellValue("{$col}" . ($row + 2), "Ingredients: {$product['ingredients']}");
+            $sheet->setCellValue("{$col}" . ($row + 2), "Ingredients: {$product['prod_incredients']}");
             $sheet->getStyle("{$col}" . ($row + 2))->getFont()
                 ->setSize(6);
                 $sheet->getStyle("{$col}" . ($row + 2))->getAlignment()
@@ -762,7 +762,7 @@ $sheet->getColumnDimension('E')->setWidth(33.56);  // Set width for column E
         $row = 1;
 
         foreach ($scheduledProducts as $product) {
-            $no_of_labels = intval($product->qty / $product->min_order);
+           $no_of_labels = ceil($product->qty / $product->min_order);
             $productData  = $this->Label_model->get_autoproduct_by_id($product->product_id);
             if (!$productData) continue;
 
