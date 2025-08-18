@@ -65,7 +65,55 @@ public function index() {
     $this->load->view('labels/Labels.php', $data);
     $this->load->view('template/footer.php');
 }
+public function Manage_labels() {
+    $data['title'] = 'Label Products';
 
+    $config['base_url'] = site_url('LabelController/managesearch');
+    $config['total_rows'] = $this->Label_model->count_all_manageproducts(); // Ensure at least 10 total rows
+    $config['per_page'] = 10;
+    $config['uri_segment'] = 3;
+    $config['use_page_numbers'] = TRUE;
+
+    $config['full_tag_open'] = '<ul class="pagination">';
+    $config['full_tag_close'] = '</ul>';
+    $config['first_link'] = 'First';
+    $config['last_link'] = 'Last';
+    $config['first_tag_open'] = '<li class="page-item"><span class="page-link">';
+    $config['first_tag_close'] = '</span></li>';
+    $config['prev_link'] = 'Previous';
+    $config['prev_tag_open'] = '<li class="page-item"><span class="page-link">';
+    $config['prev_tag_close'] = '</span></li>';
+    $config['next_link'] = 'Next';
+    $config['next_tag_open'] = '<li class="page-item"><span class="page-link">';
+    $config['next_tag_close'] = '</span></li>';
+    $config['last_tag_open'] = '<li class="page-item"><span class="page-link">';
+    $config['last_tag_close'] = '</span></li>';
+    $config['cur_tag_open'] = '<li class="page-item active"><span class="page-link">';
+    $config['cur_tag_close'] = '</span></li>';
+    $config['num_tag_open'] = '<li class="page-item"><span class="page-link">';
+    $config['num_tag_close'] = '</span></li>'; 
+
+    $page = ($this->uri->segment(3)) ? $this->uri->segment(3) : 1; // Set the default page to 1
+    $offset = ($page - 1) * $config['per_page'];
+    
+    $config['total_rows'] = $this->Label_model->count_all_manageproducts(); 
+
+    $this->pagination->initialize($config);
+
+    $this->load->view('template/header.php', $data);
+    $user = $this->session->userdata('user_register');
+    $users = $this->session->userdata('normal_user');
+    $loginuser = $this->session->userdata('LoginSession');
+    $data['total_rows'] = $this->Label_model->count_all_manageproducts();
+    $data['products'] = $this->Label_model->manageproduct_details();
+
+
+
+    $this->load->view('template/header.php');
+    $this->load->view('template/sidebar.php', array('user' => $user, 'users' => $users, 'data' => $data,'loginuser' => $loginuser));
+    $this->load->view('labels/Manage_Labels.php', $data);
+    $this->load->view('template/footer.php');
+}
 public function search() {
     $keyword = $this->input->get('keyword');
     $data['title'] = 'Dashboard';
@@ -113,6 +161,53 @@ public function search() {
     $this->load->view('labels/Labels.php', $data);
     $this->load->view('template/footer.php');
 }
+public function managesearch() {
+    $keyword = $this->input->get('keyword');
+    $data['title'] = 'Dashboard';
+
+    // Pagination Config for Search Results
+    $config['base_url'] = site_url('LabelController/managesearch');
+    $config['total_rows'] = max($this->Label_model->count_search($keyword), 10); // Ensure at least 10 total rows
+    $config['per_page'] = 10;
+    $config['use_page_numbers'] = TRUE;
+    $config['reuse_query_string'] = TRUE;
+
+    $config['full_tag_open'] = '<ul class="pagination">';
+    $config['full_tag_close'] = '</ul>';
+    $config['first_link'] = 'First';
+    $config['last_link'] = 'Last';
+    $config['first_tag_open'] = '<li class="page-item"><span class="page-link">';
+    $config['first_tag_close'] = '</span></li>';
+    $config['prev_link'] = 'Previous';
+    $config['prev_tag_open'] = '<li class="page-item"><span class="page-link">';
+    $config['prev_tag_close'] = '</span></li>';
+    $config['next_link'] = 'Next';
+    $config['next_tag_open'] = '<li class="page-item"><span class="page-link">';
+    $config['next_tag_close'] = '</span></li>';
+    $config['last_tag_open'] = '<li class="page-item"><span class="page-link">';
+    $config['last_tag_close'] = '</span></li>';
+    $config['cur_tag_open'] = '<li class="page-item active"><span class="page-link">';
+    $config['cur_tag_close'] = '</span></li>';
+    $config['num_tag_open'] = '<li class="page-item"><span class="page-link">';
+    $config['num_tag_close'] = '</span></li>'; 
+
+    $page = ($this->uri->segment(3)) ? $this->uri->segment(3) : 1; // Set the default page to 1
+    $offset = ($page - 1) * $config['per_page'];
+    $data['products'] = $this->Label_model->search_manageproducts($keyword, $config['per_page'], $offset);
+    $data['total_rows'] = $this->Label_model->count_search($keyword);
+
+    $this->pagination->initialize($config);
+    $data['keyword'] = $keyword;
+
+    $this->load->view('template/header.php', $data);
+    $user = $this->session->userdata('user_register');
+    $users = $this->session->userdata('normal_user');
+    $loginuser = $this->session->userdata('LoginSession');
+    //var_dump($loginuser);
+    $this->load->view('template/sidebar.php', array('user' => $user, 'users' => $users, 'data' => $data,'loginuser' => $loginuser));
+    $this->load->view('labels/Manage_Labels.php', $data);
+    $this->load->view('template/footer.php');
+}
 
  function Download_label()
  {
@@ -133,6 +228,28 @@ public function search() {
     $loginuser = $this->session->userdata('LoginSession');
     $this->load->view('template/sidebar.php', array('user' => $user, 'users' => $users, 'data' => $data,'loginuser' => $loginuser));
     $this->load->view('labels/download_label.php', $data);
+    $this->load->view('template/footer.php');
+ }
+
+ function automatic_label()
+ {
+    $data['print'] = 'print';
+
+    $loginuser = $this->session->userdata('LoginSession');
+    
+    $data['user_id'] = $loginuser['id'];
+    
+    $user_id = $data['user_id'];
+    
+    $this->load->model('Label_model');
+    $data['products'] = $this->Label_model->get_all_products(); 
+    
+    $this->load->view('template/header.php', $data);
+    $user = $this->session->userdata('user_register');
+    $users = $this->session->userdata('normal_user');
+    $loginuser = $this->session->userdata('LoginSession');
+    $this->load->view('template/sidebar.php', array('user' => $user, 'users' => $users, 'data' => $data,'loginuser' => $loginuser));
+    $this->load->view('labels/automatic_label.php', $data);
     $this->load->view('template/footer.php');
  }
 
@@ -168,6 +285,55 @@ public function search() {
     $this->load->view('labels/update_labels.php',$data);
     $this->load->view('template/footer.php');
  }
+
+  public function updatemanagelabel($id){
+
+    $data = array(
+        'id'=>$id
+ );
+
+    $title['title'] = 'Update';
+    
+    $data['products'] = $this->Label_model->update_managedata($data,'products');
+ 
+    $this->load->view('template/header.php',$title);
+    $user = $this->session->userdata('user_register');
+    $users = $this->session->userdata('normal_user');
+    $loginuser = $this->session->userdata('LoginSession');
+    //var_dump($loginuser);
+    $this->load->view('template/sidebar.php', array('user' => $user, 'users' => $users, 'title' => $title,'loginuser' => $loginuser));
+    $this->load->view('labels/update_managelabels.php',$data);
+    $this->load->view('template/footer.php');
+ }
+
+ public function updatemanagelabelss($id){
+    
+    date_default_timezone_set('UTC');
+
+    // Create a DateTime object for the current time
+    $current_date_time = new DateTime('now');
+        
+        // Add 8 hours to adjust to Singapore time (GMT+8)
+    $current_date_time->modify('+8 hours');
+        
+        // Format the datetime
+    $updated_date = $current_date_time->format('Y-m-d H:i:s');
+
+
+    $data = array(
+        'id'      => $id,
+        'label_name' => $this->input->post('label_name'),
+        'prod_incredients' => $this->input->post('ingredients'),
+        'label_updated_by' =>  $this->input->post('updated_by'),
+        'label_updated_date' => $updated_date,
+    );
+   
+     $this->Label_model->update_datas($data,'products');
+     $this->session->set_flashdata('updated','<div class="alert alert-success alert-dismissible fade show" role="alert">Label Updated Successfully!
+     <button type="button" class="close" data-dismiss="alert" arial-label="close"> <span aria-hidden="true">&times;</span></button></div>');
+     redirect('LabelController/Manage_Labels');
+     }
+
  public function updatelabelss($id){
     
     date_default_timezone_set('UTC');
@@ -508,6 +674,169 @@ $sheet->getColumnDimension('E')->setWidth(33.56);  // Set width for column E
         $spreadsheet->setHasMacros(true);
 
         $writer = new Xlsx($spreadsheet);
+        $writer->save('php://output');
+        exit;
+
+    } catch (Exception $e) {
+        error_log('Label export error: ' . $e->getMessage());
+        show_error("An error occurred while generating the label: " . $e->getMessage(), 500);
+    }
+}
+  public function generate_autolabels()
+{
+    try {
+        while (ob_get_level()) {
+            ob_end_clean();
+        }
+        ob_start();
+
+        error_reporting(E_ALL);
+        ini_set('display_errors', 1);
+
+        $this->load->model('Label_model');
+
+        $production_date = $this->input->post('production_date');
+        if (!$production_date) {
+            throw new Exception("Production date is required.");
+        }
+
+        $scheduledProducts = $this->Label_model->getscheduleorder($production_date);
+        if (!$scheduledProducts) {
+            throw new Exception("No scheduled products found for $production_date");
+        }
+
+        $chilled_date = date('d/m/y', strtotime($production_date . ' +5 days'));
+        $frozen_date  = date('d/m/y', strtotime($production_date . ' +14 days'));
+
+        $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+        $spreadsheet->removeSheetByIndex(0); // Remove default sheet
+
+        $colIndexes = ['A', 'C', 'E']; // 3 columns per row
+
+        $rowHeights = [
+            24, 15.8, 30, 9.9, 9.9, 5.3, 15,
+            24, 15.8, 30, 9.9, 9.9, 13.5, 13.5,
+            22.8, 15.8, 30, 9.9, 9.9, 12, 12.8,
+            22.8, 15.8, 30, 9.9, 9.9, 17.7, 15.8,
+            22.8, 15.8, 30, 9.9, 9.9, 12.5, 12,
+            22.8, 15.8, 30, 9.9, 9.9, 13.5, 17.3,
+            22.8, 15.8, 30, 9.9, 9.9, 20.3, 9.8,
+            22.8, 15.8, 30, 9.9, 9.9, 5.3,
+            14.4
+        ];
+
+        $sheetIndex = 0;
+        $sheet = $spreadsheet->createSheet($sheetIndex);
+        $sheet->setTitle('Labels_Page_' . ($sheetIndex + 1));
+
+        $setupSheet = function($sheet) use ($rowHeights) {
+            $sheet->getColumnDimension('A')->setWidth(35.78);
+            $sheet->getColumnDimension('B')->setWidth(1.17);
+            $sheet->getColumnDimension('C')->setWidth(38.89);
+            $sheet->getColumnDimension('D')->setWidth(1.17);
+            $sheet->getColumnDimension('E')->setWidth(33.56);
+
+            for ($r = 1; $r <= count($rowHeights); $r++) {
+                $sheet->getRowDimension($r)->setRowHeight($rowHeights[$r - 1]);
+            }
+
+            $sheet->getPageSetup()->setPaperSize(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::PAPERSIZE_A4);
+            $sheet->getPageSetup()->setOrientation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_PORTRAIT);
+            $sheet->getPageSetup()->setPrintArea('A:E');
+
+            $sheet->getPageSetup()->setFitToPage(true);
+            $sheet->getPageSetup()->setFitToWidth(1);
+            $sheet->getPageSetup()->setFitToHeight(1);
+
+            $sheet->getPageMargins()->setTop(0);
+            $sheet->getPageMargins()->setBottom(0);
+            $sheet->getPageMargins()->setLeft(0);
+            $sheet->getPageMargins()->setRight(0);
+            $sheet->getPageMargins()->setHeader(0);
+            $sheet->getPageMargins()->setFooter(0);
+        };
+
+        $setupSheet($sheet);
+
+        $labelIndex = 0;
+        $row = 1;
+
+        foreach ($scheduledProducts as $product) {
+            $no_of_labels = intval($product->qty / $product->min_order);
+            $productData  = $this->Label_model->get_autoproduct_by_id($product->product_id);
+            if (!$productData) continue;
+
+            for ($i = 0; $i < $no_of_labels; $i++, $labelIndex++) {
+                if ($labelIndex > 0 && $labelIndex % 24 == 0) {
+                    $sheetIndex++;
+                    $sheet = $spreadsheet->createSheet($sheetIndex);
+                    $sheet->setTitle('Labels_Page_' . ($sheetIndex + 1));
+                    $setupSheet($sheet);
+                    $row = 1;
+                }
+
+                $col = $colIndexes[$labelIndex % 3];
+
+                $richText = new \PhpOffice\PhpSpreadsheet\RichText\RichText();
+                $factoryText = $richText->createTextRun("Sourdough Factory\n");
+                $factoryText->getFont()->setName('Sourdough')->setSize(11)->setBold(false);
+                $addressText = $richText->createTextRun("Add: 5 Mandai Link #07-05 S(725654)");
+                $addressText->getFont()->setSize(6);
+                $sheet->setCellValue("{$col}{$row}", $richText);
+                $sheet->getStyle("{$col}{$row}")->getAlignment()
+                    ->setWrapText(true)
+                    ->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_BOTTOM)
+                    ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT)
+                    ->setIndent(1);
+
+                $sheet->setCellValue("{$col}" . ($row + 1), $productData['product_name']);
+                $sheet->getStyle("{$col}" . ($row + 1))->getFont()->setSize(11)->setBold(true);
+                $sheet->getStyle("{$col}" . ($row + 1))->getAlignment()
+                    ->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER)
+                    ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT)
+                    ->setIndent(1);
+
+                $sheet->setCellValue("{$col}" . ($row + 2), "Ingredients: {$productData['prod_incredients']}");
+                $sheet->getStyle("{$col}" . ($row + 2))->getFont()->setSize(6);
+                $sheet->getStyle("{$col}" . ($row + 2))->getAlignment()
+                    ->setWrapText(true)
+                    ->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP)
+                    ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT)
+                    ->setIndent(1);
+
+                $sheet->setCellValue("{$col}" . ($row + 3), "Best Before: {$chilled_date} - Chilled (Batch No. : 250329)");
+                $sheet->getStyle("{$col}" . ($row + 3))->getFont()->setSize(7)->setBold(true);
+                $sheet->getStyle("{$col}" . ($row + 3))->getAlignment()
+                    ->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER)
+                    ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT)
+                    ->setIndent(1);
+
+                $sheet->setCellValue("{$col}" . ($row + 4), "Best Before: {$frozen_date} - Frozen");
+                $sheet->getStyle("{$col}" . ($row + 4))->getFont()->setSize(7)->setBold(true);
+                $sheet->getStyle("{$col}" . ($row + 4))->getAlignment()
+                    ->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER)
+                    ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT)
+                    ->setIndent(1);
+
+                if (($labelIndex + 1) % 3 == 0) {
+                    $row += 7;
+                }
+            }
+        }
+
+        // Set first sheet as active (default when opening)
+        $spreadsheet->setActiveSheetIndex(0);
+
+        $filename = 'Labels_' . date('Ymd_His') . '.xlsm';
+        header('Content-Type: application/vnd.ms-excel.sheet.macroEnabled.12');
+        header("Content-Disposition: attachment;filename=\"$filename\"");
+        header('Cache-Control: max-age=0');
+        header('Expires: 0');
+        header('Pragma: public');
+
+        $spreadsheet->setHasMacros(true);
+
+        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
         $writer->save('php://output');
         exit;
 

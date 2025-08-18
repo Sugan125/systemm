@@ -356,8 +356,9 @@
         <ul class="treeview-menu" style="display: none;">
         <?php if ((in_array('Admin', $roles) || in_array('Owner', $roles))){ ?>
         <li class="nav-item"><a href="<?php echo base_url('index.php/LabelController/create'); ?>"  class="nav-link"><i class="fas fa-tags"></i> Create Label</a></li>
-        <li class="nav-item"><a href="<?php echo base_url('index.php/LabelController/index'); ?>"  class="nav-link"><i class="fas fa-tags"></i> Manage Labels</a></li>
+        <li class="nav-item"><a href="<?php echo base_url('index.php/LabelController/Manage_Labels'); ?>"  class="nav-link"><i class="fas fa-tags"></i> Manage Labels</a></li>
          <li class="nav-item"><a href="<?php echo base_url('index.php/LabelController/download_label'); ?>"  class="nav-link"><i class="fas fa-print"></i> Print Label</a></li>
+         <li class="nav-item"><a href="<?php echo base_url('index.php/LabelController/automatic_label'); ?>"  class="nav-link"><i class="fas fa-print"></i> Download Label</a></li>
         
         <?php }  ?>
     </ul>
