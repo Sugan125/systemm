@@ -437,6 +437,21 @@ public function generate_labels()
         }
 
         $product = $this->Label_model->get_product_by_id($product_id);
+
+        $prodDateObj = DateTime::createFromFormat('Y-m-d', $production_date);
+        if (!$prodDateObj) {
+            throw new Exception("Invalid production date format: " . $production_date);
+        }
+
+        if ($product['prod_category'] === 'Rustic') {
+            $prodDateObj->modify('-2 days');
+        } else {
+            $prodDateObj->modify('-1 day');
+        }
+
+        $batch_no = $prodDateObj->format('dmy');
+
+
         if (!$product) {
             throw new Exception("Product not found.");
         }
@@ -632,7 +647,7 @@ $sheet->getColumnDimension('E')->setWidth(33.56);  // Set width for column E
             
     
             // Line 4: Best Before Chilled
-            $sheet->setCellValue("{$col}" . ($row + 3), "Best Before: {$chilled_date} - Chilled                (Batch No. : 250329)");
+            $sheet->setCellValue("{$col}" . ($row + 3), "Best Before: {$chilled_date} - Chilled                (Batch No. : {$batch_no})");
             $sheet->getStyle("{$col}" . ($row + 3))->getFont()
                ->setSize(7)->setBold(true);
                 $sheet->getStyle("{$col}" . ($row + 3))->getAlignment()
@@ -766,6 +781,19 @@ $sheet->getColumnDimension('E')->setWidth(33.56);  // Set width for column E
             $productData  = $this->Label_model->get_autoproduct_by_id($product->product_id);
             if (!$productData) continue;
 
+            $prodDateObj = DateTime::createFromFormat('Y-m-d', $production_date);
+            if (!$prodDateObj) {
+                throw new Exception("Invalid production date format: " . $production_date);
+            }
+
+            if ($productData['prod_category'] === 'Rustic') {
+                $prodDateObj->modify('-2 days');
+            } else {
+                $prodDateObj->modify('-1 day');
+            }
+
+            $batch_no = $prodDateObj->format('dmy');
+
             for ($i = 0; $i < $no_of_labels; $i++, $labelIndex++) {
                 if ($labelIndex > 0 && $labelIndex % 24 == 0) {
                     $sheetIndex++;
@@ -804,7 +832,7 @@ $sheet->getColumnDimension('E')->setWidth(33.56);  // Set width for column E
                     ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT)
                     ->setIndent(1);
 
-                $sheet->setCellValue("{$col}" . ($row + 3), "Best Before: {$chilled_date} - Chilled (Batch No. : 250329)");
+                $sheet->setCellValue("{$col}" . ($row + 3), "Best Before: {$chilled_date} - Chilled (Batch No. : {$batch_no})");
                 $sheet->getStyle("{$col}" . ($row + 3))->getFont()->setSize(7)->setBold(true);
                 $sheet->getStyle("{$col}" . ($row + 3))->getAlignment()
                     ->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER)
