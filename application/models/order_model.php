@@ -19,8 +19,23 @@ class order_model extends CI_Model {
 	return $query->result_array();
 }
 
-   public function getProductsByCategoryadmin($categoryId) {
-    $sql = "SELECT * FROM products WHERE active = 1 AND prod_category = ? ORDER BY product_id,product_name";
+  public function getProductsByCategoryadmin($categoryId) {
+    $user = $this->session->userdata('normal_user');
+
+    if (!$user || empty($user->id)) {
+        return false; // Fail if no user
+    }
+
+    $user_id = $user->id;
+
+    $sql = "SELECT * FROM products WHERE active = 1";
+
+    if ($user_id != '1142' && $user_id != '1229') {
+        $sql .= " AND prod_hidden = 0";
+    }
+
+    $sql .= " AND prod_category = ? ORDER BY product_id, product_name";
+
     $query = $this->db->query($sql, array($categoryId));
     return $query->result_array();
 }
@@ -29,6 +44,7 @@ public function getProductsByCategory($categoryId) {
     $sql = "SELECT * FROM products 
             WHERE active = 1 
             AND prod_category = ? 
+			AND prod_hidden = 0
             AND prod_category != 'Frozen Dough' 
             ORDER BY product_id, product_name";
     $query = $this->db->query($sql, array($categoryId));

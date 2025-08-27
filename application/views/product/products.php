@@ -111,6 +111,7 @@
       <th>Slice</th>
       <th>Seed</th>
       <th>Price</th>
+      <th>Hide</th>
       <th>Promotion</th>
       <th>Promo Rule</th>
       <th>Created By</th>
@@ -152,6 +153,12 @@
 </td>
 
         <td>$<?= $row->prod_rate; ?></td> 
+        <td>
+    <label class="toggle-switch">
+        <input type="checkbox" class="toggleCheckbox set_hide" data-id="<?= $row->id ?>" <?= $row->prod_hidden ? 'checked' : '' ?>>
+        <span class="slider"></span>
+    </label>
+</td>
         <td>
     <label class="toggle-switch">
         <input type="checkbox" class="toggleCheckbox add_on_promotion" data-id="<?= $row->id ?>" <?= $row->promotion ? 'checked' : '' ?>>
@@ -401,6 +408,75 @@ $('.add_on_promotion').click(function(){
         }
     });
 });
+
+
+
+$('.set_hide').click(function(){
+  //  alert('Checkbox clicked');
+    var productid = $(this).data('id');
+    var isChecked = $(this).prop('checked') ? 1 : 0; 
+    $.ajax({
+        url: '<?php echo base_url('index.php/Productcontroller/update_hidden'); ?>',
+        method: 'POST',
+        data: { productid: productid, isChecked: isChecked },
+        dataType: 'json', 
+        success: function(response){
+            if(response.status === 'success'){
+                if(response.isChecked === '1'){
+                  $('.set_hide[data-id="' + productid + '"]').prop('checked', true);
+                swal({
+                    title: "Hidden Enabled",
+                    text: "This product is now hidden and can only be viewed by the Owner.",
+                    icon: "success",
+                    buttons: {
+                        confirm: {
+                            text: "OK",
+                            value: true,
+                            visible: true,
+                            className: "btn btn-primary",
+                            closeModal: true
+                        }
+                    }
+                }).then((value) => {
+                    // Reload the page after success
+                    window.location.reload();
+                });
+                  
+                } else {
+                  $('.add_on_seed[data-id="' + productid + '"]').prop('checked', false);
+                swal({
+                    title: "Hidden Disabled",
+                    text: "This product is now visible to everyone.",
+                    icon: "success",
+                    buttons: {
+                        confirm: {
+                            text: "OK",
+                            value: true,
+                            visible: true,
+                            className: "btn btn-primary",
+                            closeModal: true
+                        }
+                    }
+                }).then((value) => {
+                    // Reload the page after success
+                    window.location.reload();
+                });
+                  
+                }
+
+                
+            } else {
+              
+                alert('Error updating Hide option.');
+            }
+        },
+        error: function(xhr, status, error){
+            console.log('AJAX Error:', error);
+        }
+    });
+});
+
+
 });
 
 </script>

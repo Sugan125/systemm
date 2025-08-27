@@ -64,6 +64,14 @@
                 <?php if($this->session->userdata('sucess')) { ?>
               	<p class="text-danger text-center"><?=$this->session->userdata('sucess')?></p>
               	<?php } ?>
+
+
+                <?php if($this->session->flashdata('error')): ?>
+    <div class="alert alert-warning">
+        <?= $this->session->flashdata('error'); ?>
+    </div>
+<?php endif; ?>
+
     <p class="login-box-msg">Sign in to start your session</p>
 
     <form action="<?= base_url('index.php/Logincontroller/index'); ?>" method="post">

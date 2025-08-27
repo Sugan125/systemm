@@ -1,4 +1,15 @@
 
+<?php
+if (!$loginuser) {
+    // Set flashdata message
+    $this->session->set_flashdata('error', 'Session expired. Please login again.');
+    // Redirect to login page
+   redirect(base_url('index.php/Logincontroller/index'));
+    exit;
+}
+
+?>
+
 <aside id="left-panel" class="left-panel">
         <nav class="navbar navbar-expand-sm navbar-default">
             <div class="navbar-header">

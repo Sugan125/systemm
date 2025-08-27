@@ -465,6 +465,32 @@ class Productcontroller extends CI_Controller {
             }
         }
 
+          public function update_hidden(){
+            $productid = $this->input->post('productid');
+            $isChecked = $this->input->post('isChecked');
+            $loginuser = $this->session->userdata('LoginSession');
+           
+         
+            $dt = new DateTime('now', new DateTimeZone('Asia/Singapore'));
+            $created_date = $dt->format('Y-m-d H:i:s');
+
+            // Update the product in the database
+            $this->db->where('id', $productid);
+            $this->db->set('prod_hidden', $isChecked);
+            $this->db->set('hidden_created_by', $loginuser['id']);
+            $this->db->set('hidden_created_date', $created_date);
+            $this->db->update('products');
+        
+            // Check if the update was successful
+            if($this->db->affected_rows() > 0){
+                // Return success response with isChecked value
+                echo json_encode(array('status' => 'success', 'isChecked' => $isChecked));
+            } else {
+                // Return error response
+                echo json_encode(array('status' => 'error'));
+            }
+        }
+
         
         
 }
