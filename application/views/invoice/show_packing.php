@@ -39,6 +39,26 @@
   .note {
     text-align: center;
   }
+  @media print {
+  body {
+    display: block;
+    height: auto;
+    margin: 0;
+  }
+  table, th, td {
+    page-break-inside: avoid;
+    border: 1px solid black;
+  }
+  tr {
+    page-break-inside: avoid;
+    page-break-after: auto;
+    height: auto;
+  }
+  td, th {
+    padding: 5px; /* Add enough padding so text doesn't overlap */
+  }
+}
+
 </style>
 </head>
 <body onload="window.print();">
@@ -109,13 +129,13 @@
             // Print the new company's header
             echo "<table border='1'>
                     <thead>
-                        <tr><td colspan='3' style='height: 20px;'></td></tr>
+                        <tr><td colspan='3' style='padding: 10px 0;'></td></tr>
                         <tr>
                             <th colspan='3'>{$order->company_name}<br>Brand : {$order->brand_name}<br>Ship To : {$shipping}</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr><td colspan='3' style='height: 20px;'></td></tr>";
+                       <tr><td colspan='3' style='padding: 10px 0;'></td></tr>";
             $current_company = $order->company_name;
             $current_shipping = $shipping; // Track the current shipping address
             $current_order_id = null; // Reset order ID for the new company

@@ -153,10 +153,9 @@ error: function (xhr, status, error) {
         window.location.href = "<?= base_url('index.php/Logincontroller/logout'); ?>";
     }
 
-    // Reset timer on user activity
-    document.onmousemove = resetTimer;
-    document.onkeypress = resetTimer;
-    document.onload = resetTimer;
+document.addEventListener("DOMContentLoaded", resetTimer);
+document.addEventListener("mousemove", resetTimer);
+document.addEventListener("keypress", resetTimer);
 </script>
 </body>
 </html>
