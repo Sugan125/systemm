@@ -733,7 +733,7 @@ function actiondaterange()
     set_time_limit(300); 
 
 // Alternatively
-ini_set('max_execution_time', 300);
+    ini_set('max_execution_time', 300);
 
     $start_date = $this->input->post('start_date');
     $end_date = $this->input->post('end_date');
