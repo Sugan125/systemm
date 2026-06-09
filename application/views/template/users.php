@@ -188,8 +188,11 @@
             <!-- Pagination Links -->
             <div class="row">
             <div class="col-sm-6">
-                <?php $total_rowss = $total_rows; 
-                echo "Showing 1 to 10 of ".$total_rowss." entries"; ?>
+                <?php
+$start = ($page - 1) * 10 + 1;
+$end   = min($start + count($userss) - 1, $total_rows);
+?>
+Showing <?= $start ?> to <?= $end ?> of <?= $total_rows ?> entries
             </div>
                 <div class="col-sm-6">
                     <?php echo $this->pagination->create_links(); ?>
@@ -272,7 +275,11 @@
                    <!-- Pagination Links -->
                    <div class="row">
                    <div class="col-sm-10">
-                       <?php echo "Showing 1 to 10 of ".$total_rows." entries"; ?>
+                      <?php
+$start = ($page - 1) * 10 + 1;
+$end   = min($start + count($userss) - 1, $total_rows);
+?>
+Showing <?= $start ?> to <?= $end ?> of <?= $total_rows ?> entries
                    </div>
                        <div class="col-sm-2">
                            <?php //echo $this->pagination->create_links(); ?>

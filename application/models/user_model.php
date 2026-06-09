@@ -60,11 +60,12 @@ class user_model extends CI_Model{
 }
 
   //public function get_users($limit, $offset) {
-public function get_users() {
+public function get_users($limit, $offset)
+{
     $this->db->where('is_archieve', 0);
     $this->db->order_by('name', 'ASC');
     $this->db->order_by('company_name', 'ASC');
-    $this->db->limit(10);
+    $this->db->limit($limit, $offset);
     return $this->db->get('user_register')->result();
 }
 

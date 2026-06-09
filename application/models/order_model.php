@@ -1424,12 +1424,18 @@ public function get_restricted_users_with_unpaid_invoices($limit = 10, $offset =
     return array_slice($report, $offset, $limit);
 }
 
+public function count_orders_by_user($user_id)
+{
+    $this->db->from('orders ord');
+    $this->db->where('ord.user_id', $user_id);
+    $this->db->where('ord.isdeleted', 0);
 
-public function count_orders_by_user($user_id) {
-    $this->db->where('user_id', $user_id);
-    return $this->db->count_all_results('orders');
+    $query = $this->db->get();
+
+    // echo $this->db->last_query();
+
+    return $query->num_rows();
 }
-
 
 
 public function get_orders_by_user($user_id, $limit = 10, $offset = 0) {

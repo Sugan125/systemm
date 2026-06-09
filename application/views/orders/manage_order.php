@@ -214,13 +214,13 @@ $orderdate = isset($orderdate) ? date('Y-m-d', strtotime($orderdate)) : '';
                                                     class="btn-sm btn btn-warning"><i
                                                         class="fas fa-print"></i></a>
                                                         <a href="<?php echo base_url('index.php/orders/update/'.$val->id.'/'.$val->user_id); ?>" class="btn-sm btn btn-info"><i class="fas fa-edit"></i></a>
-
+<?php if ($show_payment_column): ?>
                                             <a href="<?php echo base_url('index.php/orders/deleteorder/'.$val->id); ?>"
                                                 class="btn-sm btn btn-danger delete-order">
                                                 <i class="fas fa-trash"></i>
                                                 </a>
 
-
+<?php endif; ?>
 
                                             </td>
                                            
