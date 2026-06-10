@@ -203,6 +203,20 @@ if($delivery_charge > 0){
     </tr>
   <?php
 }
+// ✅ NEW: Fuel Surcharge as line item in table
+$fuel_surcharge = $order['fuel_surcharge'];
+if($fuel_surcharge > 0){
+?>
+    <tr class="odd text-center">
+        <td><?php echo '1'; ?></td>
+        <td><?php echo 'MISC'; ?></td>
+        <td><?php echo 'Fuel Surcharge'; ?></td>
+        <td>$<?php echo number_format($fuel_surcharge, 2); ?></td>
+        <td>pc</td>
+        <td>$<?php echo number_format($fuel_surcharge, 2); ?></td>
+    </tr>
+<?php
+}
 endforeach;
 ?>
 
@@ -221,6 +235,10 @@ endforeach;
     <th>Total:</th>
     <td><?php echo isset($order['gross_amount']) ? number_format($order['gross_amount'] + $order['delivery_charge'], 2) : "0.00"; ?></td>
   </tr>
+  <!-- <tr>
+    <th>Fuel Surcharge:</th>
+    <td><php echo number_format($order['fuel_surcharge'], 2); ?></td>
+</tr> -->
   <tr>
     <th>GST@9%:</th>
     <td><?php echo isset($order['gst_amt']) ? $order['gst_amt'] : 0; ?></td>

@@ -283,9 +283,19 @@ input {
                     <div class="col-sm-8">
                       <input type="text" class="form-control" id="delivery_charge" name="delivery_charge" disabled  autocomplete="off">
                       <input type="hidden" class="form-control" id="delivery_charge_value" name="delivery_charge_value" autocomplete="off">
-                      <input type="checkbox" id="self_pickup" value="1" name="self_pickup" disabled  autocomplete="off">  Self Pick-Up
+                      <input type="checkbox" id="self_pickup" value="1" name="self_pickup"   autocomplete="off">  Self Pick-Up
                     </div>
                   </div><br>
+
+                  <div class="form-group" style="margin-bottom:30px;">
+    <div class="col-sm-4">
+    <label for="fuel_surcharge" class="control-label">Fuel Surcharge</label></div>
+    <div class="col-sm-8">
+      <input type="text" class="form-control" id="fuel_surcharge" disabled autocomplete="off" value="2.00">
+      <input type="hidden" class="form-control" id="fuel_surcharge_value" name="fuel_surcharge_value" value="2.00" autocomplete="off">
+    </div>
+</div><br>
+
                   <div class="form-group" style="margin-bottom:30px;">
                     <div class="col-sm-4">
                     <label for="gross_amount" class="control-label">GST (9%)</label></div>
@@ -751,7 +761,7 @@ $(document).ready(function() {
                 $("#delivery_charge").prop("disabled", true); // Disable the delivery charge input
             }
         }
-          
+          subAmount(); // ADD THIS LINE — recalculates fuel surcharge on toggle
         });
 
 
@@ -1351,7 +1361,7 @@ function subAmount() {
     if (netAmount > 50 && netAmount < 80) {
         $("#self_pickup").prop("disabled", false);
     } else {
-        $("#self_pickup").prop("disabled", true);
+        //$("#self_pickup").prop("disabled", true);
     }
 
     if (userInteracted) {
@@ -1360,7 +1370,14 @@ function subAmount() {
         deliveryCharge = netAmount < 80 ? 20.00 : 0;
     }
 
-    var totall = grossAmount + deliveryCharge;
+     // Fuel surcharge — always $2 before GST
+    // Fuel surcharge — $2 before GST, waived for self pickup
+var fuelSurcharge = $('#self_pickup').is(':checked') ? 0.00 : 2.00;
+$("#fuel_surcharge_value").val(fuelSurcharge.toFixed(2));
+$("#fuel_surcharge").val(fuelSurcharge == 0 ? '0.00' : '2.00');  // ADD THIS
+
+
+    var totall = grossAmount + deliveryCharge + fuelSurcharge; 
     var gstRate = 9; 
     var gstAmount = totall * gstRate / 100;
     gstAmount = parseFloat(gstAmount.toFixed(3)); // Ensure gstAmount is a number with three decimal places
@@ -1381,7 +1398,7 @@ function subAmount() {
     $("#service_charge").val(service_charge.toFixed(2));
     $("#service_charge_value").val(service_charge.toFixed(2));
 
-    var finalAmount = netAmount + gstAmount + deliveryCharge;
+    var finalAmount = netAmount + gstAmount + deliveryCharge + fuelSurcharge;
 
     $("#net_amount").val(finalAmount.toFixed(2));
     $("#net_amount_value").val(finalAmount.toFixed(2));

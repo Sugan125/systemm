@@ -211,6 +211,23 @@
                       </div>
                     </div><br>
                     <div class="form-group" style="margin-bottom:30px;">
+  <div class="col-sm-4">
+    <label for="fuel_surcharge" class="control-label">Fuel Surcharge</label>
+  </div>
+  <div class="col-sm-8">
+    <input type="text" class="form-control"
+           id="fuel_surcharge"
+           value="<?php echo $order_data['fuel_surcharge']; ?>"
+           disabled autocomplete="off">
+
+    <input type="hidden" class="form-control"
+           id="fuel_surcharge_value"
+           name="fuel_surcharge_value"
+           value="<?php echo $order_data['fuel_surcharge']; ?>"
+           autocomplete="off">
+  </div>
+</div><br>
+                    <div class="form-group" style="margin-bottom:30px;">
                       <div class="col-sm-4">
                       <label for="gross_amount" class="control-label">GST (9%)</label></div>
                       <div class="col-sm-8">
@@ -945,8 +962,9 @@ function updatePromotionAcrossRows(changedRowId) {
     var netAmount = grossAmount;
 
     var deliveryCharge = netAmount < 80 ? 20.00 : 0;
+var fuelSurcharge = 2.00;
 
-    var totall = grossAmount + deliveryCharge;
+var totall = grossAmount + deliveryCharge + fuelSurcharge;
     var gstRate = 9; 
     var gstAmount = totall * gstRate / 100;
     gstAmount = parseFloat(gstAmount.toFixed(3)); // Ensure gstAmount is a number with three decimal places
@@ -963,11 +981,13 @@ function updatePromotionAcrossRows(changedRowId) {
 
     $("#delivery_charge").val(deliveryCharge);
     $("#delivery_charge_value").val(deliveryCharge);
+    $("#fuel_surcharge").val(fuelSurcharge.toFixed(2));
+$("#fuel_surcharge_value").val(fuelSurcharge.toFixed(2));
 
     $("#service_charge").val(service_charge.toFixed(2));
     $("#service_charge_value").val(service_charge.toFixed(2));
 
-    var finalAmount = netAmount + gstAmount  + deliveryCharge;
+    var finalAmount = netAmount + gstAmount  + deliveryCharge + fuelSurcharge;
 
     $("#net_amount").val(finalAmount.toFixed(2));
     $("#net_amount_value").val(finalAmount.toFixed(2));

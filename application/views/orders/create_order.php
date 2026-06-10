@@ -303,6 +303,24 @@ input {
 
                     <?php } ?>
 
+       <div class="form-group" style="margin-bottom:30px;">
+    <div class="col-sm-4">
+        <label class="control-label">Fuel Surcharge</label>
+    </div>
+    <div class="col-sm-8">
+        <input type="text"
+               class="form-control"
+               id="fuel_surcharge"
+               value="2.00"
+               disabled>
+
+        <input type="hidden"
+               class="form-control"
+               id="fuel_surcharge_value"
+               name="fuel_surcharge_value"
+               value="2.00">
+    </div>
+</div><br>
                   <div class="form-group" style="margin-bottom:30px;">
                     <div class="col-sm-4">
                     <label for="gross_amount" class="control-label">GST (9%)</label></div>
@@ -1240,8 +1258,10 @@ var deliveryCharge = 0;
 if (!$('#free_delivery').is(':checked') && netAmount < 80) {
     deliveryCharge = 20.00;
 }
+// Fuel surcharge — always $2, applied before GST
+  var fuelSurcharge = 2.00;
 
-    var totall = grossAmount + deliveryCharge;
+    var totall = grossAmount + deliveryCharge + fuelSurcharge; 
     var gstRate = 9; 
     var gstAmount = totall * gstRate / 100;
     gstAmount = parseFloat(gstAmount.toFixed(3)); // Ensure gstAmount is a number with three decimal places
@@ -1262,7 +1282,7 @@ if (!$('#free_delivery').is(':checked') && netAmount < 80) {
     $("#service_charge").val(service_charge.toFixed(2));
     $("#service_charge_value").val(service_charge.toFixed(2));
 
-    var finalAmount = netAmount + gstAmount  + deliveryCharge;
+    var finalAmount = netAmount + gstAmount  + deliveryCharge  + fuelSurcharge;
 
     $("#net_amount").val(finalAmount.toFixed(2));
     $("#net_amount_value").val(finalAmount.toFixed(2));

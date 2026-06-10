@@ -236,6 +236,20 @@
                         <input type="checkbox" id="self_pickup" value="1" name="self_pickup" disabled  autocomplete="off">  Self Pick-Up
                       </div>
                     </div><br>
+                    <!-- Fuel Surcharge field — add after delivery charge block -->
+<div class="form-group" style="margin-bottom:30px;">
+    <div class="col-sm-4">
+        <label for="fuel_surcharge" class="control-label">Fuel Surcharge</label>
+    </div>
+    <div class="col-sm-8">
+        <input type="text" class="form-control" id="fuel_surcharge" 
+               value="<?php echo $order_data['fuel_surcharge'] ?>" 
+               name="fuel_surcharge" disabled autocomplete="off">
+        <input type="hidden" class="form-control" id="fuel_surcharge_value" 
+               value="<?php echo $order_data['fuel_surcharge'] ?>" 
+               name="fuel_surcharge_value" autocomplete="off">
+    </div>
+</div><br>
                     <div class="form-group" style="margin-bottom:30px;">
                       <div class="col-sm-4">
                       <label for="gross_amount" class="control-label">GST (9%)</label></div>
@@ -1060,8 +1074,13 @@ function subAmount() {
     } else {
         deliveryCharge = netAmount < 80 ? 20.00 : 0;
     }
+ var fuelSurcharge = parseFloat($("#fuel_surcharge_value").val()) || 0;
 
-    var totall = grossAmount + deliveryCharge;
+    // ✅ Update visible fuel surcharge field
+    $("#fuel_surcharge").val(fuelSurcharge.toFixed(2));
+
+    var totall = grossAmount + deliveryCharge + fuelSurcharge;
+    //var totall = grossAmount + deliveryCharge;
     var gstRate = 9; 
     var gstAmount = totall * gstRate / 100;
     gstAmount = parseFloat(gstAmount.toFixed(3)); // Ensure gstAmount is a number with three decimal places
@@ -1082,7 +1101,7 @@ function subAmount() {
     $("#service_charge").val(service_charge.toFixed(2));
     $("#service_charge_value").val(service_charge.toFixed(2));
 
-    var finalAmount = netAmount + gstAmount + deliveryCharge;
+    var finalAmount = netAmount + gstAmount + deliveryCharge + fuelSurcharge; 
 
     $("#net_amount").val(finalAmount.toFixed(2));
     $("#net_amount_value").val(finalAmount.toFixed(2));

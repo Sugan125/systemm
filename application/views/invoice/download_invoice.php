@@ -201,7 +201,21 @@
     <!-- <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">$20.00</td> -->
     <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">$20.00</td>
   </tr>
-  <?php endif; endforeach; ?>
+  <?php endif;
+ $fuel_surcharge = $order['fuel_surcharge'];
+    if($fuel_surcharge > 0):
+  ?>
+  <tr class="odd text-center">
+    <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">1</td>
+    <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">MISC</td>
+    <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">Fuel Surcharge</td>
+    <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">$2.00</td>
+    <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">pc</td>
+    <!-- <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">$20.00</td> -->
+    <td style="padding: 10px; border: 1px solid #ccc; text-align:center;">$2.00</td>
+  </tr>
+  <?php endif;
+endforeach; ?>
 </tbody>
 
 </table>
@@ -212,6 +226,7 @@
           <div class="box-sizing: border-box; width: 50%; total-amount" style="text-align: right;">
             <!-- <b style="font-weight: bold;">Delivery Charge: </b><// echo isset($order['delivery_charge']) ? $order['delivery_charge'] . ".00" : "0.00"; ?><br> -->
             <b style="font-weight: bold;">Total: </b><?php echo isset($order['gross_amount']) ? number_format($order['gross_amount'] + $order['delivery_charge'], 2) : "0.00"; ?><br>
+            
             <b style="font-weight: bold;">GST@9%: </b><?php echo isset($order['gst_amt']) ? $order['gst_amt'] : 0; ?><br>
             <!-- <b style="font-weight: bold;">Service Charge Rate: </b> <?php echo isset($order['service_charge_rate']) ? $order['service_charge_rate'] : 0; ?><br> -->
             <!-- <?php if($order['discount']>0) { ?> -->
