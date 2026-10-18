@@ -158,10 +158,7 @@
                                         <input class="form-check-input" type="checkbox" name="access[]" value="Print Invoice" id="printInvoiceCheck">
                                         <label class="form-check-label" for="printInvoiceCheck">Print Invoice</label>
                                     </div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="checkbox" name="access[]" value="Print DO" id="printDOCheck">
-                                        <label class="form-check-label" for="printDOCheck">Print DO</label>
-                                    </div>
+                                   
                                 </div>
                             </div>  
                             <div class="card-footer">

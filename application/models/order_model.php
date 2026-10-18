@@ -1022,7 +1022,7 @@ public function count_search_results($keyword) {
 
 public function getinvoice($date) {
 	
-	$sql = "SELECT bill_no FROM orders WHERE isdeleted = 0 and  DATE(delivery_date) = '$date'";
+	$sql = "SELECT id,bill_no FROM orders WHERE isdeleted = 0 and  DATE(delivery_date) = '$date'";
 	$query = $this->db->query($sql);
 	//echo $this->db->last_query();
 	return $query->result(); 

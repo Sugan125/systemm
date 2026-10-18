@@ -86,6 +86,63 @@ class orders extends CI_Controller {
     </script>';
     exit;
 }
+
+private function render_invoice_html($id, &$bill_no = null)
+{
+    $orders_data = $this->order_model->getOrdersadmin($id);
+    if (empty($orders_data)) {
+        return false;
+    }
+
+    $orders_item = $this->order_model->getadminorderdata($id);
+    $result = array('order' => $orders_data, 'order_item' => array());
+    foreach ($orders_item as $v) {
+        $result['order_item'][] = $v;
+    }
+
+    $data = array('print' => 'print', 'order_data' => $result);
+    $data['order_total'] = $this->order_model->getorderadmintotal($id);
+    if (empty($data['order_total'])) {
+        return false;
+    }
+
+    $order_total_data = $data['order_total'][0];
+    $bill_no    = $order_total_data['bill_no'];
+    $order_date = ($order_total_data['date_time'] !== null) ? date('d/m/Y', $order_total_data['date_time']) : '';
+
+    
+
+        return $this->load->view('invoice/download_invoice.php',
+    array_merge($data, array(
+        'data'       => $data,
+        'order_date' => $order_date,
+        'result'     => $result
+    )), true);
+}
+
+private function render_invoice_pdf($id, &$bill_no = null)
+{
+    $html = $this->render_invoice_html($id, $bill_no);
+    if ($html === false) {
+        return false;
+    }
+
+    $dompdf = new Dompdf();
+    $dompdf->loadHtml($html);
+    $dompdf->setPaper(array(0, 0, 840, 1188), 'portrait');
+    $dompdf->render();
+
+    return $dompdf->output();
+}
+
+/** Temp file path ending in .pdf (system temp dir, not your web folder) */
+private function tmp_path($ext = 'pdf')
+{
+    $base = tempnam(sys_get_temp_dir(), 'inv');
+    $path = $base . '.' . $ext;
+    rename($base, $path);
+    return $path;
+}
 		public function create() {
 			$data['title'] = 'Orders';
 		
@@ -97,10 +154,7 @@ class orders extends CI_Controller {
 				$email = $order_id['email'];
 
 					$order_id = $order_id['order_id'];
-					
-					$this->download($order_id); 
-					//$this->send_invoice($bill_no,$email); 
-					//exit;
+				
 					$this->session->set_flashdata('success', 'Order Placed');
         			redirect('orders', 'refresh');
 					
@@ -134,10 +188,7 @@ class orders extends CI_Controller {
 				$email = $order_id['email'];
 
 					$order_id = $order_id['order_id'];
-					
-					$this->download($order_id); 
-					//$this->send_invoice($bill_no,$email); 
-					//exit;
+				
 					$this->session->set_flashdata('success', 'Order Placed');
         			redirect('orders', 'refresh');
 					
@@ -206,10 +257,6 @@ class orders extends CI_Controller {
 			$order_id = $update['order_id'];
 
 			
-					
-			$this->download($order_id); 
-			
-			//$this->send_invoice($bill_no,$email); 
 
 
 			$this->session->set_flashdata('success', 'Order Updated Successfully');
@@ -273,6 +320,19 @@ class orders extends CI_Controller {
 		
         }
 	}
+
+  public function download_invoice($id)
+    {
+        $pdf = $this->render_invoice_pdf($id, $bill_no);
+        if ($pdf === false) {
+            show_404();
+        }
+        header('Content-Type: application/pdf');
+        header('Content-Disposition: attachment; filename="invoice_' . $bill_no . '.pdf"');
+        header('Content-Length: ' . strlen($pdf));
+        echo $pdf;
+        exit;
+    }
 
     public function fetchOrdersData()
 	{
@@ -422,71 +482,6 @@ public function printadmin($id)
 		
     $this->load->view('template/footer.php');
 }
-public function download($id)
-{
-    $data['print'] = 'print';
-
-    $loginuser = $this->session->userdata('LoginSession');
-    
-    $data['user_id'] = $loginuser['id'];
-
-    $user_id = $data['user_id'];
-
-    $orders_data = $this->order_model->getOrdersadmin($id);
-
-    foreach ($orders_data as $order) {
-        $orders_item = $this->order_model->getadminorderdata($id);
-    }
-    
-    foreach ($orders_item as $k => $v) {
-        $result['order_item'][] = $v;
-    }
-
-    $result['order'] = $orders_data;
-
-    $data['order_data'] = $result;
-    $data['order_total'] = $this->order_model->getorderadmintotal($id);
-
-    if (is_array($data['order_total']) && !empty($data['order_total'])) {
-        $bill_no = $data['order_total'][0]['bill_no'];
-        $do_bill_no = $data['order_total'][0]['do_bill_no'];
-    }
-    
-    $order_total_data = $data['order_total'][0];
-
-    $order_date = ($order_total_data['date_time'] !== null) ? date('d/m/Y', $order_total_data['date_time']) : '';
-    
-    $this->load->view('template/header.php', $data);
-    $user = $this->session->userdata('user_register');
-    $users = $this->session->userdata('normal_user');
-    $loginuser = $this->session->userdata('LoginSession');
-    
-    $html = $this->load->view('invoice/download_invoice.php', array('data' => $data, 'order_date' => $order_date, 'result'=>$result), true);
-    
-    $html_do = $this->load->view('invoice/download_do.php', array('data' => $data, 'order_date' => $order_date, 'result'=>$result), true);
-    
-    $dompdf = new Dompdf();
-    $dompdf->loadHtml($html);
-    $dompdf->setPaper(array(0, 0, 840, 1188), 'portrait');    
-    $dompdf->render();
-
-    $filename = 'invoice_' . $bill_no . '.pdf';
-    $filepath = FCPATH . 'files/' . $filename;
-    file_put_contents($filepath, $dompdf->output());
-
-    // Generate and download the DO invoice
-    $dompdf_do = new Dompdf();
-    $dompdf_do->loadHtml($html_do);
-    $dompdf_do->setPaper(array(0, 0, 840, 1188), 'portrait');    
-    $dompdf_do->render();
-
-    $filename_do = $do_bill_no . '.pdf';
-	$filepath_do = FCPATH . 'files/DO/' . $filename_do;
-    file_put_contents($filepath_do, $dompdf_do->output());
-
-    $this->load->view('template/footer.php');
-}
-
 public function manage_orders() {
     $data['title'] = 'orders';
 
@@ -708,8 +703,7 @@ public function printpacking()
 
 					$order_id = $update['order_id'];
 					
-					$this->download($order_id); 
-					//$this->send_invoice($bill_no,$email); 
+					
 
 			$this->session->set_flashdata('success', 'Order Placed Successfully');
 			redirect('orders', 'refresh');
@@ -792,10 +786,7 @@ public function printpacking()
 			$email = $order_id['email'];
 			
 				$order_id = $order_id['order_id'];
-				
-				$this->download($order_id); 
-				//$this->send_invoice($bill_no,$email); 
-				//exit;
+			
 				$this->session->set_flashdata('success', 'Order Placed Successfully');
 				redirect('orders/manage_orders', 'refresh');
 		} 
@@ -910,164 +901,69 @@ public function print_invoice_bydate()
 }
 
 
-
-public function print_do()
-	{
-    $data['print'] = 'print';
-
-	$loginuser = $this->session->userdata('LoginSession');
-	
-	$data['user_id'] = $loginuser['id'];
-
-	$user_id = $data['user_id'];
-
-	$data["employee_data"] = $this->excel_export_model->fetch_data();
-
-    $this->load->view('template/header.php', $data);
-    $user = $this->session->userdata('user_register');
-    $users = $this->session->userdata('normal_user');
-    $loginuser = $this->session->userdata('LoginSession');
-	$this->load->view('template/sidebar.php', array('user' => $user, 'users' => $users, 'data' => $data,'loginuser' => $loginuser));
-	$this->load->view('invoice/print_do.php', array('data' => $data,));
-	$this->load->view('template/footer.php');
-}
-
 public function donwloadinvoice()
 {
-
-    $data['print'] = 'print';
+    set_time_limit(300);
+    ini_set('memory_limit', '512M');
 
     $invoice_date = $this->input->post('invoice_date');
+    $orders_data  = $this->order_model->getinvoice($invoice_date);
 
-    $loginuser = $this->session->userdata('LoginSession');
-
-    $data['user_id'] = $loginuser['id'];
-
-    $user_id = $data['user_id'];
-
-    $orders_data = $this->order_model->getinvoice($invoice_date);
+    if (empty($orders_data)) {
+        $this->no_orders_alert('There is no order for this delivery date');
+    }
     $this->print_log_model->log_print('invoice_combined', $invoice_date, $orders_data);
-    // Initialize an array to store file paths
-    $file_paths = array();
+
+    $styles = array();   // unique <style> blocks
+    $bodies = array();   // one body per invoice
 
     foreach ($orders_data as $row) {
-        $filename = 'invoice_' . $row->bill_no . '.pdf';
-        $filepath = FCPATH . 'files/' . $filename;
-
-        if (file_exists($filepath)) {
-            // Add file path to the array
-            $file_paths[] = $filepath;
-        } else {
-            // Handle the case where the file doesn't exist
-            echo "File not found for bill number: " . $row->bill_no;
+        $order_id = isset($row->id) ? $row->id : null;
+        if (!$order_id) {
+            $q = $this->db->select('id')->where('bill_no', $row->bill_no)->get('orders')->row();
+            $order_id = $q ? $q->id : null;
         }
-    }
-
-        if (empty($file_paths)) {
-        $this->no_orders_alert('Invoice files not found for bill no(s): ' . implode(', ', $missing));
-    }
-
-    // Combine PDFs into a single PDF
-    $combined_pdf_path = FCPATH . 'files/' . 'combined_invoices_' . $invoice_date . '.pdf';
-
-    $pdf = new PDFMerger;
-
-    foreach ($file_paths as $file_path) {
-        $pdf->addPDF($file_path, 'all');
-    }
-
-    $pdf->merge('file', $combined_pdf_path);
-
-    // Set the filename for the ZIP archive
-    $zip_filename = 'combinedinvoices_' . $invoice_date . '.zip';
-
-    // Set the appropriate headers for ZIP download
-    header('Content-Type: application/zip');
-    header('Content-Disposition: attachment; filename="' . $zip_filename . '"');
-
-    // Create a new ZIP archive
-    $zip = new ZipArchive;
-    if ($zip->open($zip_filename, ZipArchive::CREATE) === TRUE) {
-        // Add the combined PDF to the ZIP archive
-        $zip->addFile($combined_pdf_path, basename($combined_pdf_path));
-
-        // Close the ZIP archive
-        $zip->close();
-
-        // Output the ZIP archive
-        readfile($zip_filename);
-
-        // Remove the temporary ZIP file
-        unlink($zip_filename);
-
-        // Remove the combined PDF file
-        unlink($combined_pdf_path);
-    } else {
-        // Handle the case where ZIP archive creation fails
-        echo "Failed to create ZIP archive";
-    }
-}
-
-
-
-public function downaloaddo()
-{
-    $data['print'] = 'print';
-
-    $invoice_date = $this->input->post('invoice_date');
-
-    $loginuser = $this->session->userdata('LoginSession');
-
-    $data['user_id'] = $loginuser['id'];
-
-    $user_id = $data['user_id'];
-
-    $orders_data = $this->order_model->getdo($invoice_date);
-
-    // Initialize an array to store file paths
-    $file_paths = array();
-
-    foreach ($orders_data as $row) {
-        $filename = $row->do_bill_no . '.pdf';
-        $filepath = FCPATH . 'files/DO/' . $filename;
-
-        if (file_exists($filepath)) {
-            // Add file path to the array
-            $file_paths[] = $filepath;
-        } else {
-            // Handle the case where the file doesn't exist
-            echo "File not found for bill number: " . $row->do_bill_no;
-        }
-    }
-
-    // Set the filename for the ZIP archive
-    $zip_filename = 'DOs_' . $invoice_date . '.zip';
-
-    // Set the appropriate headers for ZIP download
-    header('Content-Type: application/zip');
-    header('Content-Disposition: attachment; filename="' . $zip_filename . '"');
-
-    // Create a new ZIP archive
-    $zip = new ZipArchive;
-    if ($zip->open($zip_filename, ZipArchive::CREATE) === TRUE) {
-        // Add files to the ZIP archive
-        foreach ($file_paths as $file_path) {
-            $file_name_in_zip = basename($file_path);
-            $zip->addFile($file_path, $file_name_in_zip);
+        if (!$order_id) {
+            continue;
         }
 
-        // Close the ZIP archive
-        $zip->close();
+        $html = $this->render_invoice_html($order_id, $bill_no);
+        if ($html === false) {
+            continue;
+        }
 
-        // Output the ZIP archive
-        readfile($zip_filename);
+        // collect CSS once
+        if (preg_match_all('/<style\b[^>]*>(.*?)<\/style>/is', $html, $m)) {
+            foreach ($m[1] as $css) {
+                $styles[md5($css)] = $css;
+            }
+        }
 
-        // Remove the temporary ZIP file
-        unlink($zip_filename);
-    } else {
-        // Handle the case where ZIP archive creation fails
-        echo "Failed to create ZIP archive";
+        // keep only the <body> content
+        $bodies[] = preg_match('/<body\b[^>]*>(.*)<\/body>/is', $html, $b) ? $b[1] : $html;
     }
+
+    if (empty($bodies)) {
+        $this->no_orders_alert('Could not generate invoices for this date');
+    }
+
+    $full_html = '<html><head><meta charset="utf-8"><style>'
+               . implode("\n", $styles)
+               . '</style></head><body>'
+               . implode('<div style="page-break-after: always;"></div>', $bodies)
+               . '</body></html>';
+
+    $dompdf = new Dompdf();
+    $dompdf->loadHtml($full_html);
+    $dompdf->setPaper(array(0, 0, 840, 1188), 'portrait');
+    $dompdf->render();
+    $pdf = $dompdf->output();
+
+    header('Content-Type: application/pdf');
+    header('Content-Disposition: attachment; filename="combined_invoices_' . $invoice_date . '.pdf"');
+    header('Content-Length: ' . strlen($pdf));
+    echo $pdf;
+    exit;
 }
 
 public function deleteorder($id) {
@@ -1293,137 +1189,56 @@ public function fetch_user_address() {
 
 public function downloadseparate()
 {
-    $data['print'] = 'print';
-
     $invoice_date = $this->input->post('invoicee_date');
+    $orders_data  = $this->order_model->getinvoice($invoice_date);
 
-    $loginuser = $this->session->userdata('LoginSession');
+    if (empty($orders_data)) {
+        $this->no_orders_alert('There is no order for this delivery date');
+    }
+    $this->print_log_model->log_print('invoice_separate', $invoice_date, $orders_data);
 
-    $data['user_id'] = $loginuser['id'];
-
-    $user_id = $data['user_id'];
-
-    $orders_data = $this->order_model->getinvoice($invoice_date);
-   $this->print_log_model->log_print('invoice_separate', $invoice_date, $orders_data);
-    // Initialize an array to store file paths
-    $file_paths = array();
-
-    foreach ($orders_data as $row) {
-        $filename = 'invoice_' . $row->bill_no . '.pdf';
-        $filepath = FCPATH . 'files/' . $filename;
-
-        if (file_exists($filepath)) {
-            // Add file path to the array
-            $file_paths[] = $filepath;
-        } else {
-            // Handle the case where the file doesn't exist
-            echo "File not found for bill number: " . $row->bill_no;
-        }
+    $zip_path = $this->tmp_path('zip');
+    $zip = new ZipArchive;
+    if ($zip->open($zip_path, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== TRUE) {
+        $this->no_orders_alert('Failed to create ZIP archive');
     }
 
-     if (empty($file_paths)) {
-        $this->no_orders_alert('Invoice files not found for bill no(s): ' . implode(', ', $missing));
+    $added = 0;
+foreach ($orders_data as $row) {
+    $order_id = isset($row->id) ? $row->id : null;
+    if (!$order_id) {
+        $q = $this->db->select('id')->where('bill_no', $row->bill_no)->get('orders')->row();
+        $order_id = $q ? $q->id : null;
     }
-    // Set the filename for the ZIP archive
+    if (!$order_id) {
+        log_message('error', 'No order id for bill ' . $row->bill_no);
+        continue;
+    }
+
+    $pdf = $this->render_invoice_pdf($order_id, $bill_no);
+    if ($pdf !== false) {
+        $zip->addFromString('invoice_' . $bill_no . '.pdf', $pdf);
+        $added++;
+    } else {
+        log_message('error', 'Invoice render failed for order id ' . $order_id);
+    }
+}
+    $zip->close();
+
+    if ($added === 0) {
+        unlink($zip_path);
+        $this->no_orders_alert('Could not generate invoices for this date');
+    }
+
     $zip_filename = 'invoices_' . $invoice_date . '.zip';
-
-    // Set the appropriate headers for ZIP download
     header('Content-Type: application/zip');
     header('Content-Disposition: attachment; filename="' . $zip_filename . '"');
-
-    // Create a new ZIP archive
-    $zip = new ZipArchive;
-    if ($zip->open($zip_filename, ZipArchive::CREATE) === TRUE) {
-        // Add files to the ZIP archive
-        foreach ($file_paths as $file_path) {
-            $file_name_in_zip = basename($file_path);
-            $zip->addFile($file_path, $file_name_in_zip);
-        }
-
-        // Close the ZIP archive
-        $zip->close();
-
-        // Output the ZIP archive
-        readfile($zip_filename);
-
-        // Remove the temporary ZIP file
-        unlink($zip_filename);
-    } else {
-        // Handle the case where ZIP archive creation fails
-        echo "Failed to create ZIP archive";
-    }
+    header('Content-Length: ' . filesize($zip_path));
+    readfile($zip_path);
+    unlink($zip_path);
+    exit;
 }
 
-public function downloadcombined()
-{
-    $data['print'] = 'print';
-
-    $invoice_date = $this->input->post('invoicee_date');
-
-    $loginuser = $this->session->userdata('LoginSession');
-
-    $data['user_id'] = $loginuser['id'];
-
-    $user_id = $data['user_id'];
-
-    $orders_data = $this->order_model->getdo($invoice_date);
-     $this->print_log_model->log_print('invoice_combined', $invoice_date, $orders_data);
-    // Initialize an array to store file paths
-    $file_paths = array();
-
-    foreach ($orders_data as $row) {
-        $filename = $row->do_bill_no . '.pdf';
-        $filepath = FCPATH . 'files/DO/' . $filename;
-
-        if (file_exists($filepath)) {
-            // Add file path to the array
-            $file_paths[] = $filepath;
-        } else {
-            // Handle the case where the file doesn't exist
-            echo "File not found for bill number: " . $row->do_bill_no;
-        }
-    }
-
-    // Use the helper function to merge PDFs and create a ZIP file
-    $combined_pdf_path = FCPATH . 'files/DO' . 'combined_dos_' . $invoice_date . '.pdf';
-
-    $pdf = new PDFMerger;
-
-    foreach ($file_paths as $file_path) {
-        $pdf->addPDF($file_path, 'all');
-    }
-
-    $pdf->merge('file', $combined_pdf_path);
-
-    // Set the filename for the ZIP archive
-    $zip_filename = 'CombinedDOs_' . $invoice_date . '.zip';
-
-    // Set the appropriate headers for ZIP download
-    header('Content-Type: application/zip');
-    header('Content-Disposition: attachment; filename="' . $zip_filename . '"');
-
-    // Create a new ZIP archive
-    $zip = new ZipArchive;
-    if ($zip->open($zip_filename, ZipArchive::CREATE) === TRUE) {
-        // Add the combined PDF to the ZIP archive
-        $zip->addFile($combined_pdf_path, basename($combined_pdf_path));
-
-        // Close the ZIP archive
-        $zip->close();
-
-        // Output the ZIP archive
-        readfile($zip_filename);
-
-        // Remove the temporary ZIP file
-        unlink($zip_filename);
-
-        // Remove the combined PDF file
-        unlink($combined_pdf_path);
-    } else {
-        // Handle the case where ZIP archive creation fails
-        echo "Failed to create ZIP archive";
-    }
-}
 public function send_invoices_for_today()
 {
     date_default_timezone_set('Asia/Singapore'); // Set timezone to Singapore
@@ -1434,7 +1249,7 @@ public function send_invoices_for_today()
     //exit;
 
     // Fetch orders with today's delivery date
-    $this->db->select('orders.bill_no, user_register.email, user_register.primary_email, user_register.secondary_email');
+    $this->db->select('orders.id, orders.bill_no, user_register.email, user_register.primary_email, user_register.secondary_email');
     $this->db->from('orders');
     $this->db->join('user_register', 'orders.user_id = user_register.id');
     $this->db->where('orders.delivery_date', $today);
@@ -1489,8 +1304,14 @@ public function send_invoices_for_today()
         $this->email->message($msg);
 
         // Attach invoice PDF file
-        $file_path = FCPATH . 'files/invoice_' . $bill_no . '.pdf';
-        $this->email->attach($file_path);
+       
+$pdf = $this->render_invoice_pdf($order->id, $bn);
+if ($pdf === false) {
+    log_message('error', "Invoice $bill_no could not be generated.");
+    $this->email->clear(TRUE);
+    continue;
+}
+$this->email->attach($pdf, 'attachment', 'invoice_' . $bill_no . '.pdf', 'application/pdf');
 
         // Attempt to send the email with retry mechanism
         $max_retries = 3; // Maximum number of retries

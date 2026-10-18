@@ -118,7 +118,7 @@ if (!function_exists('pl_type_class')) {
       </div>
 
       <!-- Summary for the current filters -->
-      <div class="pl-stats">
+ <!--     <div class="pl-stats">
         <div class="pl-stat">
           <div class="n"><?php echo number_format($total); ?></div>
           <div class="l">Prints in this view</div>
@@ -135,7 +135,7 @@ if (!function_exists('pl_type_class')) {
           <div class="n"><?php echo number_format($summary['users']); ?></div>
           <div class="l">People who printed</div>
         </div>
-      </div>
+      </div>-->
 
       <!-- Filters -->
       <form method="get" action="<?php echo $e($base_url); ?>" class="pl-panel">
@@ -210,7 +210,7 @@ if (!function_exists('pl_type_class')) {
                 <th>Document</th>
                 <th>Delivery date</th>
                 <th>Printed on</th>
-                <th>Timing</th>
+               <!-- <th>Timing</th> -->
                 <th>Printed by</th>
                 <th>IP address</th>
               </tr>
@@ -247,7 +247,7 @@ if (!function_exists('pl_type_class')) {
                   <?php echo $e(date('d M Y', $ts)); ?>
                   <span class="sub"><?php echo $e(date('h:i:s A', $ts)); ?></span>
                 </td>
-                <td><span class="pl-badge <?php echo $s_cls; ?>"><?php echo $e($s_txt); ?></span></td>
+              <!--  <td><span class="pl-badge <php echo $s_cls; ?>"><php echo $e($s_txt); ?></span></td> -->
                 <td>
                   <div class="pl-user">
                     <span class="pl-avatar"><?php echo $e($init); ?></span>

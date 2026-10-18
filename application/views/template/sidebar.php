@@ -295,7 +295,7 @@ if (!$loginuser) {
     <?php } ?>
 
 
-    <?php if ((in_array('Export Sales', $access) && (in_array('Admin', $roles) || in_array('Owner', $roles))) || (in_array('Print Invoice', $access) && (in_array('Admin', $roles) || in_array('Owner', $roles)))|| (in_array('Print DO', $access) && (in_array('Admin', $roles) || in_array('Owner', $roles)))){ ?>
+    <?php if ((in_array('Export Sales', $access) && (in_array('Admin', $roles) || in_array('Owner', $roles))) || (in_array('Print Invoice', $access) && (in_array('Admin', $roles) || in_array('Owner', $roles)))|| ((in_array('Admin', $roles) || in_array('Owner', $roles)))){ ?>
     
 
     <li class="nav-item">
@@ -311,9 +311,7 @@ if (!$loginuser) {
         <li class="nav-item"><a href="<?php echo base_url('index.php/orders/export_sales/'); ?>"  class="nav-link"><i class="fas fa-print"></i>  Export Sales</a></li>
         <?php } if (in_array('Print Invoice', $access) && (in_array('Admin', $roles) || in_array('Owner', $roles))){ ?>
         <li class="nav-item"><a href="<?php echo base_url('index.php/orders/print_invoice_bydate/'); ?>"  class="nav-link"><i class="fas fa-print"></i>  Print Invoice</a></li>
-        <?php } if (in_array('Print DO', $access) && (in_array('Admin', $roles) || in_array('Owner', $roles))){ ?>
-        <li class="nav-item"><a href="<?php echo base_url('index.php/orders/print_do/'); ?>"  class="nav-link"><i class="fas fa-print"></i>  Print DO</a></li>
-        <?php } ?>
+        <?php }  ?>
     </ul>
     </li>
 
