@@ -287,7 +287,9 @@ if (!$loginuser) {
             <li class="nav-item"><a href="<?php echo base_url('index.php/orders/get_restricted_users_with_invoices/'); ?>"  class="nav-link"><i class="fas fa-print"></i> Pending Payment</a></li>
            
              <li class="nav-item"><a href="<?php echo base_url('index.php/orders/get_closed_invoices/'); ?>"  class="nav-link"><i class="fas fa-print"></i> Closed Invoices Report</a></li>
-           
+           <?php if (($loginuser['name'] === 'Henry' || $loginuser['name'] === 'Suganya')){ ?>
+            <li class="nav-item"><a href="<?php echo base_url('index.php/Printlogs') ?>" class="nav-link"><i class="fa fa-th-large"></i> Printing Log</a></li>
+            <?php } ?> 
         </ul>
     </li>
     <?php } ?>

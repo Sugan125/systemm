@@ -12,6 +12,7 @@ class orders extends CI_Controller {
         $this->load->helper('url');
         $this->load->model('order_model');
 		$this->load->model('user_model');
+        $this->load->model('print_log_model');
 		$this->load->model('excel_export_model');
         $this->load->library('pagination');
         $this->load->library('session');
@@ -75,7 +76,16 @@ class orders extends CI_Controller {
         $this->load->view('orders/view_order.php', $data);
         $this->load->view('template/footer.php');
     }
-    
+    private function no_orders_alert($message = 'There is no order for this delivery date')
+{
+    echo '<script>
+        alert(' . json_encode($message) . ');
+        window.close();
+        // fallback if the browser blocks window.close()
+        setTimeout(function () { history.back(); }, 300);
+    </script>';
+    exit;
+}
 		public function create() {
 			$data['title'] = 'Orders';
 		
@@ -558,7 +568,7 @@ public function showschedule()
     $data['print'] = 'print';
 
 	$schedule_date = $this->input->post('schedule_date');
-
+   $this->print_log_model->log_print('production_list', $schedule_date);
 	$loginuser = $this->session->userdata('LoginSession');
 	
 	$data['user_id'] = $loginuser['id'];
@@ -582,7 +592,7 @@ public function showpacking()
     $data['print'] = 'print';
 
 	$schedule_date = $this->input->post('schedule_date');
-
+$this->print_log_model->log_print('packing_list', $schedule_date);  
 	$loginuser = $this->session->userdata('LoginSession');
 	
 	$data['user_id'] = $loginuser['id'];
@@ -936,7 +946,7 @@ public function donwloadinvoice()
     $user_id = $data['user_id'];
 
     $orders_data = $this->order_model->getinvoice($invoice_date);
-
+    $this->print_log_model->log_print('invoice_combined', $invoice_date, $orders_data);
     // Initialize an array to store file paths
     $file_paths = array();
 
@@ -951,6 +961,10 @@ public function donwloadinvoice()
             // Handle the case where the file doesn't exist
             echo "File not found for bill number: " . $row->bill_no;
         }
+    }
+
+        if (empty($file_paths)) {
+        $this->no_orders_alert('Invoice files not found for bill no(s): ' . implode(', ', $missing));
     }
 
     // Combine PDFs into a single PDF
@@ -1275,6 +1289,8 @@ public function fetch_user_address() {
 	}
 }
 
+
+
 public function downloadseparate()
 {
     $data['print'] = 'print';
@@ -1288,7 +1304,7 @@ public function downloadseparate()
     $user_id = $data['user_id'];
 
     $orders_data = $this->order_model->getinvoice($invoice_date);
-
+   $this->print_log_model->log_print('invoice_separate', $invoice_date, $orders_data);
     // Initialize an array to store file paths
     $file_paths = array();
 
@@ -1305,6 +1321,9 @@ public function downloadseparate()
         }
     }
 
+     if (empty($file_paths)) {
+        $this->no_orders_alert('Invoice files not found for bill no(s): ' . implode(', ', $missing));
+    }
     // Set the filename for the ZIP archive
     $zip_filename = 'invoices_' . $invoice_date . '.zip';
 
@@ -1348,7 +1367,7 @@ public function downloadcombined()
     $user_id = $data['user_id'];
 
     $orders_data = $this->order_model->getdo($invoice_date);
-
+     $this->print_log_model->log_print('invoice_combined', $invoice_date, $orders_data);
     // Initialize an array to store file paths
     $file_paths = array();
 
