@@ -6,6 +6,7 @@
     <style>
         .box-body {
             overflow-x: auto;
+            
         }
 
         .table-wrapper {
