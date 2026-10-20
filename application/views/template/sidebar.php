@@ -162,12 +162,13 @@ if (!$loginuser) {
             <ul class="treeview-menu" style="display: none;">
                 <li class="nav-item ">
                     <?php
-                    $user = $this->session->userdata('normal_user');
+                   $user = $this->session->userdata('normal_user');
                     $user_id = $user->id;
-                    $sql = "select * from user_register where id=".$user_id;
-                    $query = $this->db->query($sql);
-                    $restrict_time = $query->row()->restrict_time;
-                      $pay_restrict = $query->row()->pay_restrict;
+                    $row = $this->db->select('restrict_time, pay_restrict')
+                                    ->where('id', (int) $user_id)
+                                    ->get('user_register')->row();
+                    $restrict_time = $row->restrict_time;
+                    $pay_restrict = $row->pay_restrict;
                    
                       date_default_timezone_set('Asia/Singapore');
                       $current_time = date("H:i");

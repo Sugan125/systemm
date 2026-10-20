@@ -1,8 +1,5 @@
 <?php
 use Dompdf\Dompdf;
-include APPPATH . 'third_party/tcpdf/PDFMerger.php';
-
-use PDFMerger\PDFMerger;
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class orders extends CI_Controller {
@@ -15,8 +12,6 @@ class orders extends CI_Controller {
         $this->load->model('print_log_model');
 		$this->load->model('excel_export_model');
         $this->load->library('pagination');
-        $this->load->library('session');
-		$this->load->library('email');
 		
     }
 
@@ -28,11 +23,11 @@ class orders extends CI_Controller {
     
         // Pagination configuration
         $config['base_url'] = site_url('orders/index');
-        $config['total_rows'] = $this->order_model->count_user_orders($data['user_id']); // Adjust this function in your model to count orders for the specific user
-        
-        $data['total_rows'] = $this->order_model->count_user_orders($data['user_id']); // Adjust this function in your model to count orders for the specific user
-       
-      
+
+        $total = $this->order_model->count_user_orders($data['user_id']);
+
+        $config['total_rows'] = $total;
+        $data['total_rows'] = $total;
         $config['per_page'] = 10;
         $config['uri_segment'] = 3;
         $config['use_page_numbers'] = TRUE;
@@ -89,13 +84,8 @@ class orders extends CI_Controller {
 
 private function render_invoice_html($id, &$bill_no = null)
 {
-    $orders_data = $this->order_model->getOrdersadmin($id);
-    if (empty($orders_data)) {
-        return false;
-    }
-
     $orders_item = $this->order_model->getadminorderdata($id);
-    $result = array('order' => $orders_data, 'order_item' => array());
+$result = array('order' => array(), 'order_item' => array());
     foreach ($orders_item as $v) {
         $result['order_item'][] = $v;
     }
@@ -487,7 +477,8 @@ public function manage_orders() {
 
     // Pagination configuration
     $config['base_url'] = site_url('orders/manage_orders');
-    $config['total_rows'] = $this->order_model->count_all_orders(); // Ensure total rows are counted for the current month
+    $total = $this->order_model->count_all_orders();
+    $config['total_rows'] = $total;
     $config['per_page'] = 10;
     $config['uri_segment'] = 3;
     $config['use_page_numbers'] = TRUE;
@@ -523,7 +514,7 @@ public function manage_orders() {
 
     // Fetch orders for the current month with pagination
     $data['orders'] = $this->order_model->getmanageorder($config['per_page'], $offset);
-    $data['total_rows'] = $this->order_model->count_all_orders();
+    $data['total_rows'] = $total;
 	$data['userss'] = $this->user_model->get_allusers($loginuser['id']);
     // Load views
     $this->load->view('template/header.php', $data);
@@ -815,7 +806,8 @@ public function printpacking()
     
         // Pagination Config for Search Results
         $config['base_url'] = site_url('orders/manage_search');
-        $config['total_rows'] = max($this->order_model->count_search_results($keyword), 10); // Ensure at least 10 total rows
+        $total = $this->order_model->count_search_results($keyword);
+       $config['total_rows'] = $total;
         $config['per_page'] = 10;
         $config['use_page_numbers'] = TRUE;
         $config['reuse_query_string'] = TRUE;
@@ -842,7 +834,7 @@ public function printpacking()
         $page = ($this->uri->segment(3)) ? $this->uri->segment(3) : 1; // Set the default page to 1
         $offset = ($page - 1) * $config['per_page'];
         $data['orders'] = $this->order_model->search_orders($keyword, $config['per_page'], $offset);
-        $data['total_rows'] = $this->order_model->count_search_results($keyword);
+        $data['total_rows'] = $total;
     
         $this->pagination->initialize($config);
         $data['keyword'] = $keyword;
@@ -903,6 +895,7 @@ public function print_invoice_bydate()
 
 public function donwloadinvoice()
 {
+     session_write_close();
     set_time_limit(300);
     ini_set('memory_limit', '512M');
 

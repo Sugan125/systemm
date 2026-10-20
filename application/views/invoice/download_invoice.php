@@ -9,9 +9,11 @@
           <h2 style="text-align: left;">
           
           <?php
-            $image_path = base_url('images/logo.jpg');
-            $image_data = file_get_contents($image_path);
-            $base64_image = base64_encode($image_data);
+          static $logo_cache = null;
+if ($logo_cache === null) {
+    $logo_cache = base64_encode(file_get_contents(FCPATH . 'images/logo.jpg'));
+}
+$base64_image = $logo_cache;
             ?>
             <img src="data:image/jpeg;base64,<?php echo $base64_image; ?>" height="70" width="auto" style="margin-bottom: 0px;">
           </h2>
@@ -269,9 +271,12 @@ endforeach; ?>
       </div>
       <div style="box-sizing: border-box;float: right; width: 50%;text-align: right;display: grid;position: absolute;">
       <?php
-            $image_path = base_url('images/pay-now.jpg');
-            $image_data = file_get_contents($image_path);
-            $base64_image = base64_encode($image_data);
+           static $paynow_cache = null;
+if ($paynow_cache === null) {
+    $data_png = @file_get_contents(FCPATH . 'images/pay-now.png');
+    $paynow_cache = $data_png !== false ? base64_encode($data_png) : '';
+}
+$base64_image = $paynow_cache;
             ?>
         <p><img src="data:image/jpeg;base64,<?php echo $base64_image; ?>" height="200" width="auto" style="float: right;"></p><br><br><br><br>
         <br><br><br><br><br><br><br><br>

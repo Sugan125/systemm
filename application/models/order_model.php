@@ -516,14 +516,14 @@ public function update($id,$user_id)
 	}
 
 
-    public function countOrderItem($order_id)
-	{
-		if($order_id) {
-			$sql = "SELECT * FROM order_items WHERE order_id = ? and isdeleted=0";
-			$query = $this->db->query($sql, array($order_id));
-			return $query->num_rows();
-		}
-	}
+   public function countOrderItem($order_id)
+{
+    if($order_id) {
+        return (int) $this->db->where('order_id', $order_id)
+                              ->where('isdeleted', 0)
+                              ->count_all_results('order_items');
+    }
+}
 
 	public function getmanageorder($limit = 10, $offset = 0) {
 		$current_month = date('Y-m'); // Get the current month in 'YYYY-MM' format
@@ -578,9 +578,13 @@ public function update($id,$user_id)
 		$query = $this->db->query($sql, array($order_id));
 		return $query->result_array();
 	}
+public function getscheduleorder($schedule_date) {
 
-	public function getscheduleorder($schedule_date) {
-		$sql = "SELECT 
+	if (empty($schedule_date)) {
+		return array();
+	}
+
+	$sql = "SELECT 
     prod.product_id AS product_id, 
     prod.product_name AS product_name, 
     SUM(COALESCE(ordd.promo_qty, ordd.qty)) AS qty, 
@@ -596,29 +600,42 @@ FROM
 JOIN 
     products prod ON ordd.product_id = prod.id 
 WHERE 
-    DATE(ordd.delivery_date) = '$schedule_date' and isdeleted=0
+    ordd.delivery_date = ? AND ordd.isdeleted = 0
 GROUP BY 
     prod.product_id, prod.product_name, ordd.category 
 ORDER BY 
     ordd.category";
-	
-		$query = $this->db->query($sql);
-	
-		//echo $this->db->last_query();
-	
-		return $query->result(); 
-	}
-	
+
+	$query = $this->db->query($sql, array($schedule_date));
+
+	//echo $this->db->last_query();
+
+	return $query->result(); 
+}
+
 public function getpackingorder($schedule_date) {
-	$date = $schedule_date;
-	$formatted_schedule_date = date("d/m/y", strtotime($date));
-	$sql = "SELECT ord.*, orrr.*, uss.*,prod.product_id as prod_id,prod.product_name as product_name 
-	FROM orders ord 
-	JOIN order_items orrr ON ord.id = orrr.order_id 
-	JOIN user_register uss ON ord.user_id = uss.id 
-	join products prod ON orrr.product_id=prod.id
-	WHERE ord.isdeleted = 0 and DATE(orrr.delivery_date) = '$schedule_date';";
-	$query = $this->db->query($sql);
+
+	if (empty($schedule_date)) {
+		return array();
+	}
+
+	$sql = "SELECT
+    ord.shipping_address, ord.shipping_address_line2, ord.shipping_address_line3,
+    ord.shipping_address_line4, ord.shipping_address_city, ord.shipping_address_postcode,
+    orrr.order_id, orrr.qty, orrr.promo_qty, orrr.sample, orrr.slice_type,
+    orrr.seed_type, orrr.delivery_date,
+    uss.company_name, uss.brand_name, uss.packer_memo,
+    uss.delivery_address, uss.delivery_address_line2, uss.delivery_address_line3,
+    uss.delivery_address_line4, uss.delivery_address_city, uss.delivery_address_postcode,
+    prod.product_id AS prod_id, prod.product_name AS product_name
+FROM orders ord
+JOIN order_items orrr ON ord.id = orrr.order_id
+JOIN user_register uss ON ord.user_id = uss.id
+JOIN products prod ON orrr.product_id = prod.id
+WHERE ord.isdeleted = 0 AND orrr.delivery_date = ?
+ORDER BY uss.company_name, ord.id, orrr.id";
+
+	$query = $this->db->query($sql, array($schedule_date));
 	return $query->result(); 
 
 }
@@ -1022,8 +1039,8 @@ public function count_search_results($keyword) {
 
 public function getinvoice($date) {
 	
-	$sql = "SELECT id,bill_no FROM orders WHERE isdeleted = 0 and  DATE(delivery_date) = '$date'";
-	$query = $this->db->query($sql);
+	$sql = "SELECT id,bill_no FROM orders WHERE isdeleted = 0 AND delivery_date = ?";
+	$query = $this->db->query($sql, array($date));
 	//echo $this->db->last_query();
 	return $query->result(); 
 
@@ -1431,15 +1448,9 @@ public function get_restricted_users_with_unpaid_invoices($limit = 10, $offset =
 
 public function count_orders_by_user($user_id)
 {
-    $this->db->from('orders ord');
-    $this->db->where('ord.user_id', $user_id);
-    $this->db->where('ord.isdeleted', 0);
-
-    $query = $this->db->get();
-
-    // echo $this->db->last_query();
-
-    return $query->num_rows();
+    return (int) $this->db->where('user_id', $user_id)
+                          ->where('isdeleted', 0)
+                          ->count_all_results('orders');
 }
 
 

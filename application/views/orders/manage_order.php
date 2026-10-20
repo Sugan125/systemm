@@ -303,12 +303,6 @@ $orderdate = isset($orderdate) ? date('Y-m-d', strtotime($orderdate)) : '';
             $("#OrderMainNav").addClass('active');
             $("#manageOrderSubMenu").addClass('active');
 
-            // initialize the datatable 
-            manageTable = $('#manageTable').DataTable({
-                'ajax': base_url + 'orders/fetchOrdersData',
-                'order': []
-            });
-
         });
 
         // remove functions 
