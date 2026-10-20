@@ -26,39 +26,7 @@ class Logincontroller extends CI_Controller {
     // Facebook Authentication
     $userData = array();
 
-    // Authenticate user with Facebook
-    if ($this->facebook->is_authenticated()) {
-        // Get user info from Facebook
-        $fbUser = $this->facebook->request('get', '/me?fields=id,name,email,link,image');
-
-        // Preparing data for database insertion
-        $userData['oauth_provider'] = 'facebook';
-        $userData['oauth_uid'] = !empty($fbUser['id']) ? $fbUser['id'] : '';
-       
-        $userData['name'] = !empty($fbUser['last_name']) ? $fbUser['name'] : '';
-        $userData['email'] = !empty($fbUser['email']) ? $fbUser['email'] : '';
-        $userData['image'] = !empty($fbUser['image']['data']['url']) ? $fbUser['image']['data']['url'] : '';
-        $userData['link'] = !empty($fbUser['link']) ? $fbUser['link'] : 'https://www.facebook.com/';
-
-        // Insert or update user data to the database
-        $userID = $this->user->checkUser($userData);
-
-        // Check user data insert or update status
-        if (!empty($userID)) {
-            $data['userData'] = $userData;
-
-            // Store the user profile info into session
-            $this->session->set_userdata('userData', $userData);
-        } else {
-            $data['userData'] = array();
-        }
-
-        // Facebook logout URL
-        $data['logoutURL'] = $this->facebook->logout_url();
-    } else {
-        // Facebook authentication URL
-        $data['authURL'] =  $this->facebook->login_url();
-    }
+  
 
     // Form Submission
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
