@@ -13,7 +13,6 @@ class Logincontroller extends CI_Controller {
         $this->load->library('email');
 		$this->load->helper('url');
 		$this->load->library('session');
-		$this->load->library('facebook'); 
          
         // Load user model 
         $this->load->model('user'); 
@@ -23,7 +22,6 @@ class Logincontroller extends CI_Controller {
 {
     $data = array();
 
-    // Facebook Authentication
     $userData = array();
 
   

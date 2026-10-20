@@ -7,10 +7,7 @@ class User extends CI_Model {
         $this->primaryKey = 'id';
     }
     
-    /*
-     * Insert / Update facebook profile data into the database
-     * @param array the data for inserting into the table
-     */
+  
     public function checkUser($userData = array()){
         if(!empty($userData)){
             //check whether user data already exists in database with same oauth info
